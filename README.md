@@ -12,7 +12,12 @@ game engine to launch 2D HTML5 game servers.** It can support up to 64 concurren
 Taro Engine uses various versions of Box2D physics engine(Planck.js, Box2Dweb, etc), and uses Pixijs as a rendering engine.
 For netcode, it uses websocket and LZ string compression to optimize bandwidth and performance.
 
-## Out-of-the box features designed for the specific kinds of games.
+Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
+
+## Demo ##
+[Hunt and gather](https://beta.modd.io/play/huntandgather)
+
+## What's included in the box
 **Taro Engine is NOT designed for single player games.** 
 Instead, it comes with a set of features that are ideal for casual multiplayer games including:
 - Inventory & item system
