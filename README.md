@@ -35,14 +35,12 @@ We are always looking for more contributors to help us further optimize our game
 Before being open sourced in September 2019, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
 
 ## How to run a game server
-Taro engine will run a game made in [modd.io](https://www.modd.io) platform. The game data can be provided by:
-1. providing <gameID> of a game made in [modd.io](https://www.modd.io) platform, or
-2. replacing game.json file in root directory with game export file provided from modd.io platform
-
+Taro engine will run a game made in [modd.io](https://www.modd.io) platform. To run the game, execute the following command:
 ```
 npm run server --game=<gameID>
 ```
 *if the <gameID> argument is not provided, then the engine will use game.json stored in root directory
+Your game's Game ID can be found in your modd.io's game's sandbox. Go to menu -> about.
 
 ## Connecting to the game server
 Visit http://localhost:2000 to start testing game.
