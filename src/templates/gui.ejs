@@ -1,0 +1,28 @@
+<!-- leader board -->
+<div id="leaderboard" class="position-absolute text-white d-none user-select-none" style="right: 10">
+    <!-- Server ID: <span id="server-id"></span> -->
+    <div class="shop ui-text-scoreboard"></div>
+
+    <span id="scoreboard-header">
+        <u id="leaderboard-title" class="cursor-pointer" onclick="ige.scoreboard && ige.scoreboard.toggleScores()">Leaderboard</u>
+        <div id="leaderboard-toggle" style="display: inline" class="pull-right"></div>
+    </span>
+    <div id="scoreboard" class="pull-right" style="padding: 10px 19px 0px 0px"></div>
+</div>
+
+<!-- player attribute -->
+<div id="my-score-div" class="game-ui position-absolute dark-bg score-div d-block user-select-none">
+    <span id="players-attribute-div"> </span>
+
+    <span id="item-info-div">
+        <span id="item-name"></span>
+        <span id="item-ammo"></span>
+    </span>
+</div>
+
+<!-- top and center text -->
+<div id="counter" class="position-absolute w-100 p-0 d-flex align-items-center justify-content-center">
+    <div class="ui-text-top dark-bg text-center"></div>
+    <div class="highscore-text" style="z-index: 9000; font-size: 4rem"></div>
+</div>
+<span class="pointer-events-none ui-text-center-lg"></span>

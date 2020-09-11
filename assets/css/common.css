@@ -1,0 +1,123 @@
+.d-none-important {
+    display: none !important;
+}
+#my-score-div {
+    padding: 10px;
+    font-size: 24px;
+}
+.dark-bg {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 20px;
+}
+.item-shop-button {
+    min-height: 100px;
+}
+.margin-top-4 {
+    margin-top: 8;
+}
+.backpack-ui {
+    position: absolute;
+    bottom: 20;
+    right: 20;
+    max-width: 250;
+}
+
+#open-inventory-button {
+    margin-top: 10px;
+    display: none;
+}
+
+.game-ui {
+    z-index: 1000;
+    color: white;
+    margin: 10px;
+    position: absolute;
+}
+
+.item-class-normal {
+    color: black;
+}
+
+.item-class-special {
+    color: green;
+}
+
+.item-class-rare {
+    color: orange;
+}
+
+.item-class-legendary {
+    color: gold;
+}
+
+.item-div {
+    z-index: 10000;
+}
+
+.inventory-slot .quantity {
+    position: absolute;
+    bottom: 0px;
+    right: 4px;
+}
+
+.item-key-stroke {
+    width: 49px;
+    height: 20px;
+    display: inline-block;
+    text-align: center;
+}
+
+.inventory-slot,
+.trade-offer-slot {
+    width: 45px;
+    height: 45px;
+    margin: 0px 2px 0px 2px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.inventory-slot.active {
+    border: 2px solid white;
+}
+
+.inventory-slot-mobile,
+.trade-offer-slot {
+    width: 35px;
+    height: 35px;
+}
+.popover {
+    z-index: 10000;
+}
+.bg-light-green {
+    background-color: rgba(40, 167, 69, 0.3);
+}
+.bg-light-red {
+    background-color: rgba(220, 53, 69, 0.3);
+}
+.col-sm-2-5 {
+    width: 20%;
+}
+.item-shop-button {
+    min-height: 100px;
+}
+.modal {
+    z-index: 99999;
+}
+.swal2-container.swal2-shown {
+    z-index: 100000;
+}
+.game-ui {
+    z-index: 1000;
+    color: white;
+    margin: 10px;
+    display: none;
+}
+.score-div {
+    text-align: right;
+}
+#unit-status {
+    bottom: 10;
+    left: 50%;
+    transform: translateX(-50%);
+}

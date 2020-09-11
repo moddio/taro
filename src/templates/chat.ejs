@@ -1,0 +1,58 @@
+<!-- chat input field -->
+<div id="chat-input-field-div" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+    <div class="form-group" id="chat-message-input" style="display: none">
+        <div class="input-group d-flex justify-content-center">
+            <form class="mb-0" onsubmit="ige.chat.sendChatMessage(); return false">
+                <input type="text" class="form-control btn-sm" id="message" placeholder="Press Enter to send the message" />
+            </form>
+            <div class="input-group-append" onclick="ige.chat.sendChatMessage()">
+                <button class="btn btn-secondary" type="button">
+                    <i class="fa fa-comment"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- chat box -->
+<div id="chat-box" class="game-ui" style="bottom: 0; display: none">
+    <div id="chat-tab-container" class="hide-on-mobile d-flex flex-column">
+        <ul id="tabs" class="nav nav-pills no-selection">
+            <li class="nav-item" onclick="renderFriendTabInGame();">
+                <a class="nav-link" id="pills-friends-tab" data-toggle="pill" href="#pills-friends" role="tab" aria-controls="pills-friends" aria-selected="false">
+                    Friends
+                    <span class="all-friends-count badge text-dark" style="background: yellow"></span>
+                </a>
+            </li>
+            <li class="nav-item" onclick="renderPendingTabInGame();">
+                <a class="nav-link" id="pills-pending-tab" data-toggle="pill" href="#pills-pending" role="tab" aria-controls="pills-pending" aria-selected="false">
+                    Pending
+                    <span class="pending-request-count badge text-dark" style="background: yellow"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a id="hide-chat" class="cursor-pointer hide-on-mobile nav-link" style="position: absolute; right: 0"> Hide </a>
+            </li>
+        </ul>
+        <div class="tab-content flex-grow-1 d-flex" style="background-color: rgba(0, 0, 0, 0.5); border-radius: 0px 5px 5px 5px">
+            <div class="tab-pane fade show active w-100" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
+                <div class="h-100 w-100 p-3">
+                    <div id="chat-history" class="hide-on-mobile h-100" style="max-height: 150px; overflow: auto; min-width: 350px"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade w-100 position-relative" id="pills-friends" role="tabpanel" aria-labelledby="pills-friends-tab">
+                <button class="btn btn-default btn-sm position-absolute" style="top: 10px; right: 25px; z-index: 1" data-toggle="modal" data-target="#add-friends-modal"><i class="fa fa-plus"></i>Add Friend</button>
+                <div id="friends-list" class="p-3 h-100 w-100 text-dark flex-grow-1"></div>
+            </div>
+            <div class="tab-pane fade w-100" id="pills-pending" role="tabpanel" aria-labelledby="pills-pending-tab">
+                <div id="pending-list" class="p-3 h-100 w-100 text-dark flex-grow-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- show/hide chat button -->
+ <div id="show-chat" class="btn btn-success d-none position-absolute" style="bottom: 10">
+    <i class="fa fa-comment mr-1"></i>
+    Show Chat
+</div>

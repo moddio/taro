@@ -1,0 +1,68 @@
+ <!-- custom modal -->
+ <div class="modal fade align-items-center" id="custom-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header text-center">
+          <h4 class="modal-title"></h4>
+          <button id='custom-modal-dismiss-button' type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="content"></div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="row">
+            <div class="col-sm-12">
+              <div id="custom-modal-cancel-container">
+                <button type="button" data-dismiss="modal" id="custom-modal-cancel" class="btn pull-right">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- dialogue modal -->
+  <div class="modal" id="modd-dialogue-modal" tabindex="-1" style='z-index:9050' data-backdrop='static' data-keyboard='false'>
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row row-eq-height">
+            <div class="col-4 d-none" id="modd-dialogue-image-container">
+              <img
+                id="modd-dialogue-image" 
+                class="loading w-100 rounded"
+                src=""
+                alt="image"
+                onload="this.style.background = 'none';"
+              >
+            </div>
+
+            <div class="col-12" id="modd-dialogue-message-container">
+              <div class="d-flex flex-column h-100">
+                <div class="flex-shrink-0 flex-grow-1 wrap-text">
+                  <p id="modd-dialogue-message"></p>
+
+                  <p class="position-absolute mb-0 text-muted d-none" id="modd-dialogue-skip-hint" style="bottom: 0; right: 15px;">
+                    press enter/click to continue.
+                  </p>
+                </div>
+
+                <div id="modd-dialogue-options-container">
+                  <div id="modd-dialogue-options" class="w-100"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
