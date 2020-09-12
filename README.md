@@ -37,7 +37,7 @@ Taro is completely free and open source under MIT license.
 We understand that Netcode and performance optimizations are difficult problems to solve. We have solved much of this already, so you don't have to.
 We are always looking for more contributors to help us further optimize our game engine.
 
-Before being open sourced in September 2019, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
+Before being open sourced in September 2020, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
 
 ## How to run a game server
 Taro engine will run a game made in [modd.io](https://www.modd.io) platform. To run the game, execute the following command:
