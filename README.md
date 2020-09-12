@@ -43,7 +43,7 @@ Taro engine will run a game made in [modd.io](https://www.modd.io) platform. To 
 ```
 npm run server --game=<gameID>
 ```
-*if the <gameID> argument is not provided, then the engine will use game.json stored in root directory
+*if the gameID argument is not provided, then the engine will use game.json stored in root directory
 Your game's Game ID can be found in your modd.io's game's sandbox. Go to menu -> about.
 
 ## Connecting to the game server
