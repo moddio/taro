@@ -7,7 +7,7 @@
 
 ## 2D multiplayer HTML5 game engine.
 **[Taro Engine](https://www.modd.io) is a multi-player-first, cross-platform
-game engine to launch 2D HTML5 game servers.** It can support up to 64 concurrent players hosted on a $5/month VM while running box2d physics.
+2D HTML5 game engine.** It can support up to 64 concurrent players hosted on a $5/month VM while running box2d physics.
 Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
 
 ## Demo ##
