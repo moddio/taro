@@ -12,7 +12,12 @@ game engine to launch 2D HTML5 game servers.** It can support up to 64 concurren
 Taro Engine uses various versions of Box2D physics engine(Planck.js, Box2Dweb, etc), and uses Pixijs as a rendering engine.
 For netcode, it uses websocket and LZ string compression to optimize bandwidth and performance.
 
-## Out-of-the box features designed for the specific kinds of games.
+Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
+
+## Demo ##
+[Hunt and gather](https://beta.modd.io/play/huntandgather)
+
+## What's included in the box
 **Taro Engine is NOT designed for single player games.** 
 Instead, it comes with a set of features that are ideal for casual multiplayer games including:
 - Inventory & item system
@@ -35,14 +40,12 @@ We are always looking for more contributors to help us further optimize our game
 Before being open sourced in September 2019, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
 
 ## How to run a game server
-Taro engine will run a game made in [modd.io](https://www.modd.io) platform. The game data can be provided by:
-1. providing <gameID> of a game made in [modd.io](https://www.modd.io) platform, or
-2. replacing game.json file in root directory with game export file provided from modd.io platform
-
+Taro engine will run a game made in [modd.io](https://www.modd.io) platform. To run the game, execute the following command:
 ```
 npm run server --game=<gameID>
 ```
 *if the <gameID> argument is not provided, then the engine will use game.json stored in root directory
+Your game's Game ID can be found in your modd.io's game's sandbox. Go to menu -> about.
 
 ## Connecting to the game server
 Visit http://localhost:2000 to start testing game.
