@@ -20,6 +20,8 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 ## What's included in the box
 **Taro Engine is NOT designed for single player games.** 
 Instead, it comes with a set of features that are ideal for casual multiplayer games including:
+- Box2D Physics
+- Netcode using UWS and LZ-string compression
 - Inventory & item system
 - Unit attributes (HP, Energy, etc)
 - Weapon system (melee & projectile)
@@ -32,12 +34,9 @@ Instead, it comes with a set of features that are ideal for casual multiplayer g
 - Mobile controls
 - and more!
 
-## Open sourced to empower all game developers.
+## We need your help!
 Taro is completely free and open source under MIT license.
-We understand that Netcode and performance optimizations are difficult problems to solve. We have solved much of this already, so you don't have to.
-We are always looking for more contributors to help us further optimize our game engine.
-
-Before being open sourced in September 2020, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
+Netcode and performance optimizations are difficult problems to solve. While we have solved much of this already, we are always looking for more contributors to help us further optimize this game engine.
 
 ## How to run a game server
 Taro engine will run a game made in [modd.io](https://www.modd.io) platform. To run the game, execute the following command:
@@ -55,3 +54,6 @@ Game client's user interface is rendered using /template/index.html file. Feel f
 
 ## How to make games on modd.io
 Please visit https://www.modd.io/tutorials for more information
+
+## Extra information
+Before being open sourced in September 2020, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
