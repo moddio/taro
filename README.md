@@ -1,4 +1,4 @@
-# Taro Engine
+# Taro
 <p align="center">
   <a href="https://modd.io">
     <img src="logo.png" width="400" alt="Taro Engine logo">
@@ -8,10 +8,6 @@
 ## 2D multiplayer HTML5 game engine.
 **[Taro Engine](https://www.modd.io) is a multi-player-first, cross-platform
 game engine to launch 2D HTML5 game servers.** It can support up to 64 concurrent players hosted on a $5/month VM while running box2d physics.
-
-Taro Engine uses various versions of Box2D physics engine(Planck.js, Box2Dweb, etc), and uses Pixijs as a rendering engine.
-For netcode, it uses websocket and LZ string compression to optimize bandwidth and performance.
-
 Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
 
 ## Demo ##
@@ -35,8 +31,8 @@ Instead, it comes with a set of features that are ideal for casual multiplayer g
 - and more!
 
 ## We need your help!
-Taro is completely free and open source under MIT license.
 Netcode and performance optimizations are difficult problems to solve. While we have solved much of this already, we are always looking for more contributors to help us further optimize this game engine.
+Taro is completely free and open source under GPLv3 license.
 
 ## How to run a game server
 Taro engine will run a game made in [modd.io](https://www.modd.io) platform. To run the game, execute the following command:
