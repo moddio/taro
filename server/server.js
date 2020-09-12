@@ -150,7 +150,9 @@ var Server = IgeClass.extend({
 		//for debugging reasons
 		global.isServer = ige.isServer;
 
-		ige.addComponent(HttpComponent);
+		if(typeof HttpComponent != 'undefined') {
+			ige.addComponent(HttpComponent);
+		}
 		console.log('cluster.isMaster', cluster.isMaster)
 		if (cluster.isMaster) {
 			// ige.addComponent(ClusterServerComponent);
