@@ -938,7 +938,7 @@ var ShopComponent = IgeEntity.extend({
 						});
 
 						var itemName = "<div class='mx-2 mt-2 mb-0 no-selection' style='line-height:0.7 !important;'><small>";
-						itemName += item.name && typeof item.name === 'string' && item.name.substring(0, 40) || item.name;
+						itemName += item.name && typeof item.name === 'string' && item.name.substring(0, 80) || item.name;
 						itemName += "</small></div>";
 
 						var combine = $("<div/>", {
