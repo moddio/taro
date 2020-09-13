@@ -14,10 +14,6 @@ var config = {
 		{ name: 'Sensor', path: '../src/gameClasses/Sensor' },
 		{ name: 'Debris', path: '../src/gameClasses/Debris' },
 
-		// { name: 'ClusterClientComponent', path: '../../be_connector/ClusterClientComponent' },
-		// { name: 'ClusterServerComponent', path: '../../be_connector/ClusterServerComponent' },
-		// { name: 'HttpComponent', path: '../../be_connector/HttpComponent' },
-
 		{ name: 'MapComponent', path: '../src/gameClasses/components/MapComponent' },
 		{ name: 'ShopComponent', path: '../src/gameClasses/components/ShopComponent' },
 		{ name: 'GameComponent', path: '../src/gameClasses/components/GameComponent' },
