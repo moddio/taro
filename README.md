@@ -38,7 +38,7 @@ npm run server --game=<gameID>
 
 Your game's Game ID can be found in your modd.io's game's sandbox. Go to menu -> about.
 
-<img src="./assets/images/gameid.png" width="800" alt="How to get game id">
+<img src="./assets/images/gameid.png" width="600" alt="How to get game id">
 
 ## Connecting to the game server
 Visit http://localhost:2000 to start testing game.
