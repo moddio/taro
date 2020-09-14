@@ -937,8 +937,8 @@ var ShopComponent = IgeEntity.extend({
 							value: "<img src='" + (item.inventoryImage || item.cellSheet.url) + "' style='width: auto; height: auto; max-width: 55px; max-height: 55px'>"
 						});
 
-						var itemName = "<div class='mx-2 mt-2 mb-0 no-selection' style='line-height:0.7 !important;'><small>";
-						itemName += item.name && typeof item.name === 'string' && item.name.substring(0, 80) || item.name;
+						var itemName = "<div class='mx-2 mt-2 mb-0 no-selection' style='line-height:0.7  !important; overflow-wrap: break-word;'><small>";
+						itemName += item.name;
 						itemName += "</small></div>";
 
 						var combine = $("<div/>", {
