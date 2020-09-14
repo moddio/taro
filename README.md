@@ -41,7 +41,7 @@ Your game's Game ID can be found in your modd.io's game's sandbox. Go to menu ->
 Visit http://localhost:2000 to start testing game.
 
 ## How to customize game client UI
-Game client's user interface is rendered using /template/index.html file. Feel free to edit it for your needs
+Game client's user interface is rendered by [/src/index.ejs](https://github.com/moddio/taro/blob/master/src/index.ejs) file and the theme files in [/src/templates/](https://github.com/moddio/taro/tree/master/src/templates)
 
 ## How to make games on modd.io
 Please visit https://www.modd.io/tutorials for more information
