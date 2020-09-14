@@ -242,8 +242,7 @@ var Server = IgeClass.extend({
 		const app = express();
 		const port = process.env.PORT || 2000;
 		this.port = 2001; //game started on
-
-
+		
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
@@ -256,15 +255,7 @@ var Server = IgeClass.extend({
 		app.use('/assets', express.static(path.resolve('./assets/')));
 
 		app.get('/', (req, res) => {
-			console.log('here');
-			// if (!global.standaloneGame) {
-			// 	setTimeout(() => {
-			// 		res.redirect('/');
-			// 	}, 2000);
-
-			// 	return;
-			// }
-
+			
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
 				title: global.standaloneGame.defaultData.title,
