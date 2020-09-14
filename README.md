@@ -13,8 +13,6 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 [Taro Town](http://taro.town)
 
 ## What's included in the box
-**Taro Engine is NOT designed for single player games.** 
-Instead, it comes with a set of features that are ideal for casual multiplayer games including:
 - Box2D Physics
 - Netcode using UWS and LZ-string compression
 - Inventory & item system
