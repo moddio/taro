@@ -177,7 +177,6 @@ var Client = IgeClass.extend({
                         var gameMap = ige.scaleMap(game.data.map);
 
                         ige.map.load(gameMap);
-                        self.loadCSP();
 
                         var baseTilesize = 64;
                         var tilesizeRatio = baseTilesize / ige.game.data.map.tilewidth;
@@ -447,42 +446,11 @@ var Client = IgeClass.extend({
             viewArea.height = viewArea.height * 0.5;;
         }
 
-        // if (ige.client.selectedUnit) {
-        //     ige.client.selectedUnit.updateNameLabel()
-        // }
-
-        // viewPort.camera.limit(
-        //     new IgeRect(
-        //         (viewArea.width * 0.5) - buffer,
-        //         (viewArea.height * 0.5) - buffer,
-        //         mapWidth - (viewArea.width * 0.5),
-        //         mapHeight - (viewArea.height * 0.5)
-        //     )
-        // );
-
     },
 
     initEngine: function () {
         var self = this;
 
-        // if (self.server == undefined) {
-        //     console.log("there are no servers for this game");
-        //     $('#play-game-button .content').addClass('bg-danger')
-        //     $('#play-game-button .content').html(
-        //         '<i class=\'fa fa-group pr-3\'></i>' +
-        //         '<div class"p-0">' +
-        //         '<div>' +
-        //         '<span>Connection Failed</span>' +
-        //         '</div>' +
-        //         '<div>' +
-        //         '<small style=\'font-size: 10px;\'>There are no servers for this game</small>' +
-        //         '</div>' +
-        //         '</div>');
-        //     $('#play-game-button').prop('disabled', false)
-        //     window.activatePlayGame = true;
-        //     return;
-        // }
-        // $('#server-list').val(self.server.id);
         var promise;
         if (self.server.gameId) {
             promise = new Promise(function (resolve, reject) {
@@ -513,8 +481,7 @@ var Client = IgeClass.extend({
             })
         }
         promise.then(function (game) {
-            // ige.menuUi.getServerPing(true);
-            var unitTypes = game.data.unitTypes;
+            
             var params = ige.client.getUrlVars();
 
             if (!game.data.isDeveloper) {
@@ -541,19 +508,15 @@ var Client = IgeClass.extend({
                 .then(() => {
                     ige.map.load(ige.game.data.map);
                 });
-            // ige.map.load(gameMap);
-            if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
+            
+                if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
                 $('#leaderboard').css({
                     top: '190px'
                 })
-                // $('#show-chat').css({
-                //     bottom: '200px'
-                // })
                 self.miniMapEnabled = true;
                 ige.miniMap.updateMiniMap();
             }
 
-            // ige.setFps(game.data.defaultData.frameRate)
             var engineTickFrameRate = 15
             if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
                 engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)) // keep fps range between 15 and 60
@@ -564,9 +527,6 @@ var Client = IgeClass.extend({
             ige.menuUi.toggleLeaderBoard();
 
             if (ige.game.data.isDeveloper) {
-
-                // refreshAttributeContainerenable debug logging on client if dev
-                // ige.debugEnabled(true);
 
                 var devDiv = $('#dev-console-table');
 
@@ -977,6 +937,7 @@ var Client = IgeClass.extend({
             }
         });
     },
+
     loadCSP: function () {
         this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
         // this.cspEnabled = true;
@@ -1000,6 +961,7 @@ var Client = IgeClass.extend({
         }
 
     },
+    
     defineNetworkEvents: function () {
         var self = this;
 

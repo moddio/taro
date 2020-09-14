@@ -180,13 +180,8 @@ var Player = IgeEntity.extend({
 				unit.renderMobileControl();
 				ige.client.selectedUnit = unit
 				ige.client.eventLog.push([ige._currentTime, 'my unit selected ' + unitId])
-				// console.trace()
-				//apply skin to unit if present
-				// if this is the ONLY unit that myPlayer has, then automatically focus on it
-
-				//disable tracking unit by default
-				// ige.client.vp1.camera.trackTranslate(unit, 15);
-				if (ige.env == 'local') {
+				
+				if (ige.env == 'local' && ige.client.cspEnabled) {
 					var graphics = new PIXI.Graphics();
 					graphics.lineStyle(2, 0x0000FF, 0.5);
 					graphics.beginFill(0xFF700B, 0.3);
@@ -530,8 +525,6 @@ var Player = IgeEntity.extend({
 							}
 
 							self.hideMenu();
-							self.playerJoinedConfirmation();
-
 							clearTimeout(window.errorLogTimer);
 						}
 					}
@@ -551,15 +544,6 @@ var Player = IgeEntity.extend({
 		else {
 			$('#message').attr("disabled", false);
 			$('#message').attr("placeholder", 'message');
-		}
-	},
-	playerJoinedConfirmation: function () {
-		window.playerJoined = true;
-		var gameId = ige.client.server && ige.client.server.gameId;
-
-		if (!gameId) {
-			console.error('gameId not available');
-			return;
 		}
 	},
 
