@@ -1,6 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Cabin');
+html {
+    -webkit-user-select: none;
+}
+body {
+    font-family: 'Cabin', 'arial', serif !important ;
+}
+
+@font-face {
+    font-family: 'arcade';
+    src: url('/assets/fonts/arcade.ttf');
+}
+
 .d-none-important {
     display: none !important;
 }
+.mt-10 {
+    margin-top: 10;
+}
+
+#tabs {
+    height: 35px;
+}
+
 #my-score-div {
     padding: 10px;
     font-size: 24px;
@@ -9,7 +30,7 @@
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
-    padding: 20px;
+    padding: 10px;
 }
 .item-shop-button {
     min-height: 100px;
