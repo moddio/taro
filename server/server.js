@@ -509,14 +509,14 @@ var Server = IgeClass.extend({
 								immediatelyDisconnected: 0,
 							};
 
-							ige.clusterClient.recordSocketConnections(copyCount);
+							ige.clusterClient && ige.clusterClient.recordSocketConnections(copyCount);
 						}, 900000);
 					}
 				});
 			})
 				.catch((err) => {
 					console.log('got error while loading game json', err);
-					ige.clusterClient.kill('got error while loading game json');
+					ige.clusterClient && ige.clusterClient.kill('got error while loading game json');
 				});
 		});
 	},

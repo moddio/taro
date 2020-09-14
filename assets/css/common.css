@@ -19,8 +19,8 @@
 }
 .backpack-ui {
     position: absolute;
-    bottom: 20;
-    right: 20;
+    bottom: 10;
+    right: 10;
     max-width: 250;
 }
 
@@ -120,4 +120,7 @@
     bottom: 10;
     left: 50%;
     transform: translateX(-50%);
+}
+.cursor-pointer {
+    cursor: pointer;
 }

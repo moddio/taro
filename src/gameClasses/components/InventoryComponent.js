@@ -109,6 +109,11 @@ var InventoryComponent = IgeEntity.extend({
 		var inventoryBtn = $('#open-inventory-button');	
 		if (show) {
 			inventoryBtn.show();
+			setTimeout(function(){
+				$('#backpack-wrapper').css({
+					bottom: $('#my-score-div').height() + 40
+				})
+			},1000);
 		}
 		else {
 			inventoryBtn.hide();
