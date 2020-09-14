@@ -619,8 +619,9 @@ var Server = IgeClass.extend({
 		}
 
 		// send a message to master cluster
-		if (ige.env != 'dev')
+		if (ige.env != 'dev' && process && process.send) {
 			process.send({ chat: "kill server called" });
+		}
 		// ige.clusterClient.disconnect();
 
 		ige.clusterClient && ige.clusterClient.kill(log)
