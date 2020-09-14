@@ -12,6 +12,8 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 ## Demo ##
 [Taro Town](http://taro.town)
 
+<img src="./assets/images/demo.png" width="390" alt="demo">
+
 ## What's included in the box
 - Box2D Physics
 - Netcode using UWS and LZ-string compression
@@ -50,7 +52,8 @@ Game client's user interface is rendered by [/src/index.ejs](https://github.com/
 Please visit https://www.modd.io/tutorials for more information
 
 ## We need your help!
-Netcode and performance optimizations are difficult problems to solve. While we have solved much of this already, we are always looking for more contributors to help us further optimize this game engine. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K)
 Taro is completely free and open source under MIT license.
+
+Netcode and performance optimizations are difficult problems to solve. While we have solved much of this already, we are always looking for more contributors to help us further optimize this game engine. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K)
 
 Before being open sourced in September 2020, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
