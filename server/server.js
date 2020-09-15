@@ -155,17 +155,20 @@ var Server = IgeClass.extend({
 		}
 		console.log('cluster.isMaster', cluster.isMaster)
 		if (cluster.isMaster) {
-			// ige.addComponent(ClusterServerComponent);
 			if (process.env.ENV === 'standalone') {
 				self.gameId = process.env.npm_config_game;
 				self.ip = '127.0.0.1';
 				self.startServer();
 				self.start();
 				self.startGame();
+			} else if (typeof ClusterServerComponent != 'undefined') {
+				ige.addComponent(ClusterServerComponent);
 			}
 		}
 		else {
-			// ige.addComponent(ClusterClientComponent) // backend component will retrieve "start" command from BE
+			if (typeof ClusterClientComponent != 'undefined') {
+				ige.addComponent(ClusterClientComponent) // backend component will retrieve "start" command from BE
+			}
 
 			// if production, then get ip first, and then start
 			if (['production', 'staging', 'standalone-remote'].includes(ige.env)) {
