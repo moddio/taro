@@ -45,7 +45,7 @@ var IgeInitPixi = IgeClass.extend({
 
         this.ticker = PIXI.Ticker.shared;
         this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
-        
+
         // this.ticker.autoStart = false;
         // this.ticker.stop();
         this.app.ticker.stop();
@@ -142,7 +142,6 @@ var IgeInitPixi = IgeClass.extend({
         this.viewport.addChild(this.world);
         this.app.stage.addChild(this.viewport);
         ige.pixi.resize();
-        this.viewport.moveCenter(ige.pixi.world.worldWidth / 2, ige.pixi.world.worldHeight / 2)
         // this.viewport.x = -();
         // this.viewport.y = -();
     },
@@ -169,7 +168,7 @@ var IgeInitPixi = IgeClass.extend({
             ige._renderFrames++;
         }
         // if (ige._renderFrames % 2) {
-            ige.pixi.app.render();
+        ige.pixi.app.render();
         // }
     },
     updateAllEntities: function (timeStamp) {
@@ -212,7 +211,7 @@ var IgeInitPixi = IgeClass.extend({
                     }
                 }
 
-                
+
                 // handle entity behaviour and transformation offsets
                 if (ige.gameLoopTickHasExecuted) {
 
@@ -254,7 +253,7 @@ var IgeInitPixi = IgeClass.extend({
                             }
                         }
                     }
-                    
+
                 }
 
                 // update transformation using incoming network stream
@@ -269,7 +268,7 @@ var IgeInitPixi = IgeClass.extend({
 
                     if (entity._category == 'item') {
                         var ownerUnit = entity.getOwnerUnit();
-                        if (ownerUnit) {                            
+                        if (ownerUnit) {
                             ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
                             if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
                                 rotate = ownerUnit._rotate.z;
@@ -277,13 +276,13 @@ var IgeInitPixi = IgeClass.extend({
 
                             // if (ownerUnit == ige.client.selectedUnit)
                             // console.log(entity._stats.name, entity.id(), ownerUnit._translate.x)
-                            
+
                             entity.anchoredOffset = entity.getAnchoredOffset(rotate);
                             if (entity.anchoredOffset) {
                                 rotate = entity.anchoredOffset.rotate;
                                 x = ownerUnit._translate.x + entity.anchoredOffset.x;
                                 y = ownerUnit._translate.y + entity.anchoredOffset.y;
-                            }                     
+                            }
                         }
                     }
 
@@ -293,9 +292,9 @@ var IgeInitPixi = IgeClass.extend({
                         y += entity.tween.offset.y;
                         rotate += entity.tween.offset.rotate;
                     }
-                    
+
                     entity.transformPixiEntity(x, y, rotate);
-                    
+
                     // handle animation
                     if (entity.pixianimation) {
                         if (entity.pixianimation.animating) {

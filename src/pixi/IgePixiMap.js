@@ -156,6 +156,7 @@ var IgePixiMap = IgeClass.extend({
             if (isHavingError && isHavingError.display) {
                 alert("Tilesheet '" + isHavingError.tileset + "' is having error in parsing. Log: " + isHavingError.error);
             }
+            ige.pixi.viewport.moveCenter(ige.pixi.world.width / 2, ige.pixi.world.height / 2)
             callback(layersByKey, layersById);
         });
     }
