@@ -9,7 +9,7 @@ var igeClientConfig = {
 		'/gameClasses/ClientScore.js',
 		'/gameClasses/MinimapUnit.js',
 		'/gameClasses/Region.js',
-		
+
 		'/gameClasses/Item.js',
 		'/gameClasses/Projectile.js',
 		'/gameClasses/Particle.js',
@@ -34,6 +34,7 @@ var igeClientConfig = {
 		'/gameClasses/components/ui/ScoreboardComponent.js',
 		'/gameClasses/components/ui/ItemUiComponent.js',
 		'/gameClasses/components/ui/AdComponent.js',
+		'/gameClasses/components/ui/DevConsoleComponent.js',
 		'/gameClasses/components/ui/MapEditorComponent.js',
 		'/gameClasses/components/ui/MapPanComponent.js',
 		'/gameClasses/components/ui/UnitUiComponent.js',
@@ -47,7 +48,7 @@ var igeClientConfig = {
 		'/gameClasses/components/script/ConditionComponent.js',
 		'/gameClasses/components/unit/AbilityComponent.js',
 		'/gameClasses/components/unit/AttributeComponent.js',
-		
+
 		'/gameClasses/Debris.js',
 
 		/* Standard game scripts */
