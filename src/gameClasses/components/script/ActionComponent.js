@@ -1994,6 +1994,7 @@ var ActionComponent = IgeEntity.extend({
                                         createdEntity = player.createUnit(_.cloneDeep(data));
                                     }
                                 }
+                                console.log(data, createdEntity);
 
                                 ige.game.lastCreatedUnitId = createdEntity._id;
 
