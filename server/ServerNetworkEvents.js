@@ -87,47 +87,6 @@ var ServerNetworkEvents = {
 		};
 
 		ige.server._onJoinGame(data, clientId);
-
-		// ige.httpComponent.checkSiteWideBanIp(ipAddress)
-		// 	.then((isIpRestricted) => {
-		// 		if (isIpRestricted) {
-		// 			removeAllConnectedPlayerWithSameIp();
-		// 			ige.network.send('clientDisconnect', { reason: 'IP Banned', clientId: clientId });
-		// 			if (socket) {
-		// 				socket.close(reason);
-		// 			}
-		// 			return;
-		// 		}
-
-		// 		if (ige.env != 'production') {
-		// 			ige.server._onJoinGame(data, clientId);
-		// 		} else {
-		// 			ige.rateLimiter.consume(ipAddress, 2)
-		// 			.then((res) => {
-		// 				try {
-		// 					// allow player to join the server
-		// 					ige.server._onJoinGame(data, clientId);
-		// 				}
-		// 				catch (e) { }
-		// 			})
-		// 			.catch((e) => {
-
-		// 				if (!ige.banIpsList.includes(ipAddress)) {
-		// 					ige.banIpsList.push(ipAddress);
-		// 				}
-
-		// 				removeAllConnectedPlayerWithSameIp();
-		// 				ige.network.send('clientDisconnect', { reason, clientId: clientId });
-		// 				if (socket) {
-		// 					socket.close(reason);
-		// 					return;
-		// 				}						
-		// 			});
-		// 		}
-		// 	})
-		// 	.catch((e) => {
-		// 		console.log('site wide IP ban http req', e)
-		// 	})
 	},
 
 	_onJoinGame: function (data, clientId) {

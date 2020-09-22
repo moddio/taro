@@ -209,7 +209,9 @@ var Client = IgeClass.extend({
             } else {
                 var params = self.getUrlVars()
                 self.serverFound = false;
-                // self.servers = self.getServersArray();
+                if(!window.isStandalone) {
+                    self.servers = self.getServersArray();
+                }
                 self.preSelectedServerId = params.serverId;
 
                 if (self.preSelectedServerId) {
