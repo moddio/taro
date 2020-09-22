@@ -2387,15 +2387,17 @@ var ActionComponent = IgeEntity.extend({
 
                     case 'loadPlayerDataAndApplyIt':
                         var player = ige.variable.getValue(action.player, vars);
-                        var unit = ige.variable.getValue(action.unit, vars);
-
                         if (player) {
                             if (player.persistedData) {
                                 player.loadPersistentData();
                                 console.log('player data loaded');
-                                if (unit) {
-                                    unit.loadPersistentData();
-                                    console.log('unit data loaded');
+                                
+                                if (action.unit) {
+                                    var unit = ige.variable.getValue(action.unit, vars);
+                                    if (unit) {
+                                        unit.loadPersistentData();
+                                        console.log('unit data loaded');
+                                    }
                                 }
                             }
                         }

@@ -11,6 +11,9 @@ var IgeNetIoServer = {
   start: function (data, callback) {
     var self = this;
 
+    this.artificialDelay = 0;
+    this.lagVariance = 0;
+    
     this._socketById = {};
     this._socketsByRoomId = {};
     this.clientIds = [];
@@ -28,9 +31,7 @@ var IgeNetIoServer = {
     this._io.on('connection', function () {
       self._onClientConnect.apply(self, arguments);
     });
-    this.artificialLagDelay = 0;
-    this.lagVariance = 0;
-
+    
     // Setup default commands
     this.define('_igeRequest', function () {
       self._onRequest.apply(self, arguments);
@@ -324,7 +325,7 @@ var IgeNetIoServer = {
                 [ci, data],
                 id === 'undefined' ? undefined : id,
               );
-            }, (Math.random() * self.lagVariance) + self.artificialLagDelay, self.sendQueue[clientId], clientId, ciEncoded);
+            }, (Math.random() * self.lagVariance) + self.artificialDelay, self.sendQueue[clientId], clientId, ciEncoded);
           } else {
             self._io.send(
               [ciEncoded, self.sendQueue[clientId]],
@@ -348,7 +349,7 @@ var IgeNetIoServer = {
         setTimeout(function(data, ci) {
           self._io.send([ci, data]);
           // console.log("sent!", counter)
-        }, (Math.random() * self.lagVariance) + self.artificialLagDelay, self.snapshot, ciEncoded);
+        }, (Math.random() * self.lagVariance) + self.artificialDelay, self.snapshot, ciEncoded);
       } else {
         self._io.send([ciEncoded, self.snapshot]);
       }
