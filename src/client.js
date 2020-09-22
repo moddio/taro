@@ -476,8 +476,15 @@ var Client = IgeClass.extend({
                     dataType: "json",
                     type: 'GET',
                     success: function (game) {
+                        var data = {data:{}};
                         game.defaultData = game;
-                        resolve({ data: { ...game, ...game.data } });
+                        for (let [key, value] of Object.entries(game)) {
+                            data[data][key] = value;
+                        }
+                        for (let [key, value] of Object.entries(game.data)) {
+                            data[data][key] = value;
+                        }
+                        resolve(data);
                     }
                 })
             })

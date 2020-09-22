@@ -150,7 +150,7 @@ var Server = IgeClass.extend({
 		//for debugging reasons
 		global.isServer = ige.isServer;
 
-		if(typeof HttpComponent != 'undefined') {
+		if (typeof HttpComponent != 'undefined') {
 			ige.addComponent(HttpComponent);
 		}
 		console.log('cluster.isMaster', cluster.isMaster)
@@ -245,7 +245,7 @@ var Server = IgeClass.extend({
 		const app = express();
 		const port = process.env.PORT || 2000;
 		this.port = 2001; //game started on
-		
+
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
@@ -258,7 +258,7 @@ var Server = IgeClass.extend({
 		app.use('/assets', express.static(path.resolve('./assets/')));
 
 		app.get('/', (req, res) => {
-			
+
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
 				title: global.standaloneGame.defaultData.title,
@@ -388,12 +388,21 @@ var Server = IgeClass.extend({
 					var game = fs.readFileSync(__dirname + '/../src/game.json');
 					game = JSON.parse(game);
 					game.defaultData = game;
-					resolve({ data: { ...game, ...game.data } });
+					var data = {
+						data: {}
+					}
+					for (let [key, value] of Object.entries(game)) {
+						data[data][key] = value;
+					}
+					for (let [key, value] of Object.entries(game.data)) {
+						data[data][key] = value;
+					}
+					resolve(data);
 				});
 			}
 			promise.then((game) => {
 				ige.addComponent(GameComponent)
-				
+
 				ige.game.data = game.data
 				global.standaloneGame = game.data;
 				var unitTypes = game.data.unitTypes;
