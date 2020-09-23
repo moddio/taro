@@ -74,36 +74,14 @@ var IgeTimeSyncExtension = {
 		}
 	},
 
-	/**
-	 * Converts a timestamp on the client to approx. time
-	 * on the server using the difference in client/server
-	 * clocks and the network latency between this client
-	 * and the server.
-	 * @param {Number} time The client timestamp (usually
-	 * the result of new Date().getTime() or
-	 * ige.currentTime()).
-	 */
-	timeToServerTime: function (time) {
-		if (time !== undefined) {
-			return time + this._latency;
-		}
-
-		return this._latency;
-	},
-
-
 	// speed up or slow down ige.timeScale depending on discrepancy between client & server's time.
 	timeSync: function (serverTime) {
 		
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
-		if (statsPanels.latency) {
-			statsPanels.latency._latencyPanel.update(this._latency, 1000);
-		}	
 		
-		ige._currentTime = Math.max(  // prevent clientTime from going back in time
-								serverTime - 100, // client shouldn't be delayed any longer than 100ms from the latest serverTime received.
-								Math.min(ige._currentTime, serverTime) // clientTime should not be greater than serverTime
-							)
+		if (statsPanels.latency) {
+			statsPanels.latency._latencyPanel.update(latency, 1000);
+		}	
 		$('#updateping').html(Math.floor(latency)); // round trip time
 	}
 };

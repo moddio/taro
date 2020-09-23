@@ -5189,23 +5189,7 @@ var IgeEntity = IgeObject.extend({
 		if (nextTransform) {
 			nextKeyFrame = [ige.nextSnapshot[0], nextTransform]
 		}
-
-		// if (this == ige.client.selectedUnit)
-		// 	console.log(prevTransform, nextTransform)
-
-		// if (this._category == 'item') {
-		// 	var ownerUnit = this.getOwnerUnit();
-		// 	if (ownerUnit && this._stats.currentBody &&
-		// 		(
-		// 			// (this._stats.currentBody.jointType == 'weldJoint' && this._stats.currentBody.type != 'dynamic') || // no need to use streamData for weldjoint items
-		// 			(this._stats.currentBody.jointType == 'weldJoint') || // no need to use streamData for weldjoint items
-		// 			ownerUnit == ige.client.selectedUnit // don't use streamData for my own unit's sprite-only item
-		// 		)
-		// 	) {
-		// 		return;
-		// 	}
-		// }
-		
+				
 		// if unit is moved/teleported immedialy after creation, it does not have prevKeyFrame set, so we just use given (next) keyframe
 		if (prevKeyFrame == undefined && nextKeyFrame && nextKeyFrame[1] != undefined) {
 			x = nextKeyFrame[1][0];
@@ -5216,15 +5200,15 @@ var IgeEntity = IgeObject.extend({
 			x = this.interpolateValue(prevKeyFrame[1][0], nextKeyFrame[1][0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			y = this.interpolateValue(prevKeyFrame[1][1], nextKeyFrame[1][1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-			// if (this == ige.client.selectedUnit) {
-			// 	let distanceTraveled = x - this.previousX
-			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
-			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(0) + ')', nextTransform[0],
-			// 		'time', ige.prevSnapshot[0], ige.renderTime, '(' + timeElapsed + ')', ige.nextSnapshot[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-			// 		)
-			// 	this.previousX = x;
-			// 	this.previousRenderTime = ige.renderTime;
-			// }
+			if (this == ige.client.selectedUnit) {
+				let distanceTraveled = x - this.previousX
+				let timeElapsed = ige.renderTime-this.previousRenderTime
+				console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(0) + ')', nextTransform[0],
+					'time', ige.prevSnapshot[0], ige.renderTime, '(' + timeElapsed + ')', ige.nextSnapshot[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+					)
+				this.previousX = x;
+				this.previousRenderTime = ige.renderTime;
+			}
 
 			// a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
 			var startValue = prevKeyFrame[1][2],
@@ -5276,8 +5260,9 @@ var IgeEntity = IgeObject.extend({
 			}
 		}
 
+		// interpolate  projectiles that are rendered on client-side only (created via using item)
 		if (this.prevPhysicsFrame && this.nextPhysicsFrame) {
-			// interpolate  projectiles that are rendered on client-side only (created via using item)
+			
 			x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
 			y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 			

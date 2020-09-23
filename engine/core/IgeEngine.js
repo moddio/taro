@@ -155,7 +155,7 @@ var IgeEngine = IgeEntity.extend({
 		this.prevSnapshot = [0, {}];
 		this.nextSnapshot = [0, {}];
 		this.renderTime = 0;
-		this._renderLatency = 80;
+		
 		this.remainderFromLastStep = 0;
 	},
 
@@ -1986,20 +1986,9 @@ var IgeEngine = IgeEntity.extend({
 				ige.trigger.fire("frameTick");
 			} 
 			else if (ige.isClient) {
-				// ige.renderTime = ige._tickStart
-			ige.renderTime = ige._tickStart - ige._renderLatency
-				// console.log("frameTick " + self._tickStart, self.lastTick, self._tickDelta + "ms")
-
+			ige.renderTime = ige._tickStart
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
-				}
-
-				// check if next snapshot is due
-				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige.renderTime) {
-					
-					var snapshot = ige.snapshots.shift();
-					ige.prevSnapshot = ige.nextSnapshot;
-					ige.nextSnapshot = snapshot;
 				}
 
 				return;
