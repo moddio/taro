@@ -481,7 +481,7 @@ var IgeNetIoClient = {
 		var commandName = this._networkCommandsIndex[ciDecoded]
 		// console.log("name = " + commandName, data);
 
-		if (commandName === '_alexBatch') {
+		if (commandName === '_snapshot') {
 			var snapshot = _.cloneDeep(data)[1];
 			var snapshotTimeStamp = snapshot[snapshot.length - 1][1];
 

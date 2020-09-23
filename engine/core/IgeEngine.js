@@ -1995,24 +1995,13 @@ var IgeEngine = IgeEntity.extend({
 				}
 
 				// check if next snapshot is due
-				// console.log(ige.snapshots.length, ige.nextSnapshot[0], ige.renderTime)
 				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige.renderTime) {
 					
 					var snapshot = ige.snapshots.shift();
-					// for (entityId in snapshot[1]) {
-					// 	console.log(ige.$(entityId)._category, snapshot[1][entityId])
-					// }
-					// var entityTranslate = snapshot[1][ige.client.selectedUnit.id()]
-					// console.log(ige.renderTime, snapshot[0], "("+(snapshot[0] - ige.lastSnapshotTime)+")", entityTranslate[0], "(" + (entityTranslate[0] - ige.lastX) + ")", entityTranslate[1], entityTranslate[2])
-					// ige.lastX = entityTranslate[0]
-					// ige.lastSnapshotTime = snapshot[0]
-
 					ige.prevSnapshot = ige.nextSnapshot;
 					ige.nextSnapshot = snapshot;
 				}
 
-				// console.log('timeElapsed', Date.now() - this.lastTime)
-				// this.lastTime = Date.now()
 				return;
 			}
 			
