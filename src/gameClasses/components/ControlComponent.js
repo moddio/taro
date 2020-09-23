@@ -252,7 +252,9 @@ var ControlComponent = IgeEntity.extend({
 					break;
 
 				case 'button1':
-					unit.ability.stopUsingItem();
+					if (unit.ability != undefined) {
+						unit.ability.stopUsingItem();
+					}					
 					break;
 			}
 
