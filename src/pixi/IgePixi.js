@@ -8,8 +8,9 @@ var IgeInitPixi = IgeClass.extend({
 
         ige.addComponent(IgeInputComponent);
         ige.addComponent(IgePixiTexture);
-
+        var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
         PIXI.ticker.maxFPS = 60;
+
         this.app = new PIXI.Application({
             width: 800,// default: 800
             height: 600, // default: 600
@@ -17,6 +18,7 @@ var IgeInitPixi = IgeClass.extend({
             transparent: false, // default: false
             resolution: 1,   // default: 1,
             autoResize: true,
+            forceCanvas: forceCanvas[gameId] || false,
             // backgroundColor: 0xff00cc,
         });
         this.app.ticker.maxFPS = 60;
