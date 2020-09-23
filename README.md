@@ -51,9 +51,12 @@ Game client's user interface is rendered by [/src/index.ejs](https://github.com/
 ## How to make games on modd.io
 Please visit https://www.modd.io/tutorials for more information
 
-## We need your help!
+## We need contributors! Also, we are hiring
 Taro is completely free and open source under MIT license.
 
 Netcode and performance optimizations are difficult problems to solve. While we have solved much of this already, we are always looking for more contributors to help us further optimize this game engine. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K)
+
+If you find yourself enjoying making contributions, let's talk about working together.
+
 
 Before being open sourced in September 2020, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
