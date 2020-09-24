@@ -1986,7 +1986,7 @@ var IgeEngine = IgeEntity.extend({
 				ige.trigger.fire("frameTick");
 			} 
 			else if (ige.isClient) {
-			ige.renderTime = ige._tickStart
+				ige.renderTime = ige._tickStart
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
 				}
