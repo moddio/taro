@@ -4805,29 +4805,6 @@ var IgeEntity = IgeObject.extend({
 				}
 			}
 
-			// Grab an array of connected clients from the network
-			// system
-			// var recipientArr = [],
-			// 	clientArr = ige.network.clients(this._streamRoomId),
-			// 	i;
-
-			// for (i in clientArr) {
-			// 	if (clientArr.hasOwnProperty(i)) {
-			// 		// is this client supposed to receive this stream?
-			// 		if (this._streamControl) {
-			// 			// Call the callback method and if it returns true,
-			// 			// send the stream data to this client
-			// 			if (this._streamControl.apply(this, [i, this._streamRoomId])) {
-			// 				recipientArr.push(i);
-			// 			}
-			// 		} else {
-			// 			// No control method so process for this client
-			// 			recipientArr.push(i);
-			// 		}
-			// 	}
-			// }
-			// this._streamSync(recipientArr);
-
 			this._streamSync();
 			return this;
 		}
@@ -4881,37 +4858,8 @@ var IgeEntity = IgeObject.extend({
 		if (data && recipientArr.length && this._streamMode === 1 && this._hasMoved) {
 			ige.server.bandwidthUsage[this._category] += data.length;
 			ige.network.stream.queue(thisId, data, recipientArr);
-
-			// debug actual speed of the unit on server-side
-			// if (this._category == 'unit') {
-			// 	console.log(ige._currentTime, this._translate.x, (this._translate.x - this._lastX) / (ige._currentTime / this._lastTime));
-			// 	this._lastTime = ige._currentTime;
-			// 	this._lastX = this._translate.x;
-			// }
 		}
 	},
-
-    /**
-     * Forces the stream to push this entity's full stream data on the
-     * next stream sync regardless of what clients have received in the
-     * past. This should only be used when required rather than every
-     * tick as it will reduce the overall efficiency of the stream if
-     * used every tick.
-     * @returns {*}
-     */
-	// streamForceUpdate: function () {
-	// 	if (ige.isServer) {
-	// 		var thisId = this.id();
-
-	// 		// Invalidate the stream client data lookup to ensure
-	// 		// the latest data will be pushed on the next stream sync
-	// 		if (ige.network && ige.network.stream && ige.network.stream._streamClientData && ige.network.stream._streamClientData[thisId]) {
-	// 			ige.network.stream._streamClientData[thisId] = {};
-	// 		}
-	// 	}
-
-	// 	return this;
-	// },
 
     /**
      * Issues a create entity command to the passed client id
@@ -4936,17 +4884,11 @@ var IgeEntity = IgeObject.extend({
 				arr,
 				i;
 
-			var streamCreateData = this.streamCreateData(clientId);
 			// Send the client an entity create command first
-
+			var streamCreateData = this.streamCreateData(clientId);
 			this.streamSectionData('transform'); // prepare this._streamSectionData
-
-			ige.network.send('_igeStreamCreate', [this.classId(), thisId, this._parent.id(), this._streamSectionData, streamCreateData], clientId);
-			// ige.network.send('_igeStreamCreate', [this.classId(), thisId, this._parent.id(), this._streamSectionData, streamCreateData], undefined);
-			// ige.network.send();
-
+			ige.network.send('_igeStreamCreate', [this.classId(), thisId, this._parent.id(), this._streamSectionData, streamCreateData], clientId);			
 			ige.server.bandwidthUsage[this._category] += JSON.stringify(streamCreateData).length;
-
 			ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
 
 			if (clientId) {
@@ -4986,8 +4928,6 @@ var IgeEntity = IgeObject.extend({
      * @return {Boolean}
      */
 	streamDestroy: function (clientId) {
-		// IgeEntity.prototype.log("streamDestroy")
-
 		var thisId = this.id(),
 			arr,
 			i;
@@ -5070,10 +5010,6 @@ var IgeEntity = IgeObject.extend({
 					// on receipt of the data string on the client
 					// // sectionDataString += ige.network.stream._sectionDesignator;
 
-					// Check if we were returned any data
-					// Add the data to the section string
-					// // sectionDataString += sectionData;
-
 					// Add any custom data to the stream string at this point
 
 					streamData = this.encodedStreamData();
@@ -5094,29 +5030,6 @@ var IgeEntity = IgeObject.extend({
 
 	encodedStreamData: function () {
 		var data = this.id();
-
-		// this._streamSectionData.forEach((item) => {
-		// 	var paddedItem = item;
-		// 	var isNegative = item[0] === '-';
-		// 	var requiredFixedLength = 4;
-
-		// 	if (isNegative) {
-		// 		// excluding -ve sign that we'll add later
-		// 		paddedItem = item.substr(1);
-		// 		requiredFixedLength = 3;
-		// 	}
-
-		// 	while (paddedItem.length < requiredFixedLength) {
-		// 		paddedItem = "0" + paddedItem;
-		// 	}
-
-		// 	if (isNegative) {
-		// 		paddedItem = '-' + paddedItem;
-		// 	}
-
-		// 	data += paddedItem;
-		// });
-
 		return [data].concat(this._streamSectionData).join('&');
 	},
 
@@ -5140,10 +5053,6 @@ var IgeEntity = IgeObject.extend({
 			dataDelta = endTime - startTime,
 			offsetDelta = currentTime - startTime,
 			deltaTime = offsetDelta / dataDelta;
-		// Clamp the current time from 0
-		if (deltaTime < 0) {
-			deltaTime = 0;
-		}
 
 		return totalValue * deltaTime + startValue;
 	},
@@ -5189,38 +5098,26 @@ var IgeEntity = IgeObject.extend({
 		if (nextTransform) {
 			nextKeyFrame = [ige.nextSnapshot[0], nextTransform]
 		}
-
-		// if (this == ige.client.selectedUnit)
-		// 	console.log(prevTransform, nextTransform)
-
-		// if (this._category == 'item') {
-		// 	var ownerUnit = this.getOwnerUnit();
-		// 	if (ownerUnit && this._stats.currentBody &&
-		// 		(
-		// 			// (this._stats.currentBody.jointType == 'weldJoint' && this._stats.currentBody.type != 'dynamic') || // no need to use streamData for weldjoint items
-		// 			(this._stats.currentBody.jointType == 'weldJoint') || // no need to use streamData for weldjoint items
-		// 			ownerUnit == ige.client.selectedUnit // don't use streamData for my own unit's sprite-only item
-		// 		)
-		// 	) {
-		// 		return;
-		// 	}
-		// }
-		
+				
 		// if unit is moved/teleported immedialy after creation, it does not have prevKeyFrame set, so we just use given (next) keyframe
 		if (prevKeyFrame == undefined && nextKeyFrame && nextKeyFrame[1] != undefined) {
 			x = nextKeyFrame[1][0];
 			y = nextKeyFrame[1][1];
 			rotate = nextKeyFrame[1][2];
 		}
-		else if (prevKeyFrame != undefined && nextKeyFrame && nextKeyFrame[1] != undefined && ige.renderTime < nextKeyFrame[0]) {
-			x = this.interpolateValue(prevKeyFrame[1][0], nextKeyFrame[1][0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
-			y = this.interpolateValue(prevKeyFrame[1][1], nextKeyFrame[1][1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+		else if (prevKeyFrame != undefined && nextKeyFrame && nextTransform != undefined && ige.renderTime < nextKeyFrame[0]) {
+			newX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+			newY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+
+			// apply rubberbanding for extra smoothness
+			x += (newX - x)/3 
+			y += (newY - y)/3
 
 			// if (this == ige.client.selectedUnit) {
 			// 	let distanceTraveled = x - this.previousX
 			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
-			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(0) + ')', nextTransform[0],
-			// 		'time', ige.prevSnapshot[0], ige.renderTime, '(' + timeElapsed + ')', ige.nextSnapshot[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+			// 		'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + ')', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
 			// 		)
 			// 	this.previousX = x;
 			// 	this.previousRenderTime = ige.renderTime;
@@ -5259,8 +5156,7 @@ var IgeEntity = IgeObject.extend({
 				for (var i = 0; i < this.movementHistory.length-3; i++) {
 					var prevMovement = this.movementHistory[i+1]
 					var nextMovement = this.movementHistory[i+2];
-					// console.log(snapshotTime, prevMovement[0], nextMovement[0])
-					if (prevMovement && nextMovement && prevMovement[0] < snapshotTime && snapshotTime < nextMovement[0]) {
+						if (prevMovement && nextMovement && prevMovement[0] < snapshotTime && snapshotTime < nextMovement[0]) {
 						var historyX = this.interpolateValue(prevMovement[1][0], nextMovement[1][0], prevMovement[0], snapshotTime, nextMovement[0]);
 						var historyY = this.interpolateValue(prevMovement[1][1], nextMovement[1][1], prevMovement[0], snapshotTime, nextMovement[0]);
 						var historyRotate = this.interpolateValue(prevMovement[1][2], nextMovement[1][2], prevMovement[0], snapshotTime, nextMovement[0]);
@@ -5276,24 +5172,23 @@ var IgeEntity = IgeObject.extend({
 			}
 		}
 
-		if (this.prevPhysicsFrame && this.nextPhysicsFrame) {
-			// interpolate  projectiles that are rendered on client-side only (created via using item)
+		// interpolate entities with physics body if:
+		// 1. we're using cspMovement (experimental) for my own unit
+		// 2. item-fired projectiles
+		if (
+			(
+				(ige.client.cspEnabled && ige.client.selectedUnit == this) ||
+				(this._category == 'projectile' && this._stats.sourceItemId != undefined)
+			) &&
+			this.prevPhysicsFrame && this.nextPhysicsFrame
+		) {
+			
 			x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
 			y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 			
 			if (this == ige.client.selectedUnit) {
 				rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
-			}			
-			
-			// console.log("x", Math.floor(this.prevKeyFrame[1][0]), Math.floor(x), "(", Math.floor(x - this.prevKeyFrame[1][0]), ")", Math.floor(this.nextPhysicsFrame[1][0]),
-			// 	"time", this.prevKeyFrame[0], ige.now, "(", ige.now-this.prevKeyFrame[0], ")", this.nextPhysicsFrame[0]);
-			// apply rubber banding on units for extra smoothness
-			// x += (this.nextPhysicsFrame[0] - x) / 3
-			// y += (this.nextPhysicsFrame[1] - y) / 3
-			// rotate = this.nextPhysicsFrame[2];
-
-			// x = this.nextPhysicsFrame[0]
-			// y = this.nextPhysicsFrame[1]
+			}		
 		}
 		
 		// instantly rotate unit to mouse cursor
@@ -5312,14 +5207,7 @@ var IgeEntity = IgeObject.extend({
 					}
 				}
 			}
-		}
-	
-		// this.targetTransform = [x, y, rotate]
-		// rotate = this._rotate.z + (this._rotate.z - rotate) / 2
-		// if (this.targetTransform) {
-		// 	x = this._translate.x + (this.targetTransform[0] - this._translate.x) / 3
-		// 	y = this._translate.y + (this.targetTransform[1] - this._translate.y) / 3		
-		// }
+		}	
 		
 		this.rotateTo(0, 0, rotate);
 		this.translateTo(x, y, 0);

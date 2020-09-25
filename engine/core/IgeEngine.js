@@ -153,9 +153,10 @@ var IgeEngine = IgeEntity.extend({
 		this.snapshots = [];
 		this.entityCreateSnapshot = {};
 		this.prevSnapshot = [0, {}];
+		this.tempSnapshot = [0, {}];
 		this.nextSnapshot = [0, {}];
 		this.renderTime = 0;
-		this._renderLatency = 80;
+		
 		this.remainderFromLastStep = 0;
 	},
 
@@ -1986,33 +1987,11 @@ var IgeEngine = IgeEntity.extend({
 				ige.trigger.fire("frameTick");
 			} 
 			else if (ige.isClient) {
-				// ige.renderTime = ige._tickStart
-			ige.renderTime = ige._tickStart - ige._renderLatency
-				// console.log("frameTick " + self._tickStart, self.lastTick, self._tickDelta + "ms")
-
+				ige.renderTime = ige._tickStart
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
 				}
 
-				// check if next snapshot is due
-				// console.log(ige.snapshots.length, ige.nextSnapshot[0], ige.renderTime)
-				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige.renderTime) {
-					
-					var snapshot = ige.snapshots.shift();
-					// for (entityId in snapshot[1]) {
-					// 	console.log(ige.$(entityId)._category, snapshot[1][entityId])
-					// }
-					// var entityTranslate = snapshot[1][ige.client.selectedUnit.id()]
-					// console.log(ige.renderTime, snapshot[0], "("+(snapshot[0] - ige.lastSnapshotTime)+")", entityTranslate[0], "(" + (entityTranslate[0] - ige.lastX) + ")", entityTranslate[1], entityTranslate[2])
-					// ige.lastX = entityTranslate[0]
-					// ige.lastSnapshotTime = snapshot[0]
-
-					ige.prevSnapshot = ige.nextSnapshot;
-					ige.nextSnapshot = snapshot;
-				}
-
-				// console.log('timeElapsed', Date.now() - this.lastTime)
-				// this.lastTime = Date.now()
 				return;
 			}
 			

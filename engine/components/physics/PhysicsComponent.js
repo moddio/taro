@@ -621,10 +621,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
 							}
-							// is dynamic (we don't transform static bodies)
-							else if (ige.isClient) {
-								entity.prevPhysicsFrame = entity.nextPhysicsFrame
-								if (ige.client.selectedUnit == entity && ige.client.cspEnabled) {
+							else if (ige.isClient) { // is dynamic (we don't transform static bodies)
+								// predict my unit's movement if cspEnabled == true
+								if (ige.client.cspEnabled && ige.client.selectedUnit == entity) {
 									// record current movement to compare with server-streamed data and reconciliate
 									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
 									if (entity.movementHistory.length > 20) {
@@ -650,8 +649,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 										entity._debugEntity.rotation = angle;
 										entity._debugEntity.pivot.set(entity._debugEntity.width / 2, entity._debugEntity.height / 2);
 									}									
+									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime, [x, y, angle]];															
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
+									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime, [x, y, angle]];
 								} else {
 									// all streamed entities are rigidly positioned

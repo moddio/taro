@@ -74,88 +74,15 @@ var IgeTimeSyncExtension = {
 		}
 	},
 
-	/**
-	 * Converts a timestamp on the client to approx. time
-	 * on the server using the difference in client/server
-	 * clocks and the network latency between this client
-	 * and the server.
-	 * @param {Number} time The client timestamp (usually
-	 * the result of new Date().getTime() or
-	 * ige.currentTime()).
-	 */
-	timeToServerTime: function (time) {
-		if (time !== undefined) {
-			return time + this._latency;
-		}
-
-		return this._latency;
-	},
-
-
 	// speed up or slow down ige.timeScale depending on discrepancy between client & server's time.
 	timeSync: function (serverTime) {
 		
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
+		
 		if (statsPanels.latency) {
-			statsPanels.latency._latencyPanel.update(this._latency, 1000);
-		}
-		// this.rttSamples.push(latency)
-		// var serverTimeElapsed = serverTime - this.lastServerTime;
-		// var clientTimeElapsed = ige._currentTime - this.lastClientTime
-		// this.totalServerTimeElapsed.push(serverTimeElapsed)
-		// this.totalClientTimeElapsed.push(clientTimeElapsed)
-		
-		// ige._currentTime = Math.max(ige._currentTime, serverTime) // make sure clientTime isn't going back in time
-
-		// collect 5 RTT first, and use the average value to compute client's currentTime
-		// while (this.rttSamples.length >= 5) {
-		// 	this.rttSamples.shift()
-		// }
-
-		// while (this.totalClientTimeElapsed.length >= 5) {
-		// 	this.totalClientTimeElapsed.shift()
-		// }
-
-		// while (this.totalServerTimeElapsed.length >= 5) {
-		// 	this.totalServerTimeElapsed.shift()
-		// }
-
-		// var totalRTT = this.rttSamples.reduce((previous, current) => current += previous);
-		
-		// if (this.totalClientTimeElapsed.length >= 4) {
-		// 	var avgServerTimeElapsed = this.totalServerTimeElapsed.reduce((previous, current) => current += previous);
-		// 	var avgClientTimeElapsed = this.totalClientTimeElapsed.reduce((previous, current) => current += previous);
-		// 	var timeScale = avgServerTimeElapsed / avgClientTimeElapsed					
-		// 	ige._timeScale = (ige._timeScale * 3/4) + (timeScale * 1/4) // average out timescale
-		// }
-		
-		ige._currentTime = Math.max(serverTime - 100, Math.min(ige._currentTime, serverTime)) // time shouldn't go backwards
+			statsPanels.latency._latencyPanel.update(latency, 1000);
+		}	
 		$('#updateping').html(Math.floor(latency)); // round trip time
-
-		// if (ige._currentTime < serverTime - 200 || serverTime + 200 < ige._currentTime) {
-		// 	// if difference is too high, immediately sync the time
-		// 	ige._currentTime = Math.max(ige._currentTime, serverTime) // time shouldn't go backwards
-		// 	ige._timeScale = 1
-		// 	this.totalServerTimeElapsed = []
-		// 	this.totalClientTimeElapsed = []
-		// } else {
-			
-		// 	this._latency = totalRTT / this.rttSamples.length;
-		// 	$('#updateping').html(Math.floor(this._latency)); // round trip time
-		// 	// if time difference between client & server is greater than 500ms, instantly sync the times
-		
-		// 	// var timePassedSinceTick = Date.now() - ige._timeScaleLastTimestamp;
-		// 	var diff = (serverTime - ige._currentTime) / 5
-		// 	adj = Math.max(-25, Math.min(25, diff)) // keep the adj within -10, 10 range
-		// 	// console.log("currentTime", this._latency/2, ige._currentTime, "serverTime", serverTime, "adj", adj, "timePassedSinceTick", timePassedSinceTick)
-		// 	ige._currentTime = Math.max(ige._currentTime, ige._currentTime + adj); // update currentTime based on serverTime with RTT considered.
-		// 	// ige._timeScale = ige._timeScale * (1 + adj);
-		// }
-
-		// this.lastServerTime = serverTime
-		// this.lastClientTime = ige._currentTime
-					
-		// ige._timeScaleLastTimestamp = Date.now(); // without this, when returning from a different tab, _currentTime will increment by [time spent away from game tab] x 2
 	}
 };
 
