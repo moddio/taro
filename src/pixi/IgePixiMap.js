@@ -131,8 +131,11 @@ var IgePixiMap = IgeClass.extend({
                     var renderTexture = ige.pixi.app.renderer.generateTexture(layerGroup);
                     var error = ige.pixi.app.renderer.gl && ige.pixi.app.renderer.gl.getError();
                     if (error > 0 && ige.lastError != error && typeof Rollbar !== 'undefined') {
+                        var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
+                        forceCanvas[gameId] = true;
+                        localStorage.setItem('forceCanvas', JSON.stringify(forceCanvas));
+                        location.reload();
                         ige.lastError = error;
-                        Rollbar.critical("WebGl Error code " + error);
                     }
                     renderTexture.tileMap = true;
                     layerGroup = new PIXI.Sprite(renderTexture);
