@@ -388,14 +388,12 @@ var Server = IgeClass.extend({
 					var game = fs.readFileSync(__dirname + '/../src/game.json');
 					game = JSON.parse(game);
 					game.defaultData = game;
-					var data = {
-						data: {}
-					}
+					var data = {data:{}};
 					for (let [key, value] of Object.entries(game)) {
-						data[data][key] = value;
+						data['data'][key] = value;
 					}
 					for (let [key, value] of Object.entries(game.data)) {
-						data[data][key] = value;
+						data['data'][key] = value;
 					}
 					resolve(data);
 				});

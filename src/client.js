@@ -479,10 +479,10 @@ var Client = IgeClass.extend({
                         var data = {data:{}};
                         game.defaultData = game;
                         for (let [key, value] of Object.entries(game)) {
-                            data[data][key] = value;
+                            data['data'][key] = value;
                         }
                         for (let [key, value] of Object.entries(game.data)) {
-                            data[data][key] = value;
+                            data['data'][key] = value;
                         }
                         resolve(data);
                     }
