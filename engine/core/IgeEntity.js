@@ -5106,18 +5106,22 @@ var IgeEntity = IgeObject.extend({
 			rotate = nextKeyFrame[1][2];
 		}
 		else if (prevKeyFrame != undefined && nextKeyFrame && nextTransform != undefined && ige.renderTime < nextKeyFrame[0]) {
-			x = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
-			y = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+			newX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+			newY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-			if (this == ige.client.selectedUnit) {
-				let distanceTraveled = x - this.previousX
-				let timeElapsed = ige.renderTime-this.previousRenderTime
-				console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(0) + ')', nextTransform[0],
-					'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + ')', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-					)
-				this.previousX = x;
-				this.previousRenderTime = ige.renderTime;
-			}
+			// apply rubberbanding for extra smoothness
+			x += (newX - x)/3 
+			y += (newY - y)/3
+
+			// if (this == ige.client.selectedUnit) {
+			// 	let distanceTraveled = x - this.previousX
+			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
+			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+			// 		'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + ')', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 		)
+			// 	this.previousX = x;
+			// 	this.previousRenderTime = ige.renderTime;
+			// }
 
 			// a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
 			var startValue = prevKeyFrame[1][2],
@@ -5168,8 +5172,16 @@ var IgeEntity = IgeObject.extend({
 			}
 		}
 
-		// interpolate  projectiles that are rendered on client-side only (created via using item)
-		if (this.prevPhysicsFrame && this.nextPhysicsFrame) {
+		// interpolate entities with physics body if:
+		// 1. we're using cspMovement (experimental) for my own unit
+		// 2. item-fired projectiles
+		if (
+			(
+				(ige.client.cspEnabled && ige.client.selectedUnit == this) ||
+				(this._category == 'projectile' && this._stats.sourceItemId != undefined)
+			) &&
+			this.prevPhysicsFrame && this.nextPhysicsFrame
+		) {
 			
 			x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
 			y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
