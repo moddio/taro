@@ -10,9 +10,7 @@ It can support up to 64 concurrent players hosted on a $5/month VM while running
 Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
 
 ## Demo ##
-[Taro Town](http://taro.town)
-
-<img src="./assets/images/demo.png" width="390" alt="demo">
+[<img src="./assets/images/demo.png" width="390" alt="demo">](http://taro.town)
 
 ## What's included in the box
 - Box2D Physics
