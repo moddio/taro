@@ -43,8 +43,8 @@ var IgeNetIoServer = {
       self._onTimeSync.apply(self, arguments);
     });
 
-    this.define('_alexBatch', function () {
-      self._alexBatch(self, arguments);
+    this.define('_snapshot', function () {
+      self._snapshot(self, arguments);
     });
 
     // Start network sync
@@ -311,7 +311,7 @@ var IgeNetIoServer = {
     //console.log('SNAPSHOT CONTAINS', this.snapshot)
     var self = this;
 
-    var commandIndex = this._networkCommandsLookup['_alexBatch'],
+    var commandIndex = this._networkCommandsLookup['_snapshot'],
       ciEncoded = String.fromCharCode(commandIndex);
 
     if (commandIndex !== undefined) {
@@ -356,7 +356,7 @@ var IgeNetIoServer = {
       ige.server.lastSnapshot = self.snapshot;      
       this.snapshot = [];
     } else {
-      this.log('_alexBatch error @ flush');
+      this.log('_snapshot error @ flush');
     }
   },
 

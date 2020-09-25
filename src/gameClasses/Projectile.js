@@ -29,8 +29,6 @@ var Projectile = IgeEntityBox2d.extend({
 			delete self._stats.variables;
 		}
 
-		console.log(self.variables)
-
 		// set projectile state to default
 		if (!self._stats.stateId) {
 			for (var stateKey in self._stats.states) {

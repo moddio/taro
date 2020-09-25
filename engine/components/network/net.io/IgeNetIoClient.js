@@ -481,13 +481,11 @@ var IgeNetIoClient = {
 		var commandName = this._networkCommandsIndex[ciDecoded]
 		// console.log("name = " + commandName, data);
 
-		if (commandName === '_alexBatch') {
+		if (commandName === '_snapshot') {
 			var snapshot = _.cloneDeep(data)[1];
 			var snapshotTimeStamp = snapshot[snapshot.length - 1][1];
 
 			// see how far apart the newly received snapshot is from currentTime
-			// console.log(snapshotTimeStamp - ige._currentTime)
-
 			if (snapshot.length) {
 				var obj = {};
 				for (var i = 0; i < snapshot.length; i++) {
@@ -497,7 +495,6 @@ var IgeNetIoClient = {
 
 					if (commandName === '_igeStreamData') {
 						var entityData = snapshot[i].slice(1).split('&');
-						// console.log(entityData)
 						var entityId = entityData[0];
 						entityData.splice(0, 1); // removing entityId
 
@@ -507,57 +504,27 @@ var IgeNetIoClient = {
 							parseInt(entityData[2], 16) / 1000,
 						];
 
-						// entityData[2] = entityData[2] / 1000; // converting rotation
 						obj[entityId] = entityData;
-						// var entity = ige.$(entityId);
-						// if (entity) {
-						// 	entity.targetTransform = entityData;
-						// }
-						// console.log(entityData)
 					}
 					else {
 						this._networkCommands[commandName](entityData)
 					}
 				}
+
 				if (Object.keys(obj).length) {
-					var i = ige.snapshots.length;
-					// insert snapshot in a correct incremental order
-					while (i > 0 && ige.snapshots[i - 1] != undefined && ige.snapshots[i - 1][0] > snapshotTimeStamp) {
-						i--;
+					if (snapshotTimeStamp > ige.nextSnapshot[0]) {
+						// currentTime should be between tempSnapshot's time and nextSnapshot's time
+						ige._currentTime = Math.min(  
+							Math.max(ige._currentTime, ige.tempSnapshot[0]), // prevent currentTime from going too far back in time
+							snapshotTimeStamp // currentTime shouldn't be greater than nextSnapshot's time
+						)
+						
+						ige.prevSnapshot = ige.tempSnapshot;
+						ige.tempSnapshot = ige.nextSnapshot
+						ige.nextSnapshot = [snapshotTimeStamp, obj]
 					}
-					ige.snapshots.splice(i, 0, [snapshotTimeStamp, obj]);
 				}
 			}
-
-			// interpolation using snapshot which result in not using onStreamData
-
-			// for (var i = 0; i < data[1].length; i++) {
-			// 	var temp = data[1][i]
-			// 	// in order to save space while serializing the snapshot data we are now sending
-			// 	// transform updates in string format "=<id><x><y><rot>" so handle that format
-			// 	// on client by converting it into ["=", <id><x><y><rot>] which default format
-			// 	// used for other commands
-			// 	if (typeof temp === 'string') {
-			// 		temp = [
-			// 			temp[0],
-			// 			temp.substr(1),
-			// 		];
-			// 	}
-
-			// 	var ciDecoded = temp[0].charCodeAt(0)
-			// 	var commandName = this._networkCommandsIndex[ciDecoded]
-			// 	if (this._networkCommands[commandName]) {
-			// 		if (this.debug()) {
-			// 			console.log('Received #BATCHED "' + commandName + '" (index ' + ciDecoded + ') with data:', temp[1]);
-			// 			this._debugCounter++;
-			// 		}
-
-			// 		this._networkCommands[commandName](temp[1]);
-			// 	}
-
-			// 	this.emit(commandName, temp[1]);
-			// }
-
 
 		} else {
 
