@@ -516,12 +516,13 @@ var IgeNetIoClient = {
 						
 						// ensure client's timeStamp is between [previous snapshot's serverTime] and [next snapshot's serverTime - 100]
 						ige._currentTime = Math.min(  // prevent clientTime from going back in time
-							Math.max(ige._currentTime, ige.prevSnapshot[0]), // clientTime should not be greater than previous snapsho's serverTime
-							snapshotTimeStamp // client shouldn't be delayed any longer than 100ms from the latest serverTime received.
-							
+							Math.max(ige._currentTime, ige.tempSnapshot[0]), // clientTime should not be greater than previous snapsho's serverTime
+							snapshotTimeStamp // client shouldn't be delayed any longer than 100ms from the latest serverTime received.							
 						)
-							
-						ige.prevSnapshot = ige.nextSnapshot;
+						
+						// preserve prevSnapshot until ige._currentTime gets past prevSnapshot's time
+						ige.prevSnapshot = ige.tempSnapshot;
+						ige.tempSnapshot = ige.nextSnapshot
 						ige.nextSnapshot = [snapshotTimeStamp, obj]
 					}
 				}
