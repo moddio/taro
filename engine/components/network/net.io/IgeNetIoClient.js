@@ -513,15 +513,15 @@ var IgeNetIoClient = {
 
 				if (Object.keys(obj).length) {
 					if (snapshotTimeStamp > ige.nextSnapshot[0]) {
-						ige.prevSnapshot = ige.tempSnapshot;
-						ige.tempSnapshot = ige.nextSnapshot;
+
+						ige.prevSnapshot = ige.nextSnapshot;
 						ige.nextSnapshot = [snapshotTimeStamp, obj];
 
 						// currentTime should be between prevSnapshot's time and tempSnapshot's time
 						ige._currentTime = Math.min(  
-							Math.max(ige._currentTime, ige.prevSnapshot[0]), // prevent currentTime from going too far back in time
-							ige.tempSnapshot[0] // currentTime shouldn't be greater than tempSnapshot's time
-						)	
+							Math.max(ige.prevSnapshot[0], ige._currentTime), // prevent currentTime from going too far back in time
+							ige.nextSnapshot[0] - 50 // currentTime shouldn't be greater than tempSnapshot's time
+						)
 					}
 				}
 			}
