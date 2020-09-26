@@ -40,9 +40,9 @@ var AbilityComponent = IgeEntity.extend({
 			this._entity.direction.y = 0
 
 			// only velocity-based units will stop immediately
-			if (this._entity._stats.controls.movementMethod == 'velocity') {
-				this._entity.body.setLinearVelocity(new IgePoint3d(this._entity.body.getLinearVelocity().x, 0, 0));
-			}
+			// if (this._entity._stats.controls.movementMethod == 'velocity') {
+			// 	this._entity.body.setLinearVelocity(new IgePoint3d(this._entity.body.getLinearVelocity().x, 0, 0));
+			// }
 		}
 	},
 
@@ -51,9 +51,9 @@ var AbilityComponent = IgeEntity.extend({
 			this._entity.direction.x = 0
 
 			// only velocity-based units will stop immediately
-			if (this._entity._stats.controls.movementMethod == 'velocity') {
-				this._entity.body.setLinearVelocity(new IgePoint3d(0, this._entity.body.getLinearVelocity().y, 0));
-			}
+			// if (this._entity._stats.controls.movementMethod == 'velocity') {
+			// 	this._entity.body.setLinearVelocity(new IgePoint3d(0, this._entity.body.getLinearVelocity().y, 0));
+			// }
 		}
 	},
 
