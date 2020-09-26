@@ -5055,9 +5055,9 @@ var IgeEntity = IgeObject.extend({
 			deltaTime = offsetDelta / dataDelta;
 
 		// Clamp the current time from 0
-		if (deltaTime < 0) {
-			deltaTime = 0;
-		}
+		// if (deltaTime < 0) {
+		// 	deltaTime = 0;
+		// }
 
 		return totalValue * deltaTime + startValue;
 	},
@@ -5093,16 +5093,19 @@ var IgeEntity = IgeObject.extend({
 			nextKeyFrame = null;
 
 
-		// Set variables up to store the previous and next data
-		var prevTransform = ige.prevSnapshot[1][this.id()];
-		if (prevTransform) {
-			prevKeyFrame = [ige.prevSnapshot[0], prevTransform]
-		}
+		if (ige.prevSnapshot && ige.nextSnapshot) {
+			// Set variables up to store the previous and next data
+			var prevTransform = ige.prevSnapshot[1][this.id()];
+			if (prevTransform) {
+				prevKeyFrame = [ige.prevSnapshot[0], prevTransform]
+			}
 
-		var nextTransform = ige.nextSnapshot[1][this.id()];
-		if (nextTransform) {
-			nextKeyFrame = [ige.nextSnapshot[0], nextTransform]
+			var nextTransform = ige.nextSnapshot[1][this.id()];
+			if (nextTransform) {
+				nextKeyFrame = [ige.nextSnapshot[0], nextTransform]
+			}
 		}
+		
 				
 		// if unit is moved/teleported immedialy after creation, it does not have prevKeyFrame set, so we just use given (next) keyframe
 		if (prevKeyFrame == undefined && nextKeyFrame && nextKeyFrame[1] != undefined) {
@@ -5110,19 +5113,23 @@ var IgeEntity = IgeObject.extend({
 			y = nextKeyFrame[1][1];
 			rotate = nextKeyFrame[1][2];
 		}
-		else if (prevKeyFrame != undefined && nextKeyFrame && nextTransform != undefined && ige.renderTime < nextKeyFrame[0]) {
+		else if (prevKeyFrame != undefined && nextKeyFrame && nextTransform != undefined) {
 			x = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			y = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-			if (this == ige.client.selectedUnit) {
-				let distanceTraveled = x - this.previousX
-				let timeElapsed = ige.renderTime-this.previousRenderTime
-				console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
-					'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + ')', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-					)
-				this.previousX = x;
-				this.previousRenderTime = ige.renderTime;
-			}
+			// apply rubberbanding for extra smoothness
+			// x += (newX - x)/2 
+			// y += (newY - y)/2
+
+			// if (this == ige.client.selectedUnit) {
+			// 	let distanceTraveled = x - this.previousX
+			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
+			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+			// 		'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 		)
+			// 	this.previousX = x;
+			// 	this.previousRenderTime = ige.renderTime;
+			// }
 
 			// a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
 			var startValue = prevKeyFrame[1][2],
