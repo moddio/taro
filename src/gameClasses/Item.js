@@ -60,7 +60,7 @@ var Item = IgeEntityBox2d.extend({
 		self.addComponent(AttributeComponent) //every item gets one
 
 		ige.game.lastCreatedItemId = entityIdFromServer || this.id();
-		
+
 		self.setState(self._stats.stateId, self._stats.defaultData);
 
 		self.scaleRatio = ige.physics.scaleRatio();
@@ -108,7 +108,7 @@ var Item = IgeEntityBox2d.extend({
 				this.deathTime(undefined) // remove lifespan, so the entity stays indefinitely
 				if (body) {
 					if (body.jointType === 'weldJoint') {
-					// if (body.jointType === 'weldJoint' && body.type != 'dynamic') {
+						// if (body.jointType === 'weldJoint' && body.type != 'dynamic') {
 						this.streamMode(2)
 					} else {
 						this.streamMode(1) // item that revolutes around unit
@@ -306,7 +306,7 @@ var Item = IgeEntityBox2d.extend({
 							}
 
 							if (self.anchoredOffset == undefined) {
-								self.anchoredOffset = {x: 0, y: 0, rotate: 0}
+								self.anchoredOffset = { x: 0, y: 0, rotate: 0 }
 							}
 
 							var offsetAngle = rotate
@@ -726,9 +726,9 @@ var Item = IgeEntityBox2d.extend({
 	},
 
 	/**
-     * get item's position based on its itemAnchor, unitAnchor, and current rotation value.
-     * @param {int} froceRedraw offsets item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
-     */
+	 * get item's position based on its itemAnchor, unitAnchor, and current rotation value.
+	 * @param {int} froceRedraw offsets item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
+	 */
 	getAnchoredOffset: function (rotate) {
 		var self = this
 		var offset = { x: 0, y: 0, rotate: 0 }
@@ -747,7 +747,7 @@ var Item = IgeEntityBox2d.extend({
 					// if entity is flipped, then flip the keyFrames as well
 					// var itemAngle = ownerUnit.angleToTarget
 					// if (ige.isClient && ownerUnit == ige.client.selectedUnit) {
-						// console.log(itemAngle, unitAnchoredPosition)
+					// console.log(itemAngle, unitAnchoredPosition)
 					// }
 
 					var unitAnchorOffsetRotate = Math.radians(self._stats.currentBody.unitAnchor.rotation || 0);
@@ -773,7 +773,7 @@ var Item = IgeEntityBox2d.extend({
 					var itemAnchorOffsetY = self._stats.currentBody.itemAnchor && self._stats.currentBody.itemAnchor.y || 0;
 
 					offset.x = (unitAnchoredPosition.x) + (itemAnchorOffsetX * Math.cos(rotate)) + (itemAnchorOffsetY * Math.sin(rotate)),
-					offset.y = (unitAnchoredPosition.y) + (itemAnchorOffsetX * Math.sin(rotate)) - (itemAnchorOffsetY * Math.cos(rotate));
+						offset.y = (unitAnchoredPosition.y) + (itemAnchorOffsetX * Math.sin(rotate)) - (itemAnchorOffsetY * Math.cos(rotate));
 					offset.rotate = rotate
 				}
 			}
@@ -834,9 +834,11 @@ var Item = IgeEntityBox2d.extend({
 					case 'stateId':
 						if (ige.isClient) {
 							var stateId = newValue;
+							var owner = this.getOwnerUnit();
 							// update state only iff it's not my unit's item
 							self.setState(stateId);
-							if (this.getOwnerUnit() == ige.client.selectedUnit) {
+
+							if (owner == ige.client.selectedUnit) {
 								// don't repeat whip-out tween for my own unit as it has already been executed from unit.changeItem()
 							} else if (stateId == 'selected') {
 								self.applyAnimationForState(stateId);
@@ -847,6 +849,10 @@ var Item = IgeEntityBox2d.extend({
 									keyFrames: [[0, [0, 0, -1.57]], [100, [0, 0, 0]]]
 								};
 								self.tween.start(null, self._rotate.z, customTween);
+							}
+							// unmount item when item is in backpack
+							if (owner && self._stats.slotIndex >= owner._stats.inventorySize) {
+								self.unMount();
 							}
 						}
 						break;
@@ -916,6 +922,7 @@ var Item = IgeEntityBox2d.extend({
 					case 'slotIndex':
 						var owner = self.getOwnerUnit();
 						if (ige.isClient && owner) {
+							// unmount item when item is in backpack
 							if (newValue >= owner._stats.inventorySize) {
 								self.unMount();
 							}
@@ -951,7 +958,7 @@ var Item = IgeEntityBox2d.extend({
 					}
 				}
 			}
-			
+
 			if (self._stats.controls && self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
 				if (0 < rotate && rotate < Math.PI) {
 					self.flip(0);
@@ -959,17 +966,17 @@ var Item = IgeEntityBox2d.extend({
 					self.flip(1);
 				}
 			}
-			
+
 			// if (ige.isServer || (ige.isClient && (self._stats.currentBody.type != 'dynamic' || self._stats.currentBody.jointType != 'weldJoint'))) {
 
 			// if (ige.isServer || (ige.isClient && ige.client.selectedUnit == ownerUnit)) {
 			// 	if (ige.isServer) {
-					self.anchoredOffset = self.getAnchoredOffset(rotate);
-					self.translateTo(ownerUnit._translate.x + self.anchoredOffset.x, ownerUnit._translate.y + self.anchoredOffset.y)
+			self.anchoredOffset = self.getAnchoredOffset(rotate);
+			self.translateTo(ownerUnit._translate.x + self.anchoredOffset.x, ownerUnit._translate.y + self.anchoredOffset.y)
 			// 	}
 			// }
 			// }
-			
+
 			self.rotateTo(0, 0, rotate)
 		}
 

@@ -444,37 +444,37 @@ var MenuUiComponent = IgeEntity.extend({
 		var serverOptions = $("option.game-server:enabled");
 		var promises = [];
 		var self = this;
+		return;
+		// if (typeof user === 'undefined' || !user || !user.local || (user.local.username !== "nishant" && user.local.username !== "m0dE")) {
+		// 	return;
+		// }
 
-		if (typeof user === 'undefined' || !user || !user.local || (user.local.username !== "nishant" && user.local.username !== "m0dE")) {
-			return;
-		}
+		// if (!serverOptions || serverOptions.length <= 1) {
+		// 	return;
+		// }
 
-		if (!serverOptions || serverOptions.length <= 1) {
-			return;
-		}
+		// var index = 0;
+		// for (var serverOption of serverOptions) {
+		// 	(function socketPing(serverOption, index) {
+		// 		var promise = self.getPing(serverOption);
+		// 		promises.push(promise);
+		// 	})(serverOption, index++);
+		// }
 
-		var index = 0;
-		for (var serverOption of serverOptions) {
-			(function socketPing(serverOption, index) {
-				var promise = self.getPing(serverOption);
-				promises.push(promise);
-			})(serverOption, index++);
-		}
+		// if (shouldPickOneWithLeast) {
+		// 	Promise.all(promises)
+		// 		.then(function serversPingResolve(data) {
+		// 			var sortedData = data.sort(function (a, b) {
+		// 				return a.ping - b.ping;
+		// 			})
+		// 			var serverWithLeastPing = sortedData[0];
 
-		if (shouldPickOneWithLeast) {
-			Promise.all(promises)
-				.then(function serversPingResolve(data) {
-					var sortedData = data.sort(function (a, b) {
-						return a.ping - b.ping;
-					})
-					var serverWithLeastPing = sortedData[0];
-
-					$("#server-list").val(serverWithLeastPing.server.value);
-				})
-				.catch(function serversPingReject(err) {
-					console.log(err);
-				});
-		}
+		// 			$("#server-list").val(serverWithLeastPing.server.value);
+		// 		})
+		// 		.catch(function serversPingReject(err) {
+		// 			console.log(err);
+		// 		});
+		// }
 	},
 
 	getPing: function (serverOption, duration) {

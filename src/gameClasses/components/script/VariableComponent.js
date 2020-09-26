@@ -2043,8 +2043,8 @@ var VariableComponent = IgeEntity.extend({
 
 					+ '<tr>'
 					+ '<td>entityUpdateQueue size</td>'
-					+ '<td>' + ige.client.entityUpdateQueue.length + '</td>'
-					+ '<td></td>'
+					+ '<td></td>'					
+					+ '<td>' + Object.keys(ige.client.entityUpdateQueue).length + '</td>'
 					+ '<td></td>'
 					+ '</tr>'
 					+ '<tr>'

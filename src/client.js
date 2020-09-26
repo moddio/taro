@@ -31,7 +31,7 @@ var Client = IgeClass.extend({
         if (window.location.hostname == 'localhost')
             ige.env = 'local'
 
-        self.entityUpdateQueue = [];
+        self.entityUpdateQueue = {};
         self.errorLogs = [];
         self.tickAndUpdateData = {};
 
@@ -209,7 +209,7 @@ var Client = IgeClass.extend({
             } else {
                 var params = self.getUrlVars()
                 self.serverFound = false;
-                if(!window.isStandalone) {
+                if (!window.isStandalone) {
                     self.servers = self.getServersArray();
                 }
                 self.preSelectedServerId = params.serverId;
@@ -476,13 +476,13 @@ var Client = IgeClass.extend({
                     dataType: "json",
                     type: 'GET',
                     success: function (game) {
-                        var data = {data:{}};
+                        var data = { data: {} };
                         game.defaultData = game;
                         for (let [key, value] of Object.entries(game)) {
-                            data[data][key] = value;
+                            data['data'][key] = value;
                         }
                         for (let [key, value] of Object.entries(game.data)) {
-                            data[data][key] = value;
+                            data['data'][key] = value;
                         }
                         resolve(data);
                     }
@@ -490,7 +490,7 @@ var Client = IgeClass.extend({
             })
         }
         promise.then(function (game) {
-            
+
             var params = ige.client.getUrlVars();
 
             if (!game.data.isDeveloper) {
@@ -517,8 +517,8 @@ var Client = IgeClass.extend({
                 .then(() => {
                     ige.map.load(ige.game.data.map);
                 });
-            
-                if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
+
+            if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
                 $('#leaderboard').css({
                     top: '190px'
                 })
@@ -699,6 +699,9 @@ var Client = IgeClass.extend({
                     $('.open-modd-shop-button').hide();
                 }
             }
+            if (window.isStandalone) {
+                $('#toggle-dev-panels').show();
+            }
         });
     },
 
@@ -725,7 +728,7 @@ var Client = IgeClass.extend({
         }
 
     },
-    
+
     defineNetworkEvents: function () {
         var self = this;
 
