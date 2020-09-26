@@ -427,7 +427,7 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'entityAttributeMax':
 					var attributeTypeId = self.getValue(text.attribute, vars)
-					if (entity && ige.action.entityCategories.indexOf(entity._category) > -1 && attributeTypeId) {
+					if (entity && entity._stats.attributes && ige.action.entityCategories.indexOf(entity._category) > -1 && attributeTypeId) {
 						var attributeType = entity._stats.attributes[attributeTypeId]
 						if (attributeType) {
 							returnValue = attributeType.max
@@ -437,7 +437,7 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'entityAttributeMin':
 					var attributeTypeId = self.getValue(text.attribute, vars)
-					if (entity && ige.action.entityCategories.indexOf(entity._category) > -1 && attributeTypeId) {
+					if (entity && entity._stats.attributes && ige.action.entityCategories.indexOf(entity._category) > -1 && attributeTypeId) {
 						var attributeType = entity._stats.attributes[attributeTypeId]
 						if (attributeType) {
 							returnValue = attributeType.min

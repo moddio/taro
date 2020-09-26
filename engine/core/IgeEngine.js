@@ -1992,6 +1992,15 @@ var IgeEngine = IgeEntity.extend({
 					ige.client.myPlayer.control._behaviour()
 				}
 
+				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige._currentTime) {							
+					var snapshot = ige.snapshots.shift();
+					ige.prevSnapshot = ige.nextSnapshot;
+					ige.nextSnapshot = snapshot;
+				}
+				
+				// currentTime should be between prevSnapshot's time and tempSnapshot's time
+				ige._currentTime = Math.min(ige.nextSnapshot[0], ige._currentTime) // prevent currentTime from going too far back in time					
+				
 				return;
 			}
 			
@@ -2103,6 +2112,31 @@ var IgeEngine = IgeEntity.extend({
 				}
 			}
 
+			//// for debugging
+			// if (ige.$$("unit")[0]) {
+
+			// 	var x = ige.$$("unit")[0]._translate.x
+			// 	// for debugging
+			// 	if (!ige.lastSnapshotTimeStamp) {
+			// 		ige.lastSnapshotTimeStamp = timeStamp
+			// 	}
+
+			// 	if (!ige.lastX) {
+			// 		ige.lastX = x
+			// 	}
+
+				
+			// 	var timeElapsed = timeStamp - ige.lastSnapshotTimeStamp
+			// 	var distanceTravelled = x - ige.lastX;
+			// 	if (x) {
+			// 		console.log("unit speed", (distanceTravelled / timeElapsed * 100).toFixed(0), " (", distanceTravelled, "/", timeElapsed, ")")
+			// 	}
+				
+			// 	ige.lastX = x
+			// 	ige.lastSnapshotTimeStamp = timeStamp;
+
+			// }
+			
 			ige.network.stream._sendQueue(timeStamp);
 			ige.network.stream.updateEntityAttributes();
 			if (ige.count == undefined || ige.now - ige.lastSent < 30) {

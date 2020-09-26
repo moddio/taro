@@ -38,14 +38,22 @@ var AbilityComponent = IgeEntity.extend({
 	stopMovingY: function () {
 		if (this._entity.body) {
 			this._entity.direction.y = 0
-			// this._entity.body.setLinearVelocity(new IgePoint3d(velocityX, velocityY, 0));
+
+			// only velocity-based units will stop immediately
+			// if (this._entity._stats.controls.movementMethod == 'velocity') {
+			// 	this._entity.body.setLinearVelocity(new IgePoint3d(this._entity.body.getLinearVelocity().x, 0, 0));
+			// }
 		}
 	},
 
 	stopMovingX: function () {
 		if (this._entity.body) {
 			this._entity.direction.x = 0
-			// this._entity.body.setLinearVelocity(new IgePoint3d(velocityX, velocityY, 0));
+
+			// only velocity-based units will stop immediately
+			// if (this._entity._stats.controls.movementMethod == 'velocity') {
+			// 	this._entity.body.setLinearVelocity(new IgePoint3d(0, this._entity.body.getLinearVelocity().y, 0));
+			// }
 		}
 	},
 

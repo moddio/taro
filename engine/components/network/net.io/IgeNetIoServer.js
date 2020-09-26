@@ -345,10 +345,8 @@ var IgeNetIoServer = {
       self.snapshot.push([String.fromCharCode(this._networkCommandsLookup["_igeStreamTime"]), timestamp])
       if (global.isDev) {
         // generate artificial lag in dev environment
-        // console.log("asdf", ige.asdfCounter)
         setTimeout(function(data, ci) {
           self._io.send([ci, data]);
-          // console.log("sent!", counter)
         }, (Math.random() * self.lagVariance) + self.artificialDelay, self.snapshot, ciEncoded);
       } else {
         self._io.send([ciEncoded, self.snapshot]);

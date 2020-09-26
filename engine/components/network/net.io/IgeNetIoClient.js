@@ -505,6 +505,12 @@ var IgeNetIoClient = {
 						];
 
 						obj[entityId] = entityData;
+
+						// // for debugging
+						// if (ige.$(entityId)._category == 'unit') {
+						// 	var x = entityData[0]
+						// }
+
 					}
 					else {
 						this._networkCommands[commandName](entityData)
@@ -513,21 +519,39 @@ var IgeNetIoClient = {
 
 				if (Object.keys(obj).length) {
 					if (snapshotTimeStamp > ige.nextSnapshot[0]) {
-						// currentTime should be between tempSnapshot's time and nextSnapshot's time
-						ige._currentTime = Math.min(  
-							Math.max(ige._currentTime, ige.tempSnapshot[0]), // prevent currentTime from going too far back in time
-							snapshotTimeStamp // currentTime shouldn't be greater than nextSnapshot's time
-						)
+
+						// currentTime should be between prevSnapshot's time and tempSnapshot's time
+						ige._currentTime = Math.max( ige._currentTime, snapshotTimeStamp - 100) // currentTime shouldn't be greater than tempSnapshot's time
+
+						var i = ige.snapshots.length;
+						// insert snapshot in a correct incremental order
+						while (i > 0 && ige.snapshots[i - 1] != undefined && ige.snapshots[i - 1][0] > snapshotTimeStamp) {
+							i--;
+						}
+						ige.snapshots.splice(i, 0, [snapshotTimeStamp, obj]);
+
+						// // for debugging
+						// if (!ige.lastSnapshotTimeStamp) {
+						// 	ige.lastSnapshotTimeStamp = snapshotTimeStamp
+						// }
+
+						// if (!ige.lastX) {
+						// 	ige.lastX = x
+						// }
+
+						// var timeElapsed = snapshotTimeStamp - ige.lastSnapshotTimeStamp
+						// var distanceTravelled = x - ige.lastX;
+						// if (x) {
+						// 	console.log("unit speed", (distanceTravelled / timeElapsed * 100).toFixed(0), " (", distanceTravelled, "/", timeElapsed, ")")
+						// }
 						
-						ige.prevSnapshot = ige.tempSnapshot;
-						ige.tempSnapshot = ige.nextSnapshot
-						ige.nextSnapshot = [snapshotTimeStamp, obj]
+						// ige.lastX = x
+						// ige.lastSnapshotTimeStamp = snapshotTimeStamp;
 					}
 				}
 			}
 
 		} else {
-
 			if (this._networkCommands[commandName]) {
 				if (this.debug()) {
 					console.log('Received "' + commandName + '" (index ' + ciDecoded + ') with data:', data[1]);

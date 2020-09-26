@@ -93,17 +93,7 @@ var IgeStreamComponent = IgeEventingClass.extend({
 	 * Starts the stream of world updates to connected clients.
 	 */
 	start: function () {
-		var self = this;
-
 		IgeStreamComponent.prototype.log('Starting delta stream...');
-		// this._streamTimer = setInterval(function () {
-		// 	self._sendQueue();
-		// 	self.updateEntityAttributes();
-		// }, this._streamInterval);
-
-		// update entity-attributes (unit, debris, player, and projectiles)
-		// setInterval(function () { self.updateEntityAttributes(); }, ige.server.latency * 3) // attribute updates happen less often than regular ige stream updates
-
 		return this._entity;
 	},
 
