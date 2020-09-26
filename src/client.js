@@ -31,7 +31,7 @@ var Client = IgeClass.extend({
         if (window.location.hostname == 'localhost')
             ige.env = 'local'
 
-        self.entityUpdateQueue = [];
+        self.entityUpdateQueue = {};
         self.errorLogs = [];
         self.tickAndUpdateData = {};
 
