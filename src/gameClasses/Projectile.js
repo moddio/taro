@@ -136,7 +136,6 @@ var Projectile = IgeEntityBox2d.extend({
 							if (this.jointsAttached) {
 								var attachedEntities = {};
 								for (var entityId in this.jointsAttached) {
-									var entity = this.jointsAttached[entityId];
 									if (entityId != this.id()) {
 										attachedEntities[entityId] = true;
 									}
