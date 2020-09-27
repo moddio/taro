@@ -281,9 +281,10 @@ var IgeInitPixi = IgeClass.extend({
 
                             entity.anchoredOffset = entity.getAnchoredOffset(rotate);
                             if (entity.anchoredOffset) {
-                                rotate = entity.anchoredOffset.rotate;
                                 x = ownerUnit._translate.x + entity.anchoredOffset.x;
                                 y = ownerUnit._translate.y + entity.anchoredOffset.y;
+
+                                rotate = entity.anchoredOffset.rotate;
                             }
                         }
                     }

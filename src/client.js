@@ -724,9 +724,10 @@ var Client = IgeClass.extend({
             ige.script.runScript('initialize', {});
         }
         if (ige.env == 'local') {
-            ige.physics.enableDebug(this.rootScene);
+            
         }
 
+        ige.physics.enableDebug(this.rootScene);
     },
 
     defineNetworkEvents: function () {

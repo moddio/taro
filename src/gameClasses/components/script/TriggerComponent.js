@@ -152,7 +152,19 @@ var TriggerComponent = IgeEntity.extend({
 					}
 					break;
 
-
+				case 'item':
+					switch (entityB._category) {
+						case 'projectile':
+							var triggeredBy = {
+								projectileId: entityB.id(),
+								itemId: entityA.id(),
+								collidingEntity: entityA.id(),
+							};
+							ige.trigger.fire("projectileTouchesItem", triggeredBy);
+							break;
+					}
+					break;
+							
 				case 'projectile':
 					switch (entityB._category) {
 
@@ -163,15 +175,6 @@ var TriggerComponent = IgeEntity.extend({
 								collidingEntity: entityB.id(),
 							};
 							ige.trigger.fire("projectileTouchesDebris", triggeredBy);
-							break;
-
-						case 'item':
-							var triggeredBy = {
-								projectileId: entityA.id(),
-								itemId: entityB.id(),
-								collidingEntity: entityB.id(),
-							};
-							ige.trigger.fire("projectileTouchesItem", triggeredBy);
 							break;
 						case undefined:
 						case 'wall':

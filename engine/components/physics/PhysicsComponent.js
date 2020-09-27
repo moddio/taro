@@ -567,7 +567,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 							var x = mxfp.x * ige.physics._scaleRatio;
 							var y = mxfp.y * ige.physics._scaleRatio;
 							
-							// make projectile auto-rotate toward its path
+							// make projectile auto-rotate toward its path. ideal for arrows or rockets that should point toward its direction
 							if (entity._category == 'projectile' && 
 								entity._stats.currentBody && !entity._stats.currentBody.fixedRotation &&
 								tempBod.m_linearVelocity.y != 0 && tempBod.m_linearVelocity.x != 0

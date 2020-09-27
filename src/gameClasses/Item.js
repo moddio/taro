@@ -118,10 +118,8 @@ var Item = IgeEntityBox2d.extend({
 		}
 
 		if (body && body.type != 'none') {
-			if (ige.isServer) {
 				IgeEntityBox2d.prototype.updateBody.call(self, initTransform);
-			}
-
+			
 			self.show();
 			if (ige.isClient) {
 				self.updateTexture()
