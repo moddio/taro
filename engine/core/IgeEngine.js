@@ -1987,19 +1987,16 @@ var IgeEngine = IgeEntity.extend({
 				ige.trigger.fire("frameTick");
 			} 
 			else if (ige.isClient) {
-				ige.renderTime = ige._tickStart
+				ige.renderTime = ige._tickStart - 100
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
 				}
 
-				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige._currentTime) {							
+				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige.renderTime) {							
 					var snapshot = ige.snapshots.shift();
 					ige.prevSnapshot = ige.nextSnapshot;
 					ige.nextSnapshot = snapshot;
 				}
-				
-				// currentTime should be between prevSnapshot's time and tempSnapshot's time
-				ige._currentTime = Math.min(ige.nextSnapshot[0], ige._currentTime) // prevent currentTime from going too far back in time					
 				
 				return;
 			}

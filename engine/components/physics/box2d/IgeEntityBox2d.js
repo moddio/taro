@@ -86,7 +86,7 @@ var IgeEntityBox2d = IgeEntity.extend({
             filterCategoryBits = 0x0008;
         }
         else if (this._category === 'projectile') {
-            filterCategoryBits = 0x000f;
+            filterCategoryBits = 0x0010;
         }
         else if (this._category === 'region') {
             filterCategoryBits = 0x0020;
@@ -117,7 +117,7 @@ var IgeEntityBox2d = IgeEntity.extend({
                                     ((collidesWith.units) ? 0x0002 : 0) | 
                                     ((collidesWith.debris) ? 0x0004 : 0) | 
                                     ((collidesWith.items) ? 0x0008 : 0) | 
-                                    ((collidesWith.projectiles) ? 0x000f : 0) | 
+                                    ((collidesWith.projectiles) ? 0x0010 : 0) | 
                                     ((this._category != 'sensor') ? 0x0020 : 0) | // all entities aside from sensor will collide with regions
                                     ((this._category == 'unit' || this._category == 'item') ? 0x0040 : 0) // units & items will collide with sensors
                                     

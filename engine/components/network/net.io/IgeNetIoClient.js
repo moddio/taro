@@ -483,7 +483,7 @@ var IgeNetIoClient = {
 
 		if (commandName === '_snapshot') {
 			var snapshot = _.cloneDeep(data)[1];
-			var snapshotTimeStamp = snapshot[snapshot.length - 1][1];
+			var newSnapshotTimeStamp = snapshot[snapshot.length - 1][1];
 
 			// see how far apart the newly received snapshot is from currentTime
 			if (snapshot.length) {
@@ -518,35 +518,36 @@ var IgeNetIoClient = {
 				}
 
 				if (Object.keys(obj).length) {
-					if (snapshotTimeStamp > ige.nextSnapshot[0]) {
+					if (newSnapshotTimeStamp > ige.nextSnapshot[0]) {
 
-						// currentTime should be between prevSnapshot's time and tempSnapshot's time
-						ige._currentTime = Math.max( ige._currentTime, snapshotTimeStamp - 100) // currentTime shouldn't be greater than tempSnapshot's time
+						// when we receive a snapshot, currentTime should be able -50ms from the next snapshot
+						var timeDiff = newSnapshotTimeStamp - ige._currentTime;
+						ige._currentTime += timeDiff/2 // rubberband toward serverTime
 
 						var i = ige.snapshots.length;
 						// insert snapshot in a correct incremental order
-						while (i > 0 && ige.snapshots[i - 1] != undefined && ige.snapshots[i - 1][0] > snapshotTimeStamp) {
+						while (i > 0 && ige.snapshots[i - 1] != undefined && ige.snapshots[i - 1][0] > newSnapshotTimeStamp) {
 							i--;
 						}
-						ige.snapshots.splice(i, 0, [snapshotTimeStamp, obj]);
+						ige.snapshots.splice(i, 0, [newSnapshotTimeStamp, obj]);
 
 						// // for debugging
-						// if (!ige.lastSnapshotTimeStamp) {
-						// 	ige.lastSnapshotTimeStamp = snapshotTimeStamp
+						// if (!ige.lastnewSnapshotTimeStamp) {
+						// 	ige.lastnewSnapshotTimeStamp = newSnapshotTimeStamp
 						// }
 
 						// if (!ige.lastX) {
 						// 	ige.lastX = x
 						// }
 
-						// var timeElapsed = snapshotTimeStamp - ige.lastSnapshotTimeStamp
+						// var timeElapsed = newSnapshotTimeStamp - ige.lastnewSnapshotTimeStamp
 						// var distanceTravelled = x - ige.lastX;
 						// if (x) {
 						// 	console.log("unit speed", (distanceTravelled / timeElapsed * 100).toFixed(0), " (", distanceTravelled, "/", timeElapsed, ")")
 						// }
 						
 						// ige.lastX = x
-						// ige.lastSnapshotTimeStamp = snapshotTimeStamp;
+						// ige.lastnewSnapshotTimeStamp = newSnapshotTimeStamp;
 					}
 				}
 			}
