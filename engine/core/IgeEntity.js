@@ -5121,6 +5121,7 @@ var IgeEntity = IgeObject.extend({
 			// x += (newX - x)/2 
 			// y += (newY - y)/2
 
+			// // for debugging my unit's x-movement interpolation
 			// if (this == ige.client.selectedUnit) {
 			// 	let distanceTraveled = x - this.previousX
 			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
