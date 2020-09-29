@@ -618,6 +618,16 @@ var PhysicsComponent = IgeEventingClass.extend({
 							}
 
 							if (ige.isServer) {
+								if (ige.game.data.defaultData.clientSidePredictionEnabled && entity.targetTranslation) {
+									console.log(entity.targetTranslation)
+									var xDiff = entity.targetTranslation[0] - x;
+									var yDiff = entity.targetTranslation[1] - y;
+
+									// apply rubberbanding to reconcilie to position provided by the client
+									x += xDiff / 5;
+									y += yDiff / 5;
+								}
+
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
 							}
@@ -625,30 +635,24 @@ var PhysicsComponent = IgeEventingClass.extend({
 								// predict my unit's movement if cspEnabled == true
 								if (ige.client.cspEnabled && ige.client.selectedUnit == entity) {
 									// record current movement to compare with server-streamed data and reconciliate
-									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
-									if (entity.movementHistory.length > 20) {
-										entity.movementHistory.shift()
-									}
+									// entity.movementHistory.push([ige._currentTime, [x, y, angle]])
+									// if (entity.movementHistory.length > 20) {
+									// 	entity.movementHistory.shift()
+									// }
 
-									if (Math.abs(entity.reconcileRemaining[0]) > 2 ||
-										Math.abs(entity.reconcileRemaining[1]) > 2
-									) {
-										var xDiff = entity.reconcileRemaining[0] / 5
-										var yDiff = entity.reconcileRemaining[1] / 5
+									// if (Math.abs(entity.reconcileRemaining[0]) > 2 ||
+									// 	Math.abs(entity.reconcileRemaining[1]) > 2
+									// ) {
+									// 	var xDiff = entity.reconcileRemaining[0] / 5
+									// 	var yDiff = entity.reconcileRemaining[1] / 5
 										
-										x += xDiff
-										y += yDiff
+									// 	x += xDiff
+									// 	y += yDiff
 
-										entity.reconcileRemaining[0] -= xDiff
-										entity.reconcileRemaining[1] -= yDiff
-									}
-
-									// aabb box representing server-streamed position of my unit. used for debugging purpose
-									if (entity._debugEntity) {
-										entity._debugEntity.position.set(x, y);
-										entity._debugEntity.rotation = angle;
-										entity._debugEntity.pivot.set(entity._debugEntity.width / 2, entity._debugEntity.height / 2);
-									}									
+									// 	entity.reconcileRemaining[0] -= xDiff
+									// 	entity.reconcileRemaining[1] -= yDiff
+									// }
+								
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime, [x, y, angle]];															
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {

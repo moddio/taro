@@ -65,12 +65,12 @@ var IgeEntity = IgeObject.extend({
 		// this ensures entity is spawning at a correct position initially. particularily useful for projectiles
 
 		this._keyFrames = [];
-		this.movementHistory = [];
+		// this.movementHistory = [];
 		this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]]
 		this._lastTransformAt = null;
 		this.nextPhysicsFrame = null;
-		this.reconcileRemaining = [0, 0, 0]
-		this.diffTotal = 0;
+		// this.reconcileRemaining = [0, 0, 0]
+		// this.diffTotal = 0;
 		//this._mouseEventTrigger = 0;
 
 		if (ige.isClient) {
@@ -5121,16 +5121,16 @@ var IgeEntity = IgeObject.extend({
 			// x += (newX - x)/2 
 			// y += (newY - y)/2
 
-			// for debugging my unit's x-movement interpolation
-			if (this == ige.client.selectedUnit) {
-				let distanceTraveled = x - this.previousX
-				let timeElapsed = ige.renderTime-this.previousRenderTime
-				console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
-					'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-					)
-				this.previousX = x;
-				this.previousRenderTime = ige.renderTime;
-			}
+			// // for debugging my unit's x-movement interpolation
+			// if (this == ige.client.selectedUnit) {
+			// 	let distanceTraveled = x - this.previousX
+			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
+			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+			// 		'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 		)
+			// 	this.previousX = x;
+			// 	this.previousRenderTime = ige.renderTime;
+			// }
 
 			// a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
 			var startValue = prevKeyFrame[1][2],
@@ -5159,25 +5159,25 @@ var IgeEntity = IgeObject.extend({
 					this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
 				}
 			
-				var snapshotTime = ige.nextSnapshot[0] - (ige.network._latency) - ige._renderLatency;
+				// var snapshotTime = ige.nextSnapshot[0] - (ige.network._latency) - ige._renderLatency;
 
-				// compare server stream with my unit's movement history. if matching value's found, reconcile if needed
-				for (var i = 0; i < this.movementHistory.length-3; i++) {
-					var prevMovement = this.movementHistory[i+1]
-					var nextMovement = this.movementHistory[i+2];
-						if (prevMovement && nextMovement && prevMovement[0] < snapshotTime && snapshotTime < nextMovement[0]) {
-						var historyX = this.interpolateValue(prevMovement[1][0], nextMovement[1][0], prevMovement[0], snapshotTime, nextMovement[0]);
-						var historyY = this.interpolateValue(prevMovement[1][1], nextMovement[1][1], prevMovement[0], snapshotTime, nextMovement[0]);
-						var historyRotate = this.interpolateValue(prevMovement[1][2], nextMovement[1][2], prevMovement[0], snapshotTime, nextMovement[0]);
-						this.reconcileRemaining = [
-										nextTransform[0] - historyX, 
-										nextTransform[1] - historyY, 
-										nextTransform[2] - historyRotate
-									];							
+				// // compare server stream with my unit's movement history. if matching value's found, reconcile if needed
+				// for (var i = 0; i < this.movementHistory.length-3; i++) {
+				// 	var prevMovement = this.movementHistory[i+1]
+				// 	var nextMovement = this.movementHistory[i+2];
+				// 		if (prevMovement && nextMovement && prevMovement[0] < snapshotTime && snapshotTime < nextMovement[0]) {
+				// 		var historyX = this.interpolateValue(prevMovement[1][0], nextMovement[1][0], prevMovement[0], snapshotTime, nextMovement[0]);
+				// 		var historyY = this.interpolateValue(prevMovement[1][1], nextMovement[1][1], prevMovement[0], snapshotTime, nextMovement[0]);
+				// 		var historyRotate = this.interpolateValue(prevMovement[1][2], nextMovement[1][2], prevMovement[0], snapshotTime, nextMovement[0]);
+				// 		this.reconcileRemaining = [
+				// 						nextTransform[0] - historyX, 
+				// 						nextTransform[1] - historyY, 
+				// 						nextTransform[2] - historyRotate
+				// 					];							
 									
-						this.movementHistory = [];
-					}
-				}
+				// 		this.movementHistory = [];
+				// 	}
+				// }
 			}
 		}
 

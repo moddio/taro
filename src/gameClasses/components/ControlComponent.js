@@ -3,9 +3,10 @@ var ControlComponent = IgeEntity.extend({
 	componentId: 'control',
 
 	init: function (entity, options) {
-		var self = this;
 		// Store the entity that this component has been added to
 		this._entity = entity;
+
+		this.lastInputSent = 0
 
 		// Store any options that were passed to us
 		this._options = options;
@@ -81,8 +82,6 @@ var ControlComponent = IgeEntity.extend({
 	},
 
 	keyDown: function (device, key) {
-		var self = this
-
 		// check for input modal is open
 		if (ige.isClient) {
 			this.isChatOpen = ($("#message").is(":focus") && !$("#player-input-field").is(":focus")) ||
@@ -345,9 +344,14 @@ var ControlComponent = IgeEntity.extend({
 					}
 				}
 			}
-
+			
 			// mouse move
 			self.mouseMove()
+
+			if (ige._currentTime - self.lastInputSent > 100) {
+				self.sendPlayerInput = true
+				self.lastInputSent = ige._currentTime;
+			}
 			if (self.newMousePosition && (self.newMousePosition[0] != self.lastMousePosition[0] || self.newMousePosition[1] != self.lastMousePosition[1])) {
 				// if we are using mobile controls don't send mouse moves to server here as we will do so from a look touch stick
 				if (!ige.mobileControls.isMobile) {
@@ -362,7 +366,8 @@ var ControlComponent = IgeEntity.extend({
 						}
 						// angle = angle % Math.PI;
 						angle = parseFloat(angle.toPrecision(5));
-						ige.network.send('playerAbsoluteAngle', angle);
+						if (self.sendPlayerInput)
+							ige.network.send('playerAbsoluteAngle', angle);
 
 						if (ige.client.myPlayer) {
 							ige.client.myPlayer.absoluteAngle = angle;
@@ -373,10 +378,20 @@ var ControlComponent = IgeEntity.extend({
 						ige.client.myPlayer.control.input.mouse.x = self.newMousePosition[0];
 						ige.client.myPlayer.control.input.mouse.y = self.newMousePosition[1];
 					}
-					ige.network.send("playerMouseMoved", self.newMousePosition);
+					if (self.sendPlayerInput)
+						ige.network.send("playerMouseMoved", self.newMousePosition);
 				}
 				self.lastMousePosition = self.newMousePosition;
 			}
+
+			// unit move
+			var unit = ige.client.selectedUnit;
+			if (self.sendPlayerInput && ige.client.cspEnabled && unit && unit.isMoving) {
+				ige.network.send("playerUnitMoved", [unit._translate.x, unit._translate.y]);
+				console.log(unit._translate.x, unit._translate.y)
+			}
+
+			self.sendPlayerInput = false
 		}
 	}
 

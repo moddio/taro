@@ -532,6 +532,7 @@ var Server = IgeClass.extend({
 		ige.network.define('setStreamSendInterval', self._onSetStreamSendInterval);
 
 		ige.network.define('makePlayerSelectUnit', self._onPlayerSelectUnit);
+		ige.network.define('playerUnitMoved', self._onPlayerUnitMoved);
 		ige.network.define('playerKeyDown', self._onPlayerKeyDown);
 		ige.network.define('playerKeyUp', self._onPlayerKeyUp);
 		ige.network.define('playerMouseMoved', self._onPlayerMouseMoved);
