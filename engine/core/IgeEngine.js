@@ -1993,7 +1993,7 @@ var IgeEngine = IgeEntity.extend({
 					ige.client.myPlayer.control._behaviour()
 				}
 
-				while (ige.snapshots.length > 0 && ige.nextSnapshot[0] < ige.renderTime) {							
+				while (ige.snapshots.length >= 2) {							
 					var snapshot = ige.snapshots.shift();
 					ige.prevSnapshot = ige.nextSnapshot;
 					ige.nextSnapshot = snapshot;

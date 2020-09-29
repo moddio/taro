@@ -523,7 +523,7 @@ var IgeNetIoClient = {
 						// renderTime must be close to nextSnapshot's time.
 						// Therefore, we're hard-setting its range between prevSnapshot's time and nextSnapshot's time with 30ms offset.
 						ige.renderTime = Math.max(
-							ige.prevSnapshot[0] + 30,
+							ige.nextSnapshot[0] - 30,
 							Math.min(ige.nextSnapshot[0] + 30, ige.renderTime)
 						)
 						
