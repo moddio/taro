@@ -234,6 +234,8 @@ var Client = IgeClass.extend({
                         self.serverFound = true;
                     }
                 }
+                $('#server-list').val(self.server.id)
+                console.log('best server selected',self.server)
 
                 self.initEngine();
             }
