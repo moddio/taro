@@ -386,9 +386,15 @@ var ControlComponent = IgeEntity.extend({
 
 			// unit move
 			var unit = ige.client.selectedUnit;
-			if (self.sendPlayerInput && ige.client.cspEnabled && unit && unit.isMoving) {
-				ige.network.send("playerUnitMoved", [unit._translate.x, unit._translate.y]);
-				console.log(unit._translate.x, unit._translate.y)
+			if (ige.client.cspEnabled && unit) {
+				var x = unit._translate.x.toFixed(0)
+				var y = unit._translate.y.toFixed(0)
+				if (self.sendPlayerInput || self.lastPositionSent[0] != x || self.lastPositionSent[1] != y) {
+					var pos = [x, y];
+					ige.network.send("playerUnitMoved", pos);
+					// console.log(x, y)
+					self.lastPositionSent = pos
+				}
 			}
 
 			self.sendPlayerInput = false

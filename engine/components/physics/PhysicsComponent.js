@@ -619,7 +619,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 							if (ige.isServer) {
 								if (ige.game.data.defaultData.clientSidePredictionEnabled && entity.targetTranslation) {
-									console.log(entity.targetTranslation)
 									var xDiff = entity.targetTranslation[0] - x;
 									var yDiff = entity.targetTranslation[1] - y;
 
@@ -627,6 +626,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 									x += xDiff / 5;
 									y += yDiff / 5;
 								}
+
+								// if (entity._stats.name && entity._stats.name.includes('user'))
+								// 	console.log(entity.targetTranslation, x, y)									
 
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
