@@ -623,8 +623,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 									var yDiff = entity.targetTranslation[1] - y;
 
 									// apply rubberbanding to reconcilie to position provided by the client
-									x += xDiff / 5;
-									y += yDiff / 5;
+									x += xDiff / 2;
+									y += yDiff / 2;
 								}
 
 								// if (entity._stats.name && entity._stats.name.includes('user'))

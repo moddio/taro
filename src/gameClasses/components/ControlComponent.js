@@ -258,7 +258,7 @@ var ControlComponent = IgeEntity.extend({
 			}
 
 			// traverse through abilities, and see if any of them is being casted by the owner
-			if (ige.isServer || (ige.isClient)) {
+			if (ige.isServer || ige.isClient) {
 				var unitAbility = null;
 
 				// if (unit._stats.abilities) {
@@ -286,8 +286,9 @@ var ControlComponent = IgeEntity.extend({
 				ige.network.send('playerKeyUp', { device: device, key: key });
 			}
 		}
-
-		this.input[device][key] = false
+		
+		if (this.input[device])
+			this.input[device][key] = false
 
 	},
 
@@ -348,10 +349,12 @@ var ControlComponent = IgeEntity.extend({
 			// mouse move
 			self.mouseMove()
 
+			// check if sending player input is due (every 100ms)
 			if (ige._currentTime - self.lastInputSent > 100) {
 				self.sendPlayerInput = true
 				self.lastInputSent = ige._currentTime;
 			}
+
 			if (self.newMousePosition && (self.newMousePosition[0] != self.lastMousePosition[0] || self.newMousePosition[1] != self.lastMousePosition[1])) {
 				// if we are using mobile controls don't send mouse moves to server here as we will do so from a look touch stick
 				if (!ige.mobileControls.isMobile) {
@@ -389,7 +392,7 @@ var ControlComponent = IgeEntity.extend({
 			if (ige.client.cspEnabled && unit) {
 				var x = unit._translate.x.toFixed(0)
 				var y = unit._translate.y.toFixed(0)
-				if (self.sendPlayerInput || self.lastPositionSent[0] != x || self.lastPositionSent[1] != y) {
+				if (self.sendPlayerInput || self.lastPositionSent == undefined || self.lastPositionSent[0] != x || self.lastPositionSent[1] != y) {
 					var pos = [x, y];
 					ige.network.send("playerUnitMoved", pos);
 					// console.log(x, y)
