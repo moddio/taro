@@ -1770,6 +1770,7 @@ var IgeEngine = IgeEntity.extend({
 		// console.log("increment time", this._currentTime, now, this._timeScaleLastTimestamp, (now - this._timeScaleLastTimestamp))
 		if (this._timeScaleLastTimestamp) {
 			this._currentTime += (now - this._timeScaleLastTimestamp) * this._timeScale;
+			this.renderTime += (now - this._timeScaleLastTimestamp) * this._timeScale;
 		}
 
 		this._timeScaleLastTimestamp = now;
@@ -1987,7 +1988,7 @@ var IgeEngine = IgeEntity.extend({
 				ige.trigger.fire("frameTick");
 			} 
 			else if (ige.isClient) {
-				ige.renderTime = ige._tickStart - 100
+				
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
 				}

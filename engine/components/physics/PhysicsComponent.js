@@ -656,10 +656,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// }
 								
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime, [x, y, angle]];															
+									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];															
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime, [x, y, angle]];
+									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 								} else {
 									// all streamed entities are rigidly positioned
 									x = entity._translate.x

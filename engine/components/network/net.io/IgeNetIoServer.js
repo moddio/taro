@@ -11,8 +11,8 @@ var IgeNetIoServer = {
   start: function (data, callback) {
     var self = this;
 
-    this.artificialDelay = 0;
-    this.lagVariance = 0;
+    this.artificialDelay = 200;
+    this.lagVariance = 100;
     
     this._socketById = {};
     this._socketsByRoomId = {};

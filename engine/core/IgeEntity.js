@@ -5106,13 +5106,41 @@ var IgeEntity = IgeObject.extend({
 			}
 		}
 		
-				
+
+		// interpolate entities with physics body if:
+		// 1. we're using cspMovement (experimental) for my own unit
+		// 2. item-fired projectiles
+		if (
+			(
+				(ige.client.cspEnabled && ige.client.selectedUnit == this) ||
+				(this._category == 'projectile' && this._stats.sourceItemId != undefined)
+			) &&
+			this.prevPhysicsFrame && this.nextPhysicsFrame
+		) {
+			x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
+			y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+			
+			// // for debugging my unit's x-movement interpolation
+			// if (this == ige.client.selectedUnit) {
+			// 	let distanceTraveled = x - this.previousX
+			// 	let timeElapsed = ige._currentTime-this.previousRenderTime
+			// 	console.log(ige.nextSnapshot.length, 'x', this.prevPhysicsFrame[1][1].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][1].toFixed(0),
+			// 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0), '(' + timeElapsed.toFixed(0) + 'ms '+ ((ige._currentTime - this.prevPhysicsFrame[0]) / (this.nextPhysicsFrame[0] - this.prevPhysicsFrame[0]) * 100).toFixed(0) +'%)', this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 		)
+			// 	this.previousX = x;
+			// 	this.previousRenderTime = ige._currentTime;
+			// }
+
+			if (this == ige.client.selectedUnit) {
+				rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+			}		
+		}						
 		// if unit is moved/teleported immedialy after creation, it does not have prevKeyFrame set, so we just use given (next) keyframe
-		if (prevKeyFrame == undefined && nextKeyFrame && nextKeyFrame[1] != undefined) {
+		else if (prevKeyFrame == undefined && nextKeyFrame && nextKeyFrame[1] != undefined) {
 			x = nextKeyFrame[1][0];
 			y = nextKeyFrame[1][1];
 			rotate = nextKeyFrame[1][2];
-		}
+		}			
 		else if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
 			x = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			y = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
@@ -5179,25 +5207,6 @@ var IgeEntity = IgeObject.extend({
 				// 	}
 				// }
 			}
-		}
-
-		// interpolate entities with physics body if:
-		// 1. we're using cspMovement (experimental) for my own unit
-		// 2. item-fired projectiles
-		if (
-			(
-				(ige.client.cspEnabled && ige.client.selectedUnit == this) ||
-				(this._category == 'projectile' && this._stats.sourceItemId != undefined)
-			) &&
-			this.prevPhysicsFrame && this.nextPhysicsFrame
-		) {
-			
-			x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
-			y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
-			
-			if (this == ige.client.selectedUnit) {
-				rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
-			}		
 		}
 		
 		// instantly rotate unit to mouse cursor

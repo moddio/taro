@@ -520,9 +520,13 @@ var IgeNetIoClient = {
 				if (Object.keys(obj).length) {
 					if (newSnapshotTimeStamp > ige.nextSnapshot[0]) {
 
+						ige.renderTime = Math.max(
+							ige.prevSnapshot[0] + 30,
+							Math.min(ige.nextSnapshot[0] + 30, ige.renderTime)
+						)
 						// when we receive a snapshot, currentTime should be able -50ms from the next snapshot
-						var timeDiff = newSnapshotTimeStamp - ige._currentTime;
-						ige._currentTime += timeDiff/2 // rubberband toward serverTime
+						var timeDiff = ige.nextSnapshot[0] - ige.renderTime;
+						ige.renderTime += timeDiff/2 // rubberband toward serverTime
 
 						var i = ige.snapshots.length;
 						// insert snapshot in a correct incremental order
