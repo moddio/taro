@@ -7,10 +7,26 @@
         </div>
         <div class="col-sm-12">
             <button class="btn btn-danger btn-sm" id="dev-error-button" style="z-index: 9999">Errors (0)</button>
+            <button class="btn btn-primary btn-sm" id="bandwidth-usage" style="z-index: 9999">Status</button>
         </div>
     </div>
 
     <div class="col-sm-12">
         <table id="variables-table" style="text-align: right; padding: 5px"></table>
+    </div>
+</div>
+
+<div class="modal fade" id="dev-status-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 90%; max-width: 1200px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="dev-status-content"></div>
+        </div>
     </div>
 </div>
