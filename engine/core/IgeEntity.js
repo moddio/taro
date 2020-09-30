@@ -65,12 +65,14 @@ var IgeEntity = IgeObject.extend({
 		// this ensures entity is spawning at a correct position initially. particularily useful for projectiles
 
 		this._keyFrames = [];
-		this.movementHistory = [];
+		// this.movementHistory = [];
 		this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]]
 		this._lastTransformAt = null;
 		this.nextPhysicsFrame = null;
-		this.reconcileRemaining = [0, 0, 0]
-		this.diffTotal = 0;
+		this.serverStreamedPosition = [0, 0, 0]
+		this.reconciliationStartedAt = 0;
+		// this.reconcileRemaining = [0, 0, 0]
+		// this.diffTotal = 0;
 		//this._mouseEventTrigger = 0;
 
 		if (ige.isClient) {
@@ -4371,55 +4373,21 @@ var IgeEntity = IgeObject.extend({
 	streamSectionData: function (sectionId, data) {
 		switch (sectionId) {
 			case 'transform':
-				if (data) {
-					// var x = data[0],
-					// 	y = data[1],
-					// 	angle = data[2];
-					// const newTransform = [x, y, angle];
-					// if (newTransform[0] == this._oldTranform[0] && newTransform[1] == this._oldTranform[1] && newTransform[2] == this._oldTranform[2]) {
-					// 	this._hasMoved = false;
-					// }
-					// else {
-					// 	this._hasMoved = true;
-					// 	this._oldTranform = newTransform;
-					// }
-					// // client receives data
-					// if (this._disableInterpolation || this.bypassSmoothing) {
-					// 	// console.log("teleporting")
-					// 	this.teleportTo(x, y, angle);
-					// 	delete this.bypassSmoothing;
-					// 	// If we are using composite caching ensure we update the cache
-					// 	if (this._compositeCache) {
-					// 		this.cacheDirty(true);
-					// 	}
-					// }
-				} else {
-					// data is not set. return transform data that'll be sent from server to clients
-
-					if (ige.isClient) return;
-
-					// track how long it takes from player input to unit response
-					// if (this._category == 'unit' && this.getOwner()._stats.name == 'm0dE' && this.getOwner().control.lastActionAt) {
-					// 	console.log(Date.now() - this.getOwner().control.lastActionAt)
-					// 	this.getOwner().control.lastActionAt = null
-					// }
-
+				if (ige.isServer) {
 					var x = this._translate.x.toFixed(0),
 						y = this._translate.y.toFixed(0),
 						angle = ((this._rotate.z % (2 * Math.PI)) * 1000).toFixed(0);
-
-					const newTransform = [x, y, angle];
-
-					if (newTransform[0] == this._oldTranform[0] && newTransform[1] == this._oldTranform[1] && newTransform[2] == this._oldTranform[2]) {
+					
+					if (x == this._oldTranform[0] && y == this._oldTranform[1] && angle == this._oldTranform[2]) {
 						this._hasMoved = false;
 					} else {
-						this._hasMoved = true;
-						this._oldTranform = newTransform;
+						this._hasMoved = true;						
+						this._oldTranform = [x, y, angle];
 
 						let buffArr = [];
-						buffArr.push(Number(newTransform[0]));
-						buffArr.push(Number(newTransform[1]));
-						buffArr.push(Number(newTransform[2]));
+						buffArr.push(Number(x));
+						buffArr.push(Number(y));
+						buffArr.push(Number(angle));
 
 						// IgeEntity.prototype.log(this._size, this._translate, this._rotate)
 						if (this.bypassSmoothing) {
@@ -5078,9 +5046,12 @@ var IgeEntity = IgeObject.extend({
      * targeting to render the entity at.
      */
 	_processTransform: function () {
-		if (this._lastTransformAt == ige.renderTime || // do not run transform more than once per renderTime
-			this._translate == undefined || this._stats.currentBody == undefined || // entity has no body
-			(this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && ige.$(this._stats.ownerUnitId) == ige.client.selectedUnit) // ignore server stream of my own unit's sprite-only item
+		if (// prevent igePixi calling this function multiple times for a same entity
+			this._lastTransformAt == ige.renderTime || 
+			// entity has no body
+			this._translate == undefined || this._stats.currentBody == undefined || 
+			// ignore server stream of my own unit's sprite-only item
+			(this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && ige.$(this._stats.ownerUnitId) == ige.client.selectedUnit) 
 		) { 
 			return;
 		}
@@ -5094,39 +5065,56 @@ var IgeEntity = IgeObject.extend({
 
 
 		if (ige.prevSnapshot && ige.nextSnapshot) {
-			// Set variables up to store the previous and next data
-			var prevTransform = ige.prevSnapshot[1][this.id()];
-			if (prevTransform) {
-				prevKeyFrame = [ige.prevSnapshot[0], prevTransform]
-			}
 
 			var nextTransform = ige.nextSnapshot[1][this.id()];
 			if (nextTransform) {
 				nextKeyFrame = [ige.nextSnapshot[0], nextTransform]
 			}
+
+			// Set variables up to store the previous and next data
+			var prevTransform = ige.prevSnapshot[1][this.id()];
+			if (prevTransform) {
+				prevKeyFrame = [ige.prevSnapshot[0], prevTransform]
+			} else {
+				// prevTransform is undefined if entity hasn't moved for a while, or has been created/teleported				
+				prevTransform = nextTransform;
+				prevKeyFrame = nextKeyFrame;
+			}
 		}
+
+		if (
+			// 1. we're using cspMovement (experimental) for my own unit OR
+			(ige.client.cspEnabled && ige.client.selectedUnit == this) ||
+			// 2. item-fired projectiles
+			(this._category == 'projectile' && this._stats.sourceItemId != undefined)
+		) {
+			if (this.nextPhysicsFrame) {
+				if (this.prevPhysicsFrame) {
+					// interpolate using prev/next physics key frames provided by physicsComponent
+					x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
+					y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);			
+					if (this == ige.client.selectedUnit) {
+						rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+					}
+				} else {
+					// unit is teleporting
+					x = this.nextPhysicsFrame[1][0];
+					y = this.nextPhysicsFrame[1][1];
+					rotate = this.nextPhysicsFrame[1][2];
+				}
+			}	
+		} 
 		
-				
-		// if unit is moved/teleported immedialy after creation, it does not have prevKeyFrame set, so we just use given (next) keyframe
-		if (prevKeyFrame == undefined && nextKeyFrame && nextKeyFrame[1] != undefined) {
-			x = nextKeyFrame[1][0];
-			y = nextKeyFrame[1][1];
-			rotate = nextKeyFrame[1][2];
-		}
-		else if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
-			x = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
-			y = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+		if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
+			targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+			targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-			// apply rubberbanding for extra smoothness
-			// x += (newX - x)/2 
-			// y += (newY - y)/2
-
-			// // for debugging my unit's x-movement interpolation
+			// for debugging my unit's x-movement interpolation
 			// if (this == ige.client.selectedUnit) {
 			// 	let distanceTraveled = x - this.previousX
-			// 	let timeElapsed = ige.renderTime-this.previousRenderTime
+			// 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
 			// 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
-			// 		'time', prevKeyFrame[0], ige.renderTime, '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
 			// 		)
 			// 	this.previousX = x;
 			// 	this.previousRenderTime = ige.renderTime;
@@ -5146,58 +5134,27 @@ var IgeEntity = IgeObject.extend({
 				this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor &&
 				this._stats.currentBody && !this._stats.currentBody.fixedRotation
 			) {
-				rotate = this.angleToTarget;
+				targetRotate = this.angleToTarget;
 			} else {
-				rotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+				targetRotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			}
+
+			this.serverStreamedPosition = [targetX, targetY, targetRotate]
 			
-			// if it's my unit, and csp is enabled, reconcile if needed.
+			// if csp is enabled, use server-streamed data for reconciliation purpose
 			if (this == ige.client.selectedUnit && ige.client.cspEnabled) {
-				if (this._debugEntity) {
-					this._debugEntity.position.set(x, y);
-					this._debugEntity.rotation = rotate;
+				// display server-streamed position for debugging purpose
+				if (this._debugEntity && prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
+					this._debugEntity.position.set(targetX, targetY);
+					this._debugEntity.rotation = targetRotate;
 					this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
 				}
-			
-				var snapshotTime = ige.nextSnapshot[0] - (ige.network._latency) - ige._renderLatency;
-
-				// compare server stream with my unit's movement history. if matching value's found, reconcile if needed
-				for (var i = 0; i < this.movementHistory.length-3; i++) {
-					var prevMovement = this.movementHistory[i+1]
-					var nextMovement = this.movementHistory[i+2];
-						if (prevMovement && nextMovement && prevMovement[0] < snapshotTime && snapshotTime < nextMovement[0]) {
-						var historyX = this.interpolateValue(prevMovement[1][0], nextMovement[1][0], prevMovement[0], snapshotTime, nextMovement[0]);
-						var historyY = this.interpolateValue(prevMovement[1][1], nextMovement[1][1], prevMovement[0], snapshotTime, nextMovement[0]);
-						var historyRotate = this.interpolateValue(prevMovement[1][2], nextMovement[1][2], prevMovement[0], snapshotTime, nextMovement[0]);
-						this.reconcileRemaining = [
-										nextTransform[0] - historyX, 
-										nextTransform[1] - historyY, 
-										nextTransform[2] - historyRotate
-									];							
-									
-						this.movementHistory = [];
-					}
-				}
+			} else {
+				// use server-streamed data to translate non-player unit. iff csp is enabled.
+				x = targetX;
+				y = targetY;
+				rotate = targetRotate;
 			}
-		}
-
-		// interpolate entities with physics body if:
-		// 1. we're using cspMovement (experimental) for my own unit
-		// 2. item-fired projectiles
-		if (
-			(
-				(ige.client.cspEnabled && ige.client.selectedUnit == this) ||
-				(this._category == 'projectile' && this._stats.sourceItemId != undefined)
-			) &&
-			this.prevPhysicsFrame && this.nextPhysicsFrame
-		) {
-			
-			x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]),
-			y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
-			
-			if (this == ige.client.selectedUnit) {
-				rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
-			}		
 		}
 		
 		// instantly rotate unit to mouse cursor

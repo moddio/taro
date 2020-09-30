@@ -637,14 +637,24 @@ var ServerNetworkEvents = {
 		}
 	},
 
-	_onPlayerMouseMoved: function (posArr, clientId) {
+	_onPlayerMouseMoved: function (position, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId)
 		if (player) {
 			var unit = player.getSelectedUnit()
 			// prevent taking mouse input if mouse cursor is right above the selected unit
-			if (unit && (Math.abs(posArr[0]) > 20 || Math.abs(posArr[1]) > 20)) {
-				player.control.input.mouse.x = posArr[0]
-				player.control.input.mouse.y = posArr[1]
+			if (unit && (Math.abs(position[0]) > 20 || Math.abs(position[1]) > 20)) {
+				player.control.input.mouse.x = position[0]
+				player.control.input.mouse.y = position[1]
+			}
+		}
+	},
+
+	_onPlayerUnitMoved: function (position, clientId) {
+		var player = ige.game.getPlayerByClientId(clientId)
+		if (player) {
+			var unit = player.getSelectedUnit()
+			if (unit) {
+				unit.clientStreamedPosition = position;
 			}
 		}
 	},

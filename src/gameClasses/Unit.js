@@ -1644,6 +1644,7 @@ var Unit = IgeEntityBox2d.extend({
                         }
                     }
                 }
+
                 ige.unitBehaviourCount++
                 // apply movement if it's either human-controlled unit, or ai unit that's currently moving
                 if (self.body && vector && (vector.x != 0 || vector.y != 0)) {

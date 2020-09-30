@@ -3,9 +3,10 @@ var ControlComponent = IgeEntity.extend({
 	componentId: 'control',
 
 	init: function (entity, options) {
-		var self = this;
 		// Store the entity that this component has been added to
 		this._entity = entity;
+
+		this.lastInputSent = 0
 
 		// Store any options that were passed to us
 		this._options = options;
@@ -81,8 +82,6 @@ var ControlComponent = IgeEntity.extend({
 	},
 
 	keyDown: function (device, key) {
-		var self = this
-
 		// check for input modal is open
 		if (ige.isClient) {
 			this.isChatOpen = ($("#message").is(":focus") && !$("#player-input-field").is(":focus")) ||
@@ -259,7 +258,7 @@ var ControlComponent = IgeEntity.extend({
 			}
 
 			// traverse through abilities, and see if any of them is being casted by the owner
-			if (ige.isServer || (ige.isClient)) {
+			if (ige.isServer || ige.isClient) {
 				var unitAbility = null;
 
 				// if (unit._stats.abilities) {
@@ -287,8 +286,9 @@ var ControlComponent = IgeEntity.extend({
 				ige.network.send('playerKeyUp', { device: device, key: key });
 			}
 		}
-
-		this.input[device][key] = false
+		
+		if (this.input[device])
+			this.input[device][key] = false
 
 	},
 
@@ -345,9 +345,16 @@ var ControlComponent = IgeEntity.extend({
 					}
 				}
 			}
-
+			
 			// mouse move
 			self.mouseMove()
+
+			// check if sending player input is due (every 100ms)
+			if (ige._currentTime - self.lastInputSent > 100) {
+				self.sendPlayerInput = true
+				self.lastInputSent = ige._currentTime;
+			}
+
 			if (self.newMousePosition && (self.newMousePosition[0] != self.lastMousePosition[0] || self.newMousePosition[1] != self.lastMousePosition[1])) {
 				// if we are using mobile controls don't send mouse moves to server here as we will do so from a look touch stick
 				if (!ige.mobileControls.isMobile) {
@@ -362,7 +369,8 @@ var ControlComponent = IgeEntity.extend({
 						}
 						// angle = angle % Math.PI;
 						angle = parseFloat(angle.toPrecision(5));
-						ige.network.send('playerAbsoluteAngle', angle);
+						if (self.sendPlayerInput)
+							ige.network.send('playerAbsoluteAngle', angle);
 
 						if (ige.client.myPlayer) {
 							ige.client.myPlayer.absoluteAngle = angle;
@@ -373,10 +381,26 @@ var ControlComponent = IgeEntity.extend({
 						ige.client.myPlayer.control.input.mouse.x = self.newMousePosition[0];
 						ige.client.myPlayer.control.input.mouse.y = self.newMousePosition[1];
 					}
-					ige.network.send("playerMouseMoved", self.newMousePosition);
+					if (self.sendPlayerInput)
+						ige.network.send("playerMouseMoved", self.newMousePosition);
 				}
 				self.lastMousePosition = self.newMousePosition;
 			}
+
+			// unit move
+			var unit = ige.client.selectedUnit;
+			if (ige.client.cspEnabled && unit) {
+				var x = unit._translate.x.toFixed(0)
+				var y = unit._translate.y.toFixed(0)
+				if (self.sendPlayerInput || self.lastPositionSent == undefined || self.lastPositionSent[0] != x || self.lastPositionSent[1] != y) {
+					var pos = [x, y];
+					ige.network.send("playerUnitMoved", pos);
+					// console.log(x, y)
+					self.lastPositionSent = pos
+				}
+			}
+
+			self.sendPlayerInput = false
 		}
 	}
 
