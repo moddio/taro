@@ -5080,8 +5080,6 @@ var IgeEntity = IgeObject.extend({
 				prevTransform = nextTransform;
 				prevKeyFrame = nextKeyFrame;
 			}
-
-			
 		}
 
 		if (
@@ -5104,19 +5102,7 @@ var IgeEntity = IgeObject.extend({
 					y = this.nextPhysicsFrame[1][1];
 					rotate = this.nextPhysicsFrame[1][2];
 				}
-			}
-
-			
-			// // for debugging my unit's x-movement interpolation
-			// if (this == ige.client.selectedUnit) {
-			// 	let distanceTraveled = x - this.previousX
-			// 	let timeElapsed = ige._currentTime-this.previousRenderTime
-			// 	console.log(ige.nextSnapshot.length, 'x', this.prevPhysicsFrame[1][1].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][1].toFixed(0),
-			// 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0), '(' + timeElapsed.toFixed(0) + 'ms '+ ((ige._currentTime - this.prevPhysicsFrame[0]) / (this.nextPhysicsFrame[0] - this.prevPhysicsFrame[0]) * 100).toFixed(0) +'%)', this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2)
-			// 		)
-			// 	this.previousX = x;
-			// 	this.previousRenderTime = ige._currentTime;
-			// }	
+			}	
 		} 
 		
 		if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
