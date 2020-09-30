@@ -1858,7 +1858,7 @@ var IgeEntity = IgeObject.extend({
      * @param {CanvasRenderingContext2D} ctx The canvas context to render to.
      */
 	update: function (ctx, tickDelta, isForOrphans) {
-		var category = this._category || 'etc';
+		// var category = this._category || 'etc';
 		// if (ige.updateCount[category] == undefined)
 		// 	ige.updateCount[category] = 0;
 		// ige.updateCount[category]++;
@@ -1931,7 +1931,7 @@ var IgeEntity = IgeObject.extend({
 	tick: function (ctx, dontTransform) {
 		if (this._inView) ige.inViewCount++;
 		if ((!this._hidden && this._inView && (!this._parent || this._parent._inView)) || mode != 'play') {
-			var category = this._category || 'etc';
+			// var category = this._category || 'etc';
 			// if (ige.tickCount[category] == undefined)
 			// 	ige.tickCount[category] = 0;
 			// ige.tickCount[category]++;
@@ -2009,10 +2009,6 @@ var IgeEntity = IgeObject.extend({
 				// Process children
 				IgeObject.prototype.tick.call(this, ctx);
 			}
-		}
-		// if entity (unit/item/player/projectile) has attribute, run regenerate
-		if (this.attribute) {
-			this.attribute.regenerate();
 		}
 	},
 	playEffect: function (type) {

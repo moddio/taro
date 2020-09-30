@@ -1679,6 +1679,14 @@ var Unit = IgeEntityBox2d.extend({
                 self.minimapUnit.translateTo(self._translate.x, self._translate.y, 0);
             }
         }
+
+        // if entity (unit/item/player/projectile) has attribute, run regenerate
+        if (ige.isServer || (ige.isClient && ige.client.selectedUnit == this && ige.client.cspEnabled)) {        
+            if (this.attribute) {
+                this.attribute.regenerate();
+            }
+        }
+        
         this.processBox2dQueue();
     },
 

@@ -105,6 +105,14 @@ var Projectile = IgeEntityBox2d.extend({
 
 	_behaviour: function (ctx) {
 		var self = this;
+
+		// if entity (unit/item/player/projectile) has attribute, run regenerate
+		if (ige.isServer || (ige.isClient && ige.client.selectedUnit == this && ige.client.cspEnabled)) {        
+			if (this.attribute) {
+				this.attribute.regenerate();
+			}
+		}
+		
 		this.processBox2dQueue();
 	},
 
