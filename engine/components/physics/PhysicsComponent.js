@@ -618,45 +618,46 @@ var PhysicsComponent = IgeEventingClass.extend({
 							}
 
 							if (ige.isServer) {
-								if (ige.game.data.defaultData.clientSidePredictionEnabled && entity.targetTranslation) {
-									var xDiff = entity.targetTranslation[0] - x;
-									var yDiff = entity.targetTranslation[1] - y;
+								if (ige.game.data.defaultData.clientSidePredictionEnabled && entity.clientStreamedPosition) {
+									var xDiff = entity.clientStreamedPosition[0] - x;
+									var yDiff = entity.clientStreamedPosition[1] - y;
+									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-									// apply rubberbanding to reconcilie to position provided by the client
-									x += xDiff / 2;
-									y += yDiff / 2;
+									// execute server-side reconciliation if the position difference between server & client is less than 100px
+									if (distance > 100) {
+										// ignore client-streamed position for the next 500ms to force client-side to reconcile.
+										entity.reconciliationStartedAt = ige._currentTime;										
+									} else if (ige._currentTime - entity.reconciliationStartedAt > 500) {
+										// apply rubberbanding to reconcilie to position provided by the client
+										x += xDiff / 2;
+										y += yDiff / 2;										
+									}
 								}
 
 								// if (entity._stats.name && entity._stats.name.includes('user'))
-								// 	console.log(entity.targetTranslation, x, y)									
+								// 	console.log(entity.clientStreamedPosition, x, y)									
 
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
 							}
-							else if (ige.isClient) { // is dynamic (we don't transform static bodies)
-								// predict my unit's movement if cspEnabled == true
-								if (ige.client.cspEnabled && ige.client.selectedUnit == entity) {
-									// record current movement to compare with server-streamed data and reconciliate
-									// entity.movementHistory.push([ige._currentTime, [x, y, angle]])
-									// if (entity.movementHistory.length > 20) {
-									// 	entity.movementHistory.shift()
-									// }
-
-									// if (Math.abs(entity.reconcileRemaining[0]) > 2 ||
-									// 	Math.abs(entity.reconcileRemaining[1]) > 2
-									// ) {
-									// 	var xDiff = entity.reconcileRemaining[0] / 5
-									// 	var yDiff = entity.reconcileRemaining[1] / 5
-										
-									// 	x += xDiff
-									// 	y += yDiff
-
-									// 	entity.reconcileRemaining[0] -= xDiff
-									// 	entity.reconcileRemaining[1] -= yDiff
-									// }
+							else if (ige.isClient) {
 								
-									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];															
+								if (ige.client.cspEnabled && ige.client.selectedUnit == entity && entity.serverStreamedPosition != undefined) {
+									var xDiff = entity.serverStreamedPosition[0] - x;
+									var yDiff = entity.serverStreamedPosition[1] - y;
+									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+									// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
+									if (distance > 100) {
+										x = entity.serverStreamedPosition[0];
+										y = entity.serverStreamedPosition[1];
+										entity.prevPhysicsFrame = undefined
+									} else {
+										entity.prevPhysicsFrame = entity.nextPhysicsFrame
+									}
+									
+									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+																								
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];

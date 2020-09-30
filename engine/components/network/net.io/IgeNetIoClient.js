@@ -505,17 +505,12 @@ var IgeNetIoClient = {
 						];
 
 						obj[entityId] = entityData;
-
-						// // for debugging
-						// if (ige.$(entityId)._category == 'unit') {
-						// 	var x = entityData[0]
-						// }
-
 					}
 					else {
 						this._networkCommands[commandName](entityData)
 					}
 				}
+
 
 				if (Object.keys(obj).length) {
 					if (newSnapshotTimeStamp > ige.nextSnapshot[0]) {
@@ -527,7 +522,7 @@ var IgeNetIoClient = {
 							Math.min(ige.nextSnapshot[0] + 30, ige.renderTime)
 						)
 						
-						// rubberband renderTime towards the nextSnapshot's time.
+						// rubberband renderTime towards the nextSnapshot's time. (which is a frame older than the newest snapshot we received)
 						var timeDiff = ige.nextSnapshot[0] - ige.renderTime;
 						ige.renderTime += timeDiff/5 // rubberband toward serverTime
 
@@ -537,24 +532,7 @@ var IgeNetIoClient = {
 							i--;
 						}
 						ige.snapshots.splice(i, 0, [newSnapshotTimeStamp, obj]);
-
-						// // for debugging
-						// if (!ige.lastnewSnapshotTimeStamp) {
-						// 	ige.lastnewSnapshotTimeStamp = newSnapshotTimeStamp
-						// }
-
-						// if (!ige.lastX) {
-						// 	ige.lastX = x
-						// }
-
-						// var timeElapsed = newSnapshotTimeStamp - ige.lastnewSnapshotTimeStamp
-						// var distanceTravelled = x - ige.lastX;
-						// if (x) {
-						// 	console.log("unit speed", (distanceTravelled / timeElapsed * 100).toFixed(0), " (", distanceTravelled, "/", timeElapsed, ")")
-						// }
-						
-						// ige.lastX = x
-						// ige.lastnewSnapshotTimeStamp = newSnapshotTimeStamp;
+					
 					}
 				}
 			}

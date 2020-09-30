@@ -654,7 +654,7 @@ var ServerNetworkEvents = {
 		if (player) {
 			var unit = player.getSelectedUnit()
 			if (unit) {
-				unit.targetTranslation = position;
+				unit.clientStreamedPosition = position;
 			}
 		}
 	},
