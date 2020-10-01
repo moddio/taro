@@ -70,11 +70,7 @@ var IgeEntity = IgeObject.extend({
 		this._lastTransformAt = null;
 		this.nextPhysicsFrame = null;
 		this.serverStreamedPosition = [0, 0, 0]
-		this.reconciliationStartedAt = 0;
-		// this.reconcileRemaining = [0, 0, 0]
-		// this.diffTotal = 0;
-		//this._mouseEventTrigger = 0;
-
+		
 		if (ige.isClient) {
 			this.anchorOffset = { x: 0, y: 0, rotate: 0 }
 			this.addComponent(TweenComponent)
