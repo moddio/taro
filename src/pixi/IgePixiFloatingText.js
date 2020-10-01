@@ -95,14 +95,18 @@ var IgePixiFloatingText = IgeEntity.extend({
         var displacementPerStep = - 20 / step;
 
         this.interval = setInterval(function () {
-            self._pixiText.y += displacementPerStep;
-            self._pixiText.alpha -= opacityStep;
+            if (self._pixiText) {
+                self._pixiText.y += displacementPerStep;
+                self._pixiText.alpha -= opacityStep;
+            }
         }, 1000 / 60);
 
         setTimeout(function () {
             clearInterval(self.interval)
             delete ige.pixi.trackEntityById[self.id];
-            self._pixiText.destroy();
+            if (self._pixiText) {
+                self._pixiText.destroy();
+            }
             self.destroy();
         }, duration);
 
