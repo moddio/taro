@@ -994,6 +994,18 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
+                    case 'setLastAttackingUnit':
+                        var unit = ige.variable.getValue(action.unit, vars)
+                        ige.game.lastAttackingUnitId = unit.id();
+
+                        break;
+
+                    case 'setLastAttackedUnit':
+                        var unit = ige.variable.getValue(action.unit, vars)
+                        ige.game.lastAttackedUnitId = unit.id();
+
+                        break;
+
                     case 'changeUnitSpeed':
 
                         var bonusSpeed = ige.variable.getValue(action.unitSpeed, vars)
