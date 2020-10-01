@@ -38,6 +38,70 @@ var ActionComponent = IgeEntity.extend({
             ige.script.recordLast50Action(action.type);
             try {
                 switch (action.type) {
+
+                    /* Global */
+
+                    case 'setVariable': // store variables with formula processed
+                        var newValue = ige.variable.getValue(action.value, vars)
+                        params['newValue'] = newValue
+                        if (ige.game.data.variables.hasOwnProperty(action.variableName)) {
+                            ige.game.data.variables[action.variableName].value = newValue
+                            // if variable has default field then it will be returned when variable's value is undefined
+                            if (
+                                newValue === undefined &&
+                                action.value &&
+                                action.value.function === 'undefinedValue' &&
+                                ige.game.data.variables[action.variableName].hasOwnProperty('default')
+                            ) {
+                                ige.game.data.variables[action.variableName].default = undefined;
+                            }
+                        }
+
+                        // not sure if we want to be doing this on the client
+                        // causing issues so disabled on client for now
+                        if (ige.isServer) {
+                            ige.variable.updateDevConsole({ type: 'setVariable', params: params });
+                        } else {
+                            // console.log('setVariable:', action.variableName, newValue);
+                        }
+
+                        break;
+
+                    case 'setTimeOut': // execute actions after timeout
+
+                        //const use for creating new instance of variable every time.
+                        const setTimeOutActions = JSON.parse(JSON.stringify(action.actions))
+                        // const setTimeoutVars = _.cloneDeep(vars);
+                        setTimeout(function (actions) {
+                            self.run(actions, vars);
+                        }, action.duration, setTimeOutActions);
+                        break;
+
+                    case 'repeat':
+                        {
+
+                            var count = ige.variable.getValue(action.count, vars);
+                            var repeatActions = ige.variable.getValue(action.actions, vars);
+
+                            if (!isNaN(count) && count > 0) {
+                                for (let i = 0; i < count; i++) {
+                                    returnValue = self.run(repeatActions, vars);
+
+                                    if (returnValue == "break" || vars.break) {
+                                        // we dont have to return a value in case of break otherwise
+                                        // control will exit from for loop of actions as well
+                                        // throw BreakException;
+                                        vars.break = false;
+                                        break;
+                                    }
+                                    else if (returnValue == 'return') {
+                                        throw new Error('return without executing script')
+                                    }
+                                }
+                            }
+                            break;
+                        }                    
+                    
                     case 'runScript':
                         var previousScriptId = ige.script.currentScriptId
                         ige.script.runScript(action.scriptName, vars)
@@ -64,6 +128,42 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
+                    case 'transformRegionDimensions':
+                        var region = ige.variable.getValue(action.region, vars);
+                        var regionId = action.region.variableName;
+                        if (region) {
+                            var x = ige.variable.getValue(action.x, vars);
+                            var y = ige.variable.getValue(action.y, vars);
+                            var width = ige.variable.getValue(action.width, vars);
+                            var height = ige.variable.getValue(action.height, vars);
+
+                            region.streamUpdateData([
+                                { x: x },
+                                { y: y },
+                                { width: width },
+                                { height: height }
+                            ]);
+                        }
+
+                        break;
+
+                    case 'setLastAttackingUnit':
+                        var unit = ige.variable.getValue(action.unit, vars)
+                        ige.game.lastAttackingUnitId = unit.id();
+
+                        break;
+
+                    case 'setLastAttackedUnit':
+                        var unit = ige.variable.getValue(action.unit, vars)
+                        ige.game.lastAttackedUnitId = unit.id();
+
+                        break;
+
+                        
+
+                        
+                    /* Player */
+                    
                     case 'kickPlayer':
                         var player = ige.variable.getValue(action.entity, vars)
                         if (player && player._category == 'player') {
@@ -82,21 +182,6 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
-                    case 'flipEntitySprite':
-
-                        //console.log('flipUnitSprite:',action);
-                        var entity = ige.variable.getValue(action.entity, vars);
-
-                        var flipCode = 0;
-                        if (action.flip == 'horizontal') flipCode = 1;
-                        if (action.flip == 'vertical') flipCode = 2;
-                        if (action.flip == 'both') flipCode = 3;
-
-                        if (entity && self.entityCategories.indexOf(entity._category) > -1) {
-                            entity.streamUpdateData([{ flip: flipCode }]);
-                        }
-
-                        break;
 
                     case 'setPlayerAttribute':
 
@@ -108,6 +193,7 @@ var ActionComponent = IgeEntity.extend({
                         }
 
                         break;
+                        
                     case 'setPlayerAttributeMax':
                         var attrId = ige.variable.getValue(action.attributeType, vars);
                         var player = ige.variable.getValue(action.player, vars);
@@ -155,26 +241,6 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
-                    case 'transformRegionDimensions':
-                        var region = ige.variable.getValue(action.region, vars);
-                        var regionId = action.region.variableName;
-                        if (region) {
-                            var x = ige.variable.getValue(action.x, vars);
-                            var y = ige.variable.getValue(action.y, vars);
-                            var width = ige.variable.getValue(action.width, vars);
-                            var height = ige.variable.getValue(action.height, vars);
-
-                            region.streamUpdateData([
-                                { x: x },
-                                { y: y },
-                                { width: width },
-                                { height: height }
-                            ]);
-                        }
-
-                        break;
-
-                    /* Player */
 
                     case 'assignPlayerType':
                         var playerTypeId = ige.variable.getValue(action.playerType, vars)
@@ -315,67 +381,9 @@ var ActionComponent = IgeEntity.extend({
                         }
 
                         break;
+                    
+                    
 
-                    case 'setVariable': // store variables with formula processed
-                        var newValue = ige.variable.getValue(action.value, vars)
-                        params['newValue'] = newValue
-                        if (ige.game.data.variables.hasOwnProperty(action.variableName)) {
-                            ige.game.data.variables[action.variableName].value = newValue
-                            // if variable has default field then it will be returned when variable's value is undefined
-                            if (
-                                newValue === undefined &&
-                                action.value &&
-                                action.value.function === 'undefinedValue' &&
-                                ige.game.data.variables[action.variableName].hasOwnProperty('default')
-                            ) {
-                                ige.game.data.variables[action.variableName].default = undefined;
-                            }
-                        }
-
-                        // not sure if we want to be doing this on the client
-                        // causing issues so disabled on client for now
-                        if (ige.isServer) {
-                            ige.variable.updateDevConsole({ type: 'setVariable', params: params });
-                        } else {
-                            // console.log('setVariable:', action.variableName, newValue);
-                        }
-
-                        break;
-
-                    case 'setTimeOut': // execute actions after timeout
-
-                        //const use for creating new instance of variable every time.
-                        const setTimeOutActions = JSON.parse(JSON.stringify(action.actions))
-                        // const setTimeoutVars = _.cloneDeep(vars);
-                        setTimeout(function (actions) {
-                            self.run(actions, vars);
-                        }, action.duration, setTimeOutActions);
-                        break;
-
-                    case 'repeat':
-                        {
-
-                            var count = ige.variable.getValue(action.count, vars);
-                            var repeatActions = ige.variable.getValue(action.actions, vars);
-
-                            if (!isNaN(count) && count > 0) {
-                                for (let i = 0; i < count; i++) {
-                                    returnValue = self.run(repeatActions, vars);
-
-                                    if (returnValue == "break" || vars.break) {
-                                        // we dont have to return a value in case of break otherwise
-                                        // control will exit from for loop of actions as well
-                                        // throw BreakException;
-                                        vars.break = false;
-                                        break;
-                                    }
-                                    else if (returnValue == 'return') {
-                                        throw new Error('return without executing script')
-                                    }
-                                }
-                            }
-                            break;
-                        }
                     /* UI */
                     case 'showUiTextForPlayer':
                         if (entity && entity._stats) {
@@ -991,18 +999,6 @@ var ActionComponent = IgeEntity.extend({
                             if (!unitTypeId) invalidParameters.push("unit type");
                             throw new Error("cannot change unit type. invalid parameter(s) given: " + invalidParameters.toString())
                         }
-
-                        break;
-
-                    case 'setLastAttackingUnit':
-                        var unit = ige.variable.getValue(action.unit, vars)
-                        ige.game.lastAttackingUnitId = unit.id();
-
-                        break;
-
-                    case 'setLastAttackedUnit':
-                        var unit = ige.variable.getValue(action.unit, vars)
-                        ige.game.lastAttackedUnitId = unit.id();
 
                         break;
 
@@ -1817,6 +1813,23 @@ var ActionComponent = IgeEntity.extend({
                         break;
 
                     /* Entity */
+
+                    case 'flipEntitySprite':
+
+                        //console.log('flipUnitSprite:',action);
+                        var entity = ige.variable.getValue(action.entity, vars);
+
+                        var flipCode = 0;
+                        if (action.flip == 'horizontal') flipCode = 1;
+                        if (action.flip == 'vertical') flipCode = 2;
+                        if (action.flip == 'both') flipCode = 3;
+
+                        if (entity && self.entityCategories.indexOf(entity._category) > -1) {
+                            entity.streamUpdateData([{ flip: flipCode }]);
+                        }
+
+                        break;
+                    
                     case 'applyForceOnEntityXY':
                     case 'applyForceOnEntityXYLT':
 
