@@ -587,6 +587,8 @@ var Server = IgeClass.extend({
 		ige.network.define('gameSuggestion', self._onSomeBullshit);
 		ige.network.define('minimap', self._onSomeBullshit);
 
+		ige.network.define('createFloatingText',self._onSomeBullshit)
+		
 		ige.network.define('openShop', self._onSomeBullshit);
 		ige.network.define('openDialogue', self._onSomeBullshit);
 		ige.network.define('closeDialogue', self._onSomeBullshit);

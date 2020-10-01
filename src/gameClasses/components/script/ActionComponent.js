@@ -1087,6 +1087,11 @@ var ActionComponent = IgeEntity.extend({
                         }
 
                         break;
+                    case 'createFloatingText':
+                        var position = ige.variable.getValue(action.position, vars);
+                        var text = ige.variable.getValue(action.text, vars);
+                        ige.network.send("createFloatingText", { position: position, text:text });
+                        break;
 
                     /* Item */
 

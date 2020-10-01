@@ -3192,6 +3192,7 @@ var IgeEntity = IgeObject.extend({
 				entity.y = y;
 			}
 		}
+		return this;
 	},
 
 	teleportTo: function (x, y, rotate) {

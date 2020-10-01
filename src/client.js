@@ -771,6 +771,8 @@ var Client = IgeClass.extend({
         ige.network.define('gameSuggestion', self._onGameSuggestion);
         ige.network.define('minimap', self._onMinimapEvent);
 
+        ige.network.define('createFloatingText',self._onCreateFloatingText)
+
         ige.network.define('openShop', self._onOpenShop);
         ige.network.define('openDialogue', self._onOpenDialogue);
         ige.network.define('closeDialogue', self._onCloseDialogue);

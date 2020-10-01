@@ -122,6 +122,23 @@ var ClientNetworkEvents = {
 			}
 		}
 	},
+	_onCreateFloatingText: function(data) {
+		new IgePixiFloatingText(data.text, {
+			shouldBeBold: false,
+			isFadeUp: true,
+			parent: ige.pixi.world,
+			translate: {
+				x: data.position.x,
+				y: data.position.y
+			}
+		})
+		.layer(3)
+		.depth(3)
+		.colorOverlay(data.color || 'white')
+		.transformPixiEntity(data.position.x, data.position.y)
+		.mount(ige.pixi.world)
+		.fadeUp();
+	},	
 
 	_onOpenDialogue: function (data) {
 		if (data.type) {

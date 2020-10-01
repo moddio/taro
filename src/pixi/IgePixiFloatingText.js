@@ -122,7 +122,11 @@ var IgePixiFloatingText = IgeEntity.extend({
     },
 
     updatePosition: function () {
-        this._pixiText.y = - 3 - (this.getOwner().height() / 2) - (17 / ige.pixi.viewport.scale.y)
+        if(this.getOwner()) {
+            this._pixiText.y = - 3 - (this.getOwner().height() / 2) - (17 / ige.pixi.viewport.scale.y)
+        } else {
+            this._pixiText.y -= 3;
+        }
     },
 
     layer: function (layer) {
