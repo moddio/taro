@@ -626,7 +626,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// execute server-side reconciliation if the position difference between server & client is less than 100px
 									if (distance > 100) {
 										// ignore client-streamed position for the next 500ms to force client-side to reconcile.
-										entity.reconciliationStartedAt = ige._currentTime;										
+										entity.reconciliationStartedAt = ige._currentTime;																					
+										console.log(ige._currentTime, "initiate client to reconcile to server");
 									} else if (ige._currentTime - entity.reconciliationStartedAt > 500) {
 										// apply rubberbanding to reconcilie to position provided by the client
 										x += xDiff / 2;
@@ -652,6 +653,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 										x = entity.serverStreamedPosition[0];
 										y = entity.serverStreamedPosition[1];
 										entity.prevPhysicsFrame = undefined
+										console.log(ige._currentTime, "reconciling to server");
 									} else {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									}
