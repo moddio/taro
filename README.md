@@ -18,12 +18,11 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 - Inventory & item system
 - Unit attributes (HP, Energy, etc)
 - Weapon system (melee & projectile)
-- Dialogue windows
+- Dialogues
 - Shops
 - Unit control (top-down WASD or platformer)
-- Client-side predicted projectile + unit rotation
+- Client-side predicted projectile + unit movement (optional)
 - Basic AI
-- Ability to run multiple game server instances in one process
 - Mobile controls
 - and more!
 
@@ -49,11 +48,9 @@ Game client's user interface is rendered by [/src/index.ejs](https://github.com/
 ## How to make games on modd.io
 Please visit https://www.modd.io/tutorials for more information
 
-## We need contributors! Also, we are hiring
-Netcode and performance optimizations are difficult problems to solve. While we have solved much of this already, we are always looking for more contributors to help us further optimize this game engine. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K)
-
-If you find yourself enjoying making contributions, let's talk about working together. Contact us at admin[at]modd.io
+## We need contributors, and we are also hiring
+Performance optimization is a hard problem that takes aeons to solve. We are always looking for more developers to help us. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K) If you find yourself enjoying working with us, then we should seriously consider working together.
 
 Taro is completely free and open source under MIT license.
 
-Before being open sourced in September 2020, Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
+Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
