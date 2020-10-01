@@ -1082,8 +1082,7 @@ var ActionComponent = IgeEntity.extend({
 
                         if (unit && unit._category === 'unit' && text !== undefined) {
                             unit.streamUpdateData([
-                                { setFadingText: text },
-                                { color: color }
+                                { setFadingText: text + '|-|' + color},
                             ]);
                         }
 

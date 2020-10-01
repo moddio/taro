@@ -1376,7 +1376,8 @@ var Unit = IgeEntityBox2d.extend({
                         break;
                     case 'setFadingText':
                         if (ige.isClient) {
-                            self.updateFadingText(newValue, data.color);
+                            newValue = newValue.split('|-|');
+                            self.updateFadingText(newValue[0], newValue[1]);
                         }
                         break;
                     case 'ownerPlayerId':
