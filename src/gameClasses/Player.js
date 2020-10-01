@@ -615,6 +615,14 @@ var Player = IgeEntity.extend({
 	},
 
 	tick: function (ctx) {
+		
+        // if entity (unit/item/player/projectile) has attribute, run regenerate
+        if (ige.isServer) {
+            if (this.attribute) {
+                this.attribute.regenerate();
+            }
+        }
+		
 		IgeEntity.prototype.tick.call(this, ctx);
 	},
 
