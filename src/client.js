@@ -110,7 +110,6 @@ var Client = IgeClass.extend({
 
         //	ige.addComponent(IgeEditorComponent);
         ige.addComponent(IgeInitPixi);
-        self.startIgeEngine()
 
         //register error log modal btn;
         $('#dev-error-button').on('click', function () {
@@ -158,6 +157,9 @@ var Client = IgeClass.extend({
                 $('#loading-container').addClass('slider-out');
             }, 2000);
         }
+
+        self.loadGameData();
+
         $.when(self.igeEngineStarted).done(function () {
 
             // SANDBOX mode
@@ -233,9 +235,37 @@ var Client = IgeClass.extend({
                 }
                 $('#server-list').val(self.server.id)
                 console.log('best server selected',self.server)
-
-                self.initEngine();
             }
+
+            // center camera while loading
+            var tileWidth = ige.scaleMapDetails.tileWidth,
+            tileHeight = ige.scaleMapDetails.tileHeight;
+
+            ige.client.vp1.camera.translateTo((ige.map.data.width * tileWidth) / 2, (ige.map.data.height * tileHeight) / 2, 0);
+            console.log("TF",ige.game.data.defaultData)
+            this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
+            var gravity = ige.game.data.settings.gravity
+            if (gravity) {
+                console.log("setting gravity ", gravity)
+                ige.physics.gravity(gravity.x, gravity.y)
+            }
+            ige.physics.createWorld();
+            ige.physics.start();
+            
+            if (typeof mode === 'string' && mode === 'sandbox') {
+                ige.script.runScript('initialize', {});
+            }
+            if (ige.env == 'local') {
+                ige.physics.enableDebug(this.rootScene);    
+            }
+            
+            ige.addComponent(TriggerComponent);
+            ige.addComponent(VariableComponent);
+            ige.addComponent(ScriptComponent);
+            ige.addComponent(ConditionComponent);
+            ige.addComponent(ActionComponent);            
+            ige.addComponent(AdComponent); // ads should only be shown in games
+            
         })
     },
 
@@ -365,9 +395,10 @@ var Client = IgeClass.extend({
                         ige.client.vp1.drawBounds(true)
                     }
 
+                    self.igeEngineStarted.resolve();
+
                     console.log("igeEngine Started")
 
-                    self.igeEngineStarted.resolve();
                 }
             });
         });
@@ -449,23 +480,24 @@ var Client = IgeClass.extend({
 
     },
 
-    initEngine: function () {
+    loadGameData: function () {
         var self = this;
 
         var promise;
-        if (self.server.gameId) {
+        console.log("loading game data for ", gameId)
+
+        // if gameId is provided, use it. Otherwise, use local game.json file
+        if (gameId) {
             promise = new Promise(function (resolve, reject) {
 
-                $.when(self.igeEngineStarted).done(function () {
-                    $.ajax({
-                        url: self.host + '/api/game-client/' + self.server.gameId,
-                        dataType: "json",
-                        type: 'GET',
-                        success: function (game) {
-                            ige.menuUi.getServerPing(true);
-                            resolve(game);
-                        }
-                    })
+                $.ajax({
+                    url: self.host + '/api/game-client/' + gameId,
+                    dataType: "json",
+                    type: 'GET',
+                    success: function (game) {
+                        ige.menuUi.getServerPing(true);
+                        resolve(game);
+                    }
                 })
             })
         } else {
@@ -489,6 +521,7 @@ var Client = IgeClass.extend({
                 })
             })
         }
+
         promise.then(function (game) {
 
             var params = ige.client.getUrlVars();
@@ -500,7 +533,9 @@ var Client = IgeClass.extend({
 
             ige.addComponent(PhysicsComponent)
                             .physics.sleep(true)                   
-                        
+            
+            self.startIgeEngine()
+
             if (ige.game.data.isDeveloper) {
                 $('#mod-this-game-menu-item').removeClass('d-none');
             }
@@ -541,35 +576,6 @@ var Client = IgeClass.extend({
             if (ige.game.data.isDeveloper) {
                 ige.addComponent(DevConsoleComponent);
             }
-
-            // center camera while loading
-            var tileWidth = ige.scaleMapDetails.tileWidth,
-                tileHeight = ige.scaleMapDetails.tileHeight;
-
-            ige.client.vp1.camera.translateTo((ige.map.data.width * tileWidth) / 2, (ige.map.data.height * tileHeight) / 2, 0);
-            console.log("TF",ige.game.data.defaultData)
-            this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
-            var gravity = ige.game.data.settings.gravity
-            if (gravity) {
-                console.log("setting gravity ", gravity)
-                ige.physics.gravity(gravity.x, gravity.y)
-            }
-            ige.physics.createWorld();
-            ige.physics.start();
-            
-            if (typeof mode === 'string' && mode === 'sandbox') {
-                ige.script.runScript('initialize', {});
-            }
-            if (ige.env == 'local') {
-                ige.physics.enableDebug(this.rootScene);    
-            }
-            
-            ige.addComponent(TriggerComponent);
-            ige.addComponent(VariableComponent);
-            ige.addComponent(ScriptComponent);
-            ige.addComponent(ConditionComponent);
-            ige.addComponent(ActionComponent);            
-            ige.addComponent(AdComponent); // ads should only be shown in games
 
             $.when(self.mapLoaded).done(function () {
 

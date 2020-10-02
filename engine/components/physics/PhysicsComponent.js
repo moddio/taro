@@ -13,8 +13,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 			console.log('Cannot add box2d component to the ige instance once the engine has started!', 'error');
 		}
 
-		var self = this;
-
 		this._entity = entity;
 		this._options = options;
 		this._mode = 0;
