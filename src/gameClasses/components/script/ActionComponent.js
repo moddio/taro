@@ -1131,6 +1131,15 @@ var ActionComponent = IgeEntity.extend({
                             item.streamUpdateData([{ quantity: quantity }]);
                         }
                         break;
+                    
+                    case 'updateItemCooldown':
+                        var item = ige.variable.getValue(action.entity, vars)
+                        var value = ige.variable.getValue(action.value, vars)
+
+                        if (item && item._category == 'item') {
+                            item.streamUpdateData([{ fireRate: value }]);
+                        }
+                        break;
 
                     case 'setItemAmmo':
                         var item = ige.variable.getValue(action.item, vars);
