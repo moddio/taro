@@ -253,9 +253,9 @@ var IgeInitPixi = IgeClass.extend({
 
                 }
                 // return if entity is culled
-                if (entity.isCulled) {
-                    continue;
-                }
+                // if (entity.isCulled) {
+                //     continue;
+                // }
                 // update transformation using incoming network stream
                 if (ige.network.stream && ige._renderLatency != undefined) {
                     entity._processTransform();
