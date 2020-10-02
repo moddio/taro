@@ -1132,7 +1132,7 @@ var ActionComponent = IgeEntity.extend({
                         }
                         break;
                     
-                    case 'updateItemCooldown':
+                    case 'setItemFireRate':
                         var item = ige.variable.getValue(action.entity, vars)
                         var value = ige.variable.getValue(action.value, vars)
 
