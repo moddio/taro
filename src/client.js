@@ -827,7 +827,8 @@ var Client = IgeClass.extend({
         // try loading an ad to find out whether adblocker is active or not
         if (window.isStandalone) {
             isAdBlockEnabled = false;
-            adBlockStatus(false);
+            if (typeof adBlockStatus === "function")
+                adBlockStatus(false);
         }
         else {
             $.ajax('/showads.js', {
