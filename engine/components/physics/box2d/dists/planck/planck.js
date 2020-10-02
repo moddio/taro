@@ -1126,7 +1126,7 @@ var planck = (function (modules) {
              * The maximum linear velocity of a body. This limit is very large and is used
              * to prevent numerical problems. You shouldn't need to adjust this.
              */
-            Settings.maxTranslation = 2.0;
+            Settings.maxTranslation = 500.0;
             Settings.maxTranslationSquared = Settings.maxTranslation * Settings.maxTranslation;
 
             /**

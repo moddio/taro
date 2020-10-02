@@ -5039,6 +5039,7 @@ var IgeEntity = IgeObject.extend({
      * targeting to render the entity at.
      */
 	_processTransform: function () {
+
 		if (// prevent igePixi calling this function multiple times for a same entity
 			this._lastTransformAt == ige.renderTime || 
 			// entity has no body
@@ -5102,7 +5103,7 @@ var IgeEntity = IgeObject.extend({
 			targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-			// for debugging my unit's x-movement interpolation
+			// // for debugging my unit's x-movement interpolation
 			// if (this == ige.client.selectedUnit) {
 			// 	let distanceTraveled = x - this.previousX
 			// 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
@@ -5144,8 +5145,10 @@ var IgeEntity = IgeObject.extend({
 				}
 			} else {
 				// use server-streamed data to translate non-player unit. iff csp is enabled.
-				x = targetX;
-				y = targetY;
+				xDiff = targetX - x;
+				yDiff = targetY - y;
+				x += xDiff/3
+				y += yDiff/3
 				rotate = targetRotate;
 			}
 		}

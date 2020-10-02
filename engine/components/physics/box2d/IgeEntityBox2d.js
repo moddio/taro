@@ -382,39 +382,7 @@ var IgeEntityBox2d = IgeEntity.extend({
         else {
             this.applyTorqueLT(torque)
         }
-    },
-
-    // lossless applyForce
-    applyForce: function (x, y) {
-        // if body doesn't exist yet, queue
-
-        if (!ige.physics._world.isLocked() && this.body != undefined) {
-            this.applyForceLT(x, y)
-        }
-        else {
-            this.queueAction({
-                type: "applyForce",
-                x: x,
-                y: y
-            });
-        }
-    },
-
-    // lossless applyForce
-    applyLinearImpulse: function (x, y) {
-        // if body doesn't exist yet, queue
-
-        if (!ige.physics._world.isLocked() && this.body != undefined) {
-            this.applyLinearImpulseLT(x, y)
-        }
-        else {
-            this.queueAction({
-                type: "applyLinearImpulse",
-                x: x,
-                y: y
-            });
-        }
-    },
+    },    
 
     setLinearVelocity: function (x, y, z, isLossTolerant) {
         // if body doesn't exist yet, queue
@@ -449,6 +417,23 @@ var IgeEntityBox2d = IgeEntity.extend({
         }
     },
 
+    // lossless applyForce
+    applyForce: function (x, y) {
+        // if body doesn't exist yet, queue
+
+        if (!ige.physics._world.isLocked() && this.body != undefined) {
+            this.applyForceLT(x, y)
+        }
+        else {
+            this.queueAction({
+                type: "applyForce",
+                x: x,
+                y: y
+            });
+        }
+    },
+
+    
     // loss tolerant applyForce
     applyForceLT: function (x, y) {
         // ige.devLog("applyForce", x, y)
@@ -471,6 +456,22 @@ var IgeEntityBox2d = IgeEntity.extend({
         }
     },
 
+    // lossless applyForce
+    applyLinearImpulse: function (x, y) {
+        // if body doesn't exist yet, queue
+
+        if (!ige.physics._world.isLocked() && this.body != undefined) {
+            this.applyLinearImpulseLT(x, y)
+        }
+        else {
+            this.queueAction({
+                type: "applyLinearImpulse",
+                x: x,
+                y: y
+            });
+        }
+    },    
+
     // loss tolerant applyForce
     applyLinearImpulseLT: function (x, y) {
         // ige.devLog("applyForce", x, y)
@@ -487,7 +488,6 @@ var IgeEntityBox2d = IgeEntity.extend({
             IgeEntityBox2d.prototype.log("igeEntityBox2d.js: applyForce " + e)
         }
     },
-
 
     applyTorqueLT: function (torque) {
         try {

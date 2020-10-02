@@ -1934,7 +1934,6 @@ var IgeEngine = IgeEntity.extend({
 			// Call the input system tick to reset any flags etc
 			self.input.tick();
 
-
 			// Check if we were passed a context to work with
 			if (ctx === undefined) {
 				ctx = self._ctx;
@@ -1993,7 +1992,7 @@ var IgeEngine = IgeEntity.extend({
 					ige.client.myPlayer.control._behaviour()
 				}
 
-				while (ige.snapshots.length >= 2) {							
+				while (ige.snapshots.length > 2) {							
 					var snapshot = ige.snapshots.shift();
 					ige.prevSnapshot = ige.nextSnapshot;
 					ige.nextSnapshot = snapshot;
