@@ -622,16 +622,16 @@ var PhysicsComponent = IgeEventingClass.extend({
 									var xDiff = entity.clientStreamedPosition[0] - x;
 									var yDiff = entity.clientStreamedPosition[1] - y;
 									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
+									// console.log(entity.clientStreamedPosition)
 									// execute server-side reconciliation if the position difference between server & client is less than 100px
 									if (distance > 100) {
 										// ignore client-streamed position for the next 500ms to force client-side to reconcile.
 										entity.reconciliationStartedAt = ige._currentTime;																					
 										// console.log(ige._currentTime, "initiate client to reconcile to server");
-									} else if (ige._currentTime - entity.reconciliationStartedAt > 500) {
+									} else {
 										// apply rubberbanding to reconcilie to position provided by the client
 										x += xDiff / 2;
-										y += yDiff / 2;										
+										y += yDiff / 2;
 									}
 								}
 
@@ -644,22 +644,49 @@ var PhysicsComponent = IgeEventingClass.extend({
 							else if (ige.isClient) {
 								
 								if (ige.client.cspEnabled && ige.client.selectedUnit == entity && entity.serverStreamedPosition != undefined) {
-									var xDiff = entity.serverStreamedPosition[0] - x;
-									var yDiff = entity.serverStreamedPosition[1] - y;
-									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
-									// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
-									if (distance > 100) {
-										x = entity.serverStreamedPosition[0];
-										y = entity.serverStreamedPosition[1];
-										entity.prevPhysicsFrame = undefined
-										// console.log(ige._currentTime, "reconciling to server");
-									} else {
-										entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									}
+									// var xDiff = entity.serverStreamedPosition[0] - x;
+									// var yDiff = entity.serverStreamedPosition[1] - y;
+									// var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+									// 			// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
+									// 			if (distance > 100) {
+									// 				x = entity.serverStreamedPosition[0];
+									// 				y = entity.serverStreamedPosition[1];
+									// 				entity.prevPhysicsFrame = undefined
+									// 				console.log(ige._currentTime, "reconciling to server");
+									// 			}
 									
+									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
-																								
+									// console.log(x, y)
+
+									if (entity.movementHistory.length > 2) {
+										for (var i = entity.movementHistory.length-1; i >= 2; i--) {
+											var prevMovement = entity.movementHistory[i-1]
+											var nextMovement = entity.movementHistory[i];
+											var time = ige._currentTime - (ige.network.latency * 2)
+											if (prevMovement && nextMovement && prevMovement[0] < time && time < nextMovement[0]) {
+												var historyX = entity.interpolateValue(prevMovement[1][0], nextMovement[1][0], prevMovement[0], time, nextMovement[0]);
+												var historyY = entity.interpolateValue(prevMovement[1][1], nextMovement[1][1], prevMovement[0], time, nextMovement[0]);
+												
+												var xDiff = (entity.serverStreamedPosition[0] - historyX)
+												var yDiff = (entity.serverStreamedPosition[1] - historyY)
+												
+												var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+												// console.log(distance)
+												// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
+												if (distance > 100) {
+													x = entity.serverStreamedPosition[0];
+													y = entity.serverStreamedPosition[1];
+													entity.prevPhysicsFrame = undefined
+													// console.log(ige._currentTime, "reconciling to server");
+												}
+
+												entity.movementHistory = [];
+											}
+										}
+									}
+									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
+									
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];

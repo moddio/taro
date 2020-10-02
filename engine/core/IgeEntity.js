@@ -65,7 +65,7 @@ var IgeEntity = IgeObject.extend({
 		// this ensures entity is spawning at a correct position initially. particularily useful for projectiles
 
 		this._keyFrames = [];
-		// this.movementHistory = [];
+		this.movementHistory = [];
 		this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]]
 		this._lastTransformAt = null;
 		this.nextPhysicsFrame = null;
@@ -5096,12 +5096,28 @@ var IgeEntity = IgeObject.extend({
 					if (this == ige.client.selectedUnit) {
 						rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					}
+
+					// if (this == ige.client.selectedUnit) {
+					// 	let distanceTraveled = x - this.previousX
+					// 	let timeElapsed = (ige._currentTime-this.previousRenderTime).toFixed(0)
+					// 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
+					// 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0), 
+					// 		'(' + timeElapsed + 'ms '+ (ige._currentTime - this.prevPhysicsFrame[0] / (this.nextPhysicsFrame[1][0] - this.prevPhysicsFrame[1][0] * 100)).toFixed(0) +'%)',
+					// 		this.nextPhysicsFrame[1][0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
+					// 	this.previousX = x;
+					// 	this.previousRenderTime = ige._currentTime;
+					// }
+					
 				} else {
 					// unit is teleporting
 					x = this.nextPhysicsFrame[1][0];
 					y = this.nextPhysicsFrame[1][1];
 					rotate = this.nextPhysicsFrame[1][2];
+					console.log("teleport")
 				}
+
+				// for debugging my unit's x-movement interpolation
+				
 			}	
 		} 
 		
@@ -5159,6 +5175,7 @@ var IgeEntity = IgeObject.extend({
 			// 	this.previousX = x;
 			// 	this.previousRenderTime = ige.renderTime;
 			// }
+			
 		}
 		
 		// instantly rotate unit to mouse cursor

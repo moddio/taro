@@ -78,6 +78,7 @@ var IgeTimeSyncExtension = {
 	timeSync: function (serverTime) {
 		
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
+		ige.network.latency = latency;
 		
 		if (statsPanels.latency) {
 			statsPanels.latency._latencyPanel.update(latency, 1000);
