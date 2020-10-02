@@ -44,17 +44,13 @@ var Client = IgeClass.extend({
                 height: 32
             }))
 
-        self.gameDataLoaded = $.Deferred();
-        self.textureLoaded = $.Deferred();
+        self.igeEngineStarted = $.Deferred();
         self.mapLoaded = $.Deferred();
-        self.engineStarted = $.Deferred();        
-        self.miniMapLoaded = $.Deferred();
-        
         self.mapRenderEnabled = true;
         self.unitRenderEnabled = true;
         self.itemRenderEnabled = true;
         self.uiEntityRenderEnabled = true;
-        
+        self.miniMapLoaded = $.Deferred();
         self.miniMapEnabled = false;
         self.clearEveryFrame = true;
         self.cameraEnabled = true;
@@ -110,10 +106,29 @@ var Client = IgeClass.extend({
 
 
         self.tradeOffers = [undefined, undefined, undefined, undefined, undefined]
+
+        ige.addComponent(PhysicsComponent)
+            .physics.sleep(true)
+
         self.implement(ClientNetworkEvents);
 
         //	ige.addComponent(IgeEditorComponent);
         ige.addComponent(IgeInitPixi);
+        self.startIgeEngine()
+
+        //register error log modal btn;
+        $('#dev-error-button').on('click', function () {
+            $('#error-log-modal').modal('show');
+        });
+
+        $('#bandwidth-usage').on('click', function () {
+            $('#dev-status-modal').modal('show');
+        });
+
+        $('#leaderboard-link').on('click', function (e) {
+            e.preventDefault();
+            $('#leaderboard-modal').modal('show');
+        });
 
         document.addEventListener('visibilitychange', function () {
             if (!document.hidden) {
@@ -136,6 +151,8 @@ var Client = IgeClass.extend({
         ige.addComponent(IgeNetIoComponent);
         ige.addComponent(SoundComponent);
         ige.addComponent(MapComponent);
+
+
         ige.addComponent(MenuUiComponent);
         ige.addComponent(TradeUiComponent);
         ige.addComponent(MobileControlsComponent);
@@ -145,70 +162,7 @@ var Client = IgeClass.extend({
                 $('#loading-container').addClass('slider-out');
             }, 2000);
         }
-
-        self.loadGameData();
-
-        // game data loaded
-        $.when(self.gameDataLoaded).done(function (game) {
-            if (!game.data.isDeveloper) {
-                game.data.isDeveloper = window.isStandalone;
-            }
-            ige.game.data = game.data;
-
-            ige.addComponent(PhysicsComponent)
-                            .physics.sleep(true)
-            
-            
-            if (ige.game.data.isDeveloper) {
-                $('#mod-this-game-menu-item').removeClass('d-none');
-            }
-
-            for (let i in ige.game.data.unitTypes) {
-                let unit = ige.game.data.unitTypes[i];
-                let image = new Image();
-                image.src = unit.cellSheet.url;
-                image.onload = function () {
-                    ige.game.data.unitTypes[i].cellSheet.originalHeight = image.height / unit.cellSheet.rowCount;
-                    ige.game.data.unitTypes[i].cellSheet.originalWidth = image.width / unit.cellSheet.columnCount;
-                }
-            }
-
-            ige.menuUi.clipImageForShop();
-            ige.scaleMap(game.data.map);
-
-            if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
-                $('#leaderboard').css({
-                    top: '190px'
-                })
-                self.miniMapEnabled = true;
-                ige.miniMap.updateMiniMap();
-            }
-
-            var engineTickFrameRate = 15
-            if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
-                engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)) // keep fps range between 15 and 60
-            }
-            ige._physicsTickRate = engineTickFrameRate;
-
-            ige.menuUi.toggleScoreBoard();
-            ige.menuUi.toggleLeaderBoard();
-
-            if (ige.game.data.isDeveloper) {
-                ige.addComponent(DevConsoleComponent);
-            }
-
-            ige.client.loadGameTextures()            
-            console.log("1. load game data completed");
-        });
-
-        // texture loaded. load engine
-        $.when(self.textureLoaded).done(function () {                        
-            self.startEngine();
-            console.log('2. textures loaded');
-        });
-        
-        // engine started
-        $.when(self.engineStarted).done(function () {
+        $.when(self.igeEngineStarted).done(function () {
 
             // SANDBOX mode
             if (typeof mode == 'string' && mode == 'sandbox') {
@@ -219,9 +173,9 @@ var Client = IgeClass.extend({
                     type: 'GET',
                     success: function (game) {
                         ige.game.data = game.data;
-
                         // load map
                         var gameMap = ige.scaleMap(game.data.map);
+
                         ige.map.load(gameMap);
 
                         var baseTilesize = 64;
@@ -232,7 +186,24 @@ var Client = IgeClass.extend({
                         setTimeout(function () {
                             $('#loading-container').addClass('slider-out');
                         }, 4000);
-                        
+
+                        $.when(self.mapLoaded)
+                            .done(function () {
+
+                                ige.mapEditor.scanMapLayers()
+                                ige.mapEditor.drawTile();
+                                ige.mapEditor.addUI()
+                                ige.mapEditor.customEditor()
+                                if (!ige.game.data.isDeveloper) {
+                                    ige.mapEditor.selectEntities = false;
+                                }
+                                ige.setFps(15);
+                                $('#loading-container').addClass('slider-out');
+                            })
+                            .fail(function (err) {
+                                $('#loading-container').addClass('slider-out');
+                            })
+
                     }
                 })
             } else {
@@ -265,94 +236,10 @@ var Client = IgeClass.extend({
                 }
                 $('#server-list').val(self.server.id)
                 console.log('best server selected',self.server)
-            }
 
-            console.log("loading map")
-            ige.map.load(ige.game.data.map);
-
-            // center camera while loading
-            var tileWidth = ige.scaleMapDetails.tileWidth,
-                tileHeight = ige.scaleMapDetails.tileHeight;
-
-            ige.client.vp1.camera.translateTo((ige.map.data.width * tileWidth) / 2, (ige.map.data.height * tileHeight) / 2, 0);
-            
-            this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
-            var gravity = ige.game.data.settings.gravity
-            if (gravity) {
-                console.log("setting gravity ", gravity)
-                ige.physics.gravity(gravity.x, gravity.y)
+                self.initEngine();
             }
-            ige.physics.createWorld();
-            ige.physics.start();
-            
-            if (typeof mode === 'string' && mode === 'sandbox') {
-                ige.script.runScript('initialize', {});
-            }
-            if (ige.env == 'local') {
-                ige.physics.enableDebug(this.rootScene);    
-            }
-            
-            ige.addComponent(TriggerComponent);
-            ige.addComponent(VariableComponent);
-            ige.addComponent(ScriptComponent);
-            ige.addComponent(ConditionComponent);
-            ige.addComponent(ActionComponent);            
-            ige.addComponent(AdComponent); // ads should only be shown in games
-            console.log("3. igeEngine Started")
         })
-
-        
-        // map loaded
-        $.when(self.mapLoaded).done(function () {
-            var zoom = 1000
-            // get default zoom
-            if (ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
-                zoom = ige.game.data.settings.camera.zoom.default
-                self._trackTranslateSmoothing = ige.game.data.settings.camera.trackingDelay || 15;
-            }
-
-            self.setZoom(zoom);
-
-            ige.addComponent(TimerComponent);
-            ige.addComponent(ThemeComponent);
-            ige.addComponent(PlayerUiComponent);
-            ige.addComponent(UnitUiComponent);
-            ige.addComponent(ItemUiComponent);
-            ige.addComponent(ScoreboardComponent);
-
-            ige.addComponent(ShopComponent); // game data is needed to populate shop
-            if (ige.game.data.defaultData.enableMiniMap) {
-                ige.miniMap.createMiniMap();
-            }
-            // if (ige.game.data.settings.shop && ige.game.data.settings.shop.isEnabled) {
-            ige.shop.enableShop();
-
-            //load sound and music
-            //when game starts
-            ige.sound.preLoadSound();
-            ige.sound.preLoadMusic();
-
-            window.activatePlayGame = true;
-
-            $('#play-game-button-wrapper').removeClass('d-none-important');
-            if (self.preSelectedServerId && self.serverFound && params.joinGame === 'true' && userId) {
-                self.connectToServer();
-            }
-            if (typeof mode == 'string' && mode == 'sandbox') {
-                ige.mapEditor.scanMapLayers()
-                ige.mapEditor.drawTile();
-                ige.mapEditor.addUI()
-                ige.mapEditor.customEditor()
-                if (!ige.game.data.isDeveloper) {
-                    ige.mapEditor.selectEntities = false;
-                }
-                ige.setFps(15);
-                $('#loading-container').addClass('slider-out');
-            }
-            
-            console.log("4. map loaded")
-
-        });
     },
 
     getServersArray: function () {
@@ -406,128 +293,138 @@ var Client = IgeClass.extend({
         return firstChoice || secondChoice;
     },
 
-    startEngine: function () {
+    startIgeEngine: function () {
         var self = this;
-        ige.start(function (success) {
-            // Check if the engine started successfully
-            if (success) {
 
-                self.rootScene = new IgeScene2d().id('rootScene').drawBounds(false);
+        // ige.createFrontBuffer(true);
 
-                self.minimapScene = new IgeScene2d().id('minimapScene').drawBounds(false);
+        // when all textures have loaded
+        ige.on('texturesLoaded', function () {
+            // Ask the engine to start
+            ige.start(function (success) {
+                // Check if the engine started successfully
+                if (success) {
+                    console.log("textures loaded")
 
-                self.tilesheetScene = new IgeScene2d().id('tilesheetScene').drawBounds(true).drawMouse(true);
+                    self.rootScene = new IgeScene2d().id('rootScene').drawBounds(false);
 
-                self.mainScene = new IgeScene2d().id('baseScene').mount(self.rootScene).drawMouse(true);
+                    self.minimapScene = new IgeScene2d().id('minimapScene').drawBounds(false);
 
-                self.objectScene = new IgeScene2d().id('objectScene').mount(self.mainScene)
+                    self.tilesheetScene = new IgeScene2d().id('tilesheetScene').drawBounds(true).drawMouse(true);
 
-                if (typeof mode == 'string' && mode == 'sandbox') {
-                    ige.addComponent(MapEditorComponent)
-                    ige.mapEditor.createMiniMap();
-                } else if (typeof mode === 'string' && mode == 'play') {
-                    ige.addComponent(MiniMapComponent)
-                    ige.addComponent(MiniMapUnit);
-                }
-                ige.addComponent(RegionManager);
+                    self.mainScene = new IgeScene2d().id('baseScene').mount(self.rootScene).drawMouse(true);
 
-                // Create the UI scene
-                self.uiScene = new IgeScene2d()
-                    .id('uiScene')
-                    .depth(1000)
-                    .ignoreCamera(true)
-                    .mount(self.rootScene);
+                    self.objectScene = new IgeScene2d().id('objectScene').mount(self.mainScene)
 
-                ige.mobileControls.attach(self.uiScene);
+                    if (typeof mode == 'string' && mode == 'sandbox') {
+                        ige.addComponent(MapEditorComponent)
+                        ige.mapEditor.createMiniMap();
+                    } else if (typeof mode === 'string' && mode == 'play') {
+                        ige.addComponent(MiniMapComponent)
+                        ige.addComponent(MiniMapUnit);
+                    }
+                    ige.addComponent(RegionManager);
 
-                if (typeof mode == 'string' && mode == 'sandbox') {
-                    self.vp2 = new IgeViewport()
-                        .id('vp2')
-                        .layer(100)
-                        .drawBounds(true)
-                        .height(0)
-                        .width(0)
-                        .borderColor('#0bcc38')
-                        .borderWidth(20)
-                        .bottom(0)
-                        .right(0)
-                        .scene(self.tilesheetScene)
+                    // Create the UI scene
+                    self.uiScene = new IgeScene2d()
+                        .id('uiScene')
+                        .depth(1000)
+                        .ignoreCamera(true)
+                        .mount(self.rootScene);
+
+                    ige.mobileControls.attach(self.uiScene);
+
+                    if (typeof mode == 'string' && mode == 'sandbox') {
+                        self.vp2 = new IgeViewport()
+                            .id('vp2')
+                            .layer(100)
+                            .drawBounds(true)
+                            .height(0)
+                            .width(0)
+                            .borderColor('#0bcc38')
+                            .borderWidth(20)
+                            .bottom(0)
+                            .right(0)
+                            .scene(self.tilesheetScene)
+                            .mount(ige);
+                    }
+                    self.vp1 = new IgeViewport()
+                        .id('vp1')
+                        .autoSize(true)
+                        .scene(self.rootScene)
+                        .drawBounds(false)
                         .mount(ige);
+
+                    ige._selectedViewport = self.vp1;
+
+                    if (typeof mode == 'string' && mode == 'sandbox') {
+                        self.vp1.addComponent(MapPanComponent)
+                            .mapPan.enabled(true);
+
+                        self.vp2.addComponent(MapPanComponent)
+                            .mapPan.enabled(true);
+
+                        ige.client.vp2.drawBounds(true);
+                        ige.client.vp1.drawBounds(true)
+                    }
+
+                    console.log("igeEngine Started")
+
+                    self.igeEngineStarted.resolve();
                 }
-                self.vp1 = new IgeViewport()
-                    .id('vp1')
-                    .autoSize(true)
-                    .scene(self.rootScene)
-                    .drawBounds(false)
-                    .mount(ige);
-
-                ige._selectedViewport = self.vp1;
-
-                if (typeof mode == 'string' && mode == 'sandbox') {
-                    self.vp1.addComponent(MapPanComponent)
-                        .mapPan.enabled(true);
-
-                    self.vp2.addComponent(MapPanComponent)
-                        .mapPan.enabled(true);
-
-                    ige.client.vp2.drawBounds(true);
-                    ige.client.vp1.drawBounds(true)
-                }
-
-                self.engineStarted.resolve();
-            }
+            });
         });
     },
 
     loadGameTextures: function () {
-        var self = this;
-        var version = 1;
-        var resource = ige.pixi.loader;
+        return new Promise(function (resolve, reject) {
+            var version = 1;
+            var resource = ige.pixi.loader;
 
-        // used when texture is not loaded in cache.
-        resource.add("emptyTexture", "https://cache.modd.io/asset/spriteImage/1560747844626_dot.png?version=" + version, { crossOrigin: true });
+            // used when texture is not loaded in cache.
+            resource.add("emptyTexture", "https://cache.modd.io/asset/spriteImage/1560747844626_dot.png?version=" + version, { crossOrigin: true });
 
-        for (var key in ige.game.data.unitTypes) {
-            var unit = ige.game.data.unitTypes[key];
-            var cellSheet = unit.cellSheet;
-            if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
-                ige.client.loadedTextures[cellSheet.url] = cellSheet;
-                resource.add(cellSheet.url, cellSheet.url + "?version=" + version, { crossOrigin: true });
-            }
-        }
-        for (var key in ige.game.data.projectileTypes) {
-            var projectile = ige.game.data.projectileTypes[key];
-            var cellSheet = projectile.cellSheet;
-            if (cellSheet.url && !ige.client.loadedTextures[cellSheet.url]) {
-                ige.client.loadedTextures[cellSheet.url] = cellSheet;
-                resource.add(cellSheet.url, cellSheet.url + "?version=" + version, { crossOrigin: true });
-            }
-        }
-        for (var key in ige.game.data.itemTypes) {
-            var item = ige.game.data.itemTypes[key];
-            var cellSheet = item.cellSheet;
-
-            if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
-                ige.client.loadedTextures[cellSheet.url] = cellSheet;
-                resource.add(cellSheet.url, cellSheet.url + "?version=" + version, { crossOrigin: true });
-            }
-        }
-
-        resource.load(function (loadedResource) {
-            for (var imageName in loadedResource.resources) {
-                var resource = loadedResource.resources[imageName];
-                resource.animation = new IgePixiAnimation();
-                if (resource && resource.url) {
-                    var cellSheet = ige.client.loadedTextures[resource.name];
-                    if (cellSheet) {
-                        resource.animation.getAnimationSprites(resource.url, cellSheet.columnCount, cellSheet.rowCount);
-                    }
+            for (var key in ige.game.data.unitTypes) {
+                var unit = ige.game.data.unitTypes[key];
+                var cellSheet = unit.cellSheet;
+                if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
+                    ige.client.loadedTextures[cellSheet.url] = cellSheet;
+                    resource.add(cellSheet.url, cellSheet.url + "?version=" + version, { crossOrigin: true });
                 }
             }
-            self.textureLoaded.resolve();
-        });
+            for (var key in ige.game.data.projectileTypes) {
+                var projectile = ige.game.data.projectileTypes[key];
+                var cellSheet = projectile.cellSheet;
+                if (cellSheet.url && !ige.client.loadedTextures[cellSheet.url]) {
+                    ige.client.loadedTextures[cellSheet.url] = cellSheet;
+                    resource.add(cellSheet.url, cellSheet.url + "?version=" + version, { crossOrigin: true });
+                }
+            }
+            for (var key in ige.game.data.itemTypes) {
+                var item = ige.game.data.itemTypes[key];
+                var cellSheet = item.cellSheet;
 
-        
+                if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
+                    ige.client.loadedTextures[cellSheet.url] = cellSheet;
+                    resource.add(cellSheet.url, cellSheet.url + "?version=" + version, { crossOrigin: true });
+                }
+            }
+
+            resource.load(function (loadedResource) {
+                for (var imageName in loadedResource.resources) {
+                    var resource = loadedResource.resources[imageName];
+                    resource.animation = new IgePixiAnimation();
+                    if (resource && resource.url) {
+                        var cellSheet = ige.client.loadedTextures[resource.name];
+                        if (cellSheet) {
+                            resource.animation.getAnimationSprites(resource.url, cellSheet.columnCount, cellSheet.rowCount);
+                        }
+                    }
+                }
+                return resolve();
+            });
+        });
+        // console.log('item textures loaded');
     },
 
     setZoom: function (zoom) {
@@ -555,41 +452,143 @@ var Client = IgeClass.extend({
 
     },
 
-    loadGameData: function () {
+    initEngine: function () {
         var self = this;
 
-        console.log("loading game data for ", gameId)
+        var promise;
+        if (self.server.gameId) {
+            promise = new Promise(function (resolve, reject) {
 
-        // if gameId is provided, use it. Otherwise, use local game.json file
-        if (gameId) {
-            $.ajax({
-                    url: self.host + '/api/game-client/' + gameId,
+                $.when(self.igeEngineStarted).done(function () {
+                    $.ajax({
+                        url: self.host + '/api/game-client/' + self.server.gameId,
+                        dataType: "json",
+                        type: 'GET',
+                        success: function (game) {
+                            ige.menuUi.getServerPing(true);
+                            resolve(game);
+                        }
+                    })
+                })
+            })
+        } else {
+            promise = new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: '/src/game.json',
                     dataType: "json",
                     type: 'GET',
                     success: function (game) {
-                        ige.menuUi.getServerPing(true);
-                        self.gameDataLoaded.resolve(game);
+                        var data = { data: {} };
+                        game.defaultData = game;
+                        for (let [key, value] of Object.entries(game)) {
+                            data['data'][key] = value;
+                        }
+                        for (let [key, value] of Object.entries(game.data)) {
+                            data['data'][key] = value;
+                        }
+                        resolve(data);
                     }
                 })
-        } else {
-            $.ajax({
-                url: '/src/game.json',
-                dataType: "json",
-                type: 'GET',
-                success: function (game) {
-                    var data = { data: {} };
-                    game.defaultData = game;
-
-                    for (let [key, value] of Object.entries(game)) {
-                        data['data'][key] = value;
-                    }
-                    for (let [key, value] of Object.entries(game.data)) {
-                        data['data'][key] = value;
-                    }
-                    self.gameDataLoaded.resolve(data);
-                }
             })
         }
+        promise.then(function (game) {
+
+            var params = ige.client.getUrlVars();
+
+            if (!game.data.isDeveloper) {
+                game.data.isDeveloper = window.isStandalone;
+            }
+            ige.game.data = game.data;
+
+            if (ige.game.data.isDeveloper) {
+                $('#mod-this-game-menu-item').removeClass('d-none');
+            }
+
+            for (let i in ige.game.data.unitTypes) {
+                let unit = ige.game.data.unitTypes[i];
+                let image = new Image();
+                image.src = unit.cellSheet.url;
+                image.onload = function () {
+                    ige.game.data.unitTypes[i].cellSheet.originalHeight = image.height / unit.cellSheet.rowCount;
+                    ige.game.data.unitTypes[i].cellSheet.originalWidth = image.width / unit.cellSheet.columnCount;
+                }
+            }
+            ige.menuUi.clipImageForShop();
+            ige.scaleMap(game.data.map);
+            ige.client.loadGameTextures()
+                .then(() => {
+                    ige.map.load(ige.game.data.map);
+                });
+
+            if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
+                $('#leaderboard').css({
+                    top: '190px'
+                })
+                self.miniMapEnabled = true;
+                ige.miniMap.updateMiniMap();
+            }
+
+            var engineTickFrameRate = 15
+            if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
+                engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)) // keep fps range between 15 and 60
+            }
+            ige._physicsTickRate = engineTickFrameRate;
+
+            ige.menuUi.toggleScoreBoard();
+            ige.menuUi.toggleLeaderBoard();
+
+            if (ige.game.data.isDeveloper) {
+                ige.addComponent(DevConsoleComponent);
+            }
+
+            // center camera while loading
+            var tileWidth = ige.scaleMapDetails.tileWidth,
+                tileHeight = ige.scaleMapDetails.tileHeight;
+
+            ige.client.vp1.camera.translateTo((ige.map.data.width * tileWidth) / 2, (ige.map.data.height * tileHeight) / 2, 0);
+
+            ige.addComponent(AdComponent); // ads should only be shown in games
+
+            self.loadCSP(); // always enable CSP.
+
+            $.when(self.mapLoaded).done(function () {
+
+                var zoom = 1000
+                if (ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
+                    zoom = ige.game.data.settings.camera.zoom.default
+                    self._trackTranslateSmoothing = ige.game.data.settings.camera.trackingDelay || 15;
+                }
+
+                self.setZoom(zoom);
+
+                ige.addComponent(TimerComponent);
+
+                ige.addComponent(ThemeComponent);
+                ige.addComponent(PlayerUiComponent);
+                ige.addComponent(UnitUiComponent);
+                ige.addComponent(ItemUiComponent);
+                ige.addComponent(ScoreboardComponent);
+
+                ige.addComponent(ShopComponent); // game data is needed to populate shop
+                if (ige.game.data.defaultData.enableMiniMap) {
+                    ige.miniMap.createMiniMap();
+                }
+                // if (ige.game.data.settings.shop && ige.game.data.settings.shop.isEnabled) {
+                ige.shop.enableShop();
+
+                // ige.client.preLoadAnimationTextures();
+                //load sound and music
+                //when game starts
+                ige.sound.preLoadSound();
+                ige.sound.preLoadMusic();
+
+                window.activatePlayGame = true;
+                $('#play-game-button-wrapper').removeClass('d-none-important');
+                if (self.preSelectedServerId && self.serverFound && params.joinGame === 'true' && userId) {
+                    self.connectToServer();
+                }
+            }); // map loaded
+        })
     },
 
     connectToServer: function () {
@@ -708,6 +707,30 @@ var Client = IgeClass.extend({
         });
     },
 
+    loadCSP: function () {
+        this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
+        // this.cspEnabled = true;
+        var gravity = ige.game.data.settings.gravity
+        if (gravity) {
+            console.log("setting gravity ", gravity)
+            ige.physics.gravity(gravity.x, gravity.y)
+        }
+        ige.physics.createWorld();
+        ige.physics.start();
+        ige.addComponent(TriggerComponent);
+        ige.addComponent(VariableComponent);
+        ige.addComponent(ScriptComponent);
+        ige.addComponent(ConditionComponent);
+        ige.addComponent(ActionComponent);
+        if (typeof mode === 'string' && mode === 'sandbox') {
+            ige.script.runScript('initialize', {});
+        }
+        if (ige.env == 'local') {
+            
+        }
+
+        ige.physics.enableDebug(this.rootScene);
+    },
 
     defineNetworkEvents: function () {
         var self = this;
