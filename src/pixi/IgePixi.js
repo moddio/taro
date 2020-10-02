@@ -217,11 +217,6 @@ var IgeInitPixi = IgeClass.extend({
                 // handle entity behaviour and transformation offsets
                 if (ige.gameLoopTickHasExecuted) {
 
-                    // return if entity is culled
-                    if (entity.isCulled) {
-                        return;
-                    }
-
                     if (entity._deathTime !== undefined && entity._deathTime <= ige._tickStart) {
                         // Check if the deathCallBack was set
                         if (entity._deathCallBack) {
@@ -257,7 +252,10 @@ var IgeInitPixi = IgeClass.extend({
                     }
 
                 }
-
+                // return if entity is culled
+                if (entity.isCulled) {
+                    continue;
+                }
                 // update transformation using incoming network stream
                 if (ige.network.stream && ige._renderLatency != undefined) {
                     entity._processTransform();

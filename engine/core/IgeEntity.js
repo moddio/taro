@@ -3229,6 +3229,26 @@ var IgeEntity = IgeObject.extend({
 		}
 	},
 
+	isInVP: function (rect2) {
+        var vp = ige.pixi.viewport.getVisibleBounds();
+        var rect1 = {
+            x1: vp.x,
+            y1: vp.y,
+            x2: vp.x + vp.width,
+            y2: vp.y + vp.height,
+        };
+        if (rect1.x1 >= rect2.x2 || rect2.x1 >= rect1.x2) {
+            return false;
+        }
+
+        // If one rectangle is above other
+        if (rect1.y1 >= rect2.y2 || rect2.y1 >= rect1.y2) {
+            return false;
+        }
+
+        return true;
+    },
+
     /**
      * Translates the entity to the passed point.
      * @param {IgePoint3d} point The point with co-ordinates.
