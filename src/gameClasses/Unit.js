@@ -10,6 +10,7 @@ var Unit = IgeEntityBox2d.extend({
             this._pixiContainer = new PIXI.Container();
         }
         var self = this;
+        self.dob = Date.now();
         // used for 2 reasons
         // 1. to categorize as unit when detecting entity created in ClientNetworkEvents.
         // 2. necessary for box2d contact listener (it only cares about 'unit' categories touching)
@@ -1678,6 +1679,21 @@ var Unit = IgeEntityBox2d.extend({
             // make minimap unit follow the unit
             if (self.minimapUnit) {
                 self.minimapUnit.translateTo(self._translate.x, self._translate.y, 0);
+            }
+
+            if(Date.now() - self.dob > 3000) {
+                var nextTransform = ige.nextSnapshot[1] && ige.nextSnapshot[1][this.id()] || self.lastDebugSnapshot;
+                if(nextTransform) {
+                    self.isCulled = !self.isInVP({
+                        x1:nextTransform[0], 
+                        y1:nextTransform[1],
+                        x2:nextTransform[0] + self.width(),
+                        y2:nextTransform[1] + self.height(),
+                    });
+                }
+                if(ige.nextSnapshot[1][self.id()]) {
+                    self.lastDebugSnapshot = ige.nextSnapshot[1][self.id()];
+                }
             }
         }
 

@@ -825,27 +825,27 @@ var Client = IgeClass.extend({
         }
 
         // try loading an ad to find out whether adblocker is active or not
-        // if (window.isStandalone) {
-        //     isAdBlockEnabled = false;
-        //     adBlockStatus(false);
-        // }
-        // else {
-        //     $.ajax('/showads.js', {
-        //         async: false,
-        //         success: function () {
-        //             isAdBlockEnabled = false;
-        //             adBlockStatus(false);
-        //         },
-        //         fail: function () {
-        //             adBlockStatus(true);
-        //         }
-        //     });
+        if (window.isStandalone) {
+            isAdBlockEnabled = false;
+            adBlockStatus(false);
+        }
+        else {
+            $.ajax('/showads.js', {
+                async: false,
+                success: function () {
+                    isAdBlockEnabled = false;
+                    adBlockStatus(false);
+                },
+                fail: function () {
+                    adBlockStatus(true);
+                }
+            });
 
-        //     // notify for ad block
-        //     if (window.adBlockEnabled) {
-        //         notifyAboutAdblocker();
-        //     }
-        // }
+            // notify for ad block
+            if (window.adBlockEnabled) {
+                notifyAboutAdblocker();
+            }
+        }
 
         //show popover on setting icon for low frame rate
         if (!ige.mobileControls.isMobile) {
