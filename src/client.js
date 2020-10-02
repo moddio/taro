@@ -44,13 +44,16 @@ var Client = IgeClass.extend({
                 height: 32
             }))
 
-        self.igeEngineStarted = $.Deferred();
+        self.gameDataLoaded = $.Deferred();
+        self.engineStarted = $.Deferred();
         self.mapLoaded = $.Deferred();
+        self.miniMapLoaded = $.Deferred();
+        
         self.mapRenderEnabled = true;
         self.unitRenderEnabled = true;
         self.itemRenderEnabled = true;
         self.uiEntityRenderEnabled = true;
-        self.miniMapLoaded = $.Deferred();
+        
         self.miniMapEnabled = false;
         self.clearEveryFrame = true;
         self.cameraEnabled = true;
@@ -160,7 +163,64 @@ var Client = IgeClass.extend({
 
         self.loadGameData();
 
-        $.when(self.igeEngineStarted).done(function () {
+        // game data loaded
+        $.when(self.gameDataLoaded).done(function (game) {
+            if (!game.data.isDeveloper) {
+                game.data.isDeveloper = window.isStandalone;
+            }
+            ige.game.data = game.data;
+
+            ige.addComponent(PhysicsComponent)
+                            .physics.sleep(true)                   
+            
+            self.startIgeEngine()
+
+            if (ige.game.data.isDeveloper) {
+                $('#mod-this-game-menu-item').removeClass('d-none');
+            }
+
+            for (let i in ige.game.data.unitTypes) {
+                let unit = ige.game.data.unitTypes[i];
+                let image = new Image();
+                image.src = unit.cellSheet.url;
+                image.onload = function () {
+                    ige.game.data.unitTypes[i].cellSheet.originalHeight = image.height / unit.cellSheet.rowCount;
+                    ige.game.data.unitTypes[i].cellSheet.originalWidth = image.width / unit.cellSheet.columnCount;
+                }
+            }
+
+            console.log("game.data", game.data)
+            ige.menuUi.clipImageForShop();
+            ige.scaleMap(game.data.map);
+            ige.client.loadGameTextures()
+                .then(() => {
+                    ige.map.load(ige.game.data.map);
+                });
+
+            if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
+                $('#leaderboard').css({
+                    top: '190px'
+                })
+                self.miniMapEnabled = true;
+                ige.miniMap.updateMiniMap();
+            }
+
+            var engineTickFrameRate = 15
+            if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
+                engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)) // keep fps range between 15 and 60
+            }
+            ige._physicsTickRate = engineTickFrameRate;
+
+            ige.menuUi.toggleScoreBoard();
+            ige.menuUi.toggleLeaderBoard();
+
+            if (ige.game.data.isDeveloper) {
+                ige.addComponent(DevConsoleComponent);
+            }
+        });
+
+        // engine started
+        $.when(self.engineStarted).done(function () {
 
             // SANDBOX mode
             if (typeof mode == 'string' && mode == 'sandbox') {
@@ -267,6 +327,44 @@ var Client = IgeClass.extend({
             ige.addComponent(AdComponent); // ads should only be shown in games
             
         })
+
+        // map loaded
+        $.when(self.mapLoaded).done(function () {
+            var zoom = 1000
+            if (ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
+                zoom = ige.game.data.settings.camera.zoom.default
+                self._trackTranslateSmoothing = ige.game.data.settings.camera.trackingDelay || 15;
+            }
+
+            self.setZoom(zoom);
+
+            ige.addComponent(TimerComponent);
+
+            ige.addComponent(ThemeComponent);
+            ige.addComponent(PlayerUiComponent);
+            ige.addComponent(UnitUiComponent);
+            ige.addComponent(ItemUiComponent);
+            ige.addComponent(ScoreboardComponent);
+
+            ige.addComponent(ShopComponent); // game data is needed to populate shop
+            if (ige.game.data.defaultData.enableMiniMap) {
+                ige.miniMap.createMiniMap();
+            }
+            // if (ige.game.data.settings.shop && ige.game.data.settings.shop.isEnabled) {
+            ige.shop.enableShop();
+
+            // ige.client.preLoadAnimationTextures();
+            //load sound and music
+            //when game starts
+            ige.sound.preLoadSound();
+            ige.sound.preLoadMusic();
+
+            window.activatePlayGame = true;
+            $('#play-game-button-wrapper').removeClass('d-none-important');
+            if (self.preSelectedServerId && self.serverFound && params.joinGame === 'true' && userId) {
+                self.connectToServer();
+            }
+        }); 
     },
 
     getServersArray: function () {
@@ -395,7 +493,7 @@ var Client = IgeClass.extend({
                         ige.client.vp1.drawBounds(true)
                     }
 
-                    self.igeEngineStarted.resolve();
+                    self.engineStarted.resolve();
 
                     console.log("igeEngine Started")
 
@@ -496,7 +594,7 @@ var Client = IgeClass.extend({
                     type: 'GET',
                     success: function (game) {
                         ige.menuUi.getServerPing(true);
-                        resolve(game);
+                        self.gameDataLoaded.resolve(game);
                     }
                 })
             })
@@ -516,107 +614,11 @@ var Client = IgeClass.extend({
                         for (let [key, value] of Object.entries(game.data)) {
                             data['data'][key] = value;
                         }
-                        resolve(data);
+                        self.gameDataLoaded.resolve(data);
                     }
                 })
             })
         }
-
-        promise.then(function (game) {
-
-            var params = ige.client.getUrlVars();
-
-            if (!game.data.isDeveloper) {
-                game.data.isDeveloper = window.isStandalone;
-            }
-            ige.game.data = game.data;
-
-            ige.addComponent(PhysicsComponent)
-                            .physics.sleep(true)                   
-            
-            self.startIgeEngine()
-
-            if (ige.game.data.isDeveloper) {
-                $('#mod-this-game-menu-item').removeClass('d-none');
-            }
-
-            for (let i in ige.game.data.unitTypes) {
-                let unit = ige.game.data.unitTypes[i];
-                let image = new Image();
-                image.src = unit.cellSheet.url;
-                image.onload = function () {
-                    ige.game.data.unitTypes[i].cellSheet.originalHeight = image.height / unit.cellSheet.rowCount;
-                    ige.game.data.unitTypes[i].cellSheet.originalWidth = image.width / unit.cellSheet.columnCount;
-                }
-            }
-            ige.menuUi.clipImageForShop();
-            ige.scaleMap(game.data.map);
-            ige.client.loadGameTextures()
-                .then(() => {
-                    ige.map.load(ige.game.data.map);
-                });
-
-            if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
-                $('#leaderboard').css({
-                    top: '190px'
-                })
-                self.miniMapEnabled = true;
-                ige.miniMap.updateMiniMap();
-            }
-
-            var engineTickFrameRate = 15
-            if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
-                engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)) // keep fps range between 15 and 60
-            }
-            ige._physicsTickRate = engineTickFrameRate;
-
-            ige.menuUi.toggleScoreBoard();
-            ige.menuUi.toggleLeaderBoard();
-
-            if (ige.game.data.isDeveloper) {
-                ige.addComponent(DevConsoleComponent);
-            }
-
-            $.when(self.mapLoaded).done(function () {
-
-                
-                
-                var zoom = 1000
-                if (ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
-                    zoom = ige.game.data.settings.camera.zoom.default
-                    self._trackTranslateSmoothing = ige.game.data.settings.camera.trackingDelay || 15;
-                }
-
-                self.setZoom(zoom);
-
-                ige.addComponent(TimerComponent);
-
-                ige.addComponent(ThemeComponent);
-                ige.addComponent(PlayerUiComponent);
-                ige.addComponent(UnitUiComponent);
-                ige.addComponent(ItemUiComponent);
-                ige.addComponent(ScoreboardComponent);
-
-                ige.addComponent(ShopComponent); // game data is needed to populate shop
-                if (ige.game.data.defaultData.enableMiniMap) {
-                    ige.miniMap.createMiniMap();
-                }
-                // if (ige.game.data.settings.shop && ige.game.data.settings.shop.isEnabled) {
-                ige.shop.enableShop();
-
-                // ige.client.preLoadAnimationTextures();
-                //load sound and music
-                //when game starts
-                ige.sound.preLoadSound();
-                ige.sound.preLoadMusic();
-
-                window.activatePlayGame = true;
-                $('#play-game-button-wrapper').removeClass('d-none-important');
-                if (self.preSelectedServerId && self.serverFound && params.joinGame === 'true' && userId) {
-                    self.connectToServer();
-                }
-            }); // map loaded
-        })
     },
 
     connectToServer: function () {
