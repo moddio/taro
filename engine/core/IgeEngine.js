@@ -1976,7 +1976,8 @@ var IgeEngine = IgeEntity.extend({
 			}
 
 			var timeElapsed = ige.now - ige._lastPhysicsTickAt
-			if (ige.physics && timeElapsed >= (1000 / ige._physicsTickRate) - ige._physicsTickRemainder) {
+			// physics update should execute as soon as gameloop has executed in order to stream the accurate, latest translation data computed from physics update
+			if (ige.gameLoopTickHasExecuted || ige.physics && timeElapsed >= (1000 / ige._physicsTickRate) - ige._physicsTickRemainder) {
 				ige._lastPhysicsTickAt = ige.now
 				ige._physicsTickRemainder = Math.min(timeElapsed - ((1000 / ige._physicsTickRate) - ige._physicsTickRemainder), (1000 / ige._physicsTickRate));
 				ige.physics.update(timeElapsed);
@@ -1992,7 +1993,7 @@ var IgeEngine = IgeEntity.extend({
 					ige.client.myPlayer.control._behaviour()
 				}
 
-				while (ige.snapshots.length > 2) {							
+				while (ige.snapshots.length > 1) {							
 					var snapshot = ige.snapshots.shift();
 					ige.prevSnapshot = ige.nextSnapshot;
 					ige.nextSnapshot = snapshot;
@@ -2025,7 +2026,7 @@ var IgeEngine = IgeEntity.extend({
 				}
 			}
 
-			if (!ige.gameLoopTickHasExecuted || !ige.physicsTickHasExecuted) {
+			if (!ige.gameLoopTickHasExecuted) {
 				return;
 			}
 
