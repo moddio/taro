@@ -1681,20 +1681,20 @@ var Unit = IgeEntityBox2d.extend({
                 self.minimapUnit.translateTo(self._translate.x, self._translate.y, 0);
             }
 
-            if(Date.now() - self.dob > 3000) {
-                var nextTransform = ige.nextSnapshot[1] && ige.nextSnapshot[1][this.id()] || self.lastDebugSnapshot;
-                if(nextTransform) {
-                    self.isCulled = !self.isInVP({
-                        x1:nextTransform[0], 
-                        y1:nextTransform[1],
-                        x2:nextTransform[0] + self.width(),
-                        y2:nextTransform[1] + self.height(),
-                    });
-                }
-                if(ige.nextSnapshot[1][self.id()]) {
-                    self.lastDebugSnapshot = ige.nextSnapshot[1][self.id()];
-                }
-            }
+            // if(Date.now() - self.dob > 3000) {
+            //     var nextTransform = ige.nextSnapshot[1] && ige.nextSnapshot[1][this.id()] || self.lastDebugSnapshot;
+            //     if(nextTransform) {
+            //         self.isCulled = !self.isInVP({
+            //             x1:nextTransform[0], 
+            //             y1:nextTransform[1],
+            //             x2:nextTransform[0] + self.width(),
+            //             y2:nextTransform[1] + self.height(),
+            //         });
+            //     }
+            //     if(ige.nextSnapshot[1][self.id()]) {
+            //         self.lastDebugSnapshot = ige.nextSnapshot[1][self.id()];
+            //     }
+            // }
         }
 
         // if entity (unit/item/player/projectile) has attribute, run regenerate
