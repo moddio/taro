@@ -106,10 +106,6 @@ var Client = IgeClass.extend({
 
 
         self.tradeOffers = [undefined, undefined, undefined, undefined, undefined]
-
-        ige.addComponent(PhysicsComponent)
-            .physics.sleep(true)
-
         self.implement(ClientNetworkEvents);
 
         //	ige.addComponent(IgeEditorComponent);
@@ -173,6 +169,7 @@ var Client = IgeClass.extend({
                     type: 'GET',
                     success: function (game) {
                         ige.game.data = game.data;
+
                         // load map
                         var gameMap = ige.scaleMap(game.data.map);
 
@@ -480,6 +477,7 @@ var Client = IgeClass.extend({
                     success: function (game) {
                         var data = { data: {} };
                         game.defaultData = game;
+
                         for (let [key, value] of Object.entries(game)) {
                             data['data'][key] = value;
                         }
@@ -500,6 +498,9 @@ var Client = IgeClass.extend({
             }
             ige.game.data = game.data;
 
+            ige.addComponent(PhysicsComponent)
+                            .physics.sleep(true)                   
+                        
             if (ige.game.data.isDeveloper) {
                 $('#mod-this-game-menu-item').removeClass('d-none');
             }
@@ -546,13 +547,34 @@ var Client = IgeClass.extend({
                 tileHeight = ige.scaleMapDetails.tileHeight;
 
             ige.client.vp1.camera.translateTo((ige.map.data.width * tileWidth) / 2, (ige.map.data.height * tileHeight) / 2, 0);
-
+            console.log("TF",ige.game.data.defaultData)
+            this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
+            var gravity = ige.game.data.settings.gravity
+            if (gravity) {
+                console.log("setting gravity ", gravity)
+                ige.physics.gravity(gravity.x, gravity.y)
+            }
+            ige.physics.createWorld();
+            ige.physics.start();
+            
+            if (typeof mode === 'string' && mode === 'sandbox') {
+                ige.script.runScript('initialize', {});
+            }
+            if (ige.env == 'local') {
+                ige.physics.enableDebug(this.rootScene);    
+            }
+            
+            ige.addComponent(TriggerComponent);
+            ige.addComponent(VariableComponent);
+            ige.addComponent(ScriptComponent);
+            ige.addComponent(ConditionComponent);
+            ige.addComponent(ActionComponent);            
             ige.addComponent(AdComponent); // ads should only be shown in games
-
-            self.loadCSP(); // always enable CSP.
 
             $.when(self.mapLoaded).done(function () {
 
+                
+                
                 var zoom = 1000
                 if (ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
                     zoom = ige.game.data.settings.camera.zoom.default
@@ -707,30 +729,6 @@ var Client = IgeClass.extend({
         });
     },
 
-    loadCSP: function () {
-        this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
-        // this.cspEnabled = true;
-        var gravity = ige.game.data.settings.gravity
-        if (gravity) {
-            console.log("setting gravity ", gravity)
-            ige.physics.gravity(gravity.x, gravity.y)
-        }
-        ige.physics.createWorld();
-        ige.physics.start();
-        ige.addComponent(TriggerComponent);
-        ige.addComponent(VariableComponent);
-        ige.addComponent(ScriptComponent);
-        ige.addComponent(ConditionComponent);
-        ige.addComponent(ActionComponent);
-        if (typeof mode === 'string' && mode === 'sandbox') {
-            ige.script.runScript('initialize', {});
-        }
-        if (ige.env == 'local') {
-            
-        }
-
-        ige.physics.enableDebug(this.rootScene);
-    },
 
     defineNetworkEvents: function () {
         var self = this;
