@@ -810,7 +810,7 @@ var IgeEngine = IgeEntity.extend({
 			this.updateProgress();
 
 			setTimeout(function () {
-				console.log("all textures loaded")
+				console.log("all textures loaded (why is this being called twice?)")
 				self._allTexturesLoaded();
 			}, 100);
 		}

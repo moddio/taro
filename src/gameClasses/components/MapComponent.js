@@ -134,32 +134,24 @@ var MapComponent = IgeEntity.extend({
 								ige.physics.staticsFromMap(IgeLayersById.walls);
 							}
 							self.createRegions();
-
-							//}
-
-							if (ige.isClient) {
-
-								$.when(ige.client.igeEngineStarted).done(function () {
-									// We can add all our layers to our main scene by looping the
-									// array or we can pick a particular layer via the layersById
-									// object. Let's give an example:
-									if (mode === "sandbox") {
-										var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
-										var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
-										var region = new RegionUi({ height: mapHeight, width: mapWidth });
-										region.depth(3)
-											.layer(3)
-											.drawBoundsData(false)
-											.drawBounds(false)
-											.mount(ige.client.rootScene)
-											.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
-											.height(mapHeight)
-											.width(mapWidth)
-											.bounds2d(mapWidth, mapHeight, 0);
-									}
-									ige.client.mapLoaded.resolve();
-								});
+							// We can add all our layers to our main scene by looping the
+							// array or we can pick a particular layer via the layersById
+							// object. Let's give an example:
+							if (mode === "sandbox") {
+								var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
+								var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
+								var region = new RegionUi({ height: mapHeight, width: mapWidth });
+								region.depth(3)
+									.layer(3)
+									.drawBoundsData(false)
+									.drawBounds(false)
+									.mount(ige.client.rootScene)
+									.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
+									.height(mapHeight)
+									.width(mapWidth)
+									.bounds2d(mapWidth, mapHeight, 0);
 							}
+							ige.client.mapLoaded.resolve();
 						});
 				});
 		}
