@@ -5133,7 +5133,7 @@ var IgeEntity = IgeObject.extend({
 					x = this.nextPhysicsFrame[1][0];
 					y = this.nextPhysicsFrame[1][1];
 					rotate = this.nextPhysicsFrame[1][2];
-					console.log("teleport")
+					// console.log("teleport")
 				}
 
 				// for debugging my unit's x-movement interpolation

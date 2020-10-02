@@ -45,6 +45,20 @@ var MenuUiComponent = IgeEntity.extend({
 				}
 			});
 
+			//register error log modal btn;
+			$('#dev-error-button').on('click', function () {
+				$('#error-log-modal').modal('show');
+			});
+	
+			$('#bandwidth-usage').on('click', function () {
+				$('#dev-status-modal').modal('show');
+			});
+	
+			$('#leaderboard-link').on('click', function (e) {
+				e.preventDefault();
+				$('#leaderboard-modal').modal('show');
+			});
+			
 			$("#refresh-server-list-button").on("click", function () {
 				ige.client.refreshServerList();
 			});
