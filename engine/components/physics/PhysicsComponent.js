@@ -33,8 +33,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 			this.engine = dists.defaultEngine;
 		}
 		// this.engine = 'crash';
+		console.log('Physics engine: ', this.engine);
 		dists[this.engine].init(this);
-		console.log('Physics engine loaded: ', this.engine);
 	},
 
 	gravity: function (x, y) {

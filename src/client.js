@@ -579,14 +579,11 @@ var Client = IgeClass.extend({
     loadGameData: function () {
         var self = this;
 
-        var promise;
         console.log("loading game data for ", gameId)
 
         // if gameId is provided, use it. Otherwise, use local game.json file
         if (gameId) {
-            promise = new Promise(function (resolve, reject) {
-
-                $.ajax({
+            $.ajax({
                     url: self.host + '/api/game-client/' + gameId,
                     dataType: "json",
                     type: 'GET',
@@ -595,26 +592,23 @@ var Client = IgeClass.extend({
                         self.gameDataLoaded.resolve(game);
                     }
                 })
-            })
         } else {
-            promise = new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: '/src/game.json',
-                    dataType: "json",
-                    type: 'GET',
-                    success: function (game) {
-                        var data = { data: {} };
-                        game.defaultData = game;
+            $.ajax({
+                url: '/src/game.json',
+                dataType: "json",
+                type: 'GET',
+                success: function (game) {
+                    var data = { data: {} };
+                    game.defaultData = game;
 
-                        for (let [key, value] of Object.entries(game)) {
-                            data['data'][key] = value;
-                        }
-                        for (let [key, value] of Object.entries(game.data)) {
-                            data['data'][key] = value;
-                        }
-                        self.gameDataLoaded.resolve(data);
+                    for (let [key, value] of Object.entries(game)) {
+                        data['data'][key] = value;
                     }
-                })
+                    for (let [key, value] of Object.entries(game.data)) {
+                        data['data'][key] = value;
+                    }
+                    self.gameDataLoaded.resolve(data);
+                }
             })
         }
     },
