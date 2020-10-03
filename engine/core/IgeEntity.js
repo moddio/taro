@@ -69,7 +69,7 @@ var IgeEntity = IgeObject.extend({
 		this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]]
 		this._lastTransformAt = null;
 		this.nextPhysicsFrame = null;
-		this.serverStreamedPosition = [0, 0, 0]
+		this.serverStreamedPosition = null;
 		
 		if (ige.isClient) {
 			this.anchorOffset = { x: 0, y: 0, rotate: 0 }
@@ -4398,7 +4398,7 @@ var IgeEntity = IgeObject.extend({
 						this._oldTranform = [x, y, angle];
 
 						// var distanceTravelled = x - ige.lastX;
-						// console.log(this.id(), ige._currentTime - ige.lastSnapshotTime, ige._currentTime, distanceTravelled / (ige._currentTime - ige.lastSnapshotTime))
+						// console.log(this.id(), ige._currentTime - ige.lastSnapshotTime, ige._currentTime, x,  distanceTravelled / (ige._currentTime - ige.lastSnapshotTime))
 						// ige.lastX = x
 						// ige.lastSnapshotTime = ige._currentTime;
 
@@ -5117,16 +5117,16 @@ var IgeEntity = IgeObject.extend({
 						rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					}
 
-					if (this == ige.client.selectedUnit) {
-						let distanceTraveled = x - this.previousX
-						let timeElapsed = (ige._currentTime-this.previousRenderTime).toFixed(0)
-						console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
-							'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0), 
-							'(' + timeElapsed + 'ms '+ (ige._currentTime - this.prevPhysicsFrame[0] / (this.nextPhysicsFrame[1][0] - this.prevPhysicsFrame[1][0] * 100)).toFixed(0) +'%)',
-							this.nextPhysicsFrame[1][0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
-						this.previousX = x;
-						this.previousRenderTime = ige._currentTime;
-					}
+					// if (this == ige.client.selectedUnit) {
+					// 	let distanceTraveled = x - this.previousX
+					// 	let timeElapsed = (ige._currentTime-this.previousRenderTime).toFixed(0)
+					// 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
+					// 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0), 
+					// 		'(' + timeElapsed + 'ms '+ (ige._currentTime - this.prevPhysicsFrame[0] / (this.nextPhysicsFrame[1][0] - this.prevPhysicsFrame[1][0] * 100)).toFixed(0) +'%)',
+					// 		this.nextPhysicsFrame[1][0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
+					// 	this.previousX = x;
+					// 	this.previousRenderTime = ige._currentTime;
+					// }
 					
 				} else {
 					// unit is teleporting
@@ -5141,7 +5141,8 @@ var IgeEntity = IgeObject.extend({
 			}	
 		} 
 		
-		if (prevKeyFrame != undefined && nextKeyFrame != undefined) {
+		// allow up to 50ms of extrapolation
+		if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < nextKeyFrame[0] + 50) {
 			targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
