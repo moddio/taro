@@ -5041,7 +5041,7 @@ var IgeEntity = IgeObject.extend({
 			offsetDelta = currentTime - startTime,
 			deltaTime = offsetDelta / dataDelta;
 
-		// Clamp the current time from 0
+		// // Clamp the current time from 0
 		// if (deltaTime < 0) {
 		// 	deltaTime = 0;
 		// }

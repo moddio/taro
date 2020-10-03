@@ -530,7 +530,7 @@ var IgeNetIoClient = {
 					}
 					ige.snapshots.splice(i, 0, [newSnapshotTimeStamp, obj]);
 
-					while (ige.snapshots.length > 2) {
+					while (ige.snapshots.length > 1) {
 						snapshot = ige.snapshots.shift();
 						ige.prevSnapshot = ige.nextSnapshot;
 						ige.nextSnapshot = snapshot;
