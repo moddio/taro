@@ -179,8 +179,6 @@ var IgeInitPixi = IgeClass.extend({
         if (!ige.lastTickTime) ige.lastTickTime = currentTime;
         var tickDelta = currentTime - ige.lastTickTime;
 
-        ige.lastTickTime = currentTime;
-
         // var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
         for (var entityId in ige.pixi.trackEntityById) {
             if (ige.pixi.trackEntityById[entityId]._destroyed) {
@@ -190,7 +188,7 @@ var IgeInitPixi = IgeClass.extend({
 
             var entity = ige.$(entityId);
             if (entity) {
-
+                
                 // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
                 if (self.viewport.isZooming) {
                     if (entity.unitNameLabel) {
@@ -314,7 +312,11 @@ var IgeInitPixi = IgeClass.extend({
             }
         }
 
-        ige.gameLoopTickHasExecuted = false;
+        ige.lastTickTime = currentTime;
+        
+        if (ige.gameLoopTickHasExecuted) {
+            ige.gameLoopTickHasExecuted = false;
+        }
     }
 
 })

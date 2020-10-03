@@ -5042,9 +5042,9 @@ var IgeEntity = IgeObject.extend({
 			deltaTime = offsetDelta / dataDelta;
 
 		// Clamp the current time from 0
-		if (deltaTime < 0) {
-			deltaTime = 0;
-		}
+		// if (deltaTime < 0) {
+		// 	deltaTime = 0;
+		// }
 
 		return totalValue * deltaTime + startValue;
 	},
@@ -5065,7 +5065,7 @@ var IgeEntity = IgeObject.extend({
      * targeting to render the entity at.
      */
 	_processTransform: function () {
-
+		
 		if (// prevent igePixi calling this function multiple times for a same entity
 			this._lastTransformAt == ige.renderTime || 
 			// entity has no body
@@ -5141,7 +5141,7 @@ var IgeEntity = IgeObject.extend({
 			}	
 		} 
 		
-		if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
+		if (prevKeyFrame != undefined && nextKeyFrame != undefined) {
 			targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 			targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 

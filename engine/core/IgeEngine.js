@@ -1995,12 +1995,6 @@ var IgeEngine = IgeEntity.extend({
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
 				}
-
-				while (ige.snapshots.length > 1) {
-					var snapshot = ige.snapshots.shift();
-					ige.prevSnapshot = ige.nextSnapshot;
-					ige.nextSnapshot = snapshot;
-				}
 				
 				return;
 			}
