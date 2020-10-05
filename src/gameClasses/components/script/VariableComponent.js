@@ -69,7 +69,7 @@ var VariableComponent = IgeEntity.extend({
 			width: 100
 		};
 
-		var entities = ige.physics.getBodiesInRegion({
+		var entities = ige.physics && ige.physics.getBodiesInRegion({
 			x: position.x,
 			y: position.y,
 			width: defaultArea.width,
@@ -1915,7 +1915,7 @@ var VariableComponent = IgeEntity.extend({
 				}
 			}
 
-			if (data.status != {} && ige.physics.engine != 'crash') {
+			if (data.status != {} && ige.physics && ige.physics.engine != 'crash') {
 				//if streaming entity cound > 150 warn user
 				if (data.status && data.status.entityCount && data.status.entityCount.streaming > 150 && !self.streamingWarningShown) {
 					$('#streaming-entity-warning').show()
