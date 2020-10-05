@@ -63,7 +63,7 @@ var Item = IgeEntityBox2d.extend({
 
 		self.setState(self._stats.stateId, self._stats.defaultData);
 
-		self.scaleRatio = ige.physics.scaleRatio();
+		self.scaleRatio = ige.physics && ige.physics.scaleRatio() || 1;
 		if (ige.isServer) {
 			this.streamMode(1);
 			self.streamCreate();

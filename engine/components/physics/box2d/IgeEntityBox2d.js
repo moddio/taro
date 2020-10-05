@@ -252,7 +252,7 @@ var IgeEntityBox2d = IgeEntity.extend({
             }
         }
 
-        ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body })
+        ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body })
 
     },
     /**

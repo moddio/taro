@@ -405,7 +405,7 @@ var ClientNetworkEvents = {
 	// },
 
 	_onDevLogs: function (data) {
-		ige.variable.updateDevConsole(data)
+		ige.variable && ige.variable.updateDevConsole(data)
 	},
 
 	_onTrade: function (msg, clientId) {

@@ -107,8 +107,6 @@ var Client = IgeClass.extend({
 
         self.tradeOffers = [undefined, undefined, undefined, undefined, undefined]
 
-        ige.addComponent(PhysicsComponent)
-            .physics.sleep(true)
 
         self.implement(ClientNetworkEvents);
 
@@ -515,6 +513,10 @@ var Client = IgeClass.extend({
             }
             ige.menuUi.clipImageForShop();
             ige.scaleMap(game.data.map);
+            if(ige.game.data.defaultData.clientSidePredictionEnabled) {
+                ige.addComponent(PhysicsComponent)
+                    .physics.sleep(true)
+            }
             ige.client.loadGameTextures()
                 .then(() => {
                     ige.map.load(ige.game.data.map);
@@ -710,18 +712,22 @@ var Client = IgeClass.extend({
     loadCSP: function () {
         this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
         // this.cspEnabled = true;
-        var gravity = ige.game.data.settings.gravity
-        if (gravity) {
-            console.log("setting gravity ", gravity)
-            ige.physics.gravity(gravity.x, gravity.y)
+        if(this.cspEnabled) {
+
+            var gravity = ige.game.data.settings.gravity
+            if (gravity) {
+                console.log("setting gravity ", gravity)
+                // ige.physics.gravity(gravity.x, gravity.y)
+            }
+            ige.physics.createWorld();
+            ige.physics.start();
+            ige.addComponent(TriggerComponent);
+            ige.addComponent(ScriptComponent);
+            ige.addComponent(ConditionComponent);
+            ige.addComponent(ActionComponent);
+            ige.physics.enableDebug(this.rootScene);
         }
-        ige.physics.createWorld();
-        ige.physics.start();
-        ige.addComponent(TriggerComponent);
         ige.addComponent(VariableComponent);
-        ige.addComponent(ScriptComponent);
-        ige.addComponent(ConditionComponent);
-        ige.addComponent(ActionComponent);
         if (typeof mode === 'string' && mode === 'sandbox') {
             ige.script.runScript('initialize', {});
         }
@@ -729,7 +735,6 @@ var Client = IgeClass.extend({
             
         }
 
-        ige.physics.enableDebug(this.rootScene);
     },
 
     defineNetworkEvents: function () {
