@@ -135,6 +135,7 @@ var IgeEngine = IgeEntity.extend({
 		this._globalScale = new IgePoint3d(1, 1, 1);
 		this._graphInstances = []; // Holds an array of instances of graph classes
 		this._spawnQueue = []; // Holds an array of entities that are yet to be born
+		this._cullCounter = 0;
 
 		// Set the context to a dummy context to start
 		// with in case we are in "headless" mode and

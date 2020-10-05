@@ -3191,6 +3191,10 @@ var IgeEntity = IgeObject.extend({
 				entity.x = x;
 				entity.y = y;
 			}
+			entity.dirty = true;
+			if(ige.pixi.viewport){
+				ige.pixi.viewport.dirty = true;
+			}
 		}
 		return this;
 	},

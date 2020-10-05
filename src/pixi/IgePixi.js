@@ -12,11 +12,11 @@ var IgeInitPixi = IgeClass.extend({
         PIXI.ticker.maxFPS = 60;
 
         this.app = new PIXI.Application({
-            width: 800,// default: 800
+            width: 800, // default: 800
             height: 600, // default: 600
-            antialias: true,    // default: false
+            antialias: true, // default: false
             transparent: false, // default: false
-            resolution: 1,   // default: 1,
+            resolution: 1, // default: 1,
             autoResize: true,
             forceCanvas: forceCanvas[gameId] || false,
             // backgroundColor: 0xff00cc,
@@ -26,7 +26,7 @@ var IgeInitPixi = IgeClass.extend({
         PIXI.settings.ROUND_PIXELS = true;
 
         this.timeStamp = Date.now();
-        this.app.view.id = 'igeFrontBuffer'
+        this.app.view.id = 'igeFrontBuffer';
         document.getElementById('game-div').appendChild(this.app.view);
         ige.createFrontBuffer(true);
         // PIXI.settings.PRECISION_FRAGMENT = 'highp';
@@ -57,7 +57,7 @@ var IgeInitPixi = IgeClass.extend({
         var self = this;
         var frameTick = function () {
             self.frameTick();
-        }
+        };
         this.ticker.add(frameTick);
         var sort = function (children) {
             children.sort(function (a, b) {
@@ -71,7 +71,7 @@ var IgeInitPixi = IgeClass.extend({
                 }
                 return a.zIndex - b.zIndex;
             });
-        }
+        };
         this.app.stage.updateLayersOrder = function () {
             sort(self.app.stage.children);
             sort(self.world.children);
@@ -110,7 +110,7 @@ var IgeInitPixi = IgeClass.extend({
         var self = this;
         var offset = 0;
         // PIXI.extras.Viewport = Viewport;
-        this.viewport = new PIXI.extras.Viewport({
+        var viewport = new PIXI.extras.Viewport({
             screenWidth: 800,
             screenHeight: 600,
             worldWidth: this.world.worldWidth,
@@ -124,7 +124,7 @@ var IgeInitPixi = IgeClass.extend({
                 //     x: e.world.x,
                 //     y: e.world.y,
                 // }
-            })
+            });
         // .clamp({
         //     left: -offset,
         //     right: this.world.worldWidth + offset,
@@ -133,19 +133,24 @@ var IgeInitPixi = IgeClass.extend({
         // })
         // .drag();
 
-        this.viewport.on('snap-zoom-start', function () {
-            self.viewport.isZooming = true
-        })
+        viewport.on('snap-zoom-start', function () {
+            self.viewport.isZooming = true;
+        });
 
-        this.viewport.on('snap-zoom-end', function () {
-            self.viewport.isZooming = false
-        })
+        viewport.on('snap-zoom-end', function () {
+            self.viewport.isZooming = false;
+        });
 
-        this.viewport.addChild(this.world);
-        this.app.stage.addChild(this.viewport);
+        viewport.addChild(this.world);
+        this.app.stage.addChild(viewport);
+
+        var cull = new PIXI.extras.cull.Simple();
+        cull.addList(this.world.children);
+        cull.cull(viewport.getVisibleBounds());
+
+        this.cull = cull;
+        this.viewport = viewport;
         ige.pixi.resize();
-        // this.viewport.x = -();
-        // this.viewport.y = -();
     },
 
     zoom: function (value) {
@@ -169,9 +174,12 @@ var IgeInitPixi = IgeClass.extend({
             }
             ige._renderFrames++;
         }
-        // if (ige._renderFrames % 2) {
+        if (ige.pixi.viewport.dirty && ige._cullCounter % 4 == 0) {
+            ige.pixi.cull.cull(ige.pixi.viewport.getVisibleBounds());
+            ige.pixi.viewport.dirty = false;
+        }
+        ige._cullCounter ++;
         ige.pixi.app.render();
-        // }
     },
     updateAllEntities: function (timeStamp) {
         var self = this;
@@ -188,33 +196,30 @@ var IgeInitPixi = IgeClass.extend({
 
             var entity = ige.$(entityId);
             if (entity) {
-                
                 // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
                 if (self.viewport.isZooming) {
                     if (entity.unitNameLabel) {
-                        entity.unitNameLabel.updateScale()
-                        entity.unitNameLabel.updatePosition()
+                        entity.unitNameLabel.updateScale();
+                        entity.unitNameLabel.updatePosition();
                     }
 
                     if (entity.attributeBars) {
                         _.forEach(entity.attributeBars, function (attributeBar) {
-                            var bar = ige.$(attributeBar.id)
-                            bar.updateScale()
-                            bar.updatePosition()
+                            var bar = ige.$(attributeBar.id);
+                            bar.updateScale();
+                            bar.updatePosition();
                         });
                     }
 
                     if (openChatBubble[entityId]) {
-                        var chatBubble = ige.$(openChatBubble[entityId])
+                        var chatBubble = ige.$(openChatBubble[entityId]);
                         chatBubble.updateScale();
                         chatBubble.updatePosition();
                     }
                 }
 
-
                 // handle entity behaviour and transformation offsets
                 if (ige.gameLoopTickHasExecuted) {
-
                     if (entity._deathTime !== undefined && entity._deathTime <= ige._tickStart) {
                         // Check if the deathCallBack was set
                         if (entity._deathCallBack) {
@@ -235,10 +240,9 @@ var IgeInitPixi = IgeClass.extend({
                             var nextUpdate = updateQueue[0];
                             if (
                                 // Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
-                                entity._category == 'item' && (
-                                    (nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) ||// updating item's owner unit, but the owner hasn't been created yet
-                                    ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined) // changing item's state to selected/unselected, but owner doesn't exist yet
-                                )
+                                entity._category == 'item' &&
+                                ((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
+                                    ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
                             ) {
                                 // console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
                             } else {
@@ -248,7 +252,6 @@ var IgeInitPixi = IgeClass.extend({
                             }
                         }
                     }
-
                 }
                 // return if entity is culled
                 // if (entity.isCulled) {
@@ -286,7 +289,7 @@ var IgeInitPixi = IgeClass.extend({
                     }
 
                     if (entity.tween && entity.tween.isTweening) {
-                        entity.tween.update()
+                        entity.tween.update();
                         x += entity.tween.offset.x;
                         y += entity.tween.offset.y;
                         rotate += entity.tween.offset.rotate;
@@ -313,12 +316,13 @@ var IgeInitPixi = IgeClass.extend({
         }
 
         ige.lastTickTime = currentTime;
-        
+
         if (ige.gameLoopTickHasExecuted) {
             ige.gameLoopTickHasExecuted = false;
         }
-    }
+    },
+});
 
-})
-
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiMap; }
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = IgePixiMap;
+}
