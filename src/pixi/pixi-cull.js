@@ -169,7 +169,6 @@
                                     }
                                 }
                                 catch(e){
-                                    console.log(object);
                                 }
                             }
                         } catch (err) {

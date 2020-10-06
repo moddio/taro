@@ -270,9 +270,10 @@ var ShopComponent = IgeEntity.extend({
 						partial[purchase._id] = true;
 						return partial;
 					}, {});
-					var purchasableItems = purchasables.filter(function (purchasable) {
+					
+					var purchasableItems = typeof purchasables.filter === 'function' && purchasables.filter(function (purchasable) {
 						return !userPurchasedItemIds[purchasable._id];
-					});
+					}) || [];
 
 					// limit number of skins shown on menu
 					purchasableItems = purchasableItems.slice(0, 4);
