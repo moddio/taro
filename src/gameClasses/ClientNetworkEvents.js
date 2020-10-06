@@ -117,7 +117,7 @@ var ClientNetworkEvents = {
 			ige.shop.openItemShop(data.type);
 			$('#modd-item-shop-modal').modal('show');
 			var player = ige.client.myPlayer;
-			if (player && !player._stats.isAdBlockEnabled) {
+			if (typeof countAdImpression === 'function' && player && !player._stats.isAdBlockEnabled) {
 				countAdImpression(gameId, 'shop');
 			}
 		}
@@ -285,7 +285,7 @@ var ClientNetworkEvents = {
 
 	_onPlayAd: function (data) {
 		var player = ige.client.myPlayer;
-		if (player && !player._stats.isAdBlockEnabled) {
+		if (typeof countAdImpression === 'function' && player && !player._stats.isAdBlockEnabled) {
 			countAdImpression(gameId, 'video');
 		}
 		ige.ad.play(data);
