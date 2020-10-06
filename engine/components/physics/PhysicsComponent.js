@@ -18,23 +18,32 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this._mode = 0;
 		this._actionQueue = [];
 		this._scaleRatio = 30;
-		this.physicsTickDuration = 0
-		this.avgPhysicsTickDuration = 0
-		this.totalBodiesCreated = 0
-		this.lastSecondAt = Date.now()
-		this.totalDisplacement = 0
-		this.totalTimeElapsed = 0
-		this.exponent = 2
-		this.divisor = 80
+		this.physicsTickDuration = 0;
+		this.avgPhysicsTickDuration = 0;
+		this.totalBodiesCreated = 0;
+		this.lastSecondAt = Date.now();
+		this.totalDisplacement = 0;
+		this.totalTimeElapsed = 0;
+		this.exponent = 2;
+		this.divisor = 80;		
+		this.engine = dists.defaultEngine;
 
-		if (ige.game && ige.game.data && ige.game.data.defaultData) {
-			this.engine = ige.game.data.defaultData.physicsEngine
-		} else {
-			this.engine = dists.defaultEngine;
+		if (ige.isServer) {
+			if (ige.game && ige.game.data && ige.game.data.defaultData) {
+				this.engine = ige.game.data.defaultData.physicsEngine
+			}
+		} else if (ige.isClient) {
+			if (ige.game && ige.game.data && ige.game.data.defaultData) {
+				this.engine = ige.game.data.defaultData.clientPhysicsEngine
+			}
 		}
+
 		// this.engine = 'crash';
 		console.log('Physics engine: ', this.engine);
-		dists[this.engine].init(this);
+
+		if (this.engine) {
+			dists[this.engine].init(this);
+		}
 	},
 
 	gravity: function (x, y) {
