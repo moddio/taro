@@ -727,16 +727,13 @@ var VariableComponent = IgeEntity.extend({
 					returnValue = ige.$(id)
 					break;
 
-				// case 'getLastAttackingItem':
-				// 	var id = ige.game.lastAttackingItemId
-
-				// 	item = ige.$(id)
-				// 	if (item && item._category == 'item')
-				// 	{
-				// 		returnValue = item
-				// 	}
-
-				// 	break;
+				case 'getLastAttackingItem':
+				 	var id = ige.game.lastAttackingItemId
+				 	item = ige.$(id)
+					if (item && item._category == 'item') {
+						returnValue = item
+					}
+			 		break;
 
 				case 'lastUsedItem':
 				case 'getLastUsedItem': // will be deprecated soon
@@ -1351,9 +1348,7 @@ var VariableComponent = IgeEntity.extend({
 
 					break;
 				
-				case 'getLastAttackingItem':
-					returnValue = ige.$(ige.game.lastAttackingItemId)
-					break;
+				
 				
 				case 'getItemTypeDamage':
 					var itemTypeId = self.getValue(text.itemType, vars)

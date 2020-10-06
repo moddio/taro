@@ -342,6 +342,7 @@ var Item = IgeEntityBox2d.extend({
 											damageData: {
 												targetsAffected: this._stats.damage.targetsAffected,
 												sourceUnitId: owner.id(),
+												sourceItemId: self.id(),
 												sourcePlayerId: owner.getOwner().id(),
 												unitAttributes: this._stats.damage.unitAttributes,
 												playerAttributes: this._stats.damage.playerAttributes
@@ -470,6 +471,7 @@ var Item = IgeEntityBox2d.extend({
 							var damageData = {
 								targetsAffected: this._stats.damage.targetsAffected,
 								sourceUnitId: owner.id(),
+								sourceItemId: self.id(),
 								sourcePlayerId: owner.getOwner().id(),
 								unitAttributes: this._stats.damage.unitAttributes,
 								playerAttributes: this._stats.damage.playerAttributes

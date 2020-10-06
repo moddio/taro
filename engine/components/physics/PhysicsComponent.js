@@ -641,7 +641,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 							}
 							else if (ige.isClient) {
 								
-								if (ige.client.cspEnabled && ige.client.selectedUnit == entity && entity.serverStreamedPosition != undefined) {
+								if (ige.client.cspEnabled && ige.client.selectedUnit == entity) {
 									// var xDiff = entity.serverStreamedPosition[0] - x;
 									// var yDiff = entity.serverStreamedPosition[1] - y;
 									// var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -657,7 +657,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 									// console.log(x, y)
 
-									if (entity.movementHistory.length > 2) {
+									if (entity.serverStreamedPosition && entity.movementHistory.length > 2) {
 										for (var i = entity.movementHistory.length-1; i >= 2; i--) {
 											var prevMovement = entity.movementHistory[i-1]
 											var nextMovement = entity.movementHistory[i];
@@ -670,7 +670,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 												var yDiff = (entity.serverStreamedPosition[1] - historyY)
 												
 												var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-												// console.log(distance)
+												// console.log(entity.serverStreamedPosition)
 												// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
 												if (distance > 100) {
 													x = entity.serverStreamedPosition[0];
