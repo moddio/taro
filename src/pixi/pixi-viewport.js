@@ -962,10 +962,11 @@
                     //     }
                     // }
 
+                    // modified by jaeyun
                     var deltaX = targetX - center.x;
                     var deltaY = targetY - center.y;
-                    var x = Math.round(center.x + (deltaX / 20));
-                    var y = Math.round(center.y + (deltaY / 20));
+                    var x = Math.round(center.x + (deltaX / 15));
+                    var y = Math.round(center.y + (deltaY / 15));
                     this.parent.moveCenter(x, y);
                     this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
                     // var center = this.parent.center;
@@ -2092,8 +2093,8 @@
                         this.touches.push(e.data.pointerId);
                     }
 
+                    this.last = e.data.global.clone();
                     if (this.countDownPointers() === 1) {
-                        this.last = e.data.global.clone();
 
                         // clicked event does not fire if viewport is decelerating or bouncing
                         var decelerate = this.plugins['decelerate'];

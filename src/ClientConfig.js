@@ -55,6 +55,7 @@ var igeClientConfig = {
 		'/gameClasses/Cursor.js',
 
 		/* PIXI */
+		'pixi/pixi-viewport.js',
 		'pixi/pixi-cull.js',
 		'pixi/IgePixi.js',
 		'pixi/IgePixiMap.js',
