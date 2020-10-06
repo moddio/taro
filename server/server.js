@@ -12,6 +12,7 @@ const { RateLimiterMemory } = require('rate-limiter-flexible');
 _ = require('lodash');
 
 const config = require('../config');
+const { FILE } = require('dns');
 const Console = console.constructor;
 // redirect global console object to log file
 
@@ -254,8 +255,24 @@ var Server = IgeClass.extend({
 		app.set('views', path.resolve('src'));
 
 		app.use('/engine', express.static(path.resolve('./engine/')));
-		app.use('/src', express.static(path.resolve('./src/')));
-		app.use('/assets', express.static(path.resolve('./assets/')));
+
+		const FILES_TO_CACHE = [
+			`pixi-legacy.js`,
+			`stats.js`,
+			`dat.gui.min.js`,
+			`msgpack.min.js`,
+		];
+		const SECONDS_IN_A_WEEK = 7 * 24 * 60 * 60;
+		app.use('/src', express.static(path.resolve('./src/'), {
+			setHeaders: (res, path, stat) => {
+				const shouldCache = FILES_TO_CACHE.some((filename) => path.endsWith(filename));
+				
+				if (shouldCache) {
+					res.set('Cache-Control', `public, max-age=${SECONDS_IN_A_WEEK}`);
+				}
+			}
+		}));
+		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
 		app.get('/', (req, res) => {
 
