@@ -265,7 +265,10 @@ var Server = IgeClass.extend({
 		const SECONDS_IN_A_WEEK = 7 * 24 * 60 * 60;
 		app.use('/src', express.static(path.resolve('./src/'), {
 			setHeaders: (res, path, stat) => {
-				const shouldCache = FILES_TO_CACHE.some((filename) => path.endsWith(filename));
+				let shouldCache = FILES_TO_CACHE.some((filename) => path.endsWith(filename));
+
+				// cache minified file
+				shouldCache = shouldCache || path.endsWith(`.min.js`);
 				
 				if (shouldCache) {
 					res.set('Cache-Control', `public, max-age=${SECONDS_IN_A_WEEK}`);
