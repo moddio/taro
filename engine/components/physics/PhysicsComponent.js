@@ -26,9 +26,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.exponent = 2;
 		this.divisor = 80;		
-		this.engine = dists.defaultEngine;
 
 		if (ige.isServer) {
+			this.engine = dists.defaultEngine;
+
 			if (ige.game && ige.game.data && ige.game.data.defaultData) {
 				this.engine = ige.game.data.defaultData.physicsEngine
 			}
