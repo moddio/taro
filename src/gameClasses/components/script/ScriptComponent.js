@@ -25,7 +25,6 @@ var ScriptComponent = IgeEntity.extend({
 		var self = this
 
 		self.currentScriptId = scriptId;
-
 		if (ige.game.data.scripts[scriptId]) {
 			//var actions = JSON.parse(JSON.stringify(ige.game.data.scripts[scriptId].actions));
 			var actions = self.getScriptActions(scriptId, timings);

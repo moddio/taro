@@ -182,7 +182,7 @@ var AbilityComponent = IgeEntity.extend({
 					}
 				}
 
-				if (ige.isServer) {
+				if (ige.isServer || ige.isClient && ige.physics) {
 					if (ability.scriptName && ability.scriptName != '') {
 						if (ige.game.data.scripts[ability.scriptName]) {
 							AbilityComponent.prototype.log("ability cast: running script " + ige.game.data.scripts[ability.scriptName].name + " " + ability.scriptName)
