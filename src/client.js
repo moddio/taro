@@ -107,9 +107,6 @@ var Client = IgeClass.extend({
 
         self.tradeOffers = [undefined, undefined, undefined, undefined, undefined]
 
-        ige.addComponent(PhysicsComponent)
-            .physics.sleep(true)
-
         self.implement(ClientNetworkEvents);
 
         //	ige.addComponent(IgeEditorComponent);
@@ -492,8 +489,6 @@ var Client = IgeClass.extend({
             })
         }
         promise.then(function (game) {
-
-            debugger;
             var params = ige.client.getUrlVars();
 
             if (!game.data.isDeveloper) {
@@ -514,6 +509,13 @@ var Client = IgeClass.extend({
                     ige.game.data.unitTypes[i].cellSheet.originalWidth = image.width / unit.cellSheet.columnCount;
                 }
             }
+
+            debugger;
+            if(ige.game.data.defaultData.clientPhysicsEngine) {
+                ige.addComponent(PhysicsComponent)
+                    .physics.sleep(true);
+            }
+
             ige.menuUi.clipImageForShop();
             ige.scaleMap(game.data.map);
             ige.client.loadGameTextures()
@@ -550,7 +552,10 @@ var Client = IgeClass.extend({
 
             ige.addComponent(AdComponent); // ads should only be shown in games
 
-            self.loadCSP(); // always enable CSP.
+            if(ige.physics) {
+                self.loadCSP(); // always enable CSP.
+            }
+            ige.addComponent(VariableComponent);
 
             $.when(self.mapLoaded).done(function () {
 

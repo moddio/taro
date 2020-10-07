@@ -66,7 +66,7 @@ var MapComponent = IgeEntity.extend({
 				.tiled.loadJson(self.data, function (layerArray, layersById) {
 					self.minimapLayers = _.cloneDeep(layerArray);
 
-					if (ige.isServer || (ige.isClient)) {
+					if (ige.isServer || (ige.isClient && ige.physics)) {
 						console.log("load staticsFromMap")
 						ige.physics.staticsFromMap(layersById.walls);
 					}
@@ -130,7 +130,7 @@ var MapComponent = IgeEntity.extend({
 						.pixiMap.loadJson(self.data, function (layerArray, layersById) {
 							self.minimapLayers = _.cloneDeep(layerArray);
 
-							if (ige.isServer || (ige.isClient)) {
+							if (ige.isServer || (ige.isClient && ige.physics)) {
 								ige.physics.staticsFromMap(IgeLayersById.walls);
 							}
 							self.createRegions();

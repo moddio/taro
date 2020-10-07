@@ -1915,7 +1915,7 @@ var VariableComponent = IgeEntity.extend({
 				}
 			}
 
-			if (data.status != {} && ige.physics.engine != 'crash') {
+			if (data.status != {} && ige.physics && ige.physics.engine != 'crash') {
 				//if streaming entity cound > 150 warn user
 				if (data.status && data.status.entityCount && data.status.entityCount.streaming > 150 && !self.streamingWarningShown) {
 					$('#streaming-entity-warning').show()
