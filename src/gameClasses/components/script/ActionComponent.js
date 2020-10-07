@@ -17,7 +17,7 @@ var ActionComponent = IgeEntity.extend({
             var action = actionList[i];
 
             // if action is disabled
-            if (!action || action.disabled == true) {
+            if (!action || action.disabled == true || (ige.isClient && !action.runOnClient)) {
                 continue;
             }
             var params = {};
