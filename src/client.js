@@ -493,6 +493,7 @@ var Client = IgeClass.extend({
         }
         promise.then(function (game) {
 
+            debugger;
             var params = ige.client.getUrlVars();
 
             if (!game.data.isDeveloper) {
