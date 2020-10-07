@@ -33,7 +33,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 				this.engine = ige.game.data.defaultData.physicsEngine
 			}
 		} else if (ige.isClient) {
-			alert(JSON.stringify(ige.game.data.defaultData));
 			if (ige.game && ige.game.data && ige.game.data.defaultData) {
 				this.engine = ige.game.data.defaultData.clientPhysicsEngine
 			}
