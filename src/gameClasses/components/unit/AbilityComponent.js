@@ -8,35 +8,35 @@ var AbilityComponent = IgeEntity.extend({
 	},
 
 	moveUp: function () {
-		if (this._entity.body) {
+		if (this._entity.direction) {
 			this._entity.direction.y = -1
 			// entity.body.setLinearVelocity(new IgePoint3d(velocityX, velocityY, 0));
 		}
 	},
 
 	moveLeft: function () {
-		if (this._entity.body) {
+		if (this._entity.direction) {
 			this._entity.direction.x = -1
 			// this._entity.body.setLinearVelocity(new IgePoint3d(velocityX, velocityY, 0));
 		}
 	},
 
 	moveDown: function () {
-		if (this._entity.body) {
+		if (this._entity.direction) {
 			this._entity.direction.y = 1
 			// this._entity.body.setLinearVelocity(new IgePoint3d(velocityX, velocityY, 0));
 		}
 	},
 
 	moveRight: function () {
-		if (this._entity.body) {
+		if (this._entity.direction) {
 			this._entity.direction.x = 1
 			// this._entity.body.setLinearVelocity(new IgePoint3d(velocityX, velocityY, 0));
 		}
 	},
 
 	stopMovingY: function () {
-		if (this._entity.body) {
+		if (this._entity.direction) {
 			this._entity.direction.y = 0
 
 			// only velocity-based units will stop immediately
@@ -47,7 +47,7 @@ var AbilityComponent = IgeEntity.extend({
 	},
 
 	stopMovingX: function () {
-		if (this._entity.body) {
+		if (this._entity.direction) {
 			this._entity.direction.x = 0
 
 			// only velocity-based units will stop immediately
