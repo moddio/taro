@@ -1851,13 +1851,37 @@ var VariableComponent = IgeEntity.extend({
 		}
 		return null
 	},
+
+	setGlobalVariable: function(name, newValue) {
+		if (ige.isServer) {
+			if (ige.game.data.variables.hasOwnProperty(name)) {
+				ige.game.data.variables[name].value = newValue
+				// if variable has default field then it will be returned when variable's value is undefined
+				if (
+					newValue === undefined &&
+					action.value &&
+					action.value.function === 'undefinedValue' &&
+					ige.game.data.variables[name].hasOwnProperty('default')
+				) {
+					ige.game.data.variables[name].default = undefined;
+					
+				}
+			}
+
+			params['newValue'] = newValue
+			this.updateDevConsole({ type: 'setVariable', params: params });
+                        
+		} else if (ige.isClient) {
+
+		}
+		
+	},
+
 	// update dev console table w/ latest setValue data
 	updateDevConsole: function (data) {
 
 		var self = this;
-
-
-		// if developer is connected
+		// if a developer is connected, send 
 		if (ige.isServer && (ige.server.developerClientId || process.env.ENV === 'standalone' || process.env.ENV == 'standalone-remote')) {
 			// only show 'object' string if env variable is object
 			if (typeof data.params.newValue == 'object') {
@@ -1922,7 +1946,6 @@ var VariableComponent = IgeEntity.extend({
 					self.streamingWarningShown = true;
 				}
 
-				var innerflag = false;
 				var innerHtml = '';
 
 				innerHtml = ''
