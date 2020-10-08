@@ -2068,9 +2068,8 @@ var ActionComponent = IgeEntity.extend({
                         var attrId = ige.variable.getValue(action.attribute, vars)
                         var value = ige.variable.getValue(action.value, vars)
                         var entity = ige.variable.getValue(action.entity, vars)
-                        if (entity && self.entityCategories.indexOf(entity._category) > -1 && entity._stats.attributes[attrId] != undefined && value != undefined) {
+                        if (entity && self.entityCategories.indexOf(entity._category) > -1 && entity._stats.attributes && entity._stats.attributes[attrId] != undefined && value != undefined) {
                             var isAttributeVisible = false;
-                            var shouldForceUpdate = false;
                             var attribute = entity._stats.attributes[attrId];
 
                             if (entity._category === 'player') {
