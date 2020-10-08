@@ -4,7 +4,7 @@ var TriggerComponent = IgeEntity.extend({
 
 	init: function () {
 		var self = this
-		if (ige.isServer || (ige.isClient)) {
+		if (ige.isServer || (ige.isClient && ige.physics)) {
 			self._enableContactListener();
 		}
 	},
@@ -226,7 +226,7 @@ var TriggerComponent = IgeEntity.extend({
 		// console.log("trigger fire", triggerName, triggeredBy)
 		// look for script that has a matching trigger
 
-		if (ige.isServer) {
+		if (ige.isServer || (ige.isClient && ige.physics)) {
 			for (scriptId in ige.game.data.scripts) {
 				var script = ige.game.data.scripts[scriptId]
 				var triggered = false;

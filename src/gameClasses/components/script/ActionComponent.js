@@ -17,12 +17,11 @@ var ActionComponent = IgeEntity.extend({
             var action = actionList[i];
 
             // if action is disabled
-            if (!action || action.disabled == true || (ige.isClient && !action.runOnClient)) {
+            if (!action || action.disabled == true || (ige.isClient && ige.physics && !action.runOnClient)) {
                 continue;
             }
             var params = {};
             var entity = ige.variable.getValue(action.entity, vars);
-
             ige.script.currentActionName = action.type
             var invalidParameters = [];
 
