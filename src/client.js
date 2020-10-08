@@ -510,7 +510,6 @@ var Client = IgeClass.extend({
                 }
             }
 
-            debugger;
             if(ige.game.data.defaultData.clientPhysicsEngine) {
                 ige.addComponent(PhysicsComponent)
                     .physics.sleep(true);
