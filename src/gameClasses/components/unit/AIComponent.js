@@ -288,7 +288,9 @@ var AIComponent = IgeEntity.extend({
                             // target's too far. stop firing, and start chasing
                             unit.ability.stopUsingItem()
                             unit.startMoving();
-                            unit.sensor.updateBody(); // re-detect nearby units
+                            if (unit.sensor) {
+                                unit.sensor.updateBody(); // re-detect nearby units
+                            }
                         }
                         
                     }
