@@ -181,7 +181,7 @@ var IgeInitPixi = IgeClass.extend({
         }
 
         ige._cullCounter++;
-        
+
         this.drawDebugBody();
         ige.pixi.app.render();
     },
@@ -329,10 +329,10 @@ var IgeInitPixi = IgeClass.extend({
         var unit = ige.client && ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
         var body = unit && unit.body;
         if (body && unit._debugEntity) {
-            var scale = ige.physics.scaleRatio();
-            var position = unit.body.m_xf && unit.body.m_xf.position;
-            var x = scale * position.x - (unit._debugEntity.width / 2),
-                y = scale * position.y - (unit._debugEntity.height / 2);
+            var scale = ige.physics.scaleRatio(),
+                position = unit.body.m_xf && unit.body.m_xf.position,
+                x = scale * position.x - unit._debugEntity.width / 2,
+                y = scale * position.y - unit._debugEntity.height / 2;
             unit._debugEntity.position.set(x, y);
         }
     },
