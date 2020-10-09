@@ -182,7 +182,6 @@ var IgeInitPixi = IgeClass.extend({
 
         ige._cullCounter++;
 
-        this.drawDebugBody();
         ige.pixi.app.render();
     },
     updateAllEntities: function (timeStamp) {
@@ -323,20 +322,6 @@ var IgeInitPixi = IgeClass.extend({
 
         if (ige.gameLoopTickHasExecuted) {
             ige.gameLoopTickHasExecuted = false;
-        }
-    },
-    drawDebugBody: function () {
-        var unit = ige.client && ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
-        var body = unit && unit.body;
-        if (body && unit._debugEntity) {
-            var scale = ige.physics.scaleRatio(),
-                position = unit.body.m_xf && unit.body.m_xf.position,
-                x = scale * position.x,
-                y = scale * position.y;
-            if (!isNaN(unit.width())) {
-                unit._debugEntity.pivot.set(unit.width() / 2, unit.height() / 2);
-            }
-            unit._debugEntity.position.set(x, y);
         }
     },
 });
