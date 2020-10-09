@@ -560,7 +560,7 @@ var Unit = IgeEntityBox2d.extend({
                         // }])
 
                         ige.game.lastPurchasedUniTypetId = unitData.unitTypeId
-                        ige.trigger.fire("playerPurchasesUnit", {
+                        ige.trigger && ige.trigger.fire("playerPurchasesUnit", {
                             unitId: self.id(),
                             playerId: ownerPlayer.id()
                         })
@@ -613,7 +613,7 @@ var Unit = IgeEntityBox2d.extend({
                 itemId: newItem.id(),
                 unitId: this.id()
             }
-            ige.trigger.fire("unitSelectsItem", triggeredBy);
+            ige.trigger && ige.trigger.fire("unitSelectsItem", triggeredBy);
 
             // whip-out the new item using tween
             if (ige.isClient) {
@@ -1107,7 +1107,7 @@ var Unit = IgeEntityBox2d.extend({
                 self.updateStats(item.id(), true);
                 self.detachEntity(item.id());
 
-                ige.trigger.fire("unitDroppedAnItem", {
+                ige.trigger && ige.trigger.fire("unitDroppedAnItem", {
                     itemId: item.id(),
                     unitId: self.id()
                 });
@@ -1163,7 +1163,7 @@ var Unit = IgeEntityBox2d.extend({
                     unitId: ige.game.lastAttackingUnitId,
                     itemId: ige.game.lastAttackingItemId
                 };
-                ige.trigger.fire("unitAttacksUnit", triggeredBy);
+                ige.trigger && ige.trigger.fire("unitAttacksUnit", triggeredBy);
 
 				var armor = this._stats.attributes['armor'] && this._stats.attributes['armor'].value || 0;
 				var damageReduction = (0.05 * armor) / (1.5 + 0.04 * armor);
@@ -1698,7 +1698,7 @@ var Unit = IgeEntityBox2d.extend({
         }
 
         // if entity (unit/item/player/projectile) has attribute, run regenerate
-        if (ige.isServer || (ige.isClient && ige.client.selectedUnit == this && ige.client.cspEnabled)) {        
+        if (ige.isServer || (ige.physics && ige.isClient && ige.client.selectedUnit == this && ige.client.cspEnabled)) {        
             if (this.attribute) {
                 this.attribute.regenerate();
             }

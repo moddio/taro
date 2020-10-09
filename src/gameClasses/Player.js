@@ -181,7 +181,7 @@ var Player = IgeEntity.extend({
 				ige.client.selectedUnit = unit
 				ige.client.eventLog.push([ige._currentTime, 'my unit selected ' + unitId])
 				
-				if (ige.env == 'local' && ige.physics) {
+				if (ige.env == 'local') {
 					var graphics = new PIXI.Graphics();
 					graphics.lineStyle(2, 0x0000FF, 0.5);
 					graphics.beginFill(0xFF700B, 0.3);

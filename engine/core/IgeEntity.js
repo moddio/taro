@@ -5076,7 +5076,7 @@ var IgeEntity = IgeObject.extend({
 
         if (
             // 1. we're using cspMovement (experimental) for my own unit OR
-            (ige.client.cspEnabled && ige.client.selectedUnit == this) ||
+            (ige.physics && ige.client.cspEnabled && ige.client.selectedUnit == this) ||
             // 2. item-fired projectiles
             (this._category == 'projectile' && this._stats.sourceItemId != undefined)
         ) {
@@ -5133,7 +5133,7 @@ var IgeEntity = IgeObject.extend({
             this.serverStreamedPosition = [targetX, targetY, targetRotate];
 
             // if csp is enabled, use server-streamed data for reconciliation purpose
-            if (this == ige.client.selectedUnit) {
+            if (ige.physics && this == ige.client.selectedUnit) {
                 // display server-streamed position for debugging purpose
                 if (this._debugEntity && prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
                     this._debugEntity.position.set(targetX, targetY);
@@ -5149,6 +5149,11 @@ var IgeEntity = IgeObject.extend({
                 x = targetX;
                 y = targetY;
                 rotate = targetRotate;
+                if(this._debugEntity) {
+                    this._debugEntity.position.set(x, y);
+                    this._debugEntity.rotation = targetRotate;
+                    this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
+                }
             }
 
             // // for debugging my unit's x-movement interpolation

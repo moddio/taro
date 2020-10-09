@@ -656,7 +656,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 							}
 							else if (ige.isClient) {
 								
-								if (ige.client.cspEnabled && ige.client.selectedUnit == entity) {
+								if (ige.physics && ige.client.cspEnabled && ige.client.selectedUnit == entity) {
 									// var xDiff = entity.serverStreamedPosition[0] - x;
 									// var yDiff = entity.serverStreamedPosition[1] - y;
 									// var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);

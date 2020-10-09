@@ -389,7 +389,7 @@ var ControlComponent = IgeEntity.extend({
 
 			// unit move
 			var unit = ige.client.selectedUnit;
-			if (ige.client.cspEnabled && unit) {
+			if (ige.physics && ige.client.cspEnabled && unit) {
 				var x = unit._translate.x.toFixed(0)
 				var y = unit._translate.y.toFixed(0)
 				if (self.sendPlayerInput || self.lastPositionSent == undefined || self.lastPositionSent[0] != x || self.lastPositionSent[1] != y) {

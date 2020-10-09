@@ -688,7 +688,7 @@ var Item = IgeEntityBox2d.extend({
 			this._stats.isBeingUsed = true;
 		}
 		if (owner && ige.trigger) {
-			ige.trigger.fire("unitStartsUsingAnItem", {
+			ige.trigger && ige.trigger.fire("unitStartsUsingAnItem", {
 				unitId: owner.id(),
 				itemId: this.id()
 			})
@@ -702,7 +702,7 @@ var Item = IgeEntityBox2d.extend({
 			this._stats.isBeingUsed = false
 			var owner = self.getOwnerUnit();
 			if (owner && ige.trigger) {
-				ige.trigger.fire("unitStopsUsingAnItem", {
+				ige.trigger && ige.trigger.fire("unitStopsUsingAnItem", {
 					unitId: owner.id(),
 					itemId: self.id()
 				})

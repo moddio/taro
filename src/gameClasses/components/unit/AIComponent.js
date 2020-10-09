@@ -60,7 +60,7 @@ var AIComponent = IgeEntity.extend({
         // only response to hostile/neutral units
         var ownerPlayer = self._entity.getOwner();
         if (unit) {
-            ige.trigger.fire("whenUnitEntersSensor", {
+            ige.trigger && ige.trigger.fire("whenUnitEntersSensor", {
                 unitId: unit.id(),
                 sensorId: self._entity.sensor.id()
             });
