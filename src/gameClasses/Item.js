@@ -63,7 +63,7 @@ var Item = IgeEntityBox2d.extend({
 
 		self.setState(self._stats.stateId, self._stats.defaultData);
 
-		self.scaleRatio = ige.physics.scaleRatio();
+		self.scaleRatio = ige.physics && ige.physics.scaleRatio();
 		if (ige.isServer) {
 			this.streamMode(1);
 			self.streamCreate();
@@ -288,7 +288,7 @@ var Item = IgeEntityBox2d.extend({
 				}
 
 				self._stats.lastUsed = ige.now;;
-				ige.trigger.fire("unitUsesItem", {
+				ige.trigger && ige.trigger.fire("unitUsesItem", {
 					unitId: (owner) ? owner.id() : undefined,
 					itemId: self.id()
 				});
@@ -433,7 +433,7 @@ var Item = IgeEntityBox2d.extend({
 									// if (!self._stats.penetration) {
 									ige.game.entitiesCollidingWithLastRaycast = _.orderBy(self.raycastTargets, ['raycastFraction'], ['asc']);
 									// }
-									ige.trigger.fire("raycastItemFired", {
+									ige.trigger && ige.trigger.fire("raycastItemFired", {
 										itemId: self.id(),
 									});
 								}

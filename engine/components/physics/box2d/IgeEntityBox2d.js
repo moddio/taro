@@ -252,7 +252,7 @@ var IgeEntityBox2d = IgeEntity.extend({
             }
         }
 
-        ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body })
+        ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body })
 
     },
     /**
@@ -420,6 +420,7 @@ var IgeEntityBox2d = IgeEntity.extend({
     // lossless applyForce
     applyForce: function (x, y) {
         // if body doesn't exist yet, queue
+        if (!ige.physics) return;
 
         if (!ige.physics._world.isLocked() && this.body != undefined) {
             this.applyForceLT(x, y)
