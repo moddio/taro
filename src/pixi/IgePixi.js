@@ -331,8 +331,11 @@ var IgeInitPixi = IgeClass.extend({
         if (body && unit._debugEntity) {
             var scale = ige.physics.scaleRatio(),
                 position = unit.body.m_xf && unit.body.m_xf.position,
-                x = scale * position.x - unit._debugEntity.width / 2,
-                y = scale * position.y - unit._debugEntity.height / 2;
+                x = scale * position.x,
+                y = scale * position.y;
+            if (!isNaN(unit.width())) {
+                unit._debugEntity.pivot.set(unit.width() / 2, unit.height() / 2);
+            }
             unit._debugEntity.position.set(x, y);
         }
     },
