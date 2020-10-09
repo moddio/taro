@@ -41,6 +41,7 @@ var IgeInitPixi = IgeClass.extend({
         this.mobileControls = new PIXI.Container();
         this.mobileControls.zIndex = 10;
         this.box2dDebug.zIndex = 10;
+        this.box2dDebug.tileMap = true;
         this.world.addChild(this.box2dDebug);
         this.world.addChild(this.mobileControls);
         this.isUpdateLayersOrderQueued = false;
@@ -178,7 +179,10 @@ var IgeInitPixi = IgeClass.extend({
             ige.pixi.cull.cull(ige.pixi.viewport.getVisibleBounds());
             ige.pixi.viewport.dirty = false;
         }
-        ige._cullCounter ++;
+
+        ige._cullCounter++;
+        
+        this.drawDebugBody();
         ige.pixi.app.render();
     },
     updateAllEntities: function (timeStamp) {
@@ -319,6 +323,17 @@ var IgeInitPixi = IgeClass.extend({
 
         if (ige.gameLoopTickHasExecuted) {
             ige.gameLoopTickHasExecuted = false;
+        }
+    },
+    drawDebugBody: function () {
+        var unit = ige.client && ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
+        var body = unit && unit.body;
+        if (body && unit._debugEntity) {
+            var scale = ige.physics.scaleRatio();
+            var position = unit.body.m_xf && unit.body.m_xf.position;
+            var x = scale * position.x - (unit._debugEntity.width / 2),
+                y = scale * position.y - (unit._debugEntity.height / 2);
+            unit._debugEntity.position.set(x, y);
         }
     },
 });
