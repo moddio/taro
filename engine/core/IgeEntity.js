@@ -5133,7 +5133,7 @@ var IgeEntity = IgeObject.extend({
             this.serverStreamedPosition = [targetX, targetY, targetRotate];
 
             // if csp is enabled, use server-streamed data for reconciliation purpose
-            if (ige.physics && this == ige.client.selectedUnit) {
+            if (ige.physics && ige.client.cspEnabled && this == ige.client.selectedUnit) {
                 // display server-streamed position for debugging purpose
                 if (this._debugEntity && prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
                     this._debugEntity.position.set(targetX, targetY);
