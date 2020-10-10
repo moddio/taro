@@ -5075,15 +5075,19 @@ var IgeEntity = IgeObject.extend({
         }
 
         if (
-            // 1. we're using cspMovement (experimental) for my own unit OR
-            (ige.physics && ige.game.cspEnabled  && ige.client.selectedUnit == this) ||
-            // 2. item-fired projectiles
-            (this._category == 'projectile' && this._stats.sourceItemId != undefined)
+            ige.physics && (
+                // 1. we're using cspMovement (experimental) for my own unit OR
+                (ige.game.cspEnabled  && ige.client.selectedUnit == this) ||
+                // 2. item-fired projectiles
+                (this._category == 'projectile' && this._stats.sourceItemId != undefined)
+            )
         ) {
             if (this.nextPhysicsFrame) {
                 if (this.prevPhysicsFrame) {
                     // interpolate using prev/next physics key frames provided by physicsComponent
-                    (x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0])), (y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]));
+                    x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0])
+                    y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+
                     if (this == ige.client.selectedUnit) {
                         rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
                     }
@@ -5111,9 +5115,16 @@ var IgeEntity = IgeObject.extend({
         }
 
         // allow up to 50ms of extrapolation
-        if (prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < nextKeyFrame[0] + 50) {
+        if (
+            prevKeyFrame != undefined && nextKeyFrame != undefined && 
+            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime < nextKeyFrame[0] + 50
+        ) {
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+
+            if (this == ige.client.selectedUnit && isNaN(targetX)) {
+                console.log(targetX, prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+            }
 
             // a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
             var startValue = prevKeyFrame[1][2],
@@ -5132,28 +5143,23 @@ var IgeEntity = IgeObject.extend({
 
             this.serverStreamedPosition = [targetX, targetY, targetRotate];
 
-            // if csp is enabled, use server-streamed data for reconciliation purpose
-            if (ige.physics && ige.game.cspEnabled  && this == ige.client.selectedUnit) {
-                // display server-streamed position for debugging purpose
-                if (this._debugEntity && prevKeyFrame != undefined && nextKeyFrame != undefined && ige.renderTime < ige.nextSnapshot[0]) {
-                    this._debugEntity.position.set(targetX, targetY);
-                    this._debugEntity.rotation = targetRotate;
-                    this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
-                }
-            } else {
+            // if physics isn't set, or csp is disabled, use server-streamed data to move entities
+            if (!ige.physics || !ige.game.cspEnabled  || this != ige.client.selectedUnit) {
                 // use server-streamed data to translate non-player unit. iff csp is enabled.
                 // xDiff = targetX - x;
                 // yDiff = targetY - y;
                 // x += xDiff/3
                 // y += yDiff/3
+                
                 x = targetX;
                 y = targetY;
                 rotate = targetRotate;
-                if(this._debugEntity) {
-                    this._debugEntity.position.set(x, y);
-                    this._debugEntity.rotation = targetRotate;
-                    this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
-                }
+            }
+
+            if(this._debugEntity) {
+                this._debugEntity.position.set(targetX, targetY);
+                this._debugEntity.rotation = targetRotate;
+                this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
             }
 
             // // for debugging my unit's x-movement interpolation

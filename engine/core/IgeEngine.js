@@ -1773,7 +1773,7 @@ var IgeEngine = IgeEntity.extend({
 			this._currentTime += (now - this._timeScaleLastTimestamp) * this._timeScale;
 			this.renderTime += (now - this._timeScaleLastTimestamp) * this._timeScale;
 		}
-
+		
 		this._timeScaleLastTimestamp = now;
 		// this.incrementCount++;
 		// if (now - this._aSecondAgo > 1000) {

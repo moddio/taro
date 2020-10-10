@@ -516,7 +516,7 @@ var IgeNetIoClient = {
 					// Therefore, we're hard-setting its range between prevSnapshot's time and nextSnapshot's time with 30ms offset.
 					ige.renderTime = Math.max(
 						ige.nextSnapshot[0] - 30,
-						Math.min(ige.renderTime, ige.nextSnapshot[0] + 30)
+						Math.min(ige.renderTime, newSnapshotTimeStamp - 60)
 					)
 					
 					// rubberband renderTime towards the nextSnapshot's time. (which is a frame older than the newest snapshot we received)
