@@ -74,18 +74,15 @@ var Projectile = IgeEntityBox2d.extend({
 		if (ige.isServer) {
 			var sourceItem = this.getSourceItem()
 			if ( // stream projectile data if
-				!ige.game.data.defaultData.clientPhysicsEngine || // client side isn't running physics OR
+				!ige.game.data.defaultData.clientPhysicsEngine || // client side isn't running physics (csp requires physics) OR
 				!sourceItem || // projectile does not have source item (created via script) OR
-				(sourceItem && sourceItem._stats.serverStreamedProjectile) // item is set to stream its projectiles from server
+				(sourceItem && sourceItem._stats.streamProjectile) // item is set to stream its projectiles from server
 			) {
 				this.streamMode(1);
 			}
 			else {
 				this.streamMode(0)
 			}
-
-			// only stream if projectile wasn't created via item.use(). item.use() will spawn projectiles on all players clients
-
 			ige.server.totalProjectilesCreated++;
 		}
 		else if (ige.isClient) {
