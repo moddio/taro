@@ -72,8 +72,13 @@ var Projectile = IgeEntityBox2d.extend({
 		this.updateBody(data.defaultData);
 		// console.log("previousFrame", this.previousFrame)
 		if (ige.isServer) {
-			if (this._stats.streamMode != undefined) {
-				this.streamMode(this._stats.streamMode);
+			var sourceItem = this.getSourceItem()
+			if ( // stream projectile data if
+				!ige.game.data.defaultData.clientPhysicsEngine || // client side isn't running physics OR
+				!sourceItem || // projectile does not have source item (created via script) OR
+				(sourceItem && sourceItem._stats.serverStreamedProjectile) // item is set to stream its projectiles from server
+			) {
+				this.streamMode(1);
 			}
 			else {
 				this.streamMode(0)
@@ -172,7 +177,7 @@ var Projectile = IgeEntityBox2d.extend({
 		IgeEntity.prototype.tick.call(this, ctx);
 	},
 
-	getOwner: function () {
+	getSourceItem: function () {
 		var self = this;
 
 		return self._stats && self._stats.sourceItemId && ige.$(self._stats.sourceItemId);

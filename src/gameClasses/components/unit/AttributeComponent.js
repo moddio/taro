@@ -285,7 +285,7 @@ var AttributeComponent = IgeEntity.extend({
 							}
 							case 'projectile': {
 								var projectile = self._entity;
-								var item = projectile.getOwner();
+								var item = projectile.getSourceItem();
 								unit = item && item.getOwnerUnit();
 
 								if (unit && ige.client.myPlayer._stats.selectedUnitId == unit.id()) {

@@ -317,13 +317,17 @@ var Item = IgeEntityBox2d.extend({
 								y: (owner._translate.y + self.anchoredOffset.y) + (self._stats.bulletStartPosition.x * Math.sin(offsetAngle)) - (self._stats.bulletStartPosition.y * Math.cos(offsetAngle))
 							}
 
-							if (this._stats.isGun) {
+							
+							if (
+								this._stats.isGun && 
+								(ige.isServer || (ige.isClient && ige.physics)) // render projectile on clientside if physics is enabled
+							) {
 								var defaultData = {
 									rotate: rotate,
 									translate: bulletStartPosition,
 								};
-
-								if (self.projectileData) {
+								
+								if (self.projectileData && (ige.isServer || (ige.isClient && !self._stats.serverStreamedProjectile))) {
 
 									defaultData.velocity = {
 										deployMethod: self._stats.deployMethod,
