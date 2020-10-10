@@ -1698,7 +1698,7 @@ var Unit = IgeEntityBox2d.extend({
         }
 
         // if entity (unit/item/player/projectile) has attribute, run regenerate
-        if (ige.isServer || (ige.physics && ige.isClient && ige.client.selectedUnit == this && ige.client.cspEnabled)) {        
+        if (ige.isServer || (ige.physics && ige.isClient && ige.client.selectedUnit == this && ige.game.cspEnabled )) {        
             if (this.attribute) {
                 this.attribute.regenerate();
             }

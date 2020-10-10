@@ -422,8 +422,9 @@ var Server = IgeClass.extend({
 				ige.addComponent(GameComponent)
 
 				ige.game.data = game.data
-				global.standaloneGame = game.data;
-				var unitTypes = game.data.unitTypes;
+				ige.game.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
+
+				global.standaloneGame = game.data;				
 				var baseTilesize = 64;
 
 				// I'm assuming that both tilewidth and tileheight have same value

@@ -713,8 +713,7 @@ var Client = IgeClass.extend({
     },
 
     loadCSP: function () {
-        this.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
-        // this.cspEnabled = true;
+        ige.game.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
         var gravity = ige.game.data.settings.gravity
         if (gravity) {
             console.log("setting gravity ", gravity)
