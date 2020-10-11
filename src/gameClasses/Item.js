@@ -290,7 +290,7 @@ var Item = IgeEntityBox2d.extend({
 					itemId: self.id()
 				});
 
-				if (self._stats.type == 'weapon') {
+				if (ige.physics && self._stats.type == 'weapon') {
 
 					if (self._stats.isGun) {
 						if (self._stats.bulletStartPosition) {
