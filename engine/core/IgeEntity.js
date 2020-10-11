@@ -119,29 +119,17 @@ var IgeEntity = IgeObject.extend({
     // update item's body & texture based on stateId given
     setState: function (stateId, defaultData) {
         var self = this;
-
-        // console.log(this._stats.name, "setting state", stateId)
-        var defaultStateId = this.getDefaultStateId();
+        
         if (stateId == undefined) {
-            stateId = defaultStateId;
+            stateId = this.getDefaultStateId();
         }
-
+        
         var newState = (self._stats.states && self._stats.states[stateId]) || {};
-        var defaultState = self._stats.states && self._stats.states[defaultStateId];
-        if (self._stats.states) {
-            var currentStateKeys = Object.keys(self._stats.states);
+        if (newState && newState.body) {
             self._stats.currentBody = self._stats.bodies[newState.body];
         }
 
-        if (!self._stats.currentBody && newState.body != 'none') {
-            stateId = defaultStateId;
-            if (defaultState) {
-                self._stats.currentBody = self._stats.bodies[defaultState.body];
-            } else if (currentStateKeys && currentStateKeys.length) {
-                self._stats.currentBody = self._stats.bodies[currentStateKeys[0]];
-            }
-        }
-
+        // console.log("setState", stateId, "new body", (newState)?newState.body:"null")
         if (ige.isServer) {
             self.streamUpdateData([{ stateId: stateId }]);
         } else if (ige.isClient) {
@@ -150,7 +138,6 @@ var IgeEntity = IgeObject.extend({
 
         self.previousState = newState;
         self.isTeleporting = true;
-        // console.log("updateBody", self._stats.name, stateId, defaultData)
         self.updateBody(defaultData);
     },
 
@@ -4544,7 +4531,7 @@ var IgeEntity = IgeObject.extend({
      * chaining or the current value if no arguments are specified.
      */
     streamMode: function (val) {
-        // ige.devLog("streamMode (" + val + ")", (this._stats) ? this._stats.name : this._category)
+        // console.log("streamMode (" + val + ")", (this._stats) ? this._stats.name : this._category)
         if (val !== undefined) {
             if (ige.isServer) {
                 this._streamMode = val;
@@ -5114,10 +5101,14 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
-        // allow up to 50ms of extrapolation
+        // if (ige.client.selectedUnit == this) {
+        //     console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
+        // }
+
+        // interpolate server-streamed translation data
         if (
             prevKeyFrame != undefined && nextKeyFrame != undefined && 
-            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime < nextKeyFrame[0] + 50
+            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime < nextKeyFrame[0] + 50 // allow up to 50ms of extrapolation
         ) {
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);

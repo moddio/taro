@@ -95,23 +95,20 @@ var Item = IgeEntityBox2d.extend({
 		var self = this;
 		var body = self._stats.currentBody;
 
-		if (this._stats.stateId == 'dropped') {
-			if (ige.isServer) {
-				// console.log(this.id(), "dropped! setting lifespan")
+		if (ige.isServer) {
+			if (this._stats.stateId == 'dropped') {
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1)
-			}
-		} else {
-			if (ige.isServer) {
-				// console.log(this.id(), "removing lifespan!")
+			} else {
+			// console.log(this.id(), "removing lifespan!")
 				this.deathTime(undefined) // remove lifespan, so the entity stays indefinitely
 				if (body) {
-					if (body.jointType === 'weldJoint') {
-						// if (body.jointType === 'weldJoint' && body.type != 'dynamic') {
-						this.streamMode(2)
+					if (body.jointType != 'weldJoint' && body.type == 'dynamic') {						
+						this.streamMode(1) // item that revolutes around unit						
 					} else {
-						this.streamMode(1) // item that revolutes around unit
+						// if (body.jointType === 'weldJoint' ) {
+						this.streamMode(2)
 					}
 				}
 			}
