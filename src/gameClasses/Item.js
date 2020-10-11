@@ -101,10 +101,9 @@ var Item = IgeEntityBox2d.extend({
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1)
 			} else {
-			// console.log(this.id(), "removing lifespan!")
 				this.deathTime(undefined) // remove lifespan, so the entity stays indefinitely
 				if (body) {
-					if (body.jointType != 'weldJoint' && body.type == 'dynamic') {						
+					if (body.jointType != 'weldJoint') {						
 						this.streamMode(1) // item that revolutes around unit						
 					} else {
 						// if (body.jointType === 'weldJoint' ) {
