@@ -1864,8 +1864,7 @@ var ActionComponent = IgeEntity.extend({
                         break;
 
                     /* Entity */
-                    case 'applyLinearImpulseOnEntityXY':
-                    case 'applyLinearImpulseOnEntityXYLT':
+                    case 'applyImpulseOnEntityXY':
 
                         var entity = ige.variable.getValue(action.entity, vars)
 
@@ -1880,7 +1879,7 @@ var ActionComponent = IgeEntity.extend({
                                 impulseY = 0
                             }
 
-                            entity.applyLinearImpulse(impulseX, impulseY);
+                            entity.applyImpulse(impulseX, impulseY);
                         }
                         else {
                             ige.script.errorLog("invalid entity")

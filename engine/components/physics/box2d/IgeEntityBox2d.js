@@ -172,7 +172,7 @@ var IgeEntityBox2d = IgeEntity.extend({
                         break;
 
                     case 'applyImpulse':
-                        this.applyLinearImpulse(defaultData.velocity.x, defaultData.velocity.y)
+                        this.applyImpulse(defaultData.velocity.x, defaultData.velocity.y)
                         break;
 
                     case 'setVelocity':
@@ -458,15 +458,15 @@ var IgeEntityBox2d = IgeEntity.extend({
     },
 
     // lossless applyForce
-    applyLinearImpulse: function (x, y) {
+    applyImpulse: function (x, y) {
         // if body doesn't exist yet, queue
 
         if (!ige.physics._world.isLocked() && this.body != undefined) {
-            this.applyLinearImpulseLT(x, y)
+            this.applyImpulseLT(x, y)
         }
         else {
             this.queueAction({
-                type: "applyLinearImpulse",
+                type: "applyImpulse",
                 x: x,
                 y: y
             });
@@ -474,14 +474,14 @@ var IgeEntityBox2d = IgeEntity.extend({
     },    
 
     // loss tolerant applyForce
-    applyLinearImpulseLT: function (x, y) {
+    applyImpulseLT: function (x, y) {
         // ige.devLog("applyForce", x, y)
 
         try {
             if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
 
                 var thrustVector = new ige.physics.b2Vec2(x, y);
-                this.body.applyLinearImpulse(thrustVector, this.body.getWorldCenter());
+                this.body.applyImpulse(thrustVector, this.body.getWorldCenter());
             }
         }
         catch (e) {
@@ -826,8 +826,8 @@ var IgeEntityBox2d = IgeEntity.extend({
                             this.applyForceLT(action.x, action.y);
                             break;
 
-                        case "applyLinearImpulse":
-                            this.applyLinearImpulseLT(action.x, action.y);
+                        case "applyImpulse":
+                            this.applyImpulseLT(action.x, action.y);
                             break;
 
                         case "applyTorque":
