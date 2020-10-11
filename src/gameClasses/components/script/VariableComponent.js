@@ -757,7 +757,7 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'getSourceItemOfProjectile':
 					if (entity && entity._category == 'projectile') {
-						var item = entity.getOwner();
+						var item = entity.getSourceItem();
 						if (item) {
 							returnValue = item
 						}
