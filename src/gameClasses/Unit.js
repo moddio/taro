@@ -1659,7 +1659,7 @@ var Unit = IgeEntityBox2d.extend({
                             self.applyForce(vector.x, vector.y);
                             break;
                         case 'impulse':    
-                            self.applyLinearImpulse(vector.x, vector.y);
+                            self.applyImpulse(vector.x, vector.y);
                             break;
                     }
                 }

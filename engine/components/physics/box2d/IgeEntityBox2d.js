@@ -481,7 +481,7 @@ var IgeEntityBox2d = IgeEntity.extend({
             if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
 
                 var thrustVector = new ige.physics.b2Vec2(x, y);
-                this.body.applyImpulse(thrustVector, this.body.getWorldCenter());
+                this.body.applyLinearImpulse(thrustVector, this.body.getWorldCenter());
             }
         }
         catch (e) {
