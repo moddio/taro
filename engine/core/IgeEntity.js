@@ -120,7 +120,8 @@ var IgeEntity = IgeObject.extend({
     setState: function (stateId, defaultData) {
         var self = this;
         
-        if (stateId == undefined) {
+        // if invalid stateId is given, set state to default state
+        if (stateId == undefined || self._stats.states[stateId] == undefined) {
             stateId = this.getDefaultStateId();
         }
         
