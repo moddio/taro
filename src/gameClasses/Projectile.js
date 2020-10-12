@@ -76,7 +76,7 @@ var Projectile = IgeEntityBox2d.extend({
 			if ( // stream projectile data if
 				!ige.game.data.defaultData.clientPhysicsEngine || // client side isn't running physics (csp requires physics) OR
 				!sourceItem || // projectile does not have source item (created via script) OR
-				(sourceItem && sourceItem._stats.streamProjectile) // item is set to stream its projectiles from server
+				(sourceItem && sourceItem._stats.projectileStreamMode) // item is set to stream its projectiles from server
 			) {
 				this.streamMode(1);
 			}
