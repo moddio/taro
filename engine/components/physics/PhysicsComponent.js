@@ -661,7 +661,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 									// console.log(x, y)
 								
-									var time = ige.renderTime - ige.network.latency - 120
+									var time = ige._currentTime - ige.network.latency - 120
 
 									// skip through all movementHistories that are too old
 									while (entity.movementHistory && entity.movementHistory.length > 0 && entity.movementHistory[0][0] < time) {
@@ -703,7 +703,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 									}
 
 									// if unit has moved
-									entity.movementHistory.push([ige.renderTime, [x, y, angle]])
+									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
 									
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
