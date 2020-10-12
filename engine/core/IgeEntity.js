@@ -5001,10 +5001,10 @@ var IgeEntity = IgeObject.extend({
             offsetDelta = currentTime - startTime,
             deltaTime = offsetDelta / dataDelta;
 
-        // // Clamp the current time from 0
-        // if (deltaTime < 0) {
-        // 	deltaTime = 0;
-        // }
+        // Clamp the current time from 0
+        if (deltaTime < 0) {
+        	deltaTime = 0;
+        }
 
         return totalValue * deltaTime + startValue;
     },
@@ -5108,7 +5108,7 @@ var IgeEntity = IgeObject.extend({
         // interpolate server-streamed translation data
         if (
             prevKeyFrame != undefined && nextKeyFrame != undefined && 
-            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime < nextKeyFrame[0] + 50 // allow up to 50ms of extrapolation
+            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime < nextKeyFrame[0]
         ) {
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);

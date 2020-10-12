@@ -672,33 +672,48 @@ var PhysicsComponent = IgeEventingClass.extend({
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 									// console.log(x, y)
 
-									if (entity.serverStreamedPosition && entity.movementHistory.length > 2) {
-										for (var i = entity.movementHistory.length-1; i >= 2; i--) {
-											var prevMovement = entity.movementHistory[i-1]
-											var nextMovement = entity.movementHistory[i];
-											var time = ige._currentTime - (ige.network.latency * 2)
-											if (prevMovement && nextMovement && prevMovement[0] < time && time < nextMovement[0]) {
-												var historyX = entity.interpolateValue(prevMovement[1][0], nextMovement[1][0], prevMovement[0], time, nextMovement[0]);
-												var historyY = entity.interpolateValue(prevMovement[1][1], nextMovement[1][1], prevMovement[0], time, nextMovement[0]);
-												
-												var xDiff = (entity.serverStreamedPosition[0] - historyX)
-												var yDiff = (entity.serverStreamedPosition[1] - historyY)
-												
-												var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-												// console.log(entity.serverStreamedPosition)
-												// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
-												if (distance > 100) {
+									if (entity.serverStreamedPosition && entity.movementHistory.length > 0) {
+										var time = ige.renderTime - ige.network.latency - 120
+
+										// skip through all movementHistories that are too old
+										while (entity.movementHistory && entity.movementHistory.length > 0 && entity.movementHistory[0][0] < time) {
+											var history = entity.movementHistory.shift()[1];
+										}
+									
+										// if movementHistory still has elements after shifting, 
+										// this means we found a matching time between movementHistory & serverStreamedPosition's time.
+										if (history && entity.movementHistory.length > 0) {
+											var xDiff = (entity.serverStreamedPosition[0] - history[0])
+											var yDiff = (entity.serverStreamedPosition[1] - history[1])
+											
+											var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+											// console.log(
+											// 		entity.discrepancyCount, 
+											// 		(entity.serverStreamedPosition[0] - history[0]).toFixed(0), 
+											// 		(entity.serverStreamedPosition[1] - history[1]).toFixed(0)
+											// 	);
+											// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
+											if (distance > 100) {
+												entity.discrepancyCount++
+												// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
+												if (entity.discrepancyCount > 10) {
 													x = entity.serverStreamedPosition[0];
 													y = entity.serverStreamedPosition[1];
 													entity.prevPhysicsFrame = undefined
-													// console.log(ige._currentTime, "reconciling to server");
+													// console.log(ige.renderTime, "reconcile!")
+													entity.movementHistory = [];
 												}
-
-												entity.movementHistory = [];
+											} else {
+												entity.discrepancyCount = 0
 											}
 										}
 									}
-									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
+
+									// if unit has moved
+									if (entity._hasMoved) {
+										entity.movementHistory.push([ige.renderTime, [x, y, angle]])
+									}
+
 									
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
