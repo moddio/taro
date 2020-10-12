@@ -690,9 +690,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 												// x += xDiff;
 												// y += yDiff;
 												entity.prevPhysicsFrame = undefined
-
-												entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
-												entity.body.setAngle(angle);
+												entity.isTeleporting = true;
 												
 												// console.log(ige.renderTime, "reconcile!")
 												entity.movementHistory = [];
@@ -700,6 +698,12 @@ var PhysicsComponent = IgeEventingClass.extend({
 										} else {
 											entity.discrepancyCount = 0
 										}
+									}
+
+									if (entity.isTeleporting || entity.isOutOfBounds) {
+										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
+										entity.body.setAngle(angle);
+										entity.isTeleporting = false;
 									}
 
 									// if unit has moved
