@@ -34,11 +34,11 @@ var Unit = IgeEntityBox2d.extend({
             data.equipmentAllowed = 9;
         }
         unitData = ige.game.getAsset('unitTypes', data.type);
-        
+
         if (ige.isClient) {
             unitData = _.pick(unitData, ige.client.keysToAddBeforeRender)
         }
-        
+
         self._stats = Object.assign(
             data,
             unitData,
@@ -49,9 +49,9 @@ var Unit = IgeEntityBox2d.extend({
             }
         );
         self.entityId = entityIdFromServer;
-        
+
         // dont save variables in _stats as _stats is stringified and synced
-        // and some variables of type unit, item, projectile may contain circular json objects 
+        // and some variables of type unit, item, projectile may contain circular json objects
         if (self._stats.variables) {
             self.variables = self._stats.variables;
             delete self._stats.variables;
@@ -71,7 +71,7 @@ var Unit = IgeEntityBox2d.extend({
             var currentState = this._stats.states[this._stats.stateId];
             var defaultAnimation = this._stats.animations[currentState.animation];
         }
-        
+
         if (ige.isClient) {
             this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
             self.mount(ige.pixi.world);
@@ -95,7 +95,7 @@ var Unit = IgeEntityBox2d.extend({
 
         if (ige.isServer) {
 
-            // store mapping between clientIds (to whom minimap unit of this unit is visible) 
+            // store mapping between clientIds (to whom minimap unit of this unit is visible)
             // and their respective color because sometimes it may happen that unit is not yet created on client
             // hence while making its minimap unit we will get null as unit
             self._stats.minimapUnitVisibleToClients = {}
@@ -193,7 +193,7 @@ var Unit = IgeEntityBox2d.extend({
             attribute.index = i + 1;
 
             var pixiBar = new PixiAttributeBar(self.id(), attribute);
-            
+
             self.attributeBars.push({
                 id: pixiBar.id(),
                 attribute: attribute.key,
@@ -242,7 +242,7 @@ var Unit = IgeEntityBox2d.extend({
     },
 
     // set this unit's owner, and insert this unit's id into its owner's ._stats.unitIds array
-    // if we are changing the ownership from another player to a new player, 
+    // if we are changing the ownership from another player to a new player,
     // then update UI accordingly (camera, attribute bar, and inventory)
     setOwnerPlayer: function (newOwnerPlayerId, config) {
         var self = this
@@ -335,7 +335,7 @@ var Unit = IgeEntityBox2d.extend({
     buyItem: function (itemTypeId) {
         var self = this;
         var ownerPlayer = self.getOwner();
-        // buyItem only runs on server. 
+        // buyItem only runs on server.
         // the unit that's buying an item must have an owner player
         // don't allow ad-block-enabled players to buy items
         // || ownerPlayer._stats.isAdBlockEnabled
@@ -407,7 +407,7 @@ var Unit = IgeEntityBox2d.extend({
             // return if requirement not met
             if (!requirementsSatisfied) return;
         }
-        
+
         if (self.canAffordItem(itemTypeId) && self.canCarryItem(itemData)) {
             // console.log("buyItem - getFirstAvailableSlotForItem", self.inventory.getFirstAvailableSlotForItem(itemData), "replaceItemInTargetSlot", shopData.replaceItemInTargetSlot)
 
@@ -476,7 +476,7 @@ var Unit = IgeEntityBox2d.extend({
                     // }
                     return;
                 }
-                
+
                 // remove the first item matching targetSlots if replaceItemInTargetSlot is set as true
                 var targetSlots = (itemData.controls && Array.isArray(itemData.controls.permittedInventorySlots)) ? itemData.controls.permittedInventorySlots : undefined;
                 if (targetSlots != undefined && targetSlots[0] > 0) {
@@ -599,7 +599,7 @@ var Unit = IgeEntityBox2d.extend({
         if (newItem && newItem.id() == self._stats.currentItemId) {
             return;
         }
-        
+
         if (oldItem) {
             oldItem.stopUsing()
         }
@@ -636,7 +636,7 @@ var Unit = IgeEntityBox2d.extend({
             if (ige.isClient) {
                 oldItem.applyAnimationForState('selected');
             }
-            
+
         }
 
         self._stats.currentItemIndex = itemIndex
@@ -651,16 +651,16 @@ var Unit = IgeEntityBox2d.extend({
     changeUnitType: function (type, defaultData) {
         var self = this;
         self.previousState = null;
-        
+
         var data = ige.game.getAsset("unitTypes", type)
-        // console.log("change unit type", type)					
+        // console.log("change unit type", type)
         if (data == undefined) {
             ige.script.errorLog("changeUnitType: invalid data")
             return;
         }
 
         self._stats.type = type
-        
+
         var oldAttributes = self._stats.attributes;
         for (var i in data) {
             if (i == 'name') {// don't overwrite unit's name with unit type name
@@ -795,7 +795,7 @@ var Unit = IgeEntityBox2d.extend({
                 }
             }
 
-            // remove forceredraw from attributebar bcz it was calling 
+            // remove forceredraw from attributebar bcz it was calling
             // redraw for units which are not having attributebars too
             self.redrawAttributeBars();
             self.equipSkin(undefined);
@@ -845,9 +845,9 @@ var Unit = IgeEntityBox2d.extend({
                 ige.game.lastCreatedItemId = item.id(); // this is necessary in case item isn't a new instance, but an existing item getting quantity updated
                 return true;
             } else {
-
                 // if designated item slot is already occupied, unit cannot get this item
                 var availableSlot = self.inventory.getFirstAvailableSlotForItem(itemData)
+                console.log(availableSlot);
 
                 // insert/merge itemData's quantity into matching items in the inventory
                 var totalInventorySize = this.inventory.getTotalInventorySize();
@@ -855,13 +855,13 @@ var Unit = IgeEntityBox2d.extend({
                     var matchingItemId = self._stats.itemIds[i]
                     if (matchingItemId) {
                         var matchingItem = ige.$(matchingItemId)
-                        
+
                         // if a matching item found in the inventory, try merging them
                         if (matchingItem && matchingItem._stats.itemTypeId == itemTypeId) {
                             ige.game.lastCreatedItemId = matchingItem.id(); // this is necessary in case item isn't a new instance, but an existing item getting quantity updated
-                            
-                            // matching item has infinite quantity. merge items.
-                            if (matchingItem._stats.quantity == undefined) {
+
+                            // matching item has infinite quantity. merge item unless new item is also infinite
+                            if (matchingItem._stats.quantity == undefined && itemData.quantity != undefined) {
                                 if (isItemInstance) { // remove if it's an instance
                                     item.remove();
                                 }
@@ -882,7 +882,7 @@ var Unit = IgeEntityBox2d.extend({
 
                                 matchingItem.streamUpdateData([{ quantity: matchingItem._stats.quantity + quantityToBeTakenFromItem }])
                                 itemData.quantity -= quantityToBeTakenFromItem
-                            }                            
+                            }
                         }
 
                         // if the new item no longer has any quantity left, destroy it (if it's an instance).
@@ -904,12 +904,12 @@ var Unit = IgeEntityBox2d.extend({
                     self.streamUpdateData([{ itemIds: self._stats.itemIds }])
                     var slotIndex = availableSlot - 1;
                     item.streamUpdateData([
-                                    {ownerUnitId: self.id()}, 
-                                    {quantity: itemData.quantity}, 
+                                    {ownerUnitId: self.id()},
+                                    {quantity: itemData.quantity},
                                     {slotIndex: slotIndex }
                                 ])
                     self.updateStats(item.id())
-                    
+
                     if (slotIndex == self._stats.currentItemIndex) {
                         item.setState('selected');
                         self._stats.currentItemId = item.id();
@@ -1131,7 +1131,7 @@ var Unit = IgeEntityBox2d.extend({
 			var sourcePlayer = ige.$(damageData.sourcePlayerId)
             var sourceUnit = ige.$(damageData.sourceUnitId)
             var isVulnerable = false;
-            
+
             var targetsAffected = damageData.targetsAffected;
             if (
                 sourcePlayer && targetPlayer && sourcePlayer != targetPlayer &&
@@ -1146,7 +1146,7 @@ var Unit = IgeEntityBox2d.extend({
             ) {
                 isVulnerable = true;
             }
-            
+
 			if (isVulnerable) {
 				// console.log("inflicting damage!", damage)
 				ige.game.lastAttackingUnitId = damageData.sourceUnitId;
@@ -1158,7 +1158,7 @@ var Unit = IgeEntityBox2d.extend({
 					this.playEffect('attacked');
 					return true;
                 }
-                
+
                 var triggeredBy = {
                     unitId: ige.game.lastAttackingUnitId,
                     itemId: ige.game.lastAttackingItemId
@@ -1202,7 +1202,7 @@ var Unit = IgeEntityBox2d.extend({
         }
         return false;
     },
-    
+
     remove: function () {
         var self = this
 
@@ -1257,9 +1257,9 @@ var Unit = IgeEntityBox2d.extend({
 
         for (var i = 0; i < queuedData.length; i++) {
 			var data = queuedData[i];
-			for (attrName in data) {	
+			for (attrName in data) {
 				var newValue = data[attrName];
-            
+
                 switch (attrName) {
                     case 'type':
 						this.changeUnitType(newValue)
@@ -1314,7 +1314,7 @@ var Unit = IgeEntityBox2d.extend({
                                 self.unitNameLabel.updateScale()
                                 self.unitNameLabel.updatePosition()
                             }
-        
+
                             if (self.attributeBars) {
                                 _.forEach(self.attributeBars, function (attributeBar) {
                                     var bar = ige.$(attributeBar.id)
@@ -1481,7 +1481,7 @@ var Unit = IgeEntityBox2d.extend({
                 if (index > -1) {
                     purchasables.splice(index, 1);
                     owner.streamUpdateData([
-                        { purchasables: purchasables}, 
+                        { purchasables: purchasables},
                         {unEquiped: cellSheetUrl }
                     ])
                 }
@@ -1566,9 +1566,9 @@ var Unit = IgeEntityBox2d.extend({
      */
     _behaviour: function (ctx) {
         var self = this;
-    
+
         if (ige.isServer || (ige.isClient && ige.client.selectedUnit == this)) {
-        
+
             var ownerPlayer = ige.$(this._stats.ownerId)
             if (ownerPlayer) {
                 if (ownerPlayer._stats.controlledBy == "human") {
@@ -1598,7 +1598,7 @@ var Unit = IgeEntityBox2d.extend({
                         self.rotateTo(0, 0, self.angleToTarget);
                     }
                 }
-               
+
 
                 // translate unit
                 var speed = this._stats.attributes['speed'] && this._stats.attributes['speed'].value || 0;
@@ -1608,7 +1608,7 @@ var Unit = IgeEntityBox2d.extend({
                         ownerPlayer._stats.controlledBy != "human" && self.isMoving
                     ) ||
                     ( // or human player's unit that's "following cursor"
-                        ownerPlayer._stats.controlledBy == "human" && self._stats.controls && 
+                        ownerPlayer._stats.controlledBy == "human" && self._stats.controls &&
                         self._stats.controls.movementControlScheme == 'followCursor' && self.distanceToTarget > this.width()
                     )
                 ) {
@@ -1653,13 +1653,13 @@ var Unit = IgeEntityBox2d.extend({
                 if (self.body && vector && (vector.x != 0 || vector.y != 0)) {
                     if (self._stats.controls)
                     switch (self._stats.controls.movementMethod) { // velocity-based movement
-                        case 'velocity': 
+                        case 'velocity':
                             self.setLinearVelocity(vector.x, vector.y);
                             break;
                         case 'force':
                             self.applyForce(vector.x, vector.y);
                             break;
-                        case 'impulse':    
+                        case 'impulse':
                             self.applyImpulse(vector.x, vector.y);
                             break;
                     }
@@ -1686,7 +1686,7 @@ var Unit = IgeEntityBox2d.extend({
             //     var nextTransform = ige.nextSnapshot[1] && ige.nextSnapshot[1][this.id()] || self.lastDebugSnapshot;
             //     if(nextTransform) {
             //         self.isCulled = !self.isInVP({
-            //             x1:nextTransform[0], 
+            //             x1:nextTransform[0],
             //             y1:nextTransform[1],
             //             x2:nextTransform[0] + self.width(),
             //             y2:nextTransform[1] + self.height(),
@@ -1699,12 +1699,12 @@ var Unit = IgeEntityBox2d.extend({
         }
 
         // if entity (unit/item/player/projectile) has attribute, run regenerate
-        if (ige.isServer || (ige.physics && ige.isClient && ige.client.selectedUnit == this && ige.game.cspEnabled )) {        
+        if (ige.isServer || (ige.physics && ige.isClient && ige.client.selectedUnit == this && ige.game.cspEnabled )) {
             if (this.attribute) {
                 this.attribute.regenerate();
             }
         }
-        
+
         this.processBox2dQueue();
     },
 
