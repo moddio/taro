@@ -25,12 +25,16 @@ var IgeNetIoClient = {
 	 * network has started.
 	 */
 	start: function (server, callback) {
+		
 		if (this._state === 3) {
 			// We're already connected
 			if (typeof (callback) === 'function') {
 				callback(server);
 			}
 		} else {
+			this.artificialDelay = 250;
+			this.lagVariance = 0;
+
 			var self = this;
 			var gameId = ige.client.servers[0].gameId;
 
@@ -341,8 +345,16 @@ var IgeNetIoClient = {
 				console.log('Sending "' + commandName + '" (index ' + commandIndex + ') with data:', data);
 				this._debugCounter++;
 			}
+
 			ciEncoded = String.fromCharCode(commandIndex);
-			this._io.send([ciEncoded, data]);
+
+			if (ige.env) {
+				setTimeout(function(ci, d) {					
+					this._io.send([ci, d]);
+				}, (Math.random() * self.lagVariance) + self.artificialDelay, ciEncoded, data);
+			} else {
+				this._io.send([ciEncoded, data]);
+			}
 			//console.log("sent");
 		} else {
 			//console.log("error ?");
