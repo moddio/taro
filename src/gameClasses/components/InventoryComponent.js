@@ -106,7 +106,7 @@ var InventoryComponent = IgeEntity.extend({
 		}
 	},
 	updateBackpackButton: function (show) {
-		var inventoryBtn = $('#open-inventory-button');	
+		var inventoryBtn = $('#open-inventory-button');
 		if (show) {
 			inventoryBtn.show();
 			setTimeout(function(){
@@ -137,8 +137,8 @@ var InventoryComponent = IgeEntity.extend({
 
 	},
 
-	/* 
-		get total quantity of all items combines of matching item type 
+	/*
+		get total quantity of all items combines of matching item type
 		return undefined if item has infinite quantity
 	*/
 	getQuantity: function (itemTypeId) {
@@ -217,8 +217,8 @@ var InventoryComponent = IgeEntity.extend({
 				var item = ige.$(itemId)
 				// matching item found in inventory
 				if (item && item._stats.itemTypeId == itemTypeId) {
-					// matching item has infinite quantity. merge items.
-					if (item._stats.quantity == undefined) {
+					// matching item has infinite quantity. merge items unless item also has infinite quantity
+					if (item._stats.quantity == undefined && quantity!= undefined) {
 						return i + 1;
 					}
 
@@ -226,8 +226,10 @@ var InventoryComponent = IgeEntity.extend({
 					if (item._stats.maxQuantity - item._stats.quantity > quantity) {
 						return i + 1;
 					} else {
-						// new item's quantity isn't enough to fill the existing item's. Deduct new item's quantity. and move on.
-						quantity -= (item._stats.maxQuantity - item._stats.quantity)
+						if(item._stats.quantity != undefined){
+							// new item's quantity isn't enough to fill the existing item's. Deduct new item's quantity. and move on. This isn't done for undefined items
+							quantity -= (item._stats.maxQuantity - item._stats.quantity)
+						}
 					}
 				}
 			}
