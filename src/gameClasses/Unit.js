@@ -818,7 +818,7 @@ var Unit = IgeEntityBox2d.extend({
     },
 
     /**
-        give an item to a unit whether it's an existing item instance or a new item to be created from itemData.
+        give an item to a unit whether it's an existing item instance (item object) or a new item to be created from itemData (json).
         @param item can be both item instance or itemData json. This is to handle both new items being created from itemData, or when unit picks up an existing item instance.
         @param slotIndex force-assign item into this inventory slot. usually assigned from when buying a shop item with replaceItemInTargetSlot (optional)
         @return {boolean} return true if unit was able to pickup/use item. return false otherwise.
@@ -855,7 +855,8 @@ var Unit = IgeEntityBox2d.extend({
                     var matchingItemId = self._stats.itemIds[i]
                     if (matchingItemId) {
                         var matchingItem = ige.$(matchingItemId)
-                        // matching item found in inventory
+                        
+                        // if a matching item found in the inventory, try merging them
                         if (matchingItem && matchingItem._stats.itemTypeId == itemTypeId) {
                             ige.game.lastCreatedItemId = matchingItem.id(); // this is necessary in case item isn't a new instance, but an existing item getting quantity updated
                             
@@ -869,27 +870,27 @@ var Unit = IgeEntityBox2d.extend({
 
                             // the new item can fit in, because the matching item isn't full or has infinite quantity. Increase matching item's quantity only.
                             if (
-                                itemData.quantity > 0 && (
-                                    (matchingItem._stats.maxQuantity - matchingItem._stats.quantity > 0) ||
-                                    matchingItem._stats.maxQuantity == undefined
-                                )
+                                itemData.quantity > 0 && (matchingItem._stats.maxQuantity - matchingItem._stats.quantity > 0)
                             ) {
                                 if (matchingItem._stats.maxQuantity != undefined) {
                                     var quantityToBeTakenFromItem = Math.min(itemData.quantity, matchingItem._stats.maxQuantity - matchingItem._stats.quantity)
                                 } else {
-                                    var quantityToBeTakenFromItem = itemData.quantity;
+                                    // var quantityToBeTakenFromItem = itemData.quantity;
+                                    // if matching item has infinite quantity, do not take any quantity from the new item
+                                    var quantityToBeTakenFromItem = 0;
                                 }
 
                                 matchingItem.streamUpdateData([{ quantity: matchingItem._stats.quantity + quantityToBeTakenFromItem }])
                                 itemData.quantity -= quantityToBeTakenFromItem
-                            }
+                            }                            
+                        }
 
-                            if (itemData.quantity == 0) { // remove if it's an instance
-                                if (isItemInstance) {
-                                    item.remove();
-                                }
-                                return true;
+                        // if the new item no longer has any quantity left, destroy it (if it's an instance).
+                        if (itemData.maxQuantity != 0 && itemData.quantity == 0) {
+                            if (isItemInstance) {
+                                item.remove();
                             }
+                            return true;
                         }
                     }
                 }
@@ -898,7 +899,6 @@ var Unit = IgeEntityBox2d.extend({
                     if (!isItemInstance) {
                         // itemData.stateId = (availableSlot-1 == this._stats.currentItemIndex) ? 'selected' : 'unselected';
                         item = new Item(itemData);
-
                     }
                     self.inventory.insertItem(item, availableSlot - 1);
                     self.streamUpdateData([{ itemIds: self._stats.itemIds }])
