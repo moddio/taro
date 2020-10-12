@@ -1645,18 +1645,6 @@ var Unit = IgeEntityBox2d.extend({
                             this.stopMoving();
                         }
                     }
-
-                    if (ige.physics && ige.game.cspEnabled) {
-                        // check if unit has moved. if so, record it in physicsComponent's movementHistory
-                        var x = this._translate.x.toFixed(1)
-                        var y = this._translate.y.toFixed(1)
-                        if (x != this._oldTranform[0] || y != this._oldTranform[1]) {
-                            this._hasMoved = true;
-                            this._oldTranform = [x, y, 0];
-                        } else {
-                            this._hasMoved = false;
-                        }
-                    }
                 }
 
                 ige.unitBehaviourCount++ // for debugging

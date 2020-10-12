@@ -671,49 +671,44 @@ var PhysicsComponent = IgeEventingClass.extend({
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
 									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 									// console.log(x, y)
+								
+									var time = ige.renderTime - ige.network.latency - 120
 
-									if (entity.serverStreamedPosition && entity.movementHistory.length > 0) {
-										var time = ige.renderTime - ige.network.latency - 120
-
-										// skip through all movementHistories that are too old
-										while (entity.movementHistory && entity.movementHistory.length > 0 && entity.movementHistory[0][0] < time) {
-											var history = entity.movementHistory.shift()[1];
-										}
-									
-										// if movementHistory still has elements after shifting, 
-										// this means we found a matching time between movementHistory & serverStreamedPosition's time.
-										if (history && entity.movementHistory.length > 0) {
-											var xDiff = (entity.serverStreamedPosition[0] - history[0])
-											var yDiff = (entity.serverStreamedPosition[1] - history[1])
-											
-											var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-											// console.log(
-											// 		entity.discrepancyCount, 
-											// 		(entity.serverStreamedPosition[0] - history[0]).toFixed(0), 
-											// 		(entity.serverStreamedPosition[1] - history[1]).toFixed(0)
-											// 	);
-											// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
-											if (distance > 100) {
-												entity.discrepancyCount++
-												// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
-												if (entity.discrepancyCount > 10) {
-													x = entity.serverStreamedPosition[0];
-													y = entity.serverStreamedPosition[1];
-													entity.prevPhysicsFrame = undefined
-													// console.log(ige.renderTime, "reconcile!")
-													entity.movementHistory = [];
-												}
-											} else {
-												entity.discrepancyCount = 0
+									// skip through all movementHistories that are too old
+									while (entity.movementHistory && entity.movementHistory.length > 0 && entity.movementHistory[0][0] < time) {
+										var history = entity.movementHistory.shift()[1];
+									}
+								
+									// if movementHistory still has elements after shifting, 
+									// this means we found a matching time between movementHistory & serverStreamedPosition's time.
+									if (history && entity.movementHistory.length > 0) {
+										var xDiff = (entity.serverStreamedPosition[0] - history[0])
+										var yDiff = (entity.serverStreamedPosition[1] - history[1])
+										
+										var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+										// console.log(
+										// 		entity.discrepancyCount, 
+										// 		(entity.serverStreamedPosition[0] - history[0]).toFixed(0), 
+										// 		(entity.serverStreamedPosition[1] - history[1]).toFixed(0)
+										// 	);
+										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
+										if (distance > 100) {
+											entity.discrepancyCount++
+											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
+											if (entity.discrepancyCount > 10) {
+												x = entity.serverStreamedPosition[0];
+												y = entity.serverStreamedPosition[1];
+												entity.prevPhysicsFrame = undefined
+												// console.log(ige.renderTime, "reconcile!")
+												entity.movementHistory = [];
 											}
+										} else {
+											entity.discrepancyCount = 0
 										}
 									}
 
 									// if unit has moved
-									if (entity._hasMoved) {
-										entity.movementHistory.push([ige.renderTime, [x, y, angle]])
-									}
-
+									entity.movementHistory.push([ige.renderTime, [x, y, angle]])
 									
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
