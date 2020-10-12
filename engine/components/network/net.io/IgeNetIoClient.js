@@ -32,7 +32,7 @@ var IgeNetIoClient = {
 				callback(server);
 			}
 		} else {
-			this.artificialDelay = 250;
+			this.artificialDelay = 100;
 			this.lagVariance = 0;
 
 			var self = this;
