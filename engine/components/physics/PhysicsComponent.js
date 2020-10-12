@@ -512,17 +512,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this._actionQueue.push(action);
 	},
 
-	rubberBandValue: function (distanceToTarget) {
-
-		if (distanceToTarget > 0) {
-			var str = Math.min(distanceToTarget, (Math.pow(distanceToTarget, this.exponent)) / this.divisor);
-		} else {
-			var str = Math.max(distanceToTarget, (Math.pow(Math.abs(distanceToTarget), this.exponent)) / -1 * this.divisor);
-		}
-
-		return str;
-	},
-
 	update: function (timeElapsedSinceLastStep) {
 		var self = this,
 			tempBod,
@@ -643,8 +632,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 										// console.log(ige._currentTime, "initiate client to reconcile to server");
 									} else {
 										// apply rubberbanding to reconcilie to position provided by the client
-										x += xDiff / 2;
-										y += yDiff / 2;
+										x += xDiff;
+										y += yDiff;
 									}
 								}
 
@@ -698,7 +687,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 											if (entity.discrepancyCount > 10) {
 												x = entity.serverStreamedPosition[0];
 												y = entity.serverStreamedPosition[1];
+												// x += xDiff;
+												// y += yDiff;
 												entity.prevPhysicsFrame = undefined
+
+												entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
+												entity.body.setAngle(angle);
+												
 												// console.log(ige.renderTime, "reconcile!")
 												entity.movementHistory = [];
 											}
@@ -720,9 +715,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 									angle = entity._rotate.z
 									entity.nextPhysicsFrame = undefined;
 								}
-
-								entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
-								entity.body.setAngle(angle);
+								
+								// entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
+								// entity.body.setAngle(angle);
 							}
 
 							if (tempBod.asleep) {

@@ -522,6 +522,7 @@ var IgeNetIoClient = {
 					while (i > 0 && ige.snapshots[i - 1] != undefined && ige.snapshots[i - 1][0] > newSnapshotTimeStamp) {
 						i--;
 					}
+					
 					ige.snapshots.splice(i, 0, [newSnapshotTimeStamp, obj]);
 
 					while (ige.snapshots.length > 1) {
