@@ -337,8 +337,10 @@ var IgeNetIoClient = {
 	 * @param data
 	 */
 	send: function (commandName, data) {
-		var commandIndex = this._networkCommandsLookup[commandName],
+		var self = this,
+			commandIndex = this._networkCommandsLookup[commandName],
 			ciEncoded;
+			
 		//console.log("sending");
 		if (commandIndex !== undefined) {
 			if (this.debug()) {
@@ -350,7 +352,7 @@ var IgeNetIoClient = {
 
 			if (ige.env) {
 				setTimeout(function(ci, d) {					
-					this._io.send([ci, d]);
+					self._io.send([ci, d]);
 				}, (Math.random() * self.lagVariance) + self.artificialDelay, ciEncoded, data);
 			} else {
 				this._io.send([ciEncoded, data]);
