@@ -706,18 +706,20 @@ var PhysicsComponent = IgeEventingClass.extend({
 									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
 									
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
-									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+									if (entity._streamMode == 0) {
+										console.log(x, y)
+										entity.prevPhysicsFrame = entity.nextPhysicsFrame
+										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+									}
 								} else {
 									// all streamed entities are rigidly positioned
 									x = entity._translate.x
 									y = entity._translate.y
 									angle = entity._rotate.z
 									entity.nextPhysicsFrame = undefined;
+									entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
+									entity.body.setAngle(angle);
 								}
-								
-								// entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
-								// entity.body.setAngle(angle);
 							}
 
 							if (tempBod.asleep) {

@@ -2477,10 +2477,13 @@ var IgeEntity = IgeObject.extend({
         this._alive = false;
         /* CEXCLUDE */
         // Check if the entity is streaming
-        if (this._streamMode === 1 || this._streamMode === 2) {
-            delete this._streamDataCache;
-            this.streamDestroy();
+        if (ige.isServer) {
+            if (this._streamMode === 1 || this._streamMode === 2) {
+                delete this._streamDataCache;
+                this.streamDestroy();
+            }
         }
+        
         /* CEXCLUDE */
         if (this.gluedEntities && this.gluedEntities.length > 0) {
             this.gluedEntities.forEach(function (glueEntity) {
@@ -4533,9 +4536,7 @@ var IgeEntity = IgeObject.extend({
     streamMode: function (val) {
         // console.log("streamMode (" + val + ")", (this._stats) ? this._stats.name : this._category)
         if (val !== undefined) {
-            if (ige.isServer) {
-                this._streamMode = val;
-            }
+            this._streamMode = val;            
             return this;
         }
 
@@ -5066,17 +5067,17 @@ var IgeEntity = IgeObject.extend({
                 // 1. we're using cspMovement (experimental) for my own unit OR
                 (ige.game.cspEnabled  && ige.client.selectedUnit == this) ||
                 // 2. item-fired projectiles
-                (this._category == 'projectile' && this._stats.sourceItemId != undefined)
+                (this._category == 'projectile' && this._stats.sourceItemId != undefined && this._streamMode == 0)
             )
         ) {
             if (this.nextPhysicsFrame) {
                 if (this.prevPhysicsFrame) {
                     // interpolate using prev/next physics key frames provided by physicsComponent
-                    x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTIme, this.nextPhysicsFrame[0])
-                    y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTIme, this.nextPhysicsFrame[0]);
+                    x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0])
+                    y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 
                     if (this == ige.client.selectedUnit) {
-                        rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTIme, this.nextPhysicsFrame[0]);
+                        rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
                     }
                     
                     // if (this == ige.client.selectedUnit) {

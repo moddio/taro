@@ -323,8 +323,8 @@ var Item = IgeEntityBox2d.extend({
 									translate: bulletStartPosition,
 								};
 								
-								if (self.projectileData && (ige.isServer || (ige.isClient && !self._stats.projectileStreamMode))) {
-
+								if (self.projectileData && (ige.isServer || (ige.isClient && self._stats.projectileStreamMode == 0))) {
+									
 									defaultData.velocity = {
 										deployMethod: self._stats.deployMethod,
 										x: Math.cos(rotate + Math.radians(-90)) * self._stats.bulletForce,
