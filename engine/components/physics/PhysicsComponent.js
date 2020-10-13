@@ -38,6 +38,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				this.engine = ige.game.data.defaultData.clientPhysicsEngine
 			}
 		}
+		this.engine = this.engine.toUpperCase();
 
 		// this.engine = 'crash';
 		console.log('Physics engine: ', this.engine);
@@ -176,7 +177,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			var isBodyDestroyed = destroyBody.apply(this._world, [body]);
 
 			// clear references to prevent memory leak
-			if (this.engine == 'box2dweb') {
+			if (this.engine == 'BOX2DWEB') {
 				this._world.m_contactSolver.m_constraints = []
 				this._world.m_island.m_bodies = []
 				this._world.m_island.m_contacts = []
@@ -302,7 +303,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				posX = (tileWidth * (rect.width / 2));
 				posY = (tileHeight * (rect.height / 2));
 				
-				if (this.engine == 'crash') {
+				if (this.engine == 'CRASH') {
 					var defaultData = {
 						translate: {
 							x: rect.x * tileWidth,
@@ -413,7 +414,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @param {IgeEntity} mountScene
 	 */
 	enableDebug: function (mountScene) {
-		if (this.engine == 'planck' || this.engine == 'crash') return; // planck doesn't support debugdraw
+		if (this.engine == 'PLANCK' || this.engine == 'CRASH') return; // planck doesn't support debugdraw
 
 		if (mountScene) {
 			// Define the debug drawing instance

@@ -3136,7 +3136,7 @@ var IgeEntity = IgeObject.extend({
                 this._translate.y = y;
             }
 
-            if (ige.physics && ige.physics.engine == 'crash') {
+            if (ige.physics && ige.physics.engine == 'CRASH') {
                 x += this.width() / 2;
                 y += this.height() / 2;
             }

@@ -781,7 +781,7 @@ var Server = IgeClass.extend({
 			ige._lastCpuUsage = cpuDelta = process.cpuUsage();
 		}
 
-		if (ige.physics && ige.physics.engine != 'crash') {
+		if (ige.physics && ige.physics.engine != 'CRASH') {
 			// console.log('ige stream',ige.stream);
 
 			var jointCount = 0;

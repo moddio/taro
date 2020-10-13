@@ -607,7 +607,7 @@ var IgeEntityBox2d = IgeEntity.extend({
     translateToLT: function (x, y) {
         if (this.body) {
 				
-            if (ige.physics.engine == 'crash') {
+            if (ige.physics.engine == 'CRASH') {
                 var position = { 
                     x: x,
                     y: y

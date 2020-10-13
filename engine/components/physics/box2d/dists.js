@@ -5,8 +5,8 @@ var dists = {
     // current: 'box2D',
     // current: 'native',
     // current: 'matterjs',
-    defaultEngine: 'planck',
-    planck: {
+    defaultEngine: 'PLANCK',
+    PLANCK: {
         init: function (component) {
             //component.b2Color = planck.Common.b2Color;
             component.b2Vec2 = planck.Vec2;
@@ -318,7 +318,7 @@ var dists = {
             }
         }
     },
-    crash: {
+    CRASH: {
         init: function (component) {
             //component.b2Color = planck.Common.b2Color;
 
@@ -509,7 +509,7 @@ var dists = {
             });
         }
     },
-    box2dweb: {
+    BOX2DWEB: {
         init: function (component) {
             component.b2AABB = box2dweb.Collision.b2AABB; // added by Jaeyun for world collision detection for raycast bullets
             component.b2Color = box2dweb.Common.b2Color;
@@ -875,7 +875,7 @@ var dists = {
 
     },
 
-    box2dninja: {
+    BOX2DNINJA: {
         init: function (component) {
             component.b2AABB = box2dninja.Collision.b2AABB; // added by Jaeyun for world collision detection for raycast bullets
             component.b2Color = box2dninja.Common.b2Color;
@@ -1242,7 +1242,7 @@ var dists = {
 
     },
 
-    box2dts: {
+    BOX2DTS: {
         init: function (component) {
             component.b2AABB = box2dts.b2AABB; // added by Jaeyun for world collision detection for raycast bullets
             component.b2Color = box2dts.b2Color;
@@ -1665,7 +1665,7 @@ var dists = {
     },
 
 
-    native: {
+    NATIVE: {
         init: function (component) {
 
             component.native = require('box2d-native');
@@ -2047,7 +2047,7 @@ var dists = {
 
     },
 
-    box2D: {
+    BOX2D: {
         init: function (component) {
             // component.b2AABB = box2dweb.Collision.b2AABB; // added by Jaeyun for world collision detection for raycast bullets
             // console.log(box2DJS);
@@ -2443,7 +2443,7 @@ var dists = {
     },
 
 
-    matterjs: {
+    MATTERJS: {
         init: function (component) {
             // component.b2AABB = box2dweb.Collision.b2AABB; // added by Jaeyun for world collision detection for raycast bullets
             // console.log(box2DJS);
