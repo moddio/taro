@@ -5028,12 +5028,12 @@ var IgeEntity = IgeObject.extend({
     _processTransform: function () {
         if (
             // prevent igePixi calling this function multiple times for a same entity
-            this._lastTransformAt == ige.renderTime ||
+            this._lastTransformAt == ige._currentTime ||
             // entity has no body
             this._translate == undefined ||
             this._stats.currentBody == undefined ||
             // ignore server stream of my own unit's sprite-only item
-            (this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && ige.$(this._stats.ownerUnitId) == ige.client.selectedUnit)
+            (this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && this.getOwnerUnit() == ige.client.selectedUnit)
         ) {
             return;
         }
@@ -5067,7 +5067,7 @@ var IgeEntity = IgeObject.extend({
                 // 1. we're using cspMovement (experimental) for my own unit OR
                 (ige.game.cspEnabled  && ige.client.selectedUnit == this) ||
                 // 2. item-fired projectiles
-                (this._category == 'projectile' && this._stats.sourceItemId != undefined && this._streamMode == 0)
+                (this._category == 'projectile' && this._stats.sourceItemId != undefined && !this._streamMode)
             )
         ) {
             if (this.nextPhysicsFrame) {
@@ -5183,7 +5183,7 @@ var IgeEntity = IgeObject.extend({
         this.rotateTo(0, 0, rotate);
         this.translateTo(x, y, 0);
 
-        this._lastTransformAt = ige.renderTime;
+        this._lastTransformAt = ige._currentTime;
     },
 
     getAttributeBarContainer: function () {

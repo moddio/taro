@@ -529,8 +529,8 @@ var IgeNetIoClient = {
 					
 					// rubberband renderTime towards the nextSnapshot's time. (which is a frame older than the newest snapshot we received)
 					var timeDiff = ige.nextSnapshot[0] - ige.renderTime;
-					ige.renderTime += timeDiff/3 // rubberband toward serverTime
-
+					ige.renderTime += Math.floor(timeDiff/3) // rubberband toward serverTime
+					
 					var i = ige.snapshots.length;
 					// insert snapshot in a correct incremental order
 					while (i > 0 && ige.snapshots[i - 1] != undefined && ige.snapshots[i - 1][0] > newSnapshotTimeStamp) {

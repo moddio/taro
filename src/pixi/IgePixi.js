@@ -9,8 +9,7 @@ var IgeInitPixi = IgeClass.extend({
         ige.addComponent(IgeInputComponent);
         ige.addComponent(IgePixiTexture);
         var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
-        PIXI.ticker.maxFPS = 60;
-
+        
         this.app = new PIXI.Application({
             width: 800, // default: 800
             height: 600, // default: 600
@@ -274,12 +273,12 @@ var IgeInitPixi = IgeClass.extend({
                         var ownerUnit = entity.getOwnerUnit();
                         if (ownerUnit) {
                             ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
+                                
                             if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
                                 rotate = ownerUnit._rotate.z;
+                            } else if (ownerUnit == ige.client.selectedUnit) {
+                                rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
                             }
-
-                            // if (ownerUnit == ige.client.selectedUnit)
-                            // console.log(entity._stats.name, entity.id(), ownerUnit._translate.x)
 
                             entity.anchoredOffset = entity.getAnchoredOffset(rotate);
                             if (entity.anchoredOffset) {
