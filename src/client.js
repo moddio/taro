@@ -733,7 +733,7 @@ var Client = IgeClass.extend({
             
         }
 
-        ige.physics.enableDebug(this.rootScene);
+        // ige.physics.enableDebug(this.rootScene);
     },
 
     defineNetworkEvents: function () {
