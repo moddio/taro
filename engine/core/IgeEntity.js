@@ -4520,7 +4520,6 @@ var IgeEntity = IgeObject.extend({
         return this._streamDataQueued;
     },
 
-    /* CEXCLUDE */
     /**
      * Gets / sets the stream mode that the stream system will use when
      * handling pushing data updates to connected clients.
