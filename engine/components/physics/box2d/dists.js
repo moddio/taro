@@ -6,6 +6,13 @@ var dists = {
     // current: 'native',
     // current: 'matterjs',
     defaultEngine: 'PLANCK',
+    
+    /**
+     * NOTE:
+     * use keys as capital letters as obfuscating replaces lowercase keys 
+     * which in result cause client unable to load any physic engine.  
+     */
+
     PLANCK: {
         init: function (component) {
             //component.b2Color = planck.Common.b2Color;
