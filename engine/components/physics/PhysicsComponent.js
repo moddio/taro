@@ -710,7 +710,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
 									
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
-									// console.log("projectile", entity._streamMode)
 									if (entity._streamMode == 0) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame
 										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];								
