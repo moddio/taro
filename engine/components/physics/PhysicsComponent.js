@@ -632,8 +632,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 										// console.log(ige._currentTime, "initiate client to reconcile to server");
 									} else {
 										// apply rubberbanding to reconcilie to position provided by the client
-										x += xDiff;
-										y += yDiff;
+										x += xDiff/3;
+										y += yDiff/3;
 									}
 								}
 
