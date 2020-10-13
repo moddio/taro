@@ -622,11 +622,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 							if (ige.isServer) {
 								if (ige.game.data.defaultData.clientSidePredictionEnabled && entity.clientStreamedPosition) {
-									console.log("entity.clientStreamedPosition", entity.clientStreamedPosition)
 									var xDiff = entity.clientStreamedPosition[0] - x;
 									var yDiff = entity.clientStreamedPosition[1] - y;
 									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-									// console.log(entity.clientStreamedPosition)
 									// execute server-side reconciliation if the position difference between server & client is less than 100px
 									if (distance > 100) {
 										// ignore client-streamed position for the next 500ms to force client-side to reconcile.
@@ -673,7 +671,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// if movementHistory still has elements after shifting, 
 									// this means we found a matching time between movementHistory & serverStreamedPosition's time.
 									if (history && entity.movementHistory.length > 0 && entity.serverStreamedPosition) {
-										console.log("entity.serverStreamedPosition", entity.serverStreamedPosition)
 										var xDiff = (entity.serverStreamedPosition[0] - history[0])
 										var yDiff = (entity.serverStreamedPosition[1] - history[1])
 										
@@ -712,9 +709,12 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// if unit has moved
 									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
 									
-								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined && entity._streamMode == 0) {
-									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];								
+								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
+									// console.log("projectile", entity._streamMode)
+									if (entity._streamMode == 0) {
+										entity.prevPhysicsFrame = entity.nextPhysicsFrame
+										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];								
+									}									
 								} else {
 									// all streamed entities are rigidly positioned
 									x = entity._translate.x
