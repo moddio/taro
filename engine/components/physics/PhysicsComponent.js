@@ -673,7 +673,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// if movementHistory still has elements after shifting, 
 									// this means we found a matching time between movementHistory & serverStreamedPosition's time.
 									if (history && entity.movementHistory.length > 0 && entity.serverStreamedPosition) {
-										console.log("entity.serverStreamedPosition", entity.serverStreamedPosition)
 										var xDiff = (entity.serverStreamedPosition[0] - history[0])
 										var yDiff = (entity.serverStreamedPosition[1] - history[1])
 										
