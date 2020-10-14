@@ -847,8 +847,7 @@ var Unit = IgeEntityBox2d.extend({
             } else {
                 // if designated item slot is already occupied, unit cannot get this item
                 var availableSlot = self.inventory.getFirstAvailableSlotForItem(itemData)
-                console.log(availableSlot);
-
+                
                 // insert/merge itemData's quantity into matching items in the inventory
                 var totalInventorySize = this.inventory.getTotalInventorySize();
                 for (var i = 0; i < totalInventorySize; i++) {
