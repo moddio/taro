@@ -69,7 +69,7 @@ var IgeEntity = IgeObject.extend({
         this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]];
         this._lastTransformAt = null;
         this.nextPhysicsFrame = null;
-        this.serverStreamedPosition = null;
+        this.lastServerStreamedPosition = null;
 
         if (ige.isClient) {
             this.anchorOffset = { x: 0, y: 0, rotate: 0 };
@@ -3171,19 +3171,21 @@ var IgeEntity = IgeObject.extend({
     },
 
     teleportTo: function (x, y, rotate) {
+        // console.log("teleporting to ", x, y)
+        
+        this.translateTo(x, y);
+        if (rotate != undefined) {
+            this.rotateTo(0, 0, rotate);
+        }
+        
         if (ige.isServer) {
             ige.network.send("teleport", { entityId: this.id(), position: [x, y] });
             this.clientStreamedPosition = undefined;
         } else if (ige.isClient) {
-            this.serverStreamedPosition = undefined;
-            this.isTeleporting = true;
+            this.lastServerStreamedPosition = undefined;
             this.prevPhysicsFrame = undefined;
             this.nextPhysicsFrame = undefined;
-            this.translateTo(x, y);
-            if (rotate != undefined) {
-                this.rotateTo(0, 0, rotate);
-            }
-            
+            this.movementHistory = [];
             if (this.body) {
                 this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
                 if (rotate != undefined) {
@@ -5136,7 +5138,7 @@ var IgeEntity = IgeObject.extend({
                 targetRotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             }
 
-            this.serverStreamedPosition = [targetX, targetY, targetRotate];
+            this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
 
             // apply rubberbanding to all non-player entities when csp is enabled
             if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {

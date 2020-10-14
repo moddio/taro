@@ -650,13 +650,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 							else if (ige.isClient) {
 								
 								if (ige.physics && ige.game.cspEnabled  && ige.client.selectedUnit == entity) {
-									// var xDiff = entity.serverStreamedPosition[0] - x;
-									// var yDiff = entity.serverStreamedPosition[1] - y;
+									// var xDiff = entity.lastServerStreamedPosition[0] - x;
+									// var yDiff = entity.lastServerStreamedPosition[1] - y;
 									// var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 									// 			// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
 									// 			if (distance > 100) {
-									// 				x = entity.serverStreamedPosition[0];
-									// 				y = entity.serverStreamedPosition[1];
+									// 				x = entity.lastServerStreamedPosition[0];
+									// 				y = entity.lastServerStreamedPosition[1];
 									// 				entity.prevPhysicsFrame = undefined
 									// 				console.log(ige._currentTime, "reconciling to server");
 									// 			}
@@ -669,10 +669,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 									}
 								
 									// if movementHistory still has elements after shifting, 
-									// this means we found a matching time between movementHistory & serverStreamedPosition's time.
-									if (history && entity.movementHistory.length > 0 && entity.serverStreamedPosition) {
-										var xDiff = (entity.serverStreamedPosition[0] - history[0])
-										var yDiff = (entity.serverStreamedPosition[1] - history[1])
+									// this means we found a matching time between movementHistory & lastServerStreamedPosition's time.
+									if (history && entity.movementHistory.length > 0 && entity.lastServerStreamedPosition) {
+										var xDiff = (entity.lastServerStreamedPosition[0] - history[0])
+										var yDiff = (entity.lastServerStreamedPosition[1] - history[1])
 										
 										var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 										// console.log(
@@ -685,24 +685,19 @@ var PhysicsComponent = IgeEventingClass.extend({
 											entity.discrepancyCount++
 											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
 											if (entity.discrepancyCount > 15) {
-												x = entity.serverStreamedPosition[0];
-												y = entity.serverStreamedPosition[1];
-												// x += xDiff;
-												// y += yDiff;
-												entity.prevPhysicsFrame = undefined
-												
-												// console.log(ige.renderTime, "reconcile to", x, y)
-												entity.movementHistory = [];
+												x = entity.lastServerStreamedPosition[0];
+												y = entity.lastServerStreamedPosition[1];
+												entity.teleportTo(x, y)
 											}
 										} else {
 											entity.discrepancyCount = 0
+											entity.lastServerStreamedPosition = undefined;
 										}
 									}
 
 									if (entity.isOutOfBounds) {
 										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
 										entity.body.setAngle(angle);
-										entity.isTeleporting = false;
 									}
 
 									entity.prevPhysicsFrame = entity.nextPhysicsFrame
