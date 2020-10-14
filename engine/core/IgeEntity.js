@@ -3183,7 +3183,6 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
-        this.isTeleporting = false;
         this.discrepancyCount = 0;
 
         if (this._category == 'unit') {
@@ -5130,14 +5129,14 @@ var IgeEntity = IgeObject.extend({
 
             this.serverStreamedPosition = [targetX, targetY, targetRotate];
 
-            // if physics isn't set, or csp is disabled, use server-streamed data to move entities
-            if (!ige.physics || !ige.game.cspEnabled  || this != ige.client.selectedUnit) {
-                // use server-streamed data to translate non-player unit. iff csp is enabled.
-                // xDiff = targetX - x;
-                // yDiff = targetY - y;
-                // x += xDiff/3
-                // y += yDiff/3
-                
+            // apply rubberbanding to all non-player streamed entities when csp is enabled
+            if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
+                xDiff = targetX - x;
+                yDiff = targetY - y;
+                x += xDiff/3
+                y += yDiff/3
+            } else if (!ige.physics || !ige.game.cspEnabled  || this != ige.client.selectedUnit) {
+                // if physics isn't set, or csp is disabled, use server-streamed data to move entities                
                 x = targetX;
                 y = targetY;
                 rotate = targetRotate;
