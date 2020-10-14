@@ -621,31 +621,23 @@ var PhysicsComponent = IgeEventingClass.extend({
 							}
 
 							if (ige.isServer) {
-								if (ige.game.data.defaultData.clientSidePredictionEnabled && entity.clientStreamedPosition) {
+								// execute server-side reconciliation if the position difference between server & client is less than 100px continuously for 10 times in a row
+								if (ige.game.cspEnabled && entity.clientStreamedPosition) {
 									var xDiff = entity.clientStreamedPosition[0] - x;
 									var yDiff = entity.clientStreamedPosition[1] - y;
 									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-									// execute server-side reconciliation if the position difference between server & client is less than 100px
 									if (distance > 100) {
 										entity.discrepancyCount++
 										// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
-										if (entity.discrepancyCount > 10) {
+										if (entity.discrepancyCount > 15) {
 											// force client to teleport to server's position
-											if (!entity.isTeleporting) {
-												ige.network.send("teleport", { entityId: entity.id(), position: [x, y] });
-												entity.isTeleporting = true;
-												// console.log("teleporting",entity.id() ," to ", x, y)
-											}										
+											entity.teleportTo(x, y);									
 										}
 									} else {
 										entity.discrepancyCount = 0
 										// teleporting unit reached to its destination
-										if (entity.isTeleporting) {
-											entity.isTeleporting = false;
-										} else if (!entity.isTeleporting) {										
-											x += xDiff;
-											y += yDiff;	
-										}
+										x += xDiff;
+										y += yDiff;	
 									}
 								}
 
@@ -669,10 +661,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// 				console.log(ige._currentTime, "reconciling to server");
 									// 			}
 									
-									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
-									// console.log(x, y)
-								
 									var time = ige._currentTime - ige.network.latency - 120
 
 									// skip through all movementHistories that are too old
@@ -689,22 +677,21 @@ var PhysicsComponent = IgeEventingClass.extend({
 										var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 										// console.log(
 										// 		entity.discrepancyCount, 
-										// 		(entity.serverStreamedPosition[0] - history[0]).toFixed(0), 
-										// 		(entity.serverStreamedPosition[1] - history[1]).toFixed(0)
+										// 		xDiff.toFixed(0), 
+										// 		yDiff.toFixed(0)
 										// 	);
 										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
 										if (distance > 100) {
 											entity.discrepancyCount++
 											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
-											if (entity.discrepancyCount > 10) {
+											if (entity.discrepancyCount > 15) {
 												x = entity.serverStreamedPosition[0];
 												y = entity.serverStreamedPosition[1];
 												// x += xDiff;
 												// y += yDiff;
 												entity.prevPhysicsFrame = undefined
-												entity.isTeleporting = true;
 												
-												// console.log(ige.renderTime, "reconcile!")
+												// console.log(ige.renderTime, "reconcile to", x, y)
 												entity.movementHistory = [];
 											}
 										} else {
@@ -712,12 +699,15 @@ var PhysicsComponent = IgeEventingClass.extend({
 										}
 									}
 
-									if (entity.isTeleporting || entity.isOutOfBounds) {
+									if (entity.isOutOfBounds) {
 										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
 										entity.body.setAngle(angle);
 										entity.isTeleporting = false;
 									}
 
+									entity.prevPhysicsFrame = entity.nextPhysicsFrame
+									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+									// console.log(x, y)
 									// if unit has moved
 									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
 									

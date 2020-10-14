@@ -3171,20 +3171,29 @@ var IgeEntity = IgeObject.extend({
     },
 
     teleportTo: function (x, y, rotate) {
-        this.translateTo(x, y);
-        if (rotate != undefined) {
-            this.rotateTo(0, 0, rotate);
-        }
-        
-        if (this.body) {
-            this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
+        if (ige.isServer) {
+            ige.network.send("teleport", { entityId: this.id(), position: [x, y] });
+            this.clientStreamedPosition = undefined;
+        } else if (ige.isClient) {
+            this.serverStreamedPosition = undefined;
+            this.isTeleporting = true;
+            this.prevPhysicsFrame = undefined;
+            this.nextPhysicsFrame = undefined;
+            this.translateTo(x, y);
             if (rotate != undefined) {
-                this.body.setAngle(rotate);
+                this.rotateTo(0, 0, rotate);
+            }
+            
+            if (this.body) {
+                this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
+                if (rotate != undefined) {
+                    this.body.setAngle(rotate);
+                }
             }
         }
 
         this.discrepancyCount = 0;
-
+       
         if (this._category == 'unit') {
             // teleport unit's attached items
             for (entityId in this.jointsAttached) {
@@ -5129,7 +5138,7 @@ var IgeEntity = IgeObject.extend({
 
             this.serverStreamedPosition = [targetX, targetY, targetRotate];
 
-            // apply rubberbanding to all non-player streamed entities when csp is enabled
+            // apply rubberbanding to all non-player entities when csp is enabled
             if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
                 xDiff = targetX - x;
                 yDiff = targetY - y;
