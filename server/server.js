@@ -590,6 +590,7 @@ var Server = IgeClass.extend({
 		// ige.network.define('updateEntity', self._onSomeBullshit);
 		ige.network.define('updateEntityAttribute', self._onSomeBullshit);
 		ige.network.define('updateAllEntities', self._onSomeBullshit);
+		ige.network.define('teleport', self._onSomeBullshit);
 		ige.network.define('itemHold', self._onSomeBullshit);
 		ige.network.define('item', self._onSomeBullshit);
 		ige.network.define('clientConnect', self._onSomeBullshit);

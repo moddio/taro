@@ -627,13 +627,21 @@ var PhysicsComponent = IgeEventingClass.extend({
 									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 									// execute server-side reconciliation if the position difference between server & client is less than 100px
 									if (distance > 100) {
-										// ignore client-streamed position for the next 500ms to force client-side to reconcile.
-										entity.reconciliationStartedAt = ige._currentTime;																					
-										// console.log(ige._currentTime, "initiate client to reconcile to server");
+										// force client to teleport to server's position
+										if (!entity.isTeleporting) {
+											ige.network.send("teleport", { entityId: entity.id(), position: [x, y] });
+											entity.isTeleporting = true;
+											// console.log("teleporting",entity.id() ," to ", x, y)
+										}										
 									} else {
-										// apply rubberbanding to reconcilie to position provided by the client
-										x += xDiff/3;
-										y += yDiff/3;
+										// teleporting unit reached to its destination
+										if (entity.isTeleporting) {
+											entity.isTeleporting = false;
+										} else if (!entity.isTeleporting) {										
+											// apply rubberbanding to reconcilie to position provided by the client
+											x += xDiff;
+											y += yDiff;
+										}
 									}
 								}
 

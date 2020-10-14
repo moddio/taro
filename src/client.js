@@ -749,6 +749,7 @@ var Client = IgeClass.extend({
         ige.network.define('showUnitNameLabelFromPlayer', self._onShowUnitNameLabelFromPlayer);
 
         ige.network.define('updateAllEntities', self._onUpdateAllEntities);
+        ige.network.define('teleport', self._onTeleport);
 
         ige.network.define('updateEntityAttribute', self._onUpdateEntityAttribute);
 

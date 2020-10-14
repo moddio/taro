@@ -3171,26 +3171,18 @@ var IgeEntity = IgeObject.extend({
     },
 
     teleportTo: function (x, y, rotate) {
-        // ige.devLog("teleportTo", this.id(), this._category, Math.floor(x), Math.floor(y), rotate)
-
-        // prepare offset to teleport entity's attached entities (e.g. unit's items)
-        // var offsetX = x - this._translate.x;
-        // var offsetY = y - this._translate.y;
-
-        // this.nextPhysicsFrame = null;
-        // this.bypassSmoothing = true;
-        // // this._keyFrames = [[this.currentTime(), [x, y]]] // start keyFrames fresh
-
-        // // immediately move entity
-        // this._translate.x = x;
-        // this._translate.y = y;
-        // this._rotate.z = rotate;
-        // if (this.body) {
-        // 	this.body.setPosition({ x: x / ige.physics._scaleRatio, y: y / ige.physics._scaleRatio });
-        // 	this.body.setAngle(rotate);
-        // }
         this.translateTo(x, y);
-        this.rotateTo(0, 0, rotate);
+        if (rotate != undefined) {
+            this.rotateTo(0, 0, rotate);
+        }
+        
+        if (this.body) {
+            this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
+            if (rotate != undefined) {
+                this.body.setAngle(rotate);
+            }
+        }
+
         if (this._category == 'unit') {
             // teleport unit's attached items
             for (entityId in this.jointsAttached) {

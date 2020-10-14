@@ -43,6 +43,14 @@ var ClientNetworkEvents = {
 		}
 	},
 
+	_onTeleport: function(data) {
+		var entity = ige.$(data.entityId);
+		if (entity && data.position) {
+			// console.log("teleporting",data.entityId , " to", data.position)
+			entity.teleportTo(data.position[0], data.position[1]);
+		}
+	},
+
 	_onMakePlayerSelectUnit: function (data) {
 		if (data.unitId) {
 			if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
