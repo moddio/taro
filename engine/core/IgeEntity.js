@@ -3183,6 +3183,9 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
+        this.isTeleporting = false;
+        this.discrepancyCount = 0;
+
         if (this._category == 'unit') {
             // teleport unit's attached items
             for (entityId in this.jointsAttached) {
