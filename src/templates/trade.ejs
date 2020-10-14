@@ -1,0 +1,54 @@
+<div id="trade-request-div" class="dark-bg absolute-center">
+    <div>
+        <span id="requested-by" style="display: none"></span>
+        <span id="trade-request-message"></span>
+    </div>
+    <div class="text-center" style="margin-top: 10px">
+        <span class="btn btn-success" id="accept-trade-request-button">Yes</span>
+        <span class="btn btn-light cancel-trade-request-button">No</span>
+    </div>
+</div>
+
+<div id="trade-div" class="dark-bg absolute-center">
+    <span id="trader-name"></span>'s offer
+    <div>
+        <div id="offer-1" class="btn btn-light trade-offer-slot"></div>
+        <div id="offer-2" class="btn btn-light trade-offer-slot"></div>
+        <div id="offer-3" class="btn btn-light trade-offer-slot"></div>
+        <div id="offer-4" class="btn btn-light trade-offer-slot"></div>
+        <div id="offer-5" class="btn btn-light trade-offer-slot"></div>
+    </div>
+
+    <br />
+    <br />
+    Your offer
+    <div id="user-trading-slots">
+        <!-- <div id="item-13" name='13' class="btn btn-light inventory-slot"></div>
+      <div id="item-14" name='14' class="btn btn-light inventory-slot"></div>
+      <div id="item-53" name='53' class="btn btn-light inventory-slot"></div>
+      <div id="item-54" name='54' class="btn btn-light inventory-slot"></div>
+      <div id="item-55" name='55' class="btn btn-light inventory-slot"></div> -->
+    </div>
+
+    <br />
+    <br />
+    <small id="trade-message" class="float-left"></small>
+    <div class="float-right">
+        <span class="btn btn-success" id="accept-trade-button">Accept</span>
+        <span class="btn btn-light cancel-trade-button">Cancel</span>
+    </div>
+</div>
+
+<style>
+    #trade-div,
+    #trade-request-div {
+        display: none;
+    }
+
+    .absolute-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>

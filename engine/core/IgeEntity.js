@@ -5033,7 +5033,7 @@ var IgeEntity = IgeObject.extend({
             this._translate == undefined ||
             this._stats.currentBody == undefined ||
             // ignore server stream of my own unit's sprite-only item
-            (this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && this.getOwnerUnit() == ige.client.selectedUnit)
+            (this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && (this.getOwnerUnit && this.getOwnerUnit()) == ige.client.selectedUnit)
         ) {
             return;
         }

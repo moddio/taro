@@ -310,10 +310,10 @@ var ServerNetworkEvents = {
 							if (unitAItems[i]) {
 								var item = ige.$(unitAItems[i]);
 								unitA.dropItem(item._stats.slotIndex);
-								isTradingSuccessful = unitB.getItem(item);
+								isTradingSuccessful = unitB.pickUpItem(item);
 
 								if (!isTradingSuccessful) {
-									unitA.getItem(item);
+									unitA.pickUpItem(item);
 									break;
 								}
 							}
@@ -323,10 +323,10 @@ var ServerNetworkEvents = {
 							if (unitBItems[i]) {
 								var item = ige.$(unitBItems[i]);
 								unitB.dropItem(item._stats.slotIndex);
-								isTradingSuccessful = unitA.getItem(item);
+								isTradingSuccessful = unitA.pickUpItem(item);
 
 								if (!isTradingSuccessful) {
-									unitB.getItem(item);
+									unitB.pickUpItem(item);
 									break;
 								}
 							}
