@@ -1536,9 +1536,6 @@ var Unit = IgeEntityBox2d.extend({
 
     startMoving: function () {
         if (!this.isMoving) {
-            if (ige.isServer) {
-                this.streamUpdateData([{ effect: "move" }]);
-            }
             this.playEffect('move');
             this.isMoving = true;
         }
@@ -1547,9 +1544,6 @@ var Unit = IgeEntityBox2d.extend({
     stopMoving: function () {
         if (this.isMoving) {
             // console.log("GOING IDLE")
-            if (ige.isServer) {
-                this.streamUpdateData([{ effect: "idle" }]);
-            }
             this.playEffect('idle');
             this.isMoving = false;
         }
@@ -1629,20 +1623,18 @@ var Unit = IgeEntityBox2d.extend({
                     }
                 }
 
-                if (ige.isClient) { // toggle effects
-                    if (self._stats.controls && self._stats.controls.movementControlScheme == 'followCursor') {
-                        if (!this.isMoving && self.distanceToTarget > this.width()) {
-                            this.startMoving();
-                        } else if (this.isMoving && self.distanceToTarget <= this.width()) {
-                            this.stopMoving();
-                        }
-                    } else { // WASD or AD movement
-                        // toggle effects when unit starts/stops moving
-                        if (!this.isMoving && (self.direction.x != 0 || self.direction.y != 0)) {
-                            this.startMoving();
-                        } else if (this.isMoving && (self.direction.x == 0 && self.direction.y == 0)) {
-                            this.stopMoving();
-                        }
+                if (self._stats.controls && self._stats.controls.movementControlScheme == 'followCursor') {
+                    if (!this.isMoving && self.distanceToTarget > this.width()) {
+                        this.startMoving();
+                    } else if (this.isMoving && self.distanceToTarget <= this.width()) {
+                        this.stopMoving();
+                    }
+                } else { // WASD or AD movement
+                    // toggle effects when unit starts/stops moving
+                    if (!this.isMoving && (self.direction.x != 0 || self.direction.y != 0)) {
+                        this.startMoving();
+                    } else if (this.isMoving && (self.direction.x == 0 && self.direction.y == 0)) {
+                        this.stopMoving();
                     }
                 }
 

@@ -1982,7 +1982,10 @@ var IgeEntity = IgeObject.extend({
     playEffect: function (type) {
         if (this._stats && this._stats.effects && this._stats.effects[type]) {
             var effect = this._stats.effects[type];
-            if (ige.isClient) {
+
+            if (ige.isServer) {
+                this.streamUpdateData([{ effect: type }]);
+            } else if (ige.isClient) {
                 if (this._pixiContainer && this._pixiContainer._destroyed) {
                     return;
                 }
