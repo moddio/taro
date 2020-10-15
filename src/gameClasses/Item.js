@@ -308,9 +308,16 @@ var Item = IgeEntityBox2d.extend({
 								offsetAngle += Math.PI
 							}
 
+							// item is flipped, then mirror the rotation
+							if (owner._stats.flip == 1) {
+								var bulletY = -self._stats.bulletStartPosition.y || 0;
+							} else {
+								var bulletY = self._stats.bulletStartPosition.y || 0;
+							}
+							
 							var bulletStartPosition = {
-								x: (owner._translate.x + self.anchoredOffset.x) + (self._stats.bulletStartPosition.x * Math.cos(offsetAngle)) + (self._stats.bulletStartPosition.y * Math.sin(offsetAngle)),
-								y: (owner._translate.y + self.anchoredOffset.y) + (self._stats.bulletStartPosition.x * Math.sin(offsetAngle)) - (self._stats.bulletStartPosition.y * Math.cos(offsetAngle))
+								x: (owner._translate.x + self.anchoredOffset.x) + (self._stats.bulletStartPosition.x * Math.cos(offsetAngle)) + (bulletY * Math.sin(offsetAngle)),
+								y: (owner._translate.y + self.anchoredOffset.y) + (self._stats.bulletStartPosition.x * Math.sin(offsetAngle)) - (bulletY * Math.cos(offsetAngle))
 							}
 
 							
