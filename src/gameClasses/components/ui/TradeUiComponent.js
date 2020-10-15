@@ -38,6 +38,20 @@ var TradeUiComponent = IgeEntity.extend({
         $('#trade-request-message').text(message);
         $('#trade-request-div').show();
     },
+    clearOfferSlots: function () {
+        var offerSlots = $('#offer-trading-slots');
+        offerSlots.html('');
+        var i = 1;
+        while (i < 6) {
+            offerSlots.append(
+                $('<div/>', {
+                    id: 'offer-' + i,
+                    class: 'btn btn-light trade-offer-slot',
+                }),
+            );
+            i++;
+        }
+    },
 
     startTrading: function (playerA, playerB) {
         if (playerA !== ige.client.myPlayer) {
@@ -49,6 +63,8 @@ var TradeUiComponent = IgeEntity.extend({
         playerB.tradingWith = playerA.id();
         playerA.isTrading = true;
         playerB.isTrading = true;
+
+        this.clearOfferSlots();
         $('#trade-div').show();
     },
     sendOfferingItems: function () {

@@ -302,8 +302,10 @@ var ServerNetworkEvents = {
 					if (acceptedBy.acceptTrading && acceptedFor.acceptTrading) {
 						var unitA = acceptedBy.getSelectedUnit();
 						var unitB = acceptedFor.getSelectedUnit();
-						var unitAItems = unitA._stats.itemIds.slice(unitA._stats.inventorySize, unitA._stats.inventorySize + 5);
-						var unitBItems = unitB._stats.itemIds.slice(unitB._stats.inventorySize, unitB._stats.inventorySize + 5);
+						var unitAInventorySize = unitA.inventory.getTotalInventorySize();
+						var unitBInventorySize = unitB.inventory.getTotalInventorySize();
+						var unitAItems = unitA._stats.itemIds.slice(unitAInventorySize, unitAInventorySize + 5);
+						var unitBItems = unitB._stats.itemIds.slice(unitBInventorySize, unitBInventorySize + 5);
 						var isTradingSuccessful = false;
 
 						for (var i = 0; i < unitAItems.length; i++) {
@@ -386,11 +388,12 @@ var ServerNetworkEvents = {
 
 				var unitA = playerA.getSelectedUnit();
 				if (unitA) {
-					for (var i = unitA._stats.inventorySize; i < unitA._stats.inventorySize + 5; i++) {
+					var unitAInventorySize = unitA.inventory.getTotalInventorySize();
+					for (var i = unitAInventorySize; i < unitAInventorySize + 5; i++) {
 						var offeringItemId = unitA._stats.itemIds[i];
 						var item = offeringItemId && ige.$(offeringItemId);
 						if (item && item._category === 'item') {
-							var availSlot = unitA.inventory.getFirstEmptySlot(offeringItemId);
+							var availSlot = unitA.inventory.getFirstAvailableSlotForItem(item);
 							unitA._stats.itemIds[availSlot] = unitA._stats.itemIds[i];
 							unitA._stats.itemIds[i] = undefined;
 						}
@@ -401,11 +404,12 @@ var ServerNetworkEvents = {
 
 				var unitB = playerB.getSelectedUnit();
 				if (unitB) {
-					for (var i = unitB._stats.inventorySize; i < unitB._stats.inventorySize + 5; i++) {
+					var unitBInventorySize = unitB.inventory.getTotalInventorySize();
+					for (var i = unitBInventorySize; i < unitBInventorySize + 5; i++) {
 						var offeringItemId = unitB._stats.itemIds[i];
 						var item = offeringItemId && ige.$(offeringItemId);
 						if (item && item._category === 'item') {
-							var availSlot = unitB.inventory.getFirstEmptySlot(offeringItemId);
+							var availSlot = unitB.inventory.getFirstAvailableSlotForItem(item);
 							unitB._stats.itemIds[availSlot] = unitB._stats.itemIds[i];
 							unitB._stats.itemIds[i] = undefined;
 						}
@@ -508,7 +512,7 @@ var ServerNetworkEvents = {
 					fromItem._stats.controls.permittedInventorySlots == undefined ||
 					fromItem._stats.controls.permittedInventorySlots.length == 0 ||
 					fromItem._stats.controls.permittedInventorySlots.includes(data.to + 1) ||
-					data.to + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
+					data.to + 1 > unit.inventory.getTotalInventorySize() // any item can be moved into backpack slots
 				)
 			) {
 				fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
