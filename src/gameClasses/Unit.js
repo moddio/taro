@@ -1094,6 +1094,8 @@ var Unit = IgeEntityBox2d.extend({
                                 },
                                 rotate: this._rotate.z
                             };
+
+                console.log("dropItem",  this._translate.x + item.anchoredOffset.x, this._translate.y + item.anchoredOffset.y);
                 item.setState('dropped', defaultData);
                 item.setOwnerUnit(undefined);
                 self._stats.currentItemId = null;

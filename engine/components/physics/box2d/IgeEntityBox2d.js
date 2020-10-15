@@ -16,7 +16,7 @@ var IgeEntityBox2d = IgeEntity.extend({
         }
 
         // Check if box2d is enabled in the engine
-        if (ige.physics) {
+        if (ige.isServer && ige.physics) {
 
             if (!this._b2dRef._networkDebugMode) {
                 // Store the existing transform methods

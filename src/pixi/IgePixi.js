@@ -274,6 +274,7 @@ var IgeInitPixi = IgeClass.extend({
                         if (ownerUnit) {
                             ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
                             
+                            // immediately rotate items for my own unit
                             if (ownerUnit == ige.client.selectedUnit) {
                                 if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
                                     rotate = ownerUnit._rotate.z;
@@ -286,7 +287,6 @@ var IgeInitPixi = IgeClass.extend({
                             if (entity.anchoredOffset) {
                                 x = ownerUnit._translate.x + entity.anchoredOffset.x;
                                 y = ownerUnit._translate.y + entity.anchoredOffset.y;
-
                                 rotate = entity.anchoredOffset.rotate;
                             }
                         }

@@ -974,16 +974,13 @@ var Item = IgeEntityBox2d.extend({
 				}
 			}
 
-			// if (ige.isServer || (ige.isClient && (self._stats.currentBody.type != 'dynamic' || self._stats.currentBody.jointType != 'weldJoint'))) {
-
-			// if (ige.isServer || (ige.isClient && ige.client.selectedUnit == ownerUnit)) {
-			// 	if (ige.isServer) {
 			self.anchoredOffset = self.getAnchoredOffset(rotate);
-			self.translateTo(ownerUnit._translate.x + self.anchoredOffset.x, ownerUnit._translate.y + self.anchoredOffset.y)
-			// 	}
-			// }
-			// }
-
+			var x = ownerUnit._translate.x + self.anchoredOffset.x, 
+				y = ownerUnit._translate.y + self.anchoredOffset.y;
+			
+			console.log(x, y)
+			
+			self.translateTo(x, y)
 			self.rotateTo(0, 0, rotate)
 		}
 

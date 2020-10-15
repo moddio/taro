@@ -138,7 +138,6 @@ var IgeEntity = IgeObject.extend({
         }
 
         self.previousState = newState;
-        self.isTeleporting = true;
         self.updateBody(defaultData);
     },
 
@@ -1984,7 +1983,9 @@ var IgeEntity = IgeObject.extend({
             var effect = this._stats.effects[type];
 
             if (ige.isServer) {
+                if (type == 'move' || type == 'idle')
                 this.streamUpdateData([{ effect: type }]);
+
             } else if (ige.isClient) {
                 if (this._pixiContainer && this._pixiContainer._destroyed) {
                     return;
@@ -4267,6 +4268,9 @@ var IgeEntity = IgeObject.extend({
                                 // console.log('stateId', this.id(), this._stats.name, newValue);
                                 break;
                             case 'effect':
+                                // don't use streamed effect call for my own unit or its items
+                                if (this == ige.client.selectedUnit || (this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit))
+                                    return;
                                 this.playEffect(newValue);
                                 break;
                             case 'makePlayerSelectUnit':
@@ -5079,7 +5083,7 @@ var IgeEntity = IgeObject.extend({
             )
         ) {
             if (this.nextPhysicsFrame) {
-                if (this.prevPhysicsFrame) {
+                if (this.prevPhysicsFrame && ige._currentTime <= this.nextPhysicsFrame[0]) {
                     // interpolate using prev/next physics key frames provided by physicsComponent
                     x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0])
                     y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
