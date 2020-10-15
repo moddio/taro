@@ -5122,10 +5122,6 @@ var IgeEntity = IgeObject.extend({
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-            if (this == ige.client.selectedUnit && isNaN(targetX)) {
-                console.log(targetX, prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
-            }
-
             // a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
             var startValue = prevKeyFrame[1][2],
                 endValue = nextKeyFrame[1][2];
@@ -5142,7 +5138,7 @@ var IgeEntity = IgeObject.extend({
             }
 
             this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
-
+            
             // apply rubberbanding to all non-player entities when csp is enabled
             if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
                 xDiff = targetX - x;
@@ -5153,8 +5149,8 @@ var IgeEntity = IgeObject.extend({
                 // if physics isn't set, or csp is disabled, use server-streamed data to move entities                
                 x = targetX;
                 y = targetY;
-                rotate = targetRotate;
             }
+            rotate = targetRotate;
 
             if(this._debugEntity) {
                 this._debugEntity.position.set(targetX, targetY);
