@@ -2027,18 +2027,18 @@ var IgeEntity = IgeObject.extend({
                         ige.sound.playSound(effect.sound[soundKey], position, soundKey);
                     }
                 }
-                if (effect.tween && effect.tween !== 'none') {
-                    var angle = this._rotate.z;
-                    if (type == 'attacked') {
-                        // get angle between attacked unit and attacking unit
-                        var attacker = this.lastAttackedBy;
-                        if (attacker) {
-                            angle = Math.atan2(attacker._translate.y - this._translate.y, attacker._translate.x - this._translate.x) + Math.radians(90);
-                        }
+                
+                var angle = this._rotate.z;
+                if (type == 'attacked') {
+                    // get angle between attacked unit and attacking unit
+                    var attacker = this.lastAttackedBy;
+                    if (attacker) {
+                        angle = Math.atan2(attacker._translate.y - this._translate.y, attacker._translate.x - this._translate.x) + Math.radians(90);
                     }
-
-                    this.tween.start(effect.tween, angle);
                 }
+
+                this.tween.start(effect.tween, angle);
+                
             } else if (ige.isServer) {
                 if (effect.runScript) {
                     ige.script.runScript(effect.runScript, {});
