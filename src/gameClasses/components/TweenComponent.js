@@ -57,7 +57,7 @@ var TweenComponent = IgeEntity.extend({
     //             this.queue.splice(i, 1);
     //         }
     //     }
-    //     this.queue.push([ige.renderTime, tweenId, this.tweens[tweenId], angle])
+    //     this.queue.push([ige._currentTime, tweenId, this.tweens[tweenId], angle])
     //     this.isTweening = true;
     // },
 
@@ -82,7 +82,7 @@ var TweenComponent = IgeEntity.extend({
         this.loopCount = tween.loopCount
         this.angle = angle;
             
-        this.startTime = ige.renderTime;
+        this.startTime = ige._currentTime;
         this.offset = {x: 0, y: 0, rotate: 0}
         this.lastFrame = this.keyFrames.shift()
         this.nextFrame = this.keyFrames[0]
@@ -99,7 +99,7 @@ var TweenComponent = IgeEntity.extend({
 
         if (this.keyFrames.length > 0) {
             var nextFrameEndsAt = this.startTime + this.nextFrame[0];
-            if (ige.renderTime < nextFrameEndsAt) {
+            if (ige._currentTime < nextFrameEndsAt) {
                 var x = this.lastFrame[1][0],
                     y = this.lastFrame[1][1],
                     rotate = this.lastFrame[1][2],
@@ -115,9 +115,9 @@ var TweenComponent = IgeEntity.extend({
                     targetRotate = -this.nextFrame[1][2];
                 }   
                 
-                var interpolatedX = this._entity.interpolateValue(x, targetX, this.startTime, ige.renderTime, nextFrameEndsAt),
-                    interpolatedY = this._entity.interpolateValue(y, targetY, this.startTime, ige.renderTime, nextFrameEndsAt),
-                    interpolatedRotate = this.interpolateValue(rotate, targetRotate, this.startTime, ige.renderTime, nextFrameEndsAt);
+                var interpolatedX = this._entity.interpolateValue(x, targetX, this.startTime, ige._currentTime, nextFrameEndsAt),
+                    interpolatedY = this._entity.interpolateValue(y, targetY, this.startTime, ige._currentTime, nextFrameEndsAt),
+                    interpolatedRotate = this.interpolateValue(rotate, targetRotate, this.startTime, ige._currentTime, nextFrameEndsAt);
                 
                 // for smooth transitioning from 3.14 to -3.14
                 if (Math.abs(targetRotate - rotate) > Math.PI) {
@@ -153,7 +153,7 @@ var TweenComponent = IgeEntity.extend({
             } else {
                 this.lastFrame = this.keyFrames.shift();
                 this.nextFrame = this.keyFrames[0]
-                this.startTime = ige.renderTime;
+                this.startTime = ige._currentTime;
             }
         } else {
             // repeat infinite tween

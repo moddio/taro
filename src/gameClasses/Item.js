@@ -979,10 +979,6 @@ var Item = IgeEntityBox2d.extend({
 			var x = ownerUnit._translate.x + self.anchoredOffset.x, 
 				y = ownerUnit._translate.y + self.anchoredOffset.y;
 			
-			// console.log(ownerUnit._translate.y, self.anchoredOffset.y, rotate)
-			
-			// console.log("owner", this.getOwnerUnit() != undefined, "state", this._stats.stateId, x, y, rotate)					
-
 			self.translateTo(x, y)
 			self.rotateTo(0, 0, rotate)
 		}
