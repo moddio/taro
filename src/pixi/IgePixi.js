@@ -36,7 +36,8 @@ var IgeInitPixi = IgeClass.extend({
         this.currentZoomValue = 0;
 
         this.trackEntityById = {};
-        this.world = new PIXI.Container();
+        this.world = PIXI.shadows.init(this.app);
+        // this.world = new PIXI.Container();
         // new PIXI.Container();
         this.box2dDebug = new PIXI.Container();
         this.mobileControls = new PIXI.Container();

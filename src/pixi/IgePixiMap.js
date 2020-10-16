@@ -24,20 +24,20 @@ var IgePixiMap = IgeClass.extend({
             });
             resource._stats = tileset;
             next();
-        }
+        };
 
-        tileSetArray.forEach((tileset) => {
+        tileSetArray.forEach(tileset => {
             // Loader.shared
-            var url = tileset.image + "?version=" + 1;
+            var url = tileset.image + '?version=' + 1;
             ige.pixi.loader.add(tileset.image, url, { crossOrigin: true });
-        })
+        });
 
         ige.pixi.loader.use(applyStats);
         ige.pixi.loader.load(function (loader, resources) {
-            map.tilewidth = parseFloat(map.tilewidth)
-            map.tileheight = parseFloat(map.tileheight)
-            map.width = parseFloat(map.width)
-            map.height = parseFloat(map.height)
+            map.tilewidth = parseFloat(map.tilewidth);
+            map.tileheight = parseFloat(map.tileheight);
+            map.width = parseFloat(map.width);
+            map.height = parseFloat(map.height);
 
             ige.pixi.world.tileWidth = map.tilewidth;
             ige.pixi.world.tileHeight = map.tileheight;
@@ -63,15 +63,14 @@ var IgePixiMap = IgeClass.extend({
 
             ige.pixi.world.objects = [];
 
-            let layerZIndex = ["", "floor", "floor2", "walls", "trees"];
+            let layerZIndex = ['', 'floor', 'floor2', 'walls', 'trees'];
             var isHavingError = false;
             map.layers.forEach(function (tiledLayer, i) {
-
                 layersById[tiledLayer.name] = tiledLayer;
                 layersByKey[i] = tiledLayer;
 
                 var layerGroup = new PIXI.Container();
-                if (tiledLayer.type === "tilelayer") {
+                if (tiledLayer.type === 'tilelayer') {
                     for (var index = 0; index < map.width * map.height; index++) {
                         var gid = tiledLayer.data[index];
                         var tileSprite = undefined,
@@ -85,9 +84,9 @@ var IgePixiMap = IgeClass.extend({
                             tilesetColumn = undefined,
                             tilesetRow = undefined;
 
-                        var tilesetObj = _.find(map.tilesets, (tileset) => {
+                        var tilesetObj = _.find(map.tilesets, tileset => {
                             if (gid >= tileset.firstgid && gid <= tileset.firstgid + tileset.tilecount - 1) return true;
-                        })
+                        });
                         if (tilesetObj) {
                             gid = gid - tilesetObj.firstgid + 1;
                             var spacing = parseFloat(tilesetObj.spacing) || 0;
@@ -113,37 +112,45 @@ var IgePixiMap = IgeClass.extend({
                             texture = resources[tileset].texture.clone();
                             try {
                                 texture.frame = new PIXI.Rectangle(Math.round(tilesetX), Math.round(tilesetY), ige.pixi.world.tileWidth, ige.pixi.world.tileHeight);
-                            }
-                            catch (e) {
+                            } catch (e) {
                                 isHavingError = { tileset: tileset, error: e.message, display: true };
                             }
-                            tileSprite = new PIXI.Sprite(texture);
+
+                            if(tiledLayer.name == 'walls') {
+                                tileSprite = ige.physics.createWallShadowSprite(texture.clone(), texture.clone())
+                            } 
+                            else {
+                                tileSprite = new PIXI.Sprite(texture);
+                            }
                             tileSprite.x = mapX;
                             tileSprite.y = mapY;
                             tileSprite.index = index;
                             tileSprite.gid = gid;
                             layerGroup.addChild(tileSprite);
-                        }
-                        else {
+                        } else {
                             layerGroup.addChild(new PIXI.Sprite());
                         }
-                    };
-                    var renderTexture = ige.pixi.app.renderer.generateTexture(layerGroup);
-                    var error = ige.pixi.app.renderer.gl && ige.pixi.app.renderer.gl.getError();
-                    if (error > 0 && ige.lastError != error && typeof Rollbar !== 'undefined') {
-                        var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
-                        forceCanvas[gameId] = true;
-                        localStorage.setItem('forceCanvas', JSON.stringify(forceCanvas));
-                        location.reload();
-                        ige.lastError = error;
                     }
-                    renderTexture.tileMap = true;
-                    layerGroup = new PIXI.Sprite(renderTexture);
+                    var renderTexture;
+                    if (tiledLayer.name !== 'walls') {
+                        renderTexture = ige.pixi.app.renderer.generateTexture(layerGroup);
+                        var error = ige.pixi.app.renderer.gl && ige.pixi.app.renderer.gl.getError();
+                        if (error > 0 && ige.lastError != error && typeof Rollbar !== 'undefined') {
+                            var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
+                            forceCanvas[gameId] = true;
+                            localStorage.setItem('forceCanvas', JSON.stringify(forceCanvas));
+                            location.reload();
+                            ige.lastError = error;
+                        }
+                        renderTexture.tileMap = true;
+                        layerGroup = new PIXI.Sprite(renderTexture);
+                    }
+
                     layerGroup.scale.x = ige.scaleMapDetails.scaleFactor.x;
                     layerGroup.scale.y = ige.scaleMapDetails.scaleFactor.y;
 
                     Object.keys(tiledLayer).forEach(function (key) {
-                        if (key !== "width" && key !== "height") {
+                        if (key !== 'width' && key !== 'height') {
                             layerGroup[key] = tiledLayer[key];
                         }
                     });
@@ -155,14 +162,17 @@ var IgePixiMap = IgeClass.extend({
                     self.layersGroup[tiledLayer.name] = layerGroup;
                     ige.pixi.world.addChild(layerGroup);
                 }
-            })
+            });
+            ige.pixi.cull.addList(ige.pixiMap.layersGroup.walls.children);
             if (isHavingError && isHavingError.display) {
                 alert("Tilesheet '" + isHavingError.tileset + "' is having error in parsing. Log: " + isHavingError.error);
             }
-            ige.pixi.viewport.moveCenter(ige.pixi.world.width / 2, ige.pixi.world.height / 2)
+            ige.pixi.viewport.moveCenter(ige.pixi.world.width / 2, ige.pixi.world.height / 2);
             callback(layersByKey, layersById);
         });
-    }
-})
+    },
+});
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiMap; }
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = IgePixiMap;
+}

@@ -357,6 +357,23 @@ var PhysicsComponent = IgeEventingClass.extend({
 		}
 	},
 
+	createWallShadowSprite: function (texture, shadowTexture) {
+        var container = new PIXI.Container(); // This represents your final 'sprite'
+    
+        // Things that create shadows
+        if(shadowTexture){
+			var shadowCastingSprite = new PIXI.Sprite(shadowTexture);
+            shadowCastingSprite.parentGroup = PIXI.shadows.casterGroup;
+            container.addChild(shadowCastingSprite);
+        }
+    
+        // The things themselves (their texture)
+        var sprite = new PIXI.Sprite(texture);
+        container.addChild(sprite);
+    
+        return container;
+    },
+
 	/**
 	 * Creates a contact listener with the specified callbacks. When
 	 * contacts begin and end inside the box2d simulation the specified

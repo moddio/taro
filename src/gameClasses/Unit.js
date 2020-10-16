@@ -927,16 +927,22 @@ var Unit = IgeEntityBox2d.extend({
     },
 
     createBackgroundLight: function() {
-        var lightbulb = new PIXI.Graphics();
-        var rr = Math.random() * 0x80 | 0;
-        var rg = Math.random() * 0x80 | 0;
-        var rb = Math.random() * 0x80 | 0;
-        var rad = 50 + Math.random() * 40;
-        lightbulb.beginFill(0xFFFFFF, 1.0);
-        lightbulb.drawCircle(0, 0, rad);
-        lightbulb.endFill();
-        lightbulb.parentLayer = ige.pixi.lighting;// <-- try comment it
-        this._pixiContainer.addChild(lightbulb);
+        var shadow = new PIXI.shadows.Shadow(700, 1);
+        shadow.position = this._pixiContainer.position;
+        
+        // world.addChild(shadow);
+
+        // var lightbulb = new PIXI.Graphics();
+        // var rr = Math.random() * 0x80 | 0;
+        // var rg = Math.random() * 0x80 | 0;
+        // var rb = Math.random() * 0x80 | 0;
+        // var rad = 50 + Math.random() * 40;
+        // lightbulb.beginFill(0xFFFFFF, 1.0);
+        // lightbulb.drawCircle(0, 0, rad);
+        // lightbulb.endFill();
+        // lightbulb.parentLayer = ige.pixi.lighting;// <-- try comment it
+        ige.pixi.world.addChild(shadow);
+        this.shadow = shadow;
     },
 
     canCarryItem: function (itemData) {
@@ -1710,6 +1716,9 @@ var Unit = IgeEntityBox2d.extend({
             if (this.attribute) {
                 this.attribute.regenerate();
             }
+        }
+        if(ige.isClient && ige.client.selectedUnit == this && this._pixiContainer) {
+            this.shadow.position.set(this._pixiContainer.position.x,this._pixiContainer.position.y)
         }
 
         this.processBox2dQueue();
