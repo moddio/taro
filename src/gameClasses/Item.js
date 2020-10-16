@@ -741,7 +741,7 @@ var Item = IgeEntityBox2d.extend({
 		var offset = { x: 0, y: 0, rotate: 0 }
 		var ownerUnit = this.getOwnerUnit();
 
-		if (ownerUnit) {
+		if (ownerUnit && this._stats.stateId != 'dropped') {
 
 			// place item correctly based on its owner's transformation & its body's offsets.
 			if (self._stats.currentBody) {
@@ -774,13 +774,13 @@ var Item = IgeEntityBox2d.extend({
 						x: (unitAnchorOffsetX * Math.cos(rotate)) + (unitAnchorOffsetY * Math.sin(rotate)),
 						y: (unitAnchorOffsetX * Math.sin(rotate)) - (unitAnchorOffsetY * Math.cos(rotate))
 					}
-
+					
 					// get translation offset based on itemAnchor
 					var itemAnchorOffsetX = self._stats.currentBody.itemAnchor && self._stats.currentBody.itemAnchor.x || 0;
 					var itemAnchorOffsetY = self._stats.currentBody.itemAnchor && self._stats.currentBody.itemAnchor.y || 0;
 
 					offset.x = (unitAnchoredPosition.x) + (itemAnchorOffsetX * Math.cos(rotate)) + (itemAnchorOffsetY * Math.sin(rotate)),
-						offset.y = (unitAnchoredPosition.y) + (itemAnchorOffsetX * Math.sin(rotate)) - (itemAnchorOffsetY * Math.cos(rotate));
+					offset.y = (unitAnchoredPosition.y) + (itemAnchorOffsetX * Math.sin(rotate)) - (itemAnchorOffsetY * Math.cos(rotate));
 					offset.rotate = rotate
 				}
 			}
@@ -951,7 +951,8 @@ var Item = IgeEntityBox2d.extend({
 	_behaviour: function (ctx) {
 		var self = this;
 		var ownerUnit = this.getOwnerUnit();
-		if (ownerUnit) {
+		if (ownerUnit && this._stats.stateId != 'dropped') {
+
 			rotate = self._rotate.z
 
 			if (self._stats.currentBody) {
@@ -978,8 +979,10 @@ var Item = IgeEntityBox2d.extend({
 			var x = ownerUnit._translate.x + self.anchoredOffset.x, 
 				y = ownerUnit._translate.y + self.anchoredOffset.y;
 			
-			console.log(x, y)
+			// console.log(ownerUnit._translate.y, self.anchoredOffset.y, rotate)
 			
+			// console.log("owner", this.getOwnerUnit() != undefined, "state", this._stats.stateId, x, y, rotate)					
+
 			self.translateTo(x, y)
 			self.rotateTo(0, 0, rotate)
 		}

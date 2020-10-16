@@ -1075,27 +1075,28 @@ var Unit = IgeEntityBox2d.extend({
         var self = this;
         var item = self.inventory.getItemBySlotNumber(itemIndex + 1);
         if (item) {
+
+            // check if item's undroppable
+            if (item._stats && item._stats.controls && item._stats.controls.undroppable) {
+                return;
+            }
+
             if (ige.isServer) {
-
-                // check if item's undroppable
-                if (item._stats && item._stats.controls && item._stats.controls.undroppable) {
-                    return;
-                }
-
                 item.stopUsing();
                 // give it a body (cuz it's dropped)
                 // if item is already being held, then simply detach it
                 var owner = item.getOwnerUnit();
                 item.oldOwnerId = owner.id();
+
                 var defaultData = {
                                 translate: {
                                     x: this._translate.x + item.anchoredOffset.x,
                                     y: this._translate.y + item.anchoredOffset.y
                                 },
-                                rotate: this._rotate.z
+                                rotate: item._rotate.z
                             };
 
-                console.log("dropItem",  this._translate.x + item.anchoredOffset.x, this._translate.y + item.anchoredOffset.y);
+                console.log("dropItem",  this._translate.x + item.anchoredOffset.x, this._translate.y + item.anchoredOffset.y, item._rotate.z);
                 item.setState('dropped', defaultData);
                 item.setOwnerUnit(undefined);
                 self._stats.currentItemId = null;
