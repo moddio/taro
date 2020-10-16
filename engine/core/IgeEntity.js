@@ -1983,10 +1983,11 @@ var IgeEntity = IgeObject.extend({
             var effect = this._stats.effects[type];
 
             if (ige.isServer) {
-                if (type == 'move' || type == 'idle')
-                this.streamUpdateData([{ effect: type }]);
-
+                if (type == 'move' || type == 'idle') {
+                    this.streamUpdateData([{ effect: type }]);
+                }
             } else if (ige.isClient) {
+
                 if (this._pixiContainer && this._pixiContainer._destroyed) {
                     return;
                 }
@@ -1997,11 +1998,12 @@ var IgeEntity = IgeObject.extend({
                     position = (ownerUnit && ownerUnit._pixiContainer) || position;
                 }
 
-                if (effect.animation) {
-                    this.applyAnimationById(effect.animation);
-                } else {
+                // play default animation if animation isn't set.
+                if (effect.animation == undefined || effect.animation == 'none') {
                     var currentState = this._stats.states[this._stats.stateId];
-                    this.applyAnimationById(currentState.animation); // play default animation if animation isn't set.
+                    this.applyAnimationById(currentState.animation);
+                } else {
+                    this.applyAnimationById(effect.animation);
                 }
 
                 if (effect.projectileType) {
