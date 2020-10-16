@@ -926,6 +926,19 @@ var Unit = IgeEntityBox2d.extend({
         }
     },
 
+    createBackgroundLight: function() {
+        var lightbulb = new PIXI.Graphics();
+        var rr = Math.random() * 0x80 | 0;
+        var rg = Math.random() * 0x80 | 0;
+        var rb = Math.random() * 0x80 | 0;
+        var rad = 50 + Math.random() * 40;
+        lightbulb.beginFill(0xFFFFFF, 1.0);
+        lightbulb.drawCircle(0, 0, rad);
+        lightbulb.endFill();
+        lightbulb.parentLayer = ige.pixi.lighting;// <-- try comment it
+        this._pixiContainer.addChild(lightbulb);
+    },
+
     canCarryItem: function (itemData) {
         return itemData && (
             (!itemData.carriedBy || itemData.carriedBy.length == 0) ||// carried by everyone

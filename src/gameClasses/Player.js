@@ -177,6 +177,8 @@ var Player = IgeEntity.extend({
 					unit.inventory.updateBackpackButton();
 				}
 
+				unit.createBackgroundLight();
+
 				unit.renderMobileControl();
 				ige.client.selectedUnit = unit
 				ige.client.eventLog.push([ige._currentTime, 'my unit selected ' + unitId])

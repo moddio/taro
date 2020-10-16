@@ -9,7 +9,7 @@ var IgeInitPixi = IgeClass.extend({
         ige.addComponent(IgeInputComponent);
         ige.addComponent(IgePixiTexture);
         var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
-        
+
         this.app = new PIXI.Application({
             width: 800, // default: 800
             height: 600, // default: 600
@@ -21,6 +21,7 @@ var IgeInitPixi = IgeClass.extend({
             // backgroundColor: 0xff00cc,
         });
         this.app.ticker.maxFPS = 60;
+        this.app.stage = new PIXI.display.Stage();
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
         PIXI.settings.ROUND_PIXELS = true;
 
@@ -36,6 +37,7 @@ var IgeInitPixi = IgeClass.extend({
 
         this.trackEntityById = {};
         this.world = new PIXI.Container();
+        // new PIXI.Container();
         this.box2dDebug = new PIXI.Container();
         this.mobileControls = new PIXI.Container();
         this.mobileControls.zIndex = 10;
@@ -64,8 +66,8 @@ var IgeInitPixi = IgeClass.extend({
                 a.zIndex = a.zIndex || 0;
                 b.zIndex = b.zIndex || 0;
 
-                if (a.children && a.children.length > 0) sort(a.children);
-                if (b.children && b.children.length > 0) sort(b.children);
+                if (a.visible && a.children && a.children.length > 0) sort(a.children);
+                if (b.visible && b.children && b.children.length > 0) sort(b.children);
                 if (a.zIndex == b.zIndex) {
                     return a.depth - b.depth;
                 }
@@ -143,6 +145,20 @@ var IgeInitPixi = IgeClass.extend({
 
         viewport.addChild(this.world);
         this.app.stage.addChild(viewport);
+
+        var lighting = new PIXI.display.Layer();
+        lighting.on('display', element => {
+            element.blendMode = PIXI.BLEND_MODES.ADD;
+        });
+        lighting.useRenderTexture = true;
+        lighting.clearColor = [0, 0, 0, 0.4]; // ambient gray
+        this.lighting = lighting;
+        this.app.stage.addChild(lighting);
+
+        var lightingSprite = new PIXI.Sprite(lighting.getRenderTexture());
+        lightingSprite.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+
+        this.app.stage.addChild(lightingSprite);
 
         var cull = new PIXI.extras.cull.Simple();
         cull.addList(this.world.children);
@@ -273,14 +289,11 @@ var IgeInitPixi = IgeClass.extend({
                         var ownerUnit = entity.getOwnerUnit();
                         if (ownerUnit) {
                             ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
-                            
-                            // immediately rotate items for my own unit
-                            if (ownerUnit == ige.client.selectedUnit) {
-                                if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
-                                    rotate = ownerUnit._rotate.z;
-                                } else if (ownerUnit == ige.client.selectedUnit) {
-                                    rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
-                                }
+
+                            if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
+                                rotate = ownerUnit._rotate.z;
+                            } else if (ownerUnit == ige.client.selectedUnit) {
+                                rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
                             }
 
                             entity.anchoredOffset = entity.getAnchoredOffset(rotate);
