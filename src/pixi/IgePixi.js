@@ -62,9 +62,11 @@ var IgeInitPixi = IgeClass.extend({
         };
         this.ticker.add(frameTick);
         var sort = function (children) {
+            children = children.filter(a => a.visible);
             children.sort(function (a, b) {
                 a.zIndex = a.zIndex || 0;
                 b.zIndex = b.zIndex || 0;
+                if (!a.visible && !b.visible) return;
 
                 if (a.visible && a.children && a.children.length > 0) sort(a.children);
                 if (b.visible && b.children && b.children.length > 0) sort(b.children);
