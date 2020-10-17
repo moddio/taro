@@ -1983,7 +1983,7 @@ var IgeEntity = IgeObject.extend({
             var effect = this._stats.effects[type];
 
             if (ige.isServer) {
-                if (type == 'move' || type == 'idle') {
+                if (type == 'move' || type == 'idle' || type == 'none') {
                     this.streamUpdateData([{ effect: type }]);
                 }
             } else if (ige.isClient) {
@@ -4223,17 +4223,6 @@ var IgeEntity = IgeObject.extend({
                         case 'depth':
                             if (ige.isClient) {
                                 this.depth(data.depth);
-                            }
-                            break;
-
-                        case 'isBeingUsed':
-                            if (ige.isServer) {
-                                this._stats.isBeingUsed = newValue;
-                            } else if (ige.isClient) {
-                                var ownerUnit = this.getOwnerUnit();
-                                if (ownerUnit && ownerUnit != ige.client.selectedUnit) {
-                                    this._stats.isBeingUsed = newValue;
-                                }
                             }
                             break;
 
