@@ -153,7 +153,7 @@ var IgeEngine = IgeEntity.extend({
 
 		this.snapshots = [];
 		this.entityCreateSnapshot = {};
-		this.prevSnapshot = [0, {}];
+		this.prevSnapshot = undefined;
 		this.tempSnapshot = [0, {}];
 		this.nextSnapshot = [0, {}];
 		this.renderTime = 0;

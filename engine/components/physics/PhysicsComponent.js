@@ -639,6 +639,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 										x += xDiff;
 										y += yDiff;	
 									}
+
+									entity.clientStreamedPosition = undefined
 								}
 
 								// if (entity._stats.name && entity._stats.name.includes('user'))
