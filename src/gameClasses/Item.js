@@ -462,7 +462,7 @@ var Item = IgeEntityBox2d.extend({
 						var hitboxData = this._stats.damageHitBox;
 
 						if (hitboxData) {
-							var rotate = (owner._rotate.z) ? owner._rotate.z : 0;
+							var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
 							var hitboxPosition = {
 								x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
 								y: (owner._translate.y) + (hitboxData.offsetX * Math.sin(rotate)) - (hitboxData.offsetY * Math.cos(rotate))
