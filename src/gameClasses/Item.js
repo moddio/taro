@@ -508,6 +508,7 @@ var Item = IgeEntityBox2d.extend({
 
 					attrData = { attributes: {} }
 					if (self._stats.bonus && self._stats.bonus.consume) {
+						// apply unit bonuses
 						var unitAttributeBonuses = self._stats.bonus.consume.unitAttribute
 						if (unitAttributeBonuses) {
 							for (var attrId in unitAttributeBonuses) {
@@ -519,6 +520,7 @@ var Item = IgeEntityBox2d.extend({
 						}
 
 						if (player && player.attribute) {
+							// apply player bonuses
 							var playerAttributeBonuses = self._stats.bonus.consume.playerAttribute
 							if (playerAttributeBonuses) {
 								for (attrId in playerAttributeBonuses) {
@@ -687,6 +689,9 @@ var Item = IgeEntityBox2d.extend({
 	// },
 
 	startUsing: function () {
+		var self = this
+		
+		self._stats.isBeingUsed = true
 		var owner = this.getOwnerUnit();
 		if (ige.isServer) {
 			this.quantityAtStartusing = this._stats.quantity;
@@ -694,6 +699,8 @@ var Item = IgeEntityBox2d.extend({
 		} else if (ige.isClient && owner == ige.client.selectedUnit) {
 			this._stats.isBeingUsed = true;
 		}
+
+
 		if (owner && ige.trigger) {
 			ige.trigger && ige.trigger.fire("unitStartsUsingAnItem", {
 				unitId: owner.id(),
