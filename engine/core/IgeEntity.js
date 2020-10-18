@@ -4234,6 +4234,20 @@ var IgeEntity = IgeObject.extend({
                                 this.flip(newValue);
                             }
                             break;
+                        
+                        case 'isBeingUsed':
+                            // this case is in igeEntity.js instead of item.js, because if it's in item.js, 
+                            // we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
+                            if (ige.isClient) {
+                                // ignore item use stream for my own unit                            
+                                if (this.getOwnerUnit() != ige.client.selectedUnit) {
+                                    this._stats.isBeingUsed = newValue;
+                                    if (newValue == false) {
+                                        this.playEffect('none');
+                                    }
+                                }
+                            }                            
+                            break;
 
                         default:
                             // setting oldownerId b4 owner change

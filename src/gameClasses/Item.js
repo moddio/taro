@@ -916,15 +916,7 @@ var Item = IgeEntityBox2d.extend({
 							// }
 						}
 						break;
-
-					case 'isBeingUsed':
-
-						self._stats.isBeingUsed = newValue;
-						if (newValue == false) {
-							self.playEffect('none');
-						}
-						break;
-
+						
 					case 'quantity':
 						self.updateQuantity(newValue)
 						var owner = self.getOwnerUnit();
