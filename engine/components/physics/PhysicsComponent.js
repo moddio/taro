@@ -673,12 +673,15 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// if movementHistory still has elements after shifting, 
 									// this means we found a matching time between movementHistory & lastServerStreamedPosition's time.
 									if (history && entity.movementHistory.length > 0 && entity.lastServerStreamedPosition) {
+										// do not reconciliate if unit has teleported less than 500ms ago.
+									
 										var xDiff = (entity.lastServerStreamedPosition[0] - history[0])
 										var yDiff = (entity.lastServerStreamedPosition[1] - history[1])
 										
 										var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 										// console.log(
 										// 		entity.discrepancyCount, 
+										// 		entity.lastServerStreamedPosition,
 										// 		xDiff.toFixed(0), 
 										// 		yDiff.toFixed(0)
 										// 	);

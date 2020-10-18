@@ -70,6 +70,7 @@ var IgeEntity = IgeObject.extend({
         this._lastTransformAt = null;
         this.nextPhysicsFrame = null;
         this.lastServerStreamedPosition = null;
+        this.lastTeleportedAt = 0
 
         if (ige.isClient) {
             this.anchorOffset = { x: 0, y: 0, rotate: 0 };
@@ -121,7 +122,7 @@ var IgeEntity = IgeObject.extend({
         var self = this;
         
         // if invalid stateId is given, set state to default state
-        if (stateId == undefined || self._stats.states[stateId] == undefined) {
+        if (stateId == undefined || self._stats.states == undefined || self._stats.states[stateId] == undefined) {
             stateId = this.getDefaultStateId();
         }
         
@@ -3201,6 +3202,7 @@ var IgeEntity = IgeObject.extend({
         }
 
         this.discrepancyCount = 0;
+        this.lastTeleportedAt = ige._currentTime;
        
         if (this._category == 'unit') {
             // teleport unit's attached items
@@ -5132,8 +5134,12 @@ var IgeEntity = IgeObject.extend({
                 targetRotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             }
 
-            this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
-            
+            // don't set lastServerStreamedPosition unless more than 500ms has passed since last teleport.
+            // this prevents teleported position data getting overwritten by latest streamed snapshot
+            if (this == ige.client.selectedUnit && ige._currentTime - this.lastTeleportedAt > 500) {
+                this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
+            }
+
             // apply rubberbanding to all non-player entities when csp is enabled
             if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
                 xDiff = targetX - x;
