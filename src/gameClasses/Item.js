@@ -703,10 +703,9 @@ var Item = IgeEntityBox2d.extend({
 	},
 
 	stopUsing: function () {
-		// console.trace()
 		var self = this
 		if (self._stats.isBeingUsed) {
-			this._stats.isBeingUsed = false
+			self._stats.isBeingUsed = false
 			var owner = self.getOwnerUnit();
 			
 			if (owner && ige.trigger) {
@@ -716,8 +715,9 @@ var Item = IgeEntityBox2d.extend({
 				})
 			}
 		}
-
-		if (ige.isServer) {
+		if (ige.isClient) {
+			this.playEffect('none');
+		} else if (ige.isServer) {
 			var data = { isBeingUsed: false };
 			if (self._stats.quantity != self.quantityAtStartusing) {
 				data.quantity = self._stats.quantity;
