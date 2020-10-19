@@ -116,7 +116,7 @@ var IgePixiMap = IgeClass.extend({
                                 isHavingError = { tileset: tileset, error: e.message, display: true };
                             }
 
-                            if(tiledLayer.name == 'walls') {
+                            if(tiledLayer.name == 'walls' && ige.physics) {
                                 tileSprite = ige.physics.createWallShadowSprite(texture.clone(), texture.clone())
                             } 
                             else {
