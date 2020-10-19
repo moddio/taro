@@ -132,20 +132,7 @@ var IgeTiledComponent = IgeClass.extend({
 							z = x + (y * mapWidth);
 
 							if (layerData[z] > 0 && layerData[z] !== 2147483712) {
-								if (ige.isClient) {
-									// Paint the tile
-									currentTexture = textureCellLookup[layerData[z]];
-									if (currentTexture) {
-										currentCell = layerData[z] - (currentTexture._tiledStartingId - 1);
-										maps[i].paintTile(x, y, maps[i]._textureList.indexOf(currentTexture), currentCell);
-									}
-								} else {
-									// Server-side we don't paint tiles on a texture map
-									// we just mark the map data so that it can be used
-									// to do things like path-finding and auto-creating
-									// static physics objects.
-									maps[i].occupyTile(x, y, 1, 1, layerData[z]);
-								}
+								maps[i].occupyTile(x, y, 1, 1, layerData[z]);
 							}
 						}
 					}
