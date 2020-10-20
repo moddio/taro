@@ -640,9 +640,16 @@ var PhysicsComponent = IgeEventingClass.extend({
 							if (ige.isServer) {
 								// execute server-side reconciliation if the position difference between server & client is less than 100px continuously for 10 times in a row
 								if (ige.game.cspEnabled && entity.clientStreamedPosition) {
-									var xDiff = entity.clientStreamedPosition[0] - x;
-									var yDiff = entity.clientStreamedPosition[1] - y;
+									var targetX = entity.clientStreamedPosition[0]
+									var targetY = entity.clientStreamedPosition[1]
+									var xDiff = targetX - x;
+									var yDiff = targetY - y;
 									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+									var velocity = entity.body.getLinearVelocity();
+
+									// console.log(entity.id(), velocity.x.toFixed(0), xDiff.toFixed(0), velocity.y.toFixed(0), yDiff.toFixed(0))
+
 									if (distance > 100) {
 										entity.discrepancyCount++
 										// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
@@ -652,10 +659,27 @@ var PhysicsComponent = IgeEventingClass.extend({
 										}
 									} else {
 										entity.discrepancyCount = 0
-										// teleporting unit reached to its destination
-										x += xDiff;
-										y += yDiff;	
+										
+										// reconciliate to client's streamed data iff server's position is BEHIND the client's position
+										if (
+											(velocity.x < 0 && x > targetX) ||
+											(velocity.x > 0 && x < targetX) ||
+											(-0.1 < velocity.x && velocity.x < 0.1)
+										) {
+											x += xDiff;
+										}
+											
+
+										if (
+											(velocity.y < 0 && y > targetY) ||
+											(velocity.y > 0 && y < targetY) ||
+											(-0.1 < velocity.y && velocity.y < 0.1)
+										) {
+											y += yDiff;
+										}
 									}
+
+									entity.clientStreamedPosition = undefined
 								}
 
 								// if (entity._stats.name && entity._stats.name.includes('user'))
@@ -688,17 +712,20 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// if movementHistory still has elements after shifting, 
 									// this means we found a matching time between movementHistory & lastServerStreamedPosition's time.
 									if (history && entity.movementHistory.length > 0 && entity.lastServerStreamedPosition) {
+										// do not reconciliate if unit has teleported less than 500ms ago.
+									
 										var xDiff = (entity.lastServerStreamedPosition[0] - history[0])
 										var yDiff = (entity.lastServerStreamedPosition[1] - history[1])
 										
 										var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 										// console.log(
 										// 		entity.discrepancyCount, 
+										// 		entity.lastServerStreamedPosition,
 										// 		xDiff.toFixed(0), 
 										// 		yDiff.toFixed(0)
 										// 	);
 										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
-										if (distance > 100) {
+										if (distance > 50) {
 											entity.discrepancyCount++
 											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
 											if (entity.discrepancyCount > 15) {

@@ -70,6 +70,7 @@ var IgeEntity = IgeObject.extend({
         this._lastTransformAt = null;
         this.nextPhysicsFrame = null;
         this.lastServerStreamedPosition = null;
+        this.lastTeleportedAt = 0
 
         if (ige.isClient) {
             this.anchorOffset = { x: 0, y: 0, rotate: 0 };
@@ -121,7 +122,7 @@ var IgeEntity = IgeObject.extend({
         var self = this;
         
         // if invalid stateId is given, set state to default state
-        if (stateId == undefined || self._stats.states[stateId] == undefined) {
+        if (stateId == undefined || self._stats.states == undefined || self._stats.states[stateId] == undefined) {
             stateId = this.getDefaultStateId();
         }
         
@@ -1983,10 +1984,11 @@ var IgeEntity = IgeObject.extend({
             var effect = this._stats.effects[type];
 
             if (ige.isServer) {
-                if (type == 'move' || type == 'idle')
-                this.streamUpdateData([{ effect: type }]);
-
+                if (type == 'move' || type == 'idle' || type == 'none') {
+                    this.streamUpdateData([{ effect: type }]);
+                }
             } else if (ige.isClient) {
+
                 if (this._pixiContainer && this._pixiContainer._destroyed) {
                     return;
                 }
@@ -1997,11 +1999,12 @@ var IgeEntity = IgeObject.extend({
                     position = (ownerUnit && ownerUnit._pixiContainer) || position;
                 }
 
-                if (effect.animation) {
-                    this.applyAnimationById(effect.animation);
-                } else {
+                // play default animation if animation isn't set.
+                if (effect.animation == undefined || effect.animation == 'none') {
                     var currentState = this._stats.states[this._stats.stateId];
-                    this.applyAnimationById(currentState.animation); // play default animation if animation isn't set.
+                    this.applyAnimationById(currentState.animation);
+                } else {
+                    this.applyAnimationById(effect.animation);
                 }
 
                 if (effect.projectileType) {
@@ -2027,18 +2030,18 @@ var IgeEntity = IgeObject.extend({
                         ige.sound.playSound(effect.sound[soundKey], position, soundKey);
                     }
                 }
-                if (effect.tween && effect.tween !== 'none') {
-                    var angle = this._rotate.z;
-                    if (type == 'attacked') {
-                        // get angle between attacked unit and attacking unit
-                        var attacker = this.lastAttackedBy;
-                        if (attacker) {
-                            angle = Math.atan2(attacker._translate.y - this._translate.y, attacker._translate.x - this._translate.x) + Math.radians(90);
-                        }
+                
+                var angle = this._rotate.z;
+                if (type == 'attacked') {
+                    // get angle between attacked unit and attacking unit
+                    var attacker = this.lastAttackedBy;
+                    if (attacker) {
+                        angle = Math.atan2(attacker._translate.y - this._translate.y, attacker._translate.x - this._translate.x) + Math.radians(90);
                     }
-
-                    this.tween.start(effect.tween, angle);
                 }
+
+                this.tween.start(effect.tween, angle);
+                
             } else if (ige.isServer) {
                 if (effect.runScript) {
                     ige.script.runScript(effect.runScript, {});
@@ -3199,6 +3202,7 @@ var IgeEntity = IgeObject.extend({
         }
 
         this.discrepancyCount = 0;
+        this.lastTeleportedAt = ige._currentTime;
        
         if (this._category == 'unit') {
             // teleport unit's attached items
@@ -4224,22 +4228,25 @@ var IgeEntity = IgeObject.extend({
                             }
                             break;
 
-                        case 'isBeingUsed':
-                            if (ige.isServer) {
-                                this._stats.isBeingUsed = newValue;
-                            } else if (ige.isClient) {
-                                var ownerUnit = this.getOwnerUnit();
-                                if (ownerUnit && ownerUnit != ige.client.selectedUnit) {
-                                    this._stats.isBeingUsed = newValue;
-                                }
-                            }
-                            break;
-
                         case 'flip':
                             // ignore flip command from server for my own unit, because it's already done locally
                             if (ige.isClient && this != ige.client.selectedUnit && !(this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit)) {
                                 this.flip(newValue);
                             }
+                            break;
+                        
+                        case 'isBeingUsed':
+                            // this case is in igeEntity.js instead of item.js, because if it's in item.js, 
+                            // we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
+                            if (ige.isClient) {
+                                // ignore item use stream for my own unit                            
+                                if (this.getOwnerUnit() != ige.client.selectedUnit) {
+                                    this._stats.isBeingUsed = newValue;
+                                    if (newValue == false) {
+                                        this.playEffect('none');
+                                    }
+                                }
+                            }                            
                             break;
 
                         default:
@@ -5141,8 +5148,12 @@ var IgeEntity = IgeObject.extend({
                 targetRotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             }
 
-            this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
-            
+            // don't set lastServerStreamedPosition unless more than 500ms has passed since last teleport.
+            // this prevents teleported position data getting overwritten by latest streamed snapshot
+            if (this == ige.client.selectedUnit && ige._currentTime - this.lastTeleportedAt > 500) {
+                this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
+            }
+
             // apply rubberbanding to all non-player entities when csp is enabled
             if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
                 xDiff = targetX - x;

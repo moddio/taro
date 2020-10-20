@@ -1644,18 +1644,20 @@ var Unit = IgeEntityBox2d.extend({
                     }
                 }
 
-                if (self._stats.controls && self._stats.controls.movementControlScheme == 'followCursor') {
-                    if (!this.isMoving && self.distanceToTarget > this.width()) {
-                        this.startMoving();
-                    } else if (this.isMoving && self.distanceToTarget <= this.width()) {
-                        this.stopMoving();
-                    }
-                } else { // WASD or AD movement
-                    // toggle effects when unit starts/stops moving
-                    if (!this.isMoving && (self.direction.x != 0 || self.direction.y != 0)) {
-                        this.startMoving();
-                    } else if (this.isMoving && (self.direction.x == 0 && self.direction.y == 0)) {
-                        this.stopMoving();
+                if (!self._stats.ai || !self._stats.ai.enabled) {
+                    if (self._stats.controls && self._stats.controls.movementControlScheme == 'followCursor') {
+                        if (!this.isMoving && self.distanceToTarget > this.width()) {
+                            this.startMoving();
+                        } else if (this.isMoving && self.distanceToTarget <= this.width()) {
+                            this.stopMoving();
+                        }
+                    } else { // WASD or AD movement
+                        // toggle effects when unit starts/stops moving
+                        if (!this.isMoving && (self.direction.x != 0 || self.direction.y != 0)) {
+                            this.startMoving();
+                        } else if (this.isMoving && (self.direction.x == 0 && self.direction.y == 0)) {
+                            this.stopMoving();
+                        }
                     }
                 }
 

@@ -66,8 +66,10 @@ var TweenComponent = IgeEntity.extend({
         if (customTween) {
             var tween = customTween
         } else { // pre-defined tween
-            if(!this.tweens[tweenId]) 
+            if(!this.tweens[tweenId]) {
+                this.stop();
                 return;
+            }      
 
             var tween = JSON.parse(JSON.stringify(this.tweens[tweenId]));
             
@@ -87,6 +89,11 @@ var TweenComponent = IgeEntity.extend({
         this.lastFrame = this.keyFrames.shift()
         this.nextFrame = this.keyFrames[0]
         this.isTweening = true;
+    },
+
+    stop: function() {
+        this.tweenId = undefined;
+        this.isTweening = false;
     },
 
     // traverse through all queued tweens, and compute combined offset values (x, y, angle)
