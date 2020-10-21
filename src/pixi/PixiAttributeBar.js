@@ -58,6 +58,49 @@ var PixiAttributeBar = IgeEntity.extend({
 		self.updateScale();
 	},
 
+	showValueAndFadeOut: function (fadeOutDuration) {
+		var self = this;
+		
+		if (self.showBarTimeout) {
+			self._pixiContainer.alpha = 1;
+			clearTimeout(self.showBarTimeout);
+			clearTimeout(self.destroyTimeout);
+			clearInterval(self.updateOpacityInterval)
+		}
+
+		self.showBarTimeout = setTimeout(function () {
+			self.fadeOut(fadeOutDuration || 500);
+		}, 1000);
+	},
+
+	fadeOut: function (duration) {
+        duration = duration || 2000;
+		
+		var self = this;
+        var step = duration / 60;
+        var opacityStep = 1 / (step * 5);
+        
+        self.updateOpacityInterval = setInterval(function () {
+			self._pixiContainer.alpha -= opacityStep;
+        }, 1000 / 60);
+
+        self.destroyTimeout = setTimeout(function () {
+            clearInterval(self.updateOpacityInterval)
+			
+			var parentEntity = self.getOwner();
+
+			if (parentEntity) {
+                parentEntity.attributeBars = parentEntity.attributeBars.filter(function (bar) {
+					return bar.id !== self.id();
+				});
+			}
+			
+            self.destroy();
+        }, duration);
+
+        return this;
+    },
+
 	/**
 	 * @return {number} height of attribute bar
 	 * 
@@ -189,6 +232,11 @@ var PixiAttributeBar = IgeEntity.extend({
 
 		if (self.pixiBarText) {
 			self.pixiBarText.text = self.lastValue.value;
+		}
+
+		var showOnlyWhenValueChanged = attributeData.showWhen instanceof Array && attributeData.showWhen.indexOf("valueChanges") > -1;
+		if (showOnlyWhenValueChanged) {
+			self.showValueAndFadeOut();
 		}
 	},
 

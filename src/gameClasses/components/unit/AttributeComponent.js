@@ -260,6 +260,8 @@ var AttributeComponent = IgeEntity.extend({
 					if (ige.client.myPlayer) {
 						var unit = null;
 
+						attribute.hasChanged = newValue !== oldValue;
+
 						switch (self._entity._category) {
 							case 'unit': {
 								unit = self._entity;

@@ -145,6 +145,43 @@ var Unit = IgeEntityBox2d.extend({
         self.scaleDimensions(self._stats.width, self._stats.height);
     },
 
+    shouldRenderAttribute: function (attribute) {
+        var self = this;
+
+        if (attribute.isVisible == undefined) {
+            return false;
+        }
+
+        var ownerPlayer = self.getOwner();
+
+        if (!ownerPlayer) {
+            return false;
+        }
+
+        // for now render it if at least one of unit bar is selected
+        var shouldRender = Array.isArray(attribute.isVisible) && (
+            (ownerPlayer.isHostileTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarHostile') > -1) ||
+            (ownerPlayer.isFriendlyTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarFriendly') > -1) ||
+            (ownerPlayer.isNeutralTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarNeutral') > -1)
+        );
+
+        console.log('attribute', attribute)
+        if (shouldRender) {
+            var showOnlyWhenIsGreaterThanMin = attribute.showWhen == "whenIsGreaterThanMin";
+            shouldRender = showOnlyWhenIsGreaterThanMin ? attribute.value > attribute.min : true;
+        }
+        if (shouldRender) {
+            var showOnlyWhenIsLessThanMax = attribute.showWhen == "whenIsLessThanMax";
+            shouldRender = showOnlyWhenIsLessThanMax ? attribute.value < attribute.max : true;
+        }
+        if (shouldRender) {
+            var showOnlyWhenValueChanged = attribute.showWhen == "valueChanges";
+            shouldRender = showOnlyWhenValueChanged ? attribute.hasChanged : true;
+        }
+
+        return shouldRender;
+    },
+
     redrawAttributeBars: function () {
         var self = this;
         var allAttributes = JSON.parse(JSON.stringify(self._stats.attributes || {}));
@@ -171,21 +208,13 @@ var Unit = IgeEntityBox2d.extend({
             var attribute = allAttributes[attributeKey];
             if (attribute) {
                 attribute.key = attributeKey;
-                if (attribute.isVisible != undefined) {
-                    // for now render it if at least one of unit bar is selected
-                    var shouldRender = Array.isArray(attribute.isVisible) && (
-                            (ownerPlayer.isHostileTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarHostile') > -1) ||
-                            (ownerPlayer.isFriendlyTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarFriendly') > -1) ||
-                            (ownerPlayer.isNeutralTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarNeutral') > -1)
-                        );
 
-                    if (shouldRender) {
-                        attributesToRender.push(attribute);
-                    }
+                var shouldRender = self.shouldRenderAttribute(attribute); 
+                
+                if (shouldRender) {
+                    attributesToRender.push(attribute);
                 }
-
             }
-
         }
 
         for (var i = 0; i < attributesToRender.length; i++) {
@@ -218,14 +247,34 @@ var Unit = IgeEntityBox2d.extend({
             }
 
             var pixiBar = ige.$(pixiBarId);
+            var shouldRender = self.shouldRenderAttribute(attr);
 
             if (pixiBar) {
-                pixiBar.updateBar(attr);
+                if (shouldRender) {
+                    pixiBar.updateBar(attr);
+                }
+                else {
+                    pixiBar.destroy();
+                }
             }
-            // var attributeContainerComponent = self.getAttributeBarContainer();
-            // if (attributeContainerComponent) {
-            // 	attributeContainerComponent.updateBar(attr.type, attr);
-            // }
+            else {
+                if (shouldRender) {
+                    attr.index = self.attributeBars.length;
+        
+                    pixiBar = new PixiAttributeBar(self.id(), attr);
+        
+                    self.attributeBars.push({
+                        id: pixiBar.id(),
+                        attribute: attr.type,
+                        index: self.attributeBars.length - 1,
+                    });
+
+                    var showOnlyWhenValueChanged = attr.showWhen === "valueChanges";
+                    if (showOnlyWhenValueChanged) {
+                        pixiBar.showValueAndFadeOut();
+                    }
+                }   
+            }
         }
     },
 
