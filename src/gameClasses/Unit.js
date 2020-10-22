@@ -262,21 +262,21 @@ var Unit = IgeEntityBox2d.extend({
             }
             else {
                 if (shouldRender) {
-                    attr.index = self.attributeBars.length;
+                    attr.index = self.attributeBars.length + 1;
         
                     pixiBar = new PixiAttributeBar(self.id(), attr);
         
                     self.attributeBars.push({
                         id: pixiBar.id(),
                         attribute: attr.type,
-                        index: self.attributeBars.length - 1,
+                        index: self.attributeBars.length,
                     });
+                }
+            }
 
-                    var showOnlyWhenValueChanged = attr.showWhen === "valueChanges";
-                    if (showOnlyWhenValueChanged) {
-                        pixiBar.showValueAndFadeOut();
-                    }
-                }   
+            var showOnlyWhenValueChanged = attr.showWhen === "valueChanges";
+            if (pixiBar && shouldRender && showOnlyWhenValueChanged) {
+                pixiBar.showValueAndFadeOut();
             }
         }
     },
