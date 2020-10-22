@@ -165,18 +165,18 @@ var Unit = IgeEntityBox2d.extend({
             (ownerPlayer.isNeutralTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarNeutral') > -1)
         );
 
-        // if (shouldRender) {
-        //     var showOnlyWhenIsGreaterThanMin = attribute.showWhen == "whenIsGreaterThanMin";
-        //     shouldRender = showOnlyWhenIsGreaterThanMin ? attribute.value > attribute.min : true;
-        // }
-        // if (shouldRender) {
-        //     var showOnlyWhenIsLessThanMax = attribute.showWhen == "whenIsLessThanMax";
-        //     shouldRender = showOnlyWhenIsLessThanMax ? attribute.value < attribute.max : true;
-        // }
-        // if (shouldRender) {
-        //     var showOnlyWhenValueChanged = attribute.showWhen == "valueChanges";
-        //     shouldRender = showOnlyWhenValueChanged ? attribute.hasChanged : true;
-        // }
+        if (shouldRender) {
+            var showOnlyWhenIsGreaterThanMin = attribute.showWhen == "whenIsGreaterThanMin";
+            shouldRender = showOnlyWhenIsGreaterThanMin ? attribute.value > attribute.min : true;
+        }
+        if (shouldRender) {
+            var showOnlyWhenIsLessThanMax = attribute.showWhen == "whenIsLessThanMax";
+            shouldRender = showOnlyWhenIsLessThanMax ? attribute.value < attribute.max : true;
+        }
+        if (shouldRender) {
+            var showOnlyWhenValueChanged = attribute.showWhen == "valueChanges";
+            shouldRender = showOnlyWhenValueChanged ? attribute.hasChanged : true;
+        }
 
         return shouldRender;
     },
@@ -253,26 +253,30 @@ var Unit = IgeEntityBox2d.extend({
                     pixiBar.updateBar(attr);
                 }
                 else {
+                    self.attributeBars = self.attributeBars.filter(function (bar) {
+                        return bar.id !== pixiBar.id();
+                    });
+
                     pixiBar.destroy();
                 }
             }
             else {
-                // if (shouldRender) {
-                //     attr.index = self.attributeBars.length;
+                if (shouldRender) {
+                    attr.index = self.attributeBars.length;
         
-                //     pixiBar = new PixiAttributeBar(self.id(), attr);
+                    pixiBar = new PixiAttributeBar(self.id(), attr);
         
-                //     self.attributeBars.push({
-                //         id: pixiBar.id(),
-                //         attribute: attr.type,
-                //         index: self.attributeBars.length - 1,
-                //     });
+                    self.attributeBars.push({
+                        id: pixiBar.id(),
+                        attribute: attr.type,
+                        index: self.attributeBars.length - 1,
+                    });
 
-                //     var showOnlyWhenValueChanged = attr.showWhen === "valueChanges";
-                //     if (showOnlyWhenValueChanged) {
-                //         pixiBar.showValueAndFadeOut();
-                //     }
-                // }   
+                    var showOnlyWhenValueChanged = attr.showWhen === "valueChanges";
+                    if (showOnlyWhenValueChanged) {
+                        pixiBar.showValueAndFadeOut();
+                    }
+                }   
             }
         }
     },
