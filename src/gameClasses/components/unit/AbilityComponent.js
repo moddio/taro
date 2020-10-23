@@ -75,6 +75,7 @@ var AbilityComponent = IgeEntity.extend({
 	pickupItem: function () {
 		var self = this
 		if (ige.isServer) {
+
 			var region = {
 				x: self._entity._translate.x - self._entity._bounds2d.x / 2,
 				y: self._entity._translate.y - self._entity._bounds2d.y / 2,
@@ -85,6 +86,8 @@ var AbilityComponent = IgeEntity.extend({
 			var entities = ige.physics.getBodiesInRegion(region).filter(({ _category }) => _category === "item");
 			// pickup ownerLess items
 			var unit = self._entity;
+			unit.reasonForFailingToPickUpItem = undefined;
+			
 			if (unit && unit._category == 'unit') {
 				for (var i = 0; i < entities.length; i++) {
 					var item = entities[i];
@@ -95,8 +98,9 @@ var AbilityComponent = IgeEntity.extend({
 						}
 					}
 				}
-
-				unit.streamUpdateData([{ setFadingText: unit.reasonForFailingToPickUpItem, color: "red" }]);
+				if (unit.reasonForFailingToPickUpItem) {
+					unit.streamUpdateData([{ setFadingText: unit.reasonForFailingToPickUpItem, color: "red" }]);
+				}
 			}
 		}
 	},
