@@ -5107,7 +5107,7 @@ var IgeEntity = IgeObject.extend({
                     // 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
                     // 		'time', this.prevPhysicsFrame[0].toFixed(0), ige.renderTime.toFixed(0),
                     // 		'(' + timeElapsed + 'ms '+ (ige.renderTime - this.prevPhysicsFrame[0] / (this.nextPhysicsFrame[1][0] - this.prevPhysicsFrame[1][0] * 100)).toFixed(0) +'%)',
-                    // 		this.nextPhysicsFrame[1][0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
+                    // 		this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
                     // 	this.previousX = x;
                     // 	this.previousRenderTime = ige.renderTime;
                     // }
@@ -5124,9 +5124,9 @@ var IgeEntity = IgeObject.extend({
         }
 
         // if (ige.client.selectedUnit == this) {
-        //     console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
+        //     console.log(prevKeyFrame[0], ige.renderTime, nextKeyFrame[0])
+        //     // console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
         // }
-
         // interpolate server-streamed translation data
         if (
             prevKeyFrame != undefined && nextKeyFrame != undefined && 
@@ -5152,7 +5152,8 @@ var IgeEntity = IgeObject.extend({
 
             // don't set lastServerStreamedPosition unless more than 500ms has passed since last teleport.
             // this prevents teleported position data getting overwritten by latest streamed snapshot
-            if (this == ige.client.selectedUnit && ige._currentTime - this.lastTeleportedAt > 500) {
+            // console.log("this.lastReconciledAt != prevKeyFrame[0]", this.lastReconciledAt, prevKeyFrame[0])
+            if (this == ige.client.selectedUnit && this.lastReconciledAt != prevKeyFrame[0]) {
                 this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
             }
 

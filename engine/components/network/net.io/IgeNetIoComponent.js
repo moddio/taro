@@ -25,6 +25,7 @@ var IgeNetIoComponent = IgeEventingClass.extend([
 		this._timeSyncLog = {};
 		this._latency = 0;
 		this.latency = 0;
+		this.latencyHistory = []
 		this.rttSamples = [];
 		this.lastClientTime = 0;
 		this.lastServerTime = 0;

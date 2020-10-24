@@ -78,12 +78,33 @@ var IgeTimeSyncExtension = {
 	timeSync: function (serverTime) {
 		
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
-		ige.network.latency = latency;
+		this.latency = latency;
+		this.latencyHistory.push(this.latency)
+		if (this.latencyHistory.length > 20) {
+			this.latencyHistory.shift();
+		}
+		this.bestLatency = this.getMedian(this.latencyHistory)
+		
+		// console.log(this.bestLatency)
+
+		if (this.bestLatency == undefined) {
+			this.bestLatency = this.latency;
+		} else if (this.latencyHistory.length > 20) {
+			
+		} else {
+			
+		}
 		
 		if (statsPanels.latency) {
 			statsPanels.latency._latencyPanel.update(latency, 1000);
 		}	
 		$('#updateping').html(Math.floor(latency)); // round trip time
+	},
+
+	getMedian: function(arr) {
+		const mid = Math.floor(arr.length / 2),
+		  nums = [...arr].sort((a, b) => a - b);
+		return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
 	}
 };
 

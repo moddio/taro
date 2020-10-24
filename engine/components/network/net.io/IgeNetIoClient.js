@@ -527,29 +527,33 @@ var IgeNetIoClient = {
 
 				if (Object.keys(obj).length) {
 					
-					
-					var i = ige.snapshots.length;
-					// insert snapshot in a correct incremental order
-					while (
-						i > 0 && ige.snapshots[i - 1] != undefined && 
-						ige.snapshots[i - 1][0] > newSnapshotTimeStamp
-					) {
-						i--;
-					}					
-					ige.snapshots.splice(i, 0, [newSnapshotTimeStamp, obj]);
+					// add the new snapshot into empty array
+					if (ige.snapshots.length == 0) {
+						ige.snapshots.push([newSnapshotTimeStamp, obj]);
+					} else { // if not empty, add it as ascending order based on timestamp
+						var i = 0;
+						while (ige.snapshots[i] && ige.snapshots[i][0] < newSnapshotTimeStamp) {
+							i++;
+							var spliceIndex = i;							
+						}
 
-					while (ige.snapshots.length > 1 || (ige.snapshots[0] && ige.renderTime > ige.snapshots[0][0])) {
+						if (spliceIndex != undefined) {
+							ige.snapshots.splice(spliceIndex, 0, [newSnapshotTimeStamp, obj]);
+						}
+					}
+					
+					// churn out all the old snapshots
+					while (ige.snapshots.length > 5 || (ige.snapshots[0] && ige.renderTime > ige.snapshots[0][0])) {
 						snapshot = ige.snapshots.shift();
 						ige.prevSnapshot = ige.nextSnapshot;
 						ige.nextSnapshot = snapshot;
 					}
 
-					// renderTime must be prevSnapshot & nextSnapshot's time
-					ige.renderTime = Math.max(
-						ige.nextSnapshot[0] - 100,
-						Math.min(ige.renderTime, ige.nextSnapshot[0] - 60)
-					)
-					
+					if (ige.prevSnapshot) {
+						var timeDiff = ige.prevSnapshot[0] - ige.renderTime
+						ige.renderTime += timeDiff/3
+						ige.renderTime = Math.max(ige.renderTime, ige.prevSnapshot[0])
+					}
 					
 					// console.log("new snapshot", obj)
 					// for (id in obj) {

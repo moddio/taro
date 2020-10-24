@@ -685,10 +685,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// 				console.log(ige._currentTime, "reconciling to server");
 									// 			}
 									
-									var time = ige._currentTime - ige.network.latency - 120
-
 									// skip through all movementHistories that are too old
-									while (entity.movementHistory && entity.movementHistory.length > 0 && entity.movementHistory[0][0] < time) {
+									while (entity.movementHistory.length > 0 && entity.movementHistory[0][0] < ige._currentTime - ige.network.bestLatency - 300) {
 										var history = entity.movementHistory.shift()[1];
 									}
 								
@@ -700,26 +698,29 @@ var PhysicsComponent = IgeEventingClass.extend({
 										var xDiff = (entity.lastServerStreamedPosition[0] - history[0])
 										var yDiff = (entity.lastServerStreamedPosition[1] - history[1])
 										
-										var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+										var distance = Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
 										// console.log(
 										// 		entity.discrepancyCount, 
-										// 		entity.lastServerStreamedPosition,
 										// 		xDiff.toFixed(0), 
 										// 		yDiff.toFixed(0)
 										// 	);
 										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
-										if (distance > 50) {
+										
+										if (distance > 100) {
 											entity.discrepancyCount++
 											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
 											if (entity.discrepancyCount > 15) {
 												x = entity.lastServerStreamedPosition[0];
 												y = entity.lastServerStreamedPosition[1];
-												entity.teleportTo(x, y)
+												entity.teleportTo(x, y)												
 											}
+											entity.lastServerStreamedPosition = undefined;
+											entity.lastReconciledAt = ige.prevSnapshot[0]; // prevent unit from reconciling multiple times												
+											// console.log("setting entity.lastReconciledAt", entity.lastReconciledAt)
 										} else {
 											entity.discrepancyCount = 0
-											entity.lastServerStreamedPosition = undefined;
 										}
+										
 									}
 
 									if (entity.isOutOfBounds) {
