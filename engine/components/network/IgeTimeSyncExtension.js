@@ -51,31 +51,28 @@ var IgeTimeSyncExtension = {
 	},
 
 	_sendTimeSync: function (clientId) {
-
-		// Send the time sync command
-		// console.trace()
-		//var timePassedSinceTick = Date.now() - ige._timeScaleLastTimestamp;
-		this.send('_igeNetTimeSync', [ige._currentTime], clientId);
+		// we don't even use ige._currenTime data!!!!
+		this.send('_igeNetTimeSync', [], clientId);
 		this.lastTimeSyncSentAt = Date.now()
 	},
 
 	_onTimeSync: function (data, clientId) {
 		if (ige.isClient) {
 
-			var serverTime = parseInt(data[0]);
 			// update ping
 			if (this.lastTimeSyncSentAt) {
-				this.timeSync(serverTime);
+				this.timeSync();
 			}
 		}
 
+		// when server receives timeSync from client, send timeSync back.
 		if (ige.isServer) {
 			this._sendTimeSync(clientId); // send response
 		}
 	},
 
 	// speed up or slow down ige.timeScale depending on discrepancy between client & server's time.
-	timeSync: function (serverTime) {
+	timeSync: function () {
 		
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
 		this.latency = latency;

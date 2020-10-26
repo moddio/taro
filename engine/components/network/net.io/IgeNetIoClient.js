@@ -551,7 +551,7 @@ var IgeNetIoClient = {
 
 					if (ige.prevSnapshot) {
 						var timeDiff = ige.prevSnapshot[0] - ige.renderTime
-						ige.renderTime += timeDiff/3
+						ige.renderTime += timeDiff/5
 						ige.renderTime = Math.max(ige.renderTime, ige.prevSnapshot[0])
 					}
 					
