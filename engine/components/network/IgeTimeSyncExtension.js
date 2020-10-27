@@ -51,17 +51,16 @@ var IgeTimeSyncExtension = {
 	},
 
 	_sendTimeSync: function (clientId) {
-		// we don't even use ige._currenTime data!!!!
-		this.send('_igeNetTimeSync', [], clientId);
+		this.send('_igeNetTimeSync', ige._currentTime, clientId);
 		this.lastTimeSyncSentAt = Date.now()
 	},
 
-	_onTimeSync: function (data, clientId) {
+	_onTimeSync: function (serverTime, clientId) {
 		if (ige.isClient) {
 
 			// update ping
 			if (this.lastTimeSyncSentAt) {
-				this.timeSync();
+				this.timeSync(serverTime);
 			}
 		}
 
@@ -72,7 +71,7 @@ var IgeTimeSyncExtension = {
 	},
 
 	// speed up or slow down ige.timeScale depending on discrepancy between client & server's time.
-	timeSync: function () {
+	timeSync: function (serverTime) {
 		
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
 		this.latency = latency;
@@ -83,15 +82,15 @@ var IgeTimeSyncExtension = {
 		this.bestLatency = this.getMedian(this.latencyHistory)
 		
 		// console.log(this.bestLatency)
-
-		if (this.bestLatency == undefined) {
-			this.bestLatency = this.latency;
-		} else if (this.latencyHistory.length > 20) {
-			
-		} else {
-			
+		if (!ige.renderTime) {
+			ige.renderTime = serverTime - 100;
+		}
+		else {
+			var diff = (serverTime - 100) - ige.renderTime
+			ige.renderTime += diff/5
 		}
 		
+
 		if (statsPanels.latency) {
 			statsPanels.latency._latencyPanel.update(latency, 1000);
 		}	

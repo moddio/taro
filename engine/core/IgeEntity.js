@@ -5024,9 +5024,9 @@ var IgeEntity = IgeObject.extend({
             deltaTime = offsetDelta / dataDelta;
 
         // Clamp the current time from 0
-        // if (deltaTime < 0) {
-        // 	deltaTime = 0;
-        // }
+        if (deltaTime < 0) {
+        	deltaTime = 0;
+        }
 
         return totalValue * deltaTime + startValue;
     },
@@ -5128,9 +5128,10 @@ var IgeEntity = IgeObject.extend({
         //     // console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
         // }
         // interpolate server-streamed translation data
+        
         if (
             prevKeyFrame != undefined && nextKeyFrame != undefined && 
-            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime < nextKeyFrame[0]
+            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime <= nextKeyFrame[0]
         ) {
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
@@ -5176,16 +5177,16 @@ var IgeEntity = IgeObject.extend({
                 this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
             }
 
-            // // for debugging my unit's x-movement interpolation
-            // if (this == ige.client.selectedUnit) {
-            // 	let distanceTraveled = x - this.previousX
-            // 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
-            // 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
-            // 		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-            // 		)
-            // 	this.previousX = x;
-            // 	this.previousRenderTime = ige.renderTime;
-            // }
+            // for debugging my unit's x-movement interpolation
+            if (this == ige.client.selectedUnit) {
+            	let distanceTraveled = x - this.previousX
+            	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
+            	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+            		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+            		)
+            	this.previousX = x;
+            	this.previousRenderTime = ige.renderTime;
+            }
         }
 
         // instantly rotate unit to mouse cursor

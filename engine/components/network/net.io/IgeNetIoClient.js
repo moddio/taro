@@ -530,7 +530,8 @@ var IgeNetIoClient = {
 					// add the new snapshot into empty array
 					if (ige.snapshots.length == 0) {
 						ige.snapshots.push([newSnapshotTimeStamp, obj]);
-					} else { // if not empty, add it as ascending order based on timestamp
+					} // if not empty, add it as ascending order based on timestamp
+					else { 
 						var i = 0;
 						while (ige.snapshots[i] && ige.snapshots[i][0] < newSnapshotTimeStamp) {
 							i++;
@@ -542,18 +543,7 @@ var IgeNetIoClient = {
 						}
 					}
 					
-					// churn out all the old snapshots
-					while (ige.snapshots.length > 5 || (ige.snapshots[0] && ige.renderTime > ige.snapshots[0][0])) {
-						snapshot = ige.snapshots.shift();
-						ige.prevSnapshot = ige.nextSnapshot;
-						ige.nextSnapshot = snapshot;
-					}
-
-					if (ige.prevSnapshot) {
-						var timeDiff = ige.prevSnapshot[0] - ige.renderTime
-						ige.renderTime += timeDiff/5
-						ige.renderTime = Math.max(ige.renderTime, ige.prevSnapshot[0])
-					}
+					// console.log(ige.snapshots.length, (ige.prevSnapshot)?ige.prevSnapshot[0]:0, ige.renderTime, newSnapshotTimeStamp)
 					
 					// console.log("new snapshot", obj)
 					// for (id in obj) {
