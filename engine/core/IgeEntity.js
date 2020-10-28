@@ -5066,20 +5066,20 @@ var IgeEntity = IgeObject.extend({
             prevKeyFrame = null,
             nextKeyFrame = null;
 
-        if (ige.prevSnapshot && ige.nextSnapshot) {
+        if (ige.nextSnapshot) {
             var nextTransform = ige.nextSnapshot[1][this.id()];
             if (nextTransform) {
                 nextKeyFrame = [ige.nextSnapshot[0], nextTransform];
             }
+        }
 
+        // by default, prevTransform is where this unit currently is
+        
+        if (ige.prevSnapshot) {
             // Set variables up to store the previous and next data
             var prevTransform = ige.prevSnapshot[1][this.id()];
             if (prevTransform) {
                 prevKeyFrame = [ige.prevSnapshot[0], prevTransform];
-            } else {
-                // prevTransform is undefined if entity hasn't moved for a while, or has been created/teleported
-                prevTransform = nextTransform;
-                prevKeyFrame = nextKeyFrame;
             }
         }
 
@@ -5129,10 +5129,7 @@ var IgeEntity = IgeObject.extend({
         // }
         // interpolate server-streamed translation data
         
-        if (
-            prevKeyFrame != undefined && nextKeyFrame != undefined && 
-            prevKeyFrame[0] != nextKeyFrame[0] && ige.renderTime <= nextKeyFrame[0]
-        ) {
+        if (prevTransform != undefined && nextTransform != undefined && prevKeyFrame[0] != nextKeyFrame[0] && prevKeyFrame[0] < ige.renderTime) {
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
@@ -5177,16 +5174,16 @@ var IgeEntity = IgeObject.extend({
                 this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
             }
 
-            // for debugging my unit's x-movement interpolation
-            if (this == ige.client.selectedUnit) {
-            	let distanceTraveled = x - this.previousX
-            	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
-            	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
-            		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-            		)
-            	this.previousX = x;
-            	this.previousRenderTime = ige.renderTime;
-            }
+            // // for debugging my unit's x-movement interpolation
+            // if (this == ige.client.selectedUnit) {
+            // 	let distanceTraveled = x - this.previousX
+            // 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
+            // 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+            // 		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+            // 		)
+            // 	this.previousX = x;
+            // 	this.previousRenderTime = ige.renderTime;
+            // }
         }
 
         // instantly rotate unit to mouse cursor
