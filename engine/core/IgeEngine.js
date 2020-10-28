@@ -1977,8 +1977,10 @@ var IgeEngine = IgeEntity.extend({
 			var timeElapsed = ige.now - ige._lastPhysicsTickAt
 			
 			if (// physics update should execute as soon as gameloop has executed in order to stream the accurate, latest translation data computed from physics update
-				(ige.isServer && ige.gameLoopTickHasExecuted) || 
-				ige.physics && timeElapsed >= (1000 / ige._physicsTickRate) - ige._physicsTickRemainder
+				ige.physics && (
+					ige.gameLoopTickHasExecuted || 
+					 timeElapsed >= (1000 / ige._physicsTickRate) - ige._physicsTickRemainder
+				)
 			) {
 				ige._lastPhysicsTickAt = ige.now
 				ige._physicsTickRemainder = Math.min(timeElapsed - ((1000 / ige._physicsTickRate) - ige._physicsTickRemainder), (1000 / ige._physicsTickRate));
