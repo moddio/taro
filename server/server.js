@@ -638,8 +638,6 @@ var Server = IgeClass.extend({
 	},
 
 	kill: function (log) {
-		var self = this;
-
 		if (ige.clusterClient && ige.clusterClient.markedAsKilled) {
 			return;
 		}

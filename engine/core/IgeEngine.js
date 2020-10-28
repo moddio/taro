@@ -159,6 +159,9 @@ var IgeEngine = IgeEntity.extend({
 		this.renderTime = undefined;
 		
 		this.remainderFromLastStep = 0;
+
+		this.lagOccurenceCount = 0;
+		this.lastLagOccurenceAt = 0;
 	},
 
 	getLifeSpan: function () {
@@ -1925,11 +1928,6 @@ var IgeEngine = IgeEntity.extend({
 
 		timeStamp = Math.floor(self._currentTime);
 
-		if (igeConfig.debug._timing) {
-			st = new Date().getTime();
-		}
-
-
 		if (self._state) {
 
 			// Call the input system tick to reset any flags etc
@@ -2164,9 +2162,22 @@ var IgeEngine = IgeEntity.extend({
 		ige.physicsTickHasExecuted = false;
 		self._resized = false;
 
-		if (igeConfig.debug._timing) {
-			et = new Date().getTime();
-			ige._tickTime = et - st;
+		et = new Date().getTime();
+		ige._tickTime = et - ige.now;
+		// console.log(ige._tickTime, ige._tickTime, 1000/self._fpsRate)		
+		// restart server if physics engine is running slow as this will cause laggy experience for the players
+		if (ige._tickTime > 1000 / self._fpsRate) {
+			self.lagOccurenceCount++;
+			self.lastLagOccurenceAt = et;
+			console.log("engineTick is taking too long! (", ige._tickTime,"ms. It should be under", 1000 / self._fpsRate, "(", self.lagOccurenceCount,  "/10");
+			if (self.lagOccurenceCount > 20) {
+				ige.server.kill("engineTick has been consistently running slow. killing the server. (this causes lag)");
+			}					
+		}
+
+		// reset lagOccurenceCount if no lag occured for 3s.
+		if (et - self.lastLagOccurenceAt > 3000) {
+			self.lagOccurenceCount = 0;
 		}
 
 		if (ige.isClient) {

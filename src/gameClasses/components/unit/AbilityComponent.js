@@ -75,7 +75,6 @@ var AbilityComponent = IgeEntity.extend({
 	pickupItem: function () {
 		var self = this
 		if (ige.isServer) {
-
 			var region = {
 				x: self._entity._translate.x - self._entity._bounds2d.x / 2,
 				y: self._entity._translate.y - self._entity._bounds2d.y / 2,
