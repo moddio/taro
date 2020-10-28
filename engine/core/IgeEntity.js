@@ -5103,13 +5103,13 @@ var IgeEntity = IgeObject.extend({
                     
                     // if (this == ige.client.selectedUnit) {
                     // 	let distanceTraveled = x - this.previousX
-                    // 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
+                    // 	let timeElapsed = (ige._currentTime-this.prevTime).toFixed(0)
                     // 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
-                    // 		'time', this.prevPhysicsFrame[0].toFixed(0), ige.renderTime.toFixed(0),
-                    // 		'(' + timeElapsed + 'ms '+ (ige.renderTime - this.prevPhysicsFrame[0] / (this.nextPhysicsFrame[1][0] - this.prevPhysicsFrame[1][0] * 100)).toFixed(0) +'%)',
+                    // 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0),
+                    // 		'(' + timeElapsed + 'ms '+ ((ige._currentTime - this.prevPhysicsFrame[0])* 100 / (this.nextPhysicsFrame[0] - this.prevPhysicsFrame[0])).toFixed(0) +'%)',
                     // 		this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
                     // 	this.previousX = x;
-                    // 	this.previousRenderTime = ige.renderTime;
+                    // 	this.prevTime = ige._currentTime;
                     // }
                 } else {
                     // unit is teleporting

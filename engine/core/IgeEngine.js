@@ -1978,8 +1978,8 @@ var IgeEngine = IgeEntity.extend({
 			
 			if (// physics update should execute as soon as gameloop has executed in order to stream the accurate, latest translation data computed from physics update
 				ige.physics && (
-					ige.gameLoopTickHasExecuted || 
-					 timeElapsed >= (1000 / ige._physicsTickRate) - ige._physicsTickRemainder
+					ige.gameLoopTickHasExecuted || // don't ask. - Jaeyun
+					timeElapsed >= (1000 / ige._physicsTickRate) - ige._physicsTickRemainder
 				)
 			) {
 				ige._lastPhysicsTickAt = ige.now
@@ -1988,8 +1988,9 @@ var IgeEngine = IgeEntity.extend({
 				ige.physicsTickHasExecuted = true;
 			}
 
-			if (ige.isServer && ige.gameLoopTickHasExecuted) {
-				ige.trigger.fire("frameTick");
+			if (ige.isServer) {
+				if (ige.gameLoopTickHasExecuted)
+					ige.trigger.fire("frameTick");
 			} 
 			else if (ige.isClient) {
 
@@ -2013,7 +2014,7 @@ var IgeEngine = IgeEntity.extend({
 				if (ige.client.myPlayer) {
 					ige.client.myPlayer.control._behaviour()
 				}
-				
+
 				return;
 			}
 			
@@ -2171,7 +2172,7 @@ var IgeEngine = IgeEntity.extend({
 		if (ige._tickTime > 1000 / self._fpsRate) {
 			self.lagOccurenceCount++;
 			self.lastLagOccurenceAt = et;
-			console.log("engineTick is taking too long! (", ige._tickTime,"ms. It should be under", 1000 / self._fpsRate, "(", self.lagOccurenceCount,  "/10");
+			console.log("engineTick is taking too long! (", ige._tickTime,"ms. It should be under", 1000 / self._fpsRate, "(", self.lagOccurenceCount,  "/20");
 			if (self.lagOccurenceCount > 20) {
 				ige.server.kill("engineTick has been consistently running slow. killing the server. (this causes lag)");
 			}					

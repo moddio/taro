@@ -728,8 +728,12 @@ var PhysicsComponent = IgeEventingClass.extend({
 										entity.body.setAngle(angle);
 									}
 
-									entity.prevPhysicsFrame = entity.nextPhysicsFrame
-									entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+									if (entity.nextPhysicsFrame == undefined || ige._currentTime > entity.nextPhysicsFrame[0]) {
+										entity.prevPhysicsFrame = entity.nextPhysicsFrame
+										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+									}
+									
+
 									// console.log(x, y)
 									// if unit has moved
 									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
