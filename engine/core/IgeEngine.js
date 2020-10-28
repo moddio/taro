@@ -1994,9 +1994,12 @@ var IgeEngine = IgeEntity.extend({
 			else if (ige.isClient) {
 
 				// churn out all the old snapshots
-				while (
-					ige.snapshots.length > 1 || 
-					(ige.snapshots[0] && ige.renderTime > ige.snapshots[0][0])
+				var snapshot = ige.snapshots[0];
+				while (snapshot && 
+					(
+						ige.renderTime > snapshot[0] || 
+						(ige.nextSnapshot && ige.renderTime > ige.nextSnapshot[0])
+					)
 				) {
 					snapshot = ige.snapshots.shift();
 					ige.prevSnapshot = ige.nextSnapshot;

@@ -5129,7 +5129,10 @@ var IgeEntity = IgeObject.extend({
         // }
         // interpolate server-streamed translation data
         
-        if (prevTransform != undefined && nextTransform != undefined && prevKeyFrame[0] != nextKeyFrame[0] && prevKeyFrame[0] < ige.renderTime) {
+        if (prevTransform != undefined && nextTransform != undefined && 
+            prevKeyFrame[0] != nextKeyFrame[0] && 
+            prevKeyFrame[0] < ige.renderTime && ige.renderTime < nextKeyFrame[0]
+        ) {
             targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
             targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
@@ -5178,7 +5181,7 @@ var IgeEntity = IgeObject.extend({
             // if (this == ige.client.selectedUnit) {
             // 	let distanceTraveled = x - this.previousX
             // 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
-            // 	console.log(ige.nextSnapshot.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+            // 	console.log(ige.snapshots.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
             // 		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
             // 		)
             // 	this.previousX = x;

@@ -686,7 +686,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// 			}
 									
 									// skip through all movementHistories that are too old
-									while (entity.movementHistory.length > 0 && entity.movementHistory[0][0] < ige._currentTime - ige.network.bestLatency - 300) {
+									while (entity.movementHistory.length > 0 && entity.movementHistory[0][0] < ige._currentTime - ige.network.bestLatency - 100) {
 										var history = entity.movementHistory.shift()[1];
 									}
 								

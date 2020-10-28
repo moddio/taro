@@ -83,13 +83,13 @@ var IgeTimeSyncExtension = {
 		
 		// console.log(this.bestLatency)
 		if (!ige.renderTime) {
-			ige.renderTime = serverTime - 60;
+			ige.renderTime = serverTime - 50;
 		}
 		else {
-			var diff = (serverTime - 60) - ige.renderTime
+			var diff = (serverTime - 50) - ige.renderTime
 			ige.renderTime += diff/5
-			ige.renderTime = Math.max(ige.renderTime, serverTime - 100);
-			ige.renderTime = Math.min(ige.renderTime, serverTime);
+			ige.renderTime = Math.max(ige.renderTime, serverTime - 70);
+			ige.renderTime = Math.min(ige.renderTime, serverTime - 20);
 		}
 		
 
