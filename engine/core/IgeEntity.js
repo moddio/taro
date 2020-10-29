@@ -2025,13 +2025,21 @@ var IgeEntity = IgeObject.extend({
                         new Projectile(projectile);
                     }
                 }
+
+                var shouldRepeat = type === 'move' ? true : false;
+                var isAlreadyPlaying = false;
                 if(this.isPlayingSound) {
-                    this.isPlayingSound.loop = false;
+                    this.isPlayingSound.loop = shouldRepeat;
+                    if(shouldRepeat) {
+                        isAlreadyPlaying = true;
+                        this.isPlayingSound.play()
+                    }
                 }
                 if (effect.sound) {
                     for (var soundKey in effect.sound) {
-                        var shouldRepeat = type === 'move' ? true : false;
-                        this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
+                        if(!isAlreadyPlaying) {
+                            this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
+                        }
                     }
                 }
                 

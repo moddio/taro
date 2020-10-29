@@ -1730,6 +1730,12 @@ var Unit = IgeEntityBox2d.extend({
                 self.minimapUnit.translateTo(self._translate.x, self._translate.y, 0);
             }
 
+            if(this.isPlayingSound) {
+                this.isPlayingSound.volume = ige.sound.getVolume(this._translate);
+            }
+            
+
+
             // if(Date.now() - self.dob > 3000) {
             //     var nextTransform = ige.nextSnapshot[1] && ige.nextSnapshot[1][this.id()] || self.lastDebugSnapshot;
             //     if(nextTransform) {
