@@ -2026,8 +2026,7 @@ var IgeEntity = IgeObject.extend({
                     }
                 }
                 if(this.isPlayingSound) {
-                    this.isPlayingSound.pause();
-                    this.isPlayingSound.currentTime = 0;
+                    this.isPlayingSound.loop = false;
                 }
                 if (effect.sound) {
                     for (var soundKey in effect.sound) {
