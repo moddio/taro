@@ -151,6 +151,9 @@ var SoundComponent = IgeEntity.extend({
 						element.addEventListener('ended', function () {
 							this.remove()
 						}, false);
+						if(shouldRepeat) {
+							return element;
+						}
 					}
 				}
 			}
