@@ -94,7 +94,7 @@ var SoundComponent = IgeEntity.extend({
 		}
 	},
 
-	playSound: function (sound, position, key) {
+	playSound: function (sound, position, key, shouldRepeat = false) {
 		var self = this;
 		if (ige.isClient) {
 			var soundSetting = localStorage.getItem('sound');
@@ -130,15 +130,20 @@ var SoundComponent = IgeEntity.extend({
 							self.preLoadedSounds[key].currentTime = 0;
 						}
 						self.preLoadedSounds[key].volume = volume;
+						self.preLoadedSounds[key].loop = shouldRepeat;
 						self.preLoadedSounds[key].play()
 							.catch(function (e) {
 								console.log(e)
 							});
+						if(shouldRepeat) {
+							return self.preLoadedSounds[key];
+						}
 					}
 					else {
 						var element = document.createElement("audio");
 						element.src = sound.file; // pick random item from array
-						element.volume = volume
+						element.volume = volume;
+						element.loop = shouldRepeat;
 						element.play()
 							.catch(function (e) {
 								console.log(e)
