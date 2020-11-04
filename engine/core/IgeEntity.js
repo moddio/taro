@@ -4167,9 +4167,9 @@ var IgeEntity = IgeObject.extend({
                                             // Note: Nishant Desai - This code is commented out because the above call of atribute.update will internall call
                                             // updateAttributeBar so no need to call it second time over here, if some issue happens regarding attribute updation
                                             // try to uncomment this first
-                                            // if (this._category === 'unit') {
-                                            //     this.updateAttributeBar(attributeData);
-                                            // }
+                                             if (this._category === 'unit') {
+                                                 this.updateAttributeBar(attributeData);
+                                             }
                                         }
                                         // update attribute if entity has such attribute
                                     }
