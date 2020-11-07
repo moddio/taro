@@ -265,8 +265,8 @@ var AttributeComponent = IgeEntity.extend({
 						switch (self._entity._category) {
 							case 'unit': {
 								unit = self._entity;
+								attribute.value = newValue;
 								if (ige.client.myPlayer._stats.selectedUnitId == unit.id()) {
-									attribute.value = newValue;
 									self._entity.unitUi.updateAttributeBar(attribute);
 								}
 
