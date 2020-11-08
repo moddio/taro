@@ -2173,7 +2173,7 @@ var IgeEngine = IgeEntity.extend({
 			self.lagOccurenceCount++;
 			self.lastLagOccurenceAt = et;
 			console.log("engineTick is taking too long! (", ige._tickTime,"ms. It should be under", 1000 / self._fpsRate, "(", self.lagOccurenceCount,  "/20");
-			if (self.lagOccurenceCount > 20) {
+			if (self.lagOccurenceCount > 100) {
 				ige.server.kill("engineTick has been consistently running slow. killing the server. (this causes lag)");
 			}					
 		}

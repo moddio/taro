@@ -53,7 +53,7 @@ var Item = IgeEntityBox2d.extend({
 		self.entityId = entityIdFromServer;
 		// self._stats.handle = data.type
 		self._stats.lastUsed = 0;
-		self.anchoredOffset = { x: 0, y: 0, rotate: 0 }
+		self.anchoredOffset = { x: 0, y: 0, rotate: 0 };
 
 		self.category('item') // necessary for box2d contact listener (it only cares about 'unit' categories touching)
 		// convert numbers stored as string in database to int
