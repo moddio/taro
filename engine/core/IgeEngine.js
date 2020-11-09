@@ -2168,17 +2168,20 @@ var IgeEngine = IgeEntity.extend({
 		et = new Date().getTime();
 		ige._tickTime = et - ige.now;
 		// console.log(ige._tickTime, ige._tickTime, 1000/self._fpsRate)		
-		// restart server if physics engine is running slow as this will cause laggy experience for the players
-		if (ige._tickTime > 1000 / self._fpsRate) {
-			self.lagOccurenceCount++;
-			self.lastLagOccurenceAt = et;
-			console.log("engineTick is taking too long! (", ige._tickTime,"ms. It should be under", 1000 / self._fpsRate, "(", self.lagOccurenceCount,  "/20");
-			if (self.lagOccurenceCount > 60) {
-				ige.server.kill("engineTick has been consistently running slow. killing the server. (this causes lag)");
-			}					
-		} else {
-			self.lagOccurenceCount = 0;
-		}
+
+		// slow engineTick restart only works on two houses (Braains.io)
+		if (ige.server.gameId == '5a7fd59b1014dc000eeec3dd')				
+			// restart server if physics engine is running slow as this will cause laggy experience for the players		
+			if (ige._tickTime > 1000 / self._fpsRate) {
+				self.lagOccurenceCount++;
+				self.lastLagOccurenceAt = et;
+				console.log("engineTick is taking too long! (", ige._tickTime,"ms. It should be under", 1000 / self._fpsRate, "("+ self.lagOccurenceCount+ "/100)");
+				if (self.lagOccurenceCount > 100) {
+					ige.server.kill("engineTick has been consistently running slow. killing the server. (this causes lag)");
+				}					
+			} else {
+				self.lagOccurenceCount = 0;
+			}
 
 		// // reset lagOccurenceCount if no lag occured for 3s.
 		// if (et - self.lastLagOccurenceAt > 3000) {
