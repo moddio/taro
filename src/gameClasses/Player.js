@@ -132,13 +132,13 @@ var Player = IgeEntity.extend({
 
 	disownUnit: function (unit) {
 		var index = this._stats.unitIds.indexOf(unit.id());
-
+		var unitSelected = (unit == this._stats.selectedUnit)
 		if (index !== -1) {
 			this._stats.unitIds.splice(index, 1);
 		}
 
-		// if player has only 1 unit left, then select that unit
-		if (this._stats.unitIds.length === 1) {
+		// if player has only 1 unit left, and this unit was selected, then select the last unit
+		if (this._stats.unitIds.length === 1 && unitSelected) {
 			this.selectFirstAvailableUnit()
 		}
 	},
