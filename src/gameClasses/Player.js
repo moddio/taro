@@ -137,7 +137,7 @@ var Player = IgeEntity.extend({
 		}
 
 		// if player has only 1 unit left, and this unit was selected, then select the last unit
-		if (this._stats.unitIds.length === 1 && this._stats.selectedUnitId == unit.id() {
+		if (this._stats.unitIds.length === 1 && this._stats.selectedUnitId == unit.id()) {
 			this.selectFirstAvailableUnit()
 		}
 	},
