@@ -132,7 +132,6 @@ var Player = IgeEntity.extend({
 
 	disownUnit: function (unit) {
 		var index = this._stats.unitIds.indexOf(unit.id());
-		var unitSelected = (unit == this._stats.selectedUnit)
 		if (index !== -1) {
 			this._stats.unitIds.splice(index, 1);
 		}
