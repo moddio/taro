@@ -129,17 +129,12 @@ var Player = IgeEntity.extend({
 			this.selectFirstAvailableUnit()
 		}
 	},
-
+	
+	// remove unit from the array of units owned by this player
 	disownUnit: function (unit) {
 		var index = this._stats.unitIds.indexOf(unit.id());
-
 		if (index !== -1) {
 			this._stats.unitIds.splice(index, 1);
-		}
-
-		// if player has only 1 unit left, then select that unit
-		if (this._stats.unitIds.length === 1) {
-			this.selectFirstAvailableUnit()
 		}
 	},
 

@@ -1480,6 +1480,13 @@ var VariableComponent = IgeEntity.extend({
 						returnValue = string.length
 					}
 					break;
+
+				case 'toLowerCase':
+					var string = self.getValue(text.string, vars);
+					if (string && !isNaN(string.length)) {
+						returnValue = string.toLowerCase()
+					}
+					break;
 					
 				case 'substringOf':
 					var string = self.getValue(text.string, vars);
