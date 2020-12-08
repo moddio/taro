@@ -481,14 +481,14 @@ var ServerNetworkEvents = {
 						fromItem._stats.controls.permittedInventorySlots == undefined ||
 						fromItem._stats.controls.permittedInventorySlots.length == 0 ||
 						fromItem._stats.controls.permittedInventorySlots.includes(data.to + 1) ||
-						data.to + 1 > unit._stats.backpackSize // any item can be moved into backpack slots
+						data.to + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
 					) &&
 					(
 						toItem._stats.controls == undefined ||
 						toItem._stats.controls.permittedInventorySlots == undefined ||
 						toItem._stats.controls.permittedInventorySlots.length == 0 ||
 						toItem._stats.controls.permittedInventorySlots.includes(data.from + 1) ||
-						data.from + 1 > unit._stats.backpackSize // any item can be moved into backpack slots
+						data.from + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
 					)
 				) {
 					fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
