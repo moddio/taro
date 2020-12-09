@@ -1531,7 +1531,7 @@ var VariableComponent = IgeEntity.extend({
 					var newString = self.getValue(text.newString, vars);
 						
 					if (sourceString && matchString && newString) {
-						returnValue = sourceString.replaceAll(matchString, newString)
+						returnValue = sourceString.split(matchString).join(newString);
 					}
 					break;
 				case 'concat':
