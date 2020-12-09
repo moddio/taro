@@ -1677,7 +1677,7 @@ var Unit = IgeEntityBox2d.extend({
                     }
                 }
 
-                if (!self._stats.ai || !self._stats.ai.enabled) {
+                if (!self._stats.ai || !self._stats.ai.enabled || (ownerPlayer && ownerPlayer._stats.controlledBy == "human")) {
                     if (self._stats.controls && self._stats.controls.movementControlScheme == 'followCursor') {
                         if (!this.isMoving && self.distanceToTarget > this.width()) {
                             this.startMoving();
