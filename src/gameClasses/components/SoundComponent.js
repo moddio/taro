@@ -118,7 +118,7 @@ var SoundComponent = IgeEntity.extend({
                 volume = distanceVolume;
             }
         }
-        return volume;
+        return Math.min(volume, 1);
     },
 
     playSound: function (sound, position, key, shouldRepeat = false) {
