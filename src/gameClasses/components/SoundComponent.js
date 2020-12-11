@@ -111,12 +111,8 @@ var SoundComponent = IgeEntity.extend({
         var distance = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
 
         if (distance < distanceSoundShouldHeard) {
-            var distanceVolume = (Math.max(0, distanceSoundShouldHeard - distance) / distanceSoundShouldHeard) * 0.55; // 55% of actual volume
-            if (volume) {
-                volume = distanceVolume * (volume / 100);
-            } else {
-                volume = distanceVolume;
-            }
+			if(!volume) volume = 55;
+            volume = (Math.max(0, distanceSoundShouldHeard - distance) / distanceSoundShouldHeard) * (volume / 100); // 55% of actual volume
         }
         return Math.min(volume, 1);
     },
