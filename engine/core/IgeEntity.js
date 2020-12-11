@@ -2031,14 +2031,16 @@ var IgeEntity = IgeObject.extend({
                 if(this.isPlayingSound) {
                     this.isPlayingSound.loop = shouldRepeat;
                     if(shouldRepeat) {
-                        isAlreadyPlaying = true;
-                        this.isPlayingSound.play()
+						isAlreadyPlaying = true;
+						this.isPlayingSound.play();
+						
                     }
                 }
                 if (effect.sound) {
                     for (var soundKey in effect.sound) {
                         if(!isAlreadyPlaying) {
-                            this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
+							this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
+							this.isPlayingSound.effect = effect.sound[soundKey];
                         }
                     }
                 }

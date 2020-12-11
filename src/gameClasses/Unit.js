@@ -1731,7 +1731,7 @@ var Unit = IgeEntityBox2d.extend({
             }
 
             if(this.isPlayingSound) {
-                this.isPlayingSound.volume = ige.sound.getVolume(this._translate);
+                this.isPlayingSound.volume = ige.sound.getVolume(this._translate, this.isPlayingSound.effect.volume);
             }
             
 
