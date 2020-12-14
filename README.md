@@ -36,6 +36,14 @@ To run the game server, execute the following command:
 ```
 npm run server --game=<gameID>
 ```
+
+e.g. For two houses...
+
+```
+npm run server --game=5a7fd59b1014dc000eeec3dd
+```
+
+
 *if the gameID argument is not provided, then the engine will use game.json stored in root directory instead.
 
 Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
