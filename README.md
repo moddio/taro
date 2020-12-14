@@ -36,8 +36,15 @@ To run the game server, execute the following command:
 ```
 npm run server --game=<gameID>
 ```
+*if the gameID argument is not provided, then the engine will use game.json stored in root directory instead.
 
-e.g. Recipe to run Two houses locally...
+Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
+
+<img src="./assets/images/gameid.png" width="600" alt="How to get game id">
+
+## Quick start example - Run "Two Houses" locally
+
+Install [Node 12](https://nodejs.org/download/release/v12.20.0/) and then...
 
 ```
 git clone https://github.com/moddio/taro.git
@@ -45,13 +52,6 @@ cd taro
 npm install
 npm run server --game=5a7fd59b1014dc000eeec3dd
 ```
-
-
-*if the gameID argument is not provided, then the engine will use game.json stored in root directory instead.
-
-Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
-
-<img src="./assets/images/gameid.png" width="600" alt="How to get game id">
 
 ## Connecting to the game server
 Visit http://localhost:2000 to start testing game.
