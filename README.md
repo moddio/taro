@@ -26,6 +26,9 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 - Mobile controls
 - and more!
 
+## Node version
+Node versions above [12](https://nodejs.org/download/release/v12.20.0/) are not currently supported due to a downstream dependency (clusterws)
+
 ## How to run a game server
 Taro engine will run games made using [modd.io](https://www.modd.io).
 
