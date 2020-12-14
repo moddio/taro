@@ -37,9 +37,12 @@ To run the game server, execute the following command:
 npm run server --game=<gameID>
 ```
 
-e.g. For two houses...
+e.g. Recipe to run Two houses locally...
 
 ```
+git clone https://github.com/moddio/taro.git
+cd taro
+npm install
 npm run server --game=5a7fd59b1014dc000eeec3dd
 ```
 
