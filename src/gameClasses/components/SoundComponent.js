@@ -111,7 +111,7 @@ var SoundComponent = IgeEntity.extend({
         var distance = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
 
         if (distance < distanceSoundShouldHeard) {
-			if(!volume) volume = 55;
+            if (!volume) volume = 55;
             volume = (Math.max(0, distanceSoundShouldHeard - distance) / distanceSoundShouldHeard) * (volume / 100); // 55% of actual volume
         }
         return Math.min(volume, 1);
@@ -124,7 +124,7 @@ var SoundComponent = IgeEntity.extend({
 
             if (soundSetting == 'on') {
                 // adjust volume based on distance between my unit and sound source
-                var volume = 0;
+                var volume = position === null ? sound.volume / 100 : 0;
                 if (position) {
                     volume = this.getVolume(position, sound.volume);
                 }
@@ -239,6 +239,12 @@ var SoundComponent = IgeEntity.extend({
                 this.musicCurrentlyPlaying.pause();
                 this.musicCurrentlyPlaying.currentTime = 0;
             }
+        }
+    },
+    stopSound: function (sound, key) {
+        if(this.preLoadedSounds[key]) {
+            this.preLoadedSounds[key].pause();
+            this.preLoadedSounds[key].currentTime = 0;
         }
     },
 });
