@@ -113,8 +113,11 @@ var SoundComponent = IgeEntity.extend({
         if (distance < distanceSoundShouldHeard) {
             if (!volume) volume = 55;
             volume = (Math.max(0, distanceSoundShouldHeard - distance) / distanceSoundShouldHeard) * (volume / 100); // 55% of actual volume
+            return Math.min(volume, 1);    
+        } else {
+            //we don't want to hear sounds that are outside distanceSoundShouldHeard
+            return 0;
         }
-        return Math.min(volume, 1);
     },
 
     playSound: function (sound, position, key, shouldRepeat = false) {
