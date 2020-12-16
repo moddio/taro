@@ -113,7 +113,7 @@ var SoundComponent = IgeEntity.extend({
         if (distance < distanceSoundShouldHeard) {
             if (!volume) volume = 55;
             volume = (Math.max(0, distanceSoundShouldHeard - distance) / distanceSoundShouldHeard) * (volume / 100); // 55% of actual volume
-            return Math.min(volume, 1);    
+            return Math.min(volume, 1);
         } else {
             //we don't want to hear sounds that are outside distanceSoundShouldHeard
             return 0;
@@ -179,7 +179,7 @@ var SoundComponent = IgeEntity.extend({
         var playMusic;
         if (ige.isClient) {
             var musicSetting = localStorage.getItem('music');
-
+            var volume = music.volume === undefined ? 1 : Math.min(music.volume / 100, 1);
             if (music && music.file) {
                 if (self.preLoadedMusic[key] && self.preLoadedMusic[key].src === music.file) {
                     if (!self.preLoadedMusic[key].pause) {
@@ -187,13 +187,12 @@ var SoundComponent = IgeEntity.extend({
                         self.preLoadedMusic[key].currentTime = 0;
                     }
                     self.preLoadedMusic[key].loop = shouldRepeat;
+                    self.preLoadedMusic[key].volume = volume;
                     playMusic = self.preLoadedMusic[key];
                 } else {
                     var element = document.createElement('audio');
                     element.src = music.file; // pick random item from array
-                    if (music.volume) {
-                        element.volume = music.volume;
-                    }
+                    element.volume = volume;
                     element.loop = shouldRepeat;
                     playMusic = element;
                 }
@@ -245,7 +244,7 @@ var SoundComponent = IgeEntity.extend({
         }
     },
     stopSound: function (sound, key) {
-        if(this.preLoadedSounds[key]) {
+        if (this.preLoadedSounds[key]) {
             this.preLoadedSounds[key].pause();
             this.preLoadedSounds[key].currentTime = 0;
         }
