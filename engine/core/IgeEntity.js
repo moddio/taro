@@ -2039,8 +2039,10 @@ var IgeEntity = IgeObject.extend({
                 if (effect.sound) {
                     for (var soundKey in effect.sound) {
                         if(!isAlreadyPlaying) {
-							this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
-							this.isPlayingSound.effect = effect.sound[soundKey];
+                            this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
+                            if(this.isPlayingSound) {
+                                this.isPlayingSound.effect = effect.sound[soundKey];
+                            }
                         }
                     }
                 }

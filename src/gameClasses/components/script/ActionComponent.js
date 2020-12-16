@@ -1766,7 +1766,27 @@ var ActionComponent = IgeEntity.extend({
                     case 'stopMusic':
                         ige.network.send('sound', { cmd: "stopMusic" })
                         break;
-
+                    
+                    case 'playSoundForPlayer':
+                        var sound = ige.game.data.sound[action.sound]
+                        var player = ige.variable.getValue(action.player, vars);
+                        if (sound && player && player._stats.clientId) {
+                            ige.network.send('sound', {
+                                cmd: "playSoundForPlayer",
+                                sound: action.sound
+                            }, player._stats.clientId)
+                        }
+                        break;
+                    case 'stopSoundForPlayer':
+                        var sound = ige.game.data.sound[action.sound]
+                        var player = ige.variable.getValue(action.player, vars);
+                        if (sound && player && player._stats.clientId) {
+                            ige.network.send('sound', {
+                                cmd: "stopSoundForPlayer",
+                                sound: action.sound
+                            }, player._stats.clientId)
+                        }
+                        break;
                     case 'playMusicForPlayer':
                         var music = ige.game.data.music[action.music]
                         var player = ige.variable.getValue(action.player, vars);

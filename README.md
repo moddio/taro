@@ -26,6 +26,9 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 - Mobile controls
 - and more!
 
+## Node version
+Node versions above [12](https://nodejs.org/download/release/v12.20.0/) are not currently supported due to a downstream dependency (clusterws)
+
 ## How to run a game server
 Taro engine will run games made using [modd.io](https://www.modd.io).
 
@@ -38,6 +41,17 @@ npm run server --game=<gameID>
 Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
 
 <img src="./assets/images/gameid.png" width="600" alt="How to get game id">
+
+## Quick start example - Run "Two Houses" locally
+
+Install [Node 12](https://nodejs.org/download/release/v12.20.0/) and then...
+
+```
+git clone https://github.com/moddio/taro.git
+cd taro
+npm install
+npm run server --game=5a7fd59b1014dc000eeec3dd
+```
 
 ## Connecting to the game server
 Visit http://localhost:2000 to start testing game.
