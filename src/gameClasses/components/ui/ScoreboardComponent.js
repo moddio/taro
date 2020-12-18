@@ -177,7 +177,7 @@ var ScoreboardComponent = IgeEntity.extend({
 						color = '#99FF00';
 					}
 
-					var readableName = player._stats.name;
+					var readableName = player._stats.name || '';
 
 					readableName = readableName.replace(/</g, '&lt;');
 					readableName = readableName.replace(/>/g, '&gt;');

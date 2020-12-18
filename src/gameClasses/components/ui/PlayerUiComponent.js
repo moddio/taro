@@ -171,7 +171,7 @@ var PlayerUiComponent = IgeEntity.extend({
 			$('#custom-modal .modal-header').hide();
 		}
 
-		// $("#custom-modal").addClass('d-flex');
+		$("#custom-modal").addClass('d-flex');
 		$("#custom-modal").modal({
 			backdrop: config.isDismissible ? true : 'static',
 			keyboard: config.isDismissible
