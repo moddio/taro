@@ -11,7 +11,7 @@ var IgeNetIoServer = {
   start: function (data, callback) {
     var self = this;
 
-    this.artificialDelay = 400;
+    this.artificialDelay = 400; // simulated lag (ms)
     this.lagVariance = 0;
     
     this._socketById = {};
@@ -319,6 +319,7 @@ var IgeNetIoServer = {
       // send sendQueue
       if (self.sendQueue) {
         for (var clientId in self.sendQueue) {
+          // simulate lag for dev environment
           if (global.isDev) {
             setTimeout(function(data, id, ci) {
               self._io.send(
@@ -327,6 +328,7 @@ var IgeNetIoServer = {
               );
             }, (Math.random() * self.lagVariance) + self.artificialDelay, self.sendQueue[clientId], clientId, ciEncoded);
           } else {
+            // production we don't simulate lag
             self._io.send(
               [ciEncoded, self.sendQueue[clientId]],
               clientId === 'undefined' ? undefined : clientId,
