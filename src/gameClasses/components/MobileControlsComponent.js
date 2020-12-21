@@ -15,10 +15,7 @@ var MobileControlsComponent = IgeEntity.extend({
 
         // Store the entity that this component has been added to
         this._entity = entity;
-        this.textures = {};
-        // guide image for testing layout only
-        this.textures.guide = new IgeTexture('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png');
-        // 
+
         this.debug = false;
 
         this.controls = [];
@@ -52,26 +49,6 @@ var MobileControlsComponent = IgeEntity.extend({
             }
         });
 
-
-        // window.addEventListener('message', function (event) {
-
-        //     // IMPORTANT: Check the origin of the data! 
-        //     console.log(event.data);
-        //     if (event.data == 0 || event.data == 90) {
-        //         console.log(ige.mobileControls)
-        //         if (ige.mobileControls) {
-        //             // and this unit is our player
-        //             if (ige.client.myPlayer && ige.network.id() == ige.client.myPlayer._stats.clientId) {
-        //                 var unitAbilities = ige.$(ige.client.myPlayer._stats.selectedUnitId) && ige.$(ige.client.myPlayer._stats.selectedUnitId)._stats.abilities;
-        //                 if (unitAbilities) {
-        //                     // update mobile controls
-        //                     window.orientation = event.data;
-        //                     ige.mobileControls.configure(unitAbilities);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // });
         this.id();
         ige.pixi.trackEntityById[this.id()] = this;
         self.addBehaviour('mobileControl', self._behaviour);
@@ -341,10 +318,15 @@ var MobileControlsComponent = IgeEntity.extend({
     configure: function (abilities) {
 
         if (!this.isMobile || !abilities) return;
+		
+		
 
         // $("#show-chat").show();
         $("#show-chat").hide(); // completely disable chat on mobile (app review)
-        $("#chat-box").show();
+        //$("#chat-box").show();
+		
+		$("#chat-box").hide();
+		
         $("#chat-box").css({ top: "10vh", fontSize: 'x-small' });
         $('#chat-box').css('min-width', '200px');
         $('#chat-history').css('width', '200px')
@@ -378,8 +360,6 @@ var MobileControlsComponent = IgeEntity.extend({
     addButton: function (key, x, y, w, h, ability) {
         w = w || 128;
         h = h || 128;
-        var xFactor = 0.6;
-        var yFactor = 0.5;
 
         var isStick = (key == 'movementWheel' || key == 'lookWheel' || key == 'lookAndFireWheel');
         if (isStick) {
@@ -396,7 +376,6 @@ var MobileControlsComponent = IgeEntity.extend({
 
             if (this.isPortrait()) {
                 x = x / 1.5;
-                // y = y * 2
             }
 
             if (this.controls[key]) return;
@@ -420,25 +399,34 @@ var MobileControlsComponent = IgeEntity.extend({
                 x: x - 120,
                 y: y
             }
-            var worldPoint = ige.pixi.viewport.toWorld(originalPoints);
 
+/*
             this.controls[key] = new IgePixiTouchControlButton()
-                .translateTo(worldPoint.x, worldPoint.y)
-                .width(w)
-                .height(h)
                 .setKey(key.toLowerCase())
                 .setText(text);
+			
+			this.controls[key].setSize(w,h);
+			this.controls[key].setPosition(x,y);
+*/
+            //this.controls[key]._pixiContainer.pivot.set(w / 2, h / 2);
+            //this.controls[key].originalPoints = originalPoints;
+			
+			
+			
+			var test2 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png?version=123', { crossOrigin: true });
+			ige.pixi.mobileControls.addChild(test2);
+			test2.width=w;
+			test2.height=h;
+			test2.x = x;
+			test2.y = y;
+			
+			var label = new PIXI.Text(text, { fontFamily: 'Arial', fontSize: 24, fill: 0xffffff, align: 'center' });
+			ige.pixi.mobileControls.addChild(label);
+			label.anchor.set(0.5);
+			label.position.set(x+(w / 2), y+(h / 2));
+						
+        }
 
-            this.controls[key]._pixiContainer.pivot.set(w / 2, h / 2);
-            this.controls[key].originalPoints = originalPoints;
-        }
-        if (this.isIframe() && this.isPortrait()) {
-            var xOffset = 50, yOffset = 200;
-            if (isStick) {
-                xOffset = 0;
-            }
-            this.controls[key].translateTo(this.controls[key]._translate.x - xOffset, this.controls[key]._translate.y - yOffset, 0)
-        }
     },
     isIframe() {
         try {
