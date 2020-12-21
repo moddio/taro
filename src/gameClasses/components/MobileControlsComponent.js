@@ -384,46 +384,47 @@ var MobileControlsComponent = IgeEntity.extend({
         } else {
 
             var text = key.toUpperCase();
-
-            if (this.isPortrait()) {
-                y = y * 2;
-            }
-            x -= w;
-            y -= h * 0.5;
-
-            if (this.isPortrait()) {
-                x = x / 1.5;
-            }
-
-            var originalPoints = {
-                x: x - 120,
-                y: y
-            }
-
-/*
-            this.controls[key] = new IgePixiTouchControlButton()
-                .setKey(key.toLowerCase())
-                .setText(text);
 			
-			this.controls[key].setSize(w,h);
-			this.controls[key].setPosition(x,y);
-*/
-            //this.controls[key]._pixiContainer.pivot.set(w / 2, h / 2);
-            //this.controls[key].originalPoints = originalPoints;
-			
-			
-			
-			var test2 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png?version=123', { crossOrigin: true });
-			ige.pixi.mobileControls.addChild(test2);
-			test2.width=w;
-			test2.height=h;
-			test2.x = x;
-			test2.y = y;
+			var newButton = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png?version=123', { crossOrigin: true });
+			ige.pixi.mobileControls.addChild(newButton);
+			newButton.width=w;
+			newButton.height=h;
+			newButton.x = x;
+			newButton.y = y;
+			newButton._key = key.toLowerCase();
 			
 			var label = new PIXI.Text(text, { fontFamily: 'Arial', fontSize: 24, fill: 0xffffff, align: 'center' });
 			ige.pixi.mobileControls.addChild(label);
 			label.anchor.set(0.5);
 			label.position.set(x+(w / 2), y+(h / 2));
+			
+			newButton.isButton = true;
+			newButton.interactive = true;
+			newButton.alpha = 0.6;
+			newButton.on('touchstart', function (event) {
+				if (newButton._isClicked) return;  // block repetition
+				newButton._isClicked = true;
+				event.stopPropagation();
+				let texture = PIXI.Texture.from('https://cache.modd.io/asset/spriteImage/1549614658007_button2.png?version=123', { crossOrigin: true });
+				newButton.texture = texture;
+				
+				if (newButton._key) {
+					//console.log("Key down:"+newButton._key);
+					ige.network.send('playerKeyDown', { device: 'key', key: newButton._key });
+				}
+			});
+			newButton.on('touchend', function (event) {
+				if (!newButton._isClicked) return; // block repetition
+				newButton._isClicked = false;
+				event.stopPropagation();
+				let texture = PIXI.Texture.from('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png?version=123', { crossOrigin: true });
+				newButton.texture = texture;
+				
+				if (newButton._key) {
+					//console.log("Key up:"+newButton._key);
+					ige.network.send('playerKeyUp', { device: 'key', key: newButton._key });
+				}
+			});
 						
         }
 

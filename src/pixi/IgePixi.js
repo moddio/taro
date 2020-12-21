@@ -51,11 +51,11 @@ var IgeInitPixi = IgeClass.extend({
 		var scaleToFit = window.innerWidth/960;
 		this.mobileControls.scale.set(scaleToFit,scaleToFit);
 		
-		
+		/*
 		var test1 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png', { crossOrigin: true });
 		test1.alpha = 0.2;
 		this.mobileControls.addChild(test1);
-
+		*/
 		 
         this.ticker = PIXI.Ticker.shared;
         this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
