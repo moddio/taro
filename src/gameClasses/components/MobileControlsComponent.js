@@ -170,15 +170,15 @@ var MobileControlsComponent = IgeEntity.extend({
                 var x = ability.mobilePosition.x * 2;
                 var y = ability.mobilePosition.y * 2;
 
-                self.addButton(key, x, y, 75, 64, ability);
+                self.addControl(key, x, y, 75, 64, ability);
             }
 
         });
 
     },
 
-    // add a button to the virtual controller
-    addButton: function (key, x, y, w, h, ability) {
+    // add a button or stick to the virtual controller
+    addControl: function (key, x, y, w, h, ability) {
         w = w || 128;
         h = h || 128;
 
