@@ -208,6 +208,7 @@ var MobileControlsComponent = IgeEntity.extend({
 
             if (key == 'lookAndFireWheel'){
                 let fireStick = new Joystick({
+                    redFireZone: true,
                     outerScale: { x: 1.2, y:1.2 },
                     innerScale: { x: 0.5, y:0.5 }
                 });
@@ -300,6 +301,7 @@ var Direction = {
       constructor(){
           this.outer=null;
           this.inner=null;
+          this.redFireZone = false;
           this.outerScale = { x: 1, y: 1 };
           this.innerScale = { x: 1, y: 1 };
           this.onChange = null;
@@ -324,9 +326,17 @@ var Direction = {
   
       if (!this.settings.outer) {
         const outer = new PIXI.Graphics();
-        outer.beginFill(0x000000);
-        outer.drawCircle(0, 0, 60);
-        outer.alpha = 0.5;
+
+        if (this.settings.redFireZone){
+            outer.lineStyle(10,0xff0000);
+            outer.beginFill(0x000000,0.5);
+            outer.drawCircle(0, 0, 60);
+
+        } else {
+            outer.beginFill(0x000000);
+            outer.drawCircle(0, 0, 60);
+            outer.alpha = 0.5;
+        }
         this.settings.outer = outer;
       }
   
