@@ -199,9 +199,12 @@ var MobileControlsComponent = IgeEntity.extend({
                 x = x / 1.5;
             }
 
+            /*
             if (this.controls[key]) return;
             this.controls[key] = new IgePixiTouchControlStick(w, h)
             .setMode(key);
+            */
+           
         } else {
 
             var text = key.toUpperCase();
