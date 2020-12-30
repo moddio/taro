@@ -189,9 +189,45 @@ var MobileControlsComponent = IgeEntity.extend({
                     inner: PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1609244919482_joystick-handle.png?version=123', { crossOrigin: true }),
                     outerScale: { x: 0.8, y:0.8 },
                     innerScale: { x: 0.5, y:0.5 },
-                    onChange: (data) => {  }
-                    //onStart: () => console.log('start'),
-                    //onEnd: () => console.log('end'),
+                    onChange: (data) => { 
+
+                        if (ige.client.myPlayer) {
+                            
+                            // Endel's joystick angles are in "Maths style" (zero degrees is EAST and positive anticlockwise)
+                            // Convert into compass style angle (zero degrees NORTH and positive clockwise)
+                            var compassAngle = (360-(data.angle-90))  % 360;
+                            
+
+                            // TODO: This is pretty horrible...
+
+                            var isUp = (compassAngle <= 90-45) || (compassAngle >= 270+45);
+                            var isDown = (compassAngle >= 90+45) && (compassAngle <= 270-45);
+                            var isLeft = (compassAngle <= 360-45) && (compassAngle >= 180+45);
+                            var isRight = (compassAngle >= 45) && (compassAngle <= 180-45);
+
+                            if (data.power > 0.5){
+                                if (isUp){
+                                    ige.client.myPlayer.control.keyDown('key','w');
+                                }
+                                if (isDown){
+                                    ige.client.myPlayer.control.keyDown('key','s');
+                                }
+                                if (isLeft){
+                                    ige.client.myPlayer.control.keyDown('key','a');
+                                }
+                                if (isRight){
+                                    ige.client.myPlayer.control.keyDown('key','d');
+                                }
+                            } else {
+                                ige.client.myPlayer.control.keyUp('key','w');
+                                ige.client.myPlayer.control.keyUp('key','a');
+                                ige.client.myPlayer.control.keyUp('key','s');
+                                ige.client.myPlayer.control.keyUp('key','d');
+                            }
+
+                        }
+
+                    }
                 });
                 ige.pixi.mobileControls.addChild(moveStick);
                 moveStick.position.set(x+32, y+12);
@@ -200,7 +236,30 @@ var MobileControlsComponent = IgeEntity.extend({
             if (key == 'lookWheel'){
                 let lookStick = new Joystick({
                     outerScale: { x: 1.2, y:1.2 },
-                    innerScale: { x: 0.5, y:0.5 }
+                    innerScale: { x: 0.5, y:0.5 },
+                    onChange: (data) => { 
+
+                        if (ige.client.myPlayer) {
+                            
+                            // Endel's joystick angles are in "Maths style" (zero degrees is EAST and positive anticlockwise)
+                            // Convert into compass style angle (zero degrees NORTH and positive clockwise)
+                            var compassAngle = -(data.angle-90);
+                            
+                            // simulate mouse movement 10 units away from player (scaled by joystick "power") character but at the angle
+                            var unitTranslate = ige.client.myPlayer.getSelectedUnit()._translate;          
+                            var mx = unitTranslate.x + Math.sin(compassAngle/360 * 2 * Math.PI)*10*data.power;
+                            var my = unitTranslate.y - Math.cos(compassAngle/360 * 2 * Math.PI)*10*data.power;
+
+                            ige.client.myPlayer.control.input.mouse.x = mx;    
+                            ige.client.myPlayer.control.input.mouse.y = my;
+
+                            ige.client.myPlayer.absoluteAngle = compassAngle;
+                            ige.network.send("playerMouseMoved", [mx, my]);
+                            ige.network.send('playerAbsoluteAngle', compassAngle);
+
+                        }
+
+                    }
                 });
                 ige.pixi.mobileControls.addChild(lookStick);
                 lookStick.position.set(x+32, y+12);
@@ -210,7 +269,47 @@ var MobileControlsComponent = IgeEntity.extend({
                 let fireStick = new Joystick({
                     redFireZone: true,
                     outerScale: { x: 1.2, y:1.2 },
-                    innerScale: { x: 0.5, y:0.5 }
+                    innerScale: { x: 0.5, y:0.5 },
+                    onChange: (data) => { 
+
+                        if (ige.client.myPlayer) {
+                            
+                            // Endel's joystick angles are in "Maths style" (zero degrees is EAST and positive anticlockwise)
+                            // Convert into compass style angle (zero degrees NORTH and positive clockwise)
+                            var compassAngle = -(data.angle-90);
+                            
+                            // simulate mouse movement 10 units away from player (scaled by joystick "power") character but at the angle
+                            var unitTranslate = ige.client.myPlayer.getSelectedUnit()._translate;          
+                            var mx = unitTranslate.x + Math.sin(compassAngle/360 * 2 * Math.PI)*10*data.power;
+                            var my = unitTranslate.y - Math.cos(compassAngle/360 * 2 * Math.PI)*10*data.power;
+
+                            ige.client.myPlayer.control.input.mouse.x = mx;    
+                            ige.client.myPlayer.control.input.mouse.y = my;
+
+                            ige.client.myPlayer.absoluteAngle = compassAngle;
+                            ige.network.send("playerMouseMoved", [mx, my]);
+                            ige.network.send('playerAbsoluteAngle', compassAngle);
+                            
+                            // when fire stick is moved to the red ring...
+                            if (data.power > 0.75){
+                                // start firing
+                                ige.client.myPlayer.control.keyDown('mouse','button1');
+                            } else {
+                                // otherwise stop firing
+                                ige.client.myPlayer.control.keyUp('mouse','button1');
+                            }
+
+                        }
+
+                    },
+
+                    onEnd: () => {
+                        // if the player lets go of the fire stick perform a keyup on mouse button1 to stop firing
+                        if (ige.client.myPlayer) {
+                            ige.client.myPlayer.control.keyUp('mouse','button1');
+                        }
+                    }
+
                 });
                 ige.pixi.mobileControls.addChild(fireStick);
                 fireStick.position.set(x+32, y+12);
