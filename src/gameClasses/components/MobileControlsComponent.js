@@ -206,23 +206,47 @@ var MobileControlsComponent = IgeEntity.extend({
                             var isRight = (compassAngle >= 45) && (compassAngle <= 180-45);
 
                             if (data.power > 0.5){
-                                if (isUp){
+                                if (isUp && moveStick._isUp == false){
                                     ige.client.myPlayer.control.keyDown('key','w');
+                                    console.log("UP PRESSED");
                                 }
-                                if (isDown){
+                                if (isDown && moveStick._isDown == false){
                                     ige.client.myPlayer.control.keyDown('key','s');
+                                    console.log("DOWN PRESSED");
                                 }
-                                if (isLeft){
+                                if (isLeft && moveStick._isLeft == false){
                                     ige.client.myPlayer.control.keyDown('key','a');
+                                    console.log("LEFT PRESSED");
                                 }
-                                if (isRight){
+                                if (isRight && moveStick._isRight == false){
                                     ige.client.myPlayer.control.keyDown('key','d');
+                                    console.log("RIGHT PRESSED");
                                 }
+                                moveStick._isUp = isUp;
+                                moveStick._isDown = isDown;
+                                moveStick._isLeft = isLeft;
+                                moveStick._isRight = isRight;
                             } else {
+                              if(moveStick._isUp){
                                 ige.client.myPlayer.control.keyUp('key','w');
+                                console.log("UP RELEASED");
+                              }
+                              if (moveStick._isLeft){
                                 ige.client.myPlayer.control.keyUp('key','a');
+                                console.log("LEFT RELEASED");
+                              }
+                              if (moveStick._isDown){
                                 ige.client.myPlayer.control.keyUp('key','s');
+                                console.log("DOWN RELEASED");
+                              }
+                              if (moveStick._isRight){
                                 ige.client.myPlayer.control.keyUp('key','d');
+                                console.log("RIGHT RELEASED");
+                              }
+                                moveStick._isUp = false;
+                                moveStick._isDown = false;
+                                moveStick._isLeft = false;
+                                moveStick._isRight = false;
                             }
 
                         }
@@ -231,6 +255,13 @@ var MobileControlsComponent = IgeEntity.extend({
                 });
                 ige.pixi.mobileControls.addChild(moveStick);
                 moveStick.position.set(x+32, y+12);
+
+                moveStick._isUp = false;
+                moveStick._isDown = false;
+                moveStick._isLeft = false;
+                moveStick._isRight = false;
+
+
             }
 
             if (key == 'lookWheel'){
