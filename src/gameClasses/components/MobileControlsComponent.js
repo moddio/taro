@@ -204,27 +204,45 @@ var MobileControlsComponent = IgeEntity.extend({
 
                             // TODO: This is pretty horrible...
 
-                            var isUp = (compassAngle <= 90-45) || (compassAngle >= 270+45);
-                            var isDown = (compassAngle >= 90+45) && (compassAngle <= 270-45);
-                            var isLeft = (compassAngle <= 360-45) && (compassAngle >= 180+45);
-                            var isRight = (compassAngle >= 45) && (compassAngle <= 180-45);
+                            var tolerance = 12;
+
+                            var isUp = (compassAngle <= 90-tolerance) || (compassAngle >= 270+tolerance);
+                            var isDown = (compassAngle >= 90+tolerance) && (compassAngle <= 270-tolerance);
+                            var isLeft = (compassAngle <= 360-tolerance) && (compassAngle >= 180+tolerance);
+                            var isRight = (compassAngle >= tolerance) && (compassAngle <= 180-tolerance);
 
                             if (data.power > 0.5){
                                 if (isUp && moveStick._isUp == false){
                                     ige.client.myPlayer.control.keyDown('key','w');
                                     console.log("UP PRESSED");
                                 }
+                                if (!isUp && moveStick._isUp == true){
+                                  ige.client.myPlayer.control.keyUp('key','w');
+                                  console.log("UP RELEASED");
+                                }
                                 if (isDown && moveStick._isDown == false){
                                     ige.client.myPlayer.control.keyDown('key','s');
                                     console.log("DOWN PRESSED");
+                                }
+                                if (!isDown && moveStick._isDown == true){
+                                  ige.client.myPlayer.control.keyUp('key','s');
+                                  console.log("DOWN RELEASED");
                                 }
                                 if (isLeft && moveStick._isLeft == false){
                                     ige.client.myPlayer.control.keyDown('key','a');
                                     console.log("LEFT PRESSED");
                                 }
+                                if (!isLeft && moveStick._isLeft == true){
+                                  ige.client.myPlayer.control.keyUp('key','a');
+                                  console.log("LEFT RELEASED");
+                                }
                                 if (isRight && moveStick._isRight == false){
                                     ige.client.myPlayer.control.keyDown('key','d');
                                     console.log("RIGHT PRESSED");
+                                }
+                                if (!isRight && moveStick._isRight == true){
+                                  ige.client.myPlayer.control.keyUp('key','d');
+                                  console.log("RIGHT RELEASED");
                                 }
                                 moveStick._isUp = isUp;
                                 moveStick._isDown = isDown;
