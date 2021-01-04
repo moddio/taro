@@ -26,11 +26,15 @@ var MobileControlsComponent = IgeEntity.extend({
             width: (canvas.style.width && parseInt(canvas.style.width.replace('px', ''))) || canvas.width
         };
         $(window).on("orientationchange load resize", function () {
+
+            // Adam 4-Jan-2021 .... don't think we need this... not for mobile controls anyway - so I'm commenting it out
+            /*
             var canvas = document.getElementById('igeFrontBuffer');
             this.canvas = {
                 height: (canvas.style.height && parseInt(canvas.style.height.replace('px', ''))) || canvas.height,
                 width: (canvas.style.width && parseInt(canvas.style.width.replace('px', ''))) || canvas.width
             };
+            */         
 
             if (ige.mobileControls) {
                 // and this unit is our player
