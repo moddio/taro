@@ -116,6 +116,9 @@ var IgeInitPixi = IgeClass.extend({
             ige.pixi.app.renderer.resize(currentWindowWidth, currentWindowHeight);
             ige.pixi.initialWindowWidth = currentWindowWidth;
             ige.pixi.initialWIndowHeight = currentWindowHeight;
+
+            // mobile controls anchor
+            ige.pixi.mobileControls.y = window.innerHeight - 540;
         }
     },
     viewport: function () {
