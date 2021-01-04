@@ -184,6 +184,8 @@ var MobileControlsComponent = IgeEntity.extend({
         w = w || 128;
         h = h || 128;
 
+        var self = this;
+
         var isStick = (key == 'movementWheel' || key == 'lookWheel' || key == 'lookAndFireWheel');
         if (isStick) {
 
@@ -212,47 +214,36 @@ var MobileControlsComponent = IgeEntity.extend({
 
                             if (data.power > 0.5){
                                 if (isUp && moveStick._isUp == false){
-                                    //ige.client.myPlayer.control.keyDown('key','w');
-                                    console.log("UP PRESSED");
+                                    if (self.debug) console.log("UP PRESSED");
                                     unit.ability.moveUp();
                                 }
                                 if (!isUp && moveStick._isUp == true){
-                                  //ige.client.myPlayer.control.keyUp('key','w');
-                                  console.log("UP RELEASED");
+                                  if (self.debug) console.log("UP RELEASED");
                                   if (unit.direction.y == -1) unit.ability.stopMovingY();
                                 }
                                 if (isDown && moveStick._isDown == false){
-                                    //ige.client.myPlayer.control.keyDown('key','s');
-                                    console.log("DOWN PRESSED");
+                                  if (self.debug) console.log("DOWN PRESSED");
                                     unit.ability.moveDown();
                                 }
                                 if (!isDown && moveStick._isDown == true){
-                                  //ige.client.myPlayer.control.keyUp('key','s');
-                                  console.log("DOWN RELEASED");
+                                  if (self.debug) console.log("DOWN RELEASED");
                                   if (unit.direction.y == 1) unit.ability.stopMovingY();
                                 }
                                 if (isLeft && moveStick._isLeft == false){
-                                    //ige.client.myPlayer.control.keyDown('key','a');
-                                    console.log("LEFT PRESSED");
-                                    unit.ability.moveLeft();
+                                  if (self.debug) console.log("LEFT PRESSED");
+                                  unit.ability.moveLeft();
                                 }
                                 if (!isLeft && moveStick._isLeft == true){
-                                  //ige.client.myPlayer.control.keyUp('key','a');
-                                  console.log("LEFT RELEASED");
+                                  if (self.debug) console.log("LEFT RELEASED");
                                   if (unit.direction.x == -1) unit.ability.stopMovingX();
                                 }
                                 if (isRight && moveStick._isRight == false){
-                                    //ige.client.myPlayer.control.keyDown('key','d');
-                                    console.log("RIGHT PRESSED");
-                                    unit.ability.moveRight();
-
-
+                                  if (self.debug) console.log("RIGHT PRESSED");
+                                  unit.ability.moveRight();
                                 }
                                 if (!isRight && moveStick._isRight == true){
-                                  //ige.client.myPlayer.control.keyUp('key','d');
-                                  console.log("RIGHT RELEASED");
+                                  if (self.debug) console.log("RIGHT RELEASED");
                                   if (unit.direction.x == 1) unit.ability.stopMovingX();
-
                                 }
                                 moveStick._isUp = isUp;
                                 moveStick._isDown = isDown;
@@ -260,23 +251,19 @@ var MobileControlsComponent = IgeEntity.extend({
                                 moveStick._isRight = isRight;
                             } else {
                               if(moveStick._isUp){
-                                //ige.client.myPlayer.control.keyUp('key','w');
-                                console.log("UP RELEASED");
+                                if (self.debug) console.log("UP RELEASED");
                                 if (unit.direction.y == -1) unit.ability.stopMovingY();
                               }
                               if (moveStick._isLeft){
-                                //ige.client.myPlayer.control.keyUp('key','a');
-                                console.log("LEFT RELEASED");
+                                if (self.debug) console.log("LEFT RELEASED");
                                 if (unit.direction.x == -1) unit.ability.stopMovingX();
                               }
                               if (moveStick._isDown){
-                                //ige.client.myPlayer.control.keyUp('key','s');
-                                console.log("DOWN RELEASED");
+                                if (self.debug) console.log("DOWN RELEASED");
                                 if (unit.direction.y == 1) unit.ability.stopMovingY();
                               }
                               if (moveStick._isRight){
-                                //ige.client.myPlayer.control.keyUp('key','d');
-                                console.log("RIGHT RELEASED");
+                                if (self.debug) console.log("RIGHT RELEASED");
                                 if (unit.direction.x == 1) unit.ability.stopMovingX();
                               }
                                 moveStick._isUp = false;
@@ -291,23 +278,19 @@ var MobileControlsComponent = IgeEntity.extend({
                     onEnd: () => {
                       var unit = ige.client.myPlayer.getSelectedUnit();
                       if(moveStick._isUp){
-                        //ige.client.myPlayer.control.keyUp('key','w');
-                        console.log("UP RELEASED");
+                        if (self.debug) console.log("UP RELEASED");
                         if (unit.direction.y == -1) unit.ability.stopMovingY();
                       }
                       if (moveStick._isLeft){
-                        //ige.client.myPlayer.control.keyUp('key','a');
-                        console.log("LEFT RELEASED");
+                        if (self.debug) console.log("LEFT RELEASED");
                         if (unit.direction.x == -1) unit.ability.stopMovingX();
                       }
                       if (moveStick._isDown){
-                        //ige.client.myPlayer.control.keyUp('key','s');
-                        console.log("DOWN RELEASED");
+                        if (self.debug) console.log("DOWN RELEASED");
                         if (unit.direction.y == 1) unit.ability.stopMovingY();
                       }
                       if (moveStick._isRight){
-                        //ige.client.myPlayer.control.keyUp('key','d');
-                        console.log("RIGHT RELEASED");
+                        if (self.debug) console.log("RIGHT RELEASED");
                         if (unit.direction.x == 1) unit.ability.stopMovingX();
                       }
                         moveStick._isUp = false;
