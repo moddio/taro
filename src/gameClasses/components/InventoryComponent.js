@@ -248,8 +248,6 @@ var InventoryComponent = IgeEntity.extend({
 
 		if (mappedSlot && mappedSlots.length == 1) { // give slot-specific message when item had ONE mapped slot. (e.g. glock in slot 2. Not slot 2 AND 3)
 			self._entity.reasonForFailingToPickUpItem = "slot " + mappedSlot + " is occupied";
-		} else {
-			self._entity.reasonForFailingToPickUpItem = "no room in inventory";
 		}
 		return undefined;
 	},
