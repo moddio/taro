@@ -42,9 +42,21 @@ var IgeInitPixi = IgeClass.extend({
         this.box2dDebug.zIndex = 10;
         this.box2dDebug.tileMap = true;
         this.world.addChild(this.box2dDebug);
-        this.world.addChild(this.mobileControls);
+        //this.world.addChild(this.mobileControls);
         this.isUpdateLayersOrderQueued = false;
+		
 
+		// make the mobileControls container fit to width and anchored to bottom
+		this.mobileControls.y = window.innerHeight - 540;
+		var scaleToFit = window.innerWidth/960;
+		this.mobileControls.scale.set(scaleToFit,scaleToFit);
+		
+		/*
+		var test1 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png', { crossOrigin: true });
+		test1.alpha = 0.2;
+		this.mobileControls.addChild(test1);
+		*/
+		 
         this.ticker = PIXI.Ticker.shared;
         this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
 
@@ -104,6 +116,9 @@ var IgeInitPixi = IgeClass.extend({
             ige.pixi.app.renderer.resize(currentWindowWidth, currentWindowHeight);
             ige.pixi.initialWindowWidth = currentWindowWidth;
             ige.pixi.initialWIndowHeight = currentWindowHeight;
+
+            // mobile controls anchor
+            ige.pixi.mobileControls.y = window.innerHeight - 540;
         }
     },
     viewport: function () {
@@ -143,6 +158,9 @@ var IgeInitPixi = IgeClass.extend({
 
         viewport.addChild(this.world);
         this.app.stage.addChild(viewport);
+		
+		// mobile controls should not follow the viewport...
+		this.app.stage.addChild(this.mobileControls);
 
         var cull = new PIXI.extras.cull.Simple();
         cull.addList(this.world.children);

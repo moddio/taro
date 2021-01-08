@@ -1501,12 +1501,38 @@ var VariableComponent = IgeEntity.extend({
 						fromIndex = Math.max(Math.min(fromIndex, string.length), 0);
 						toIndex = Math.max(Math.min(toIndex, string.length), 0);
 
+						// This looks like trying to force a start index from [0, +inf], but actually puts it in [-1, +inf]. Why is it subtracted two times? (once before, now the second time here)
 						returnValue = string.substring(fromIndex - 1, toIndex);
 					}
 					else {
 						returnValue = '';
 					}
 
+					break;
+				case 'stringStartsWith':
+					var sourceString = self.getValue(text.sourceString, vars);
+					var patternString = self.getValue(text.patternString, vars);
+					
+					if (sourceString && patternString) {
+						returnValue = sourceString.startsWith(patternString);
+					}
+					break;
+				case 'stringEndsWith':
+					var sourceString = self.getValue(text.sourceString, vars);
+					var patternString = self.getValue(text.patternString, vars);
+					
+					if (sourceString && patternString) {
+						returnValue = sourceString.endsWith(patternString);
+					}
+					break;
+				case 'replaceValuesInString':
+					var sourceString = self.getValue(text.sourceString, vars);
+					var matchString = self.getValue(text.matchString, vars);
+					var newString = self.getValue(text.newString, vars);
+						
+					if (sourceString && matchString && newString) {
+						returnValue = sourceString.split(matchString).join(newString);
+					}
 					break;
 				case 'concat':
 					var stringA = self.getValue(text.textA, vars)

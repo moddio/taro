@@ -464,6 +464,18 @@ var ActionComponent = IgeEntity.extend({
                             }, player._stats.clientId);
                         }
                         break;
+                    case 'showDismissibleInputModalToPlayer':
+                        var player = ige.variable.getValue(action.player, vars)
+                        var inputLabel = ige.variable.getValue(action.inputLabel, vars)
+
+                        if (player && player._stats && player._stats.clientId) {
+                            ige.network.send("ui", {
+                                command: 'showInputModal',
+                                fieldLabel: inputLabel,
+                                isDismissible: true
+                            }, player._stats.clientId);
+                        }
+                        break;
                     case 'showCustomModalToPlayer':
                         var player = ige.variable.getValue(action.player, vars)
                         var htmlContent = ige.variable.getValue(action.htmlContent, vars) || '';

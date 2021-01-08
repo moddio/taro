@@ -64,8 +64,6 @@ var igeClientConfig = {
 		'pixi/IgePixiFloatingText.js',
 		'pixi/IgePixiChatBubble.js',
 		'pixi/PixiAttributeBar.js',
-		'pixi/IgePixiTouchControlStick.js',
-		'pixi/IgePixiTouchControlButton.js',
 
 		'/client.js',
 		'/index.js'
