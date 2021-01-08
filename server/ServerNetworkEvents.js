@@ -512,7 +512,7 @@ var ServerNetworkEvents = {
 					fromItem._stats.controls.permittedInventorySlots == undefined ||
 					fromItem._stats.controls.permittedInventorySlots.length == 0 ||
 					fromItem._stats.controls.permittedInventorySlots.includes(data.to + 1) ||
-					data.to + 1 > unit.inventory.getTotalInventorySize() // any item can be moved into backpack slots
+					data.to + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
 				)
 			) {
 				fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
