@@ -563,7 +563,9 @@ var Direction = {
         dragging = true;
         that.inner.alpha = 1;
   
-        that.settings.onStart?.();
+		if (that.settings.onStart){
+			that.settings.onStart();
+		}
       }
   
       function onDragEnd(event) {
@@ -574,7 +576,9 @@ var Direction = {
         dragging = false;
         that.inner.alpha = that.innerAlphaStandby;
   
-        that.settings.onEnd?.();
+		if (that.settings.onEnd){
+			that.settings.onEnd();
+		}
       }
   
       function onDragMove(event) {
@@ -626,8 +630,10 @@ var Direction = {
           }
           that.inner.position = centerPoint;
           power = that.getPower(centerPoint);
-          that.settings.onChange?.({ angle, direction, power, });
-          return;
+		  if (that.settings.onChange){
+			that.settings.onChange({ angle, direction, power, });
+          }
+		  return;
         }
   
         if (sideY == 0) {
@@ -643,7 +649,9 @@ var Direction = {
   
           that.inner.position = centerPoint;
           power = that.getPower(centerPoint);
-          that.settings.onChange?.({ angle, direction, power, });
+		  if (that.settings.onChange){
+			that.settings.onChange({ angle, direction, power, });
+		  }
           return;
         }
   
@@ -691,7 +699,9 @@ var Direction = {
         direction = that.getDirection(centerPoint);
         that.inner.position = centerPoint;
   
-        that.settings.onChange?.({ angle, direction, power, });
+		if (that.settings.onChange){
+			that.settings.onChange({ angle, direction, power, });
+		}
       };
   
       this.on('pointerdown', onDragStart)
