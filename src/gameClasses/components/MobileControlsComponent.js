@@ -488,10 +488,10 @@ var Direction = {
   
   class Joystick extends PIXI.Container {
   
-    innerAlphaStandby = 0.5;
-  
     constructor(opts) {
       super();
+	  
+	  this.innerAlphaStandby = 0.5;
       
       this.settings = new JoystickSettings();
   
