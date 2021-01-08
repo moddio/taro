@@ -113,14 +113,6 @@ var MobileControlsComponent = IgeEntity.extend({
             .height(540)
             .mount(this.mobileControls);
 
-        // for testing layout / scaling is working OK
-        if (this.debug) this.guide.texture(self.textures.guide);
-
-        if (this.debug) {
-            this.addButton('1', 0, 0, 64, 64);
-            this.addButton('2', 960 - 64, 540 - 64, 64, 64);
-        }
-
         return this;
 
     },
