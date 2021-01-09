@@ -5101,6 +5101,8 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
+        // interpolate using client side's physics frames. (this doesn't use snapshot streamed from the server)
+        // this is necessary, because physics don't run at 60 fps on clientside
         if (
             ige.physics && (
                 // 1. we're using cspMovement (experimental) for my own unit OR
@@ -5145,8 +5147,8 @@ var IgeEntity = IgeObject.extend({
         //     console.log(prevKeyFrame[0], ige.renderTime, nextKeyFrame[0])
         //     // console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
         // }
-        // interpolate server-streamed translation data
-        
+
+        // interpolate using snapshots streamed from the server.
         if (prevTransform != undefined && nextTransform != undefined && 
             prevKeyFrame[0] != nextKeyFrame[0] && 
             prevKeyFrame[0] < ige.renderTime && ige.renderTime < nextKeyFrame[0]

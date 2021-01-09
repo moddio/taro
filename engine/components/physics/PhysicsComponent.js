@@ -560,6 +560,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 				self._world.step(timeElapsedSinceLastStep / 1000, 8, 3); // Call the world step; frame-rate, velocity iterations, position iterations
 				
 				var tempBod = self._world.getBodyList();
+
+				// iterate through every physics body
 				while (tempBod && typeof tempBod.getNext == 'function') {
 					// Check if the body is awake && not static						
 					if (tempBod.m_type !== 'static' && tempBod.isAwake()) {
@@ -621,7 +623,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 							}
 
 							if (ige.isServer) {
-								// execute server-side reconciliation if the position difference between server & client is less than 100px continuously for 10 times in a row
+
+								/* server-side reconciliation */
+								// hard-correct client entity's position (teleport) if the distance between server & client is greater than 100px 
+								// continuously for 10 frames in a row
 								if (ige.game.cspEnabled && entity.clientStreamedPosition) {
 									var targetX = entity.clientStreamedPosition[0]
 									var targetY = entity.clientStreamedPosition[1]
@@ -685,6 +690,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// 				console.log(ige._currentTime, "reconciling to server");
 									// 			}
 									
+									/* client-side reconciliation */
 									// skip through all movementHistories that are too old
 									while (entity.movementHistory.length > 0 && entity.movementHistory[0][0] < ige._currentTime - ige.network.bestLatency - 50) {
 										var history = entity.movementHistory.shift()[1];
@@ -704,8 +710,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 										// 		xDiff.toFixed(0), 
 										// 		yDiff.toFixed(0)
 										// 	);
-										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
-										
+
+										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount										
 										if (distance > 100) {
 											entity.discrepancyCount++
 											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.

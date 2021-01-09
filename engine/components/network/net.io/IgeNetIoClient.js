@@ -502,6 +502,7 @@ var IgeNetIoClient = {
 			// see how far apart the newly received snapshot is from currentTime
 			if (snapshot.length) {
 				var obj = {};
+				// iterate through each entities
 				for (var i = 0; i < snapshot.length; i++) {
 					var ciDecoded = snapshot[i][0].charCodeAt(0);
 					var commandName = this._networkCommandsIndex[ciDecoded];
@@ -513,9 +514,9 @@ var IgeNetIoClient = {
 						entityData.splice(0, 1); // removing entityId
 
 						entityData = [
-							parseInt(entityData[0], 16),
-							parseInt(entityData[1], 16),
-							parseInt(entityData[2], 16) / 1000,
+							parseInt(entityData[0], 16), // x
+							parseInt(entityData[1], 16), // y
+							parseInt(entityData[2], 16) / 1000, // rotation
 						];
 
 						obj[entityId] = entityData;
@@ -542,20 +543,6 @@ var IgeNetIoClient = {
 							ige.snapshots.splice(spliceIndex, 0, [newSnapshotTimeStamp, obj]);
 						}
 					}
-					
-					// console.log(ige.snapshots.length, (ige.prevSnapshot)?ige.prevSnapshot[0]:0, ige.renderTime, newSnapshotTimeStamp)
-					
-					// console.log("new snapshot", obj)
-					// for (id in obj) {
-					// 	var entity = ige.$(id)
-					// 	console.log(entity._category, obj[id])
-					// }
-
-					// var x = ige.nextSnapshot[1][ige.client.selectedUnit.id()][0]
-					// var distanceTravelled = x - ige.lastX;
-					// console.log(newSnapshotTimeStamp - ige.lastSnapshotTime, ige.renderTime.toFixed(0), ige.nextSnapshot[0], (ige.nextSnapshot[0] - ige.renderTime).toFixed(0), x, distanceTravelled / (newSnapshotTimeStamp - ige.lastSnapshotTime))
-					// ige.lastX = x
-					// ige.lastSnapshotTime = newSnapshotTimeStamp;
 				}
 			}
 
