@@ -33,6 +33,7 @@ var defaultConfig = [
     { name: 'ScoreboardComponent', path: '../src/gameClasses/components/ui/ScoreboardComponent' },
     { name: 'AdComponent', path: '../src/gameClasses/components/ui/AdComponent' },
     { name: 'RegionUi', path: '../src/gameClasses/components/ui/RegionUi' },
+    { name: 'VideoChat', path: '../src/gameClasses/components/ui/VideoChatComponent' },
     { name: 'SoundComponent', path: '../src/gameClasses/components/SoundComponent' },
 
     { name: 'AbilityComponent', path: '../src/gameClasses/components/unit/AbilityComponent' },
