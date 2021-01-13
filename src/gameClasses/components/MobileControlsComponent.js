@@ -255,9 +255,7 @@ var MobileControlsComponent = IgeEntity.extend({
 
             if (key == 'movementWheel'){
                 let moveStick = new Joystick({
-                    outer: PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1609245667104_joystick.png?version=123', { crossOrigin: true }),
-                    inner: PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1609244919482_joystick-handle.png?version=123', { crossOrigin: true }),
-                    outerScale: { x: 0.8, y:0.8 },
+                    outerScale: { x: 1.2, y:1.2 },
                     innerScale: { x: 0.5, y:0.5 },
                     onChange: (data) => { 
 
