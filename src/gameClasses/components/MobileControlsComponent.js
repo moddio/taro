@@ -450,10 +450,6 @@ var MobileControlsComponent = IgeEntity.extend({
 			
 			var iconUrl = null;
 			if (text == "BUTTON1") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png";
-			if (text == "E") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494886090_arrowUp.png";
-			if (text == "G") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494905428_arrowDown.png";
-			if (text == "P") iconUrl = "https://cache.modd.io/asset/spriteImage/1610498056890_shoppingCart.png";
-			if (text == "B") iconUrl = "https://cache.modd.io/asset/spriteImage/1610498089555_backpackcc0.png";
 			
 			if (iconUrl){
 				var icon = new PIXI.Sprite.from(iconUrl, { crossOrigin: true });
