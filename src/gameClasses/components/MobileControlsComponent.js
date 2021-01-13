@@ -448,10 +448,25 @@ var MobileControlsComponent = IgeEntity.extend({
 			newButton.y = y;
 			newButton._key = key.toLowerCase();
 			
-			var label = new PIXI.Text(text, { fontFamily: 'Arial', fontSize: 24, fill: 0xffffff, align: 'center' });
-			ige.pixi.mobileControls.addChild(label);
-			label.anchor.set(0.5);
-			label.position.set(x+(w / 2), y+(h / 2));
+			var iconUrl = null;
+			if (text == "BUTTON1") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png";
+			if (text == "E") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494886090_arrowUp.png";
+			if (text == "G") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494905428_arrowDown.png";
+			if (text == "P") iconUrl = "https://cache.modd.io/asset/spriteImage/1610498056890_shoppingCart.png";
+			if (text == "B") iconUrl = "https://cache.modd.io/asset/spriteImage/1610498089555_backpackcc0.png";
+			
+			if (iconUrl){
+				var icon = new PIXI.Sprite.from(iconUrl, { crossOrigin: true });
+				ige.pixi.mobileControls.addChild(icon);
+				icon.scale.set(0.5);
+				icon.anchor.set(0.5);
+				icon.position.set(x+(w / 2), y+(h / 2));
+			} else {
+				var label = new PIXI.Text(text, { fontFamily: 'Arial', fontSize: 24, fill: 0xffffff, align: 'center' });
+				ige.pixi.mobileControls.addChild(label);
+				label.anchor.set(0.5);
+				label.position.set(x+(w / 2), y+(h / 2));
+			}
 			
 			newButton.isButton = true;
 			newButton.interactive = true;
