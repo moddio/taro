@@ -41,7 +41,6 @@ var AttributeComponent = IgeEntity.extend({
 		var self = this
 
 		var attributes = self._entity._stats.attributes
-		var attributeTypes = ige.game.data.attributeTypes;
 		for (var attributeTypeId in attributes) {
 			var attr = attributes[attributeTypeId];
 			// if unit is my unit, update UI
@@ -89,7 +88,6 @@ var AttributeComponent = IgeEntity.extend({
 							if (selectedAttribute && bonus) {
 								var currentAttributeValue = parseFloat(self.getValue(attrId)) || 1;
 								var maxValue = parseFloat(selectedAttribute.max);
-								var defaultMaxValue = defaultUnitAttributes && defaultUnitAttributes[attrId] ? defaultUnitAttributes[attrId].max : 0;
 								if (currentAttributeValue != undefined && bonus && unit._stats.attributes[attrId]) {
 									if (removeAttribute) {
 										if (bonus.type === 'percentage') {
@@ -130,8 +128,7 @@ var AttributeComponent = IgeEntity.extend({
 								var currentAttributeValue = parseFloat(player.attribute.getValue(attrId)) || 1;
 								var bonus = playerAttributePassiveBonuses[attrId];
 								var maxValue = parseFloat(selectedAttribute.max);
-								var defaultMaxValue = defaultPlayerAttributes && defaultPlayerAttributes[attrId] ? defaultPlayerAttributes[attrId].max : 0;
-
+								
 								if (currentAttributeValue != undefined && bonus && player._stats.attributes[attrId]) {
 									//this condition check if attribute value is directly applyed from server side then not update on client side
 									if (removeAttribute) {
@@ -317,7 +314,6 @@ var AttributeComponent = IgeEntity.extend({
 	},
 
 	setMax: function (attrId, value) {
-		var self = this;
 		var attributes = this._entity._stats.attributes;
 		if (attributes) {
 			var attribute = attributes[attrId];

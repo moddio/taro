@@ -498,6 +498,8 @@ var Server = IgeClass.extend({
 						ige.addComponent(SoundComponent);
 						ige.addComponent(RegionManager);
 
+						ige.addComponent(VideoChatComponent);
+
 						let map = ige.scaleMap(_.cloneDeep(ige.game.data.map));
 						ige.map.load(map)
 

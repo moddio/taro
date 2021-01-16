@@ -4760,13 +4760,6 @@ var IgeEntity = IgeObject.extend({
         return this._streamEmitCreated;
     },
 
-    _getDistance: function (A, B) {
-        var xDiff = A.x - B.x;
-        var yDiff = A.y - B.y;
-
-        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-    },
-
     /**
      * Queues stream data for this entity to be sent to the
      * specified client id or array of client ids.
