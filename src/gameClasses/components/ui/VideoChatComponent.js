@@ -20,7 +20,7 @@ var VideoChatComponent = IgeEntity.extend({
 		for (groupId in self.groups) {
 			var group = self.groups[groupId];
 			var polygons = self.getPolygons(group.playerIds)
-			group.centoid = self.getCentoid(polygons);
+			self.groups[groupId].centoid = self.getCentoid(polygons);
 			console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
 		}
 
@@ -109,7 +109,7 @@ var VideoChatComponent = IgeEntity.extend({
 						var playerId = playerIds[i]
 						var player = ige.$(playerId);
 						if (player) {
-							player.vcGroupId = undefined;
+							this.removePlayerFromGroup(playerId)
 						}
 					}
 				}
@@ -125,10 +125,10 @@ var VideoChatComponent = IgeEntity.extend({
 			this.groups[groupId].playerIds.push(playerId)
 			player.vcGroupId = groupId;
 			console.log("Adding player ", player._stats.name, "(", playerId,") from the group", groupId)
+			ige.network.send("videoChat", {command: "joinGroup", groupId: groupId}, player._stats.clientId)
 		} else {
 			console.log("Cannot add player to videoChat group. Player doesn't exist!")
-		}
-		
+		}		
 	},
 
 	removePlayerFromGroup: function(playerId) {
@@ -141,7 +141,8 @@ var VideoChatComponent = IgeEntity.extend({
 						if (playerIds[i] == playerId) {
 							console.log("Removing player ", player._stats.name, "(", playerId,") from the group", player.vcGroupId)
 							this.groups[player.vcGroupId].playerIds.splice(i, 1);
-
+							ige.network.send("videoChat", {command: "leaveGroup"}, player._stats.clientId)
+							
 							// if there's only 1 person in a group, destroy the group
 							if (this.groups[player.vcGroupId].playerIds.length <= 1) {
 								this.destroyGroup(player.vcGroupId)

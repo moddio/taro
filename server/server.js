@@ -608,6 +608,7 @@ var Server = IgeClass.extend({
 		ige.network.define('sound', self._onSomeBullshit);
 		ige.network.define('particle', self._onSomeBullshit);
 		ige.network.define('camera', self._onSomeBullshit);
+		ige.network.define('videoChat', self._onSomeBullshit);
 
 		ige.network.define('gameSuggestion', self._onSomeBullshit);
 		ige.network.define('minimap', self._onSomeBullshit);

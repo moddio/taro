@@ -765,6 +765,7 @@ var Client = IgeClass.extend({
         ige.network.define('ui', self._onUi);
         ige.network.define('playAd', self._onPlayAd);
         ige.network.define('buySkin', self._onBuySkin);
+        ige.network.define('videoChat', self._onVideoChat);
 
         ige.network.define('devLogs', self._onDevLogs);
         ige.network.define('errorLogs', self._onErrorLogs);

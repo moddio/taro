@@ -285,6 +285,10 @@ var ClientNetworkEvents = {
         ige.ad.play(data);
     },
 
+    _onVideoChat: function (data) {
+        console.log("videoChat", data)
+    },
+
     _onUserJoinedGame: function (data) {
         var user = data.user;
         var server = data.server;
