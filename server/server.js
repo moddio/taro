@@ -347,7 +347,7 @@ var Server = IgeClass.extend({
 	},
 
 	// run a specific game in this server
-	startGame: function () {
+	startGame: function (gameJson) {
 		console.log("ige.server.startGame()")
 		var self = this;
 
@@ -396,12 +396,16 @@ var Server = IgeClass.extend({
 				domain = global.beUrl;
 			}
 
-			var gameUrl = domain + "/api/game-client/" + ige.server.gameId + '/?source=gs';
-
 			console.log("connecting to BE:", global.beUrl)
-			console.log("gameUrl", gameUrl)
+			
 			var promise;
-			if (ige.server.gameId) {
+			
+			if (gameJson) {
+				promise = Promise.resolve(gameJson);
+			}
+			else if (ige.server.gameId) {
+				var gameUrl = domain + "/api/game-client/" + ige.server.gameId + '/?source=gs';
+				console.log("gameUrl", gameUrl)
 				promise = self.loadGameJSON(gameUrl);
 			} else {
 				promise = new Promise(function (resolve, reject) {
@@ -418,6 +422,7 @@ var Server = IgeClass.extend({
 					resolve(data);
 				});
 			}
+			
 			promise.then((game) => {
 				ige.addComponent(GameComponent)
 
