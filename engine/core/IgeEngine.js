@@ -2121,6 +2121,12 @@ var IgeEngine = IgeEntity.extend({
 						console.log(self.now, self.startedAt, age, lifeSpan, age > lifeSpan);
 					}
 					if (age > lifeSpan) {
+						console.log({
+							lifeSpan,
+							age,
+							now: self.now,
+							startedAt: self.startedAt
+						});
 						ige.server.kill("server lifespan expired " + lifeSpan);
 					}
 				}
