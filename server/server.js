@@ -425,6 +425,7 @@ var Server = IgeClass.extend({
 			
 			promise.then((game) => {
 				ige.addComponent(GameComponent)
+				self.gameStartedAt = new Date();
 
 				ige.game.data = game.data
 				ige.game.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
