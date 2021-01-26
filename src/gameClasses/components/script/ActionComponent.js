@@ -1133,8 +1133,8 @@ var ActionComponent = IgeEntity.extend({
                         break;
                     
                     case 'setItemFireRate':
-                        var item = ige.variable.getValue(action.entity, vars)
-                        var value = ige.variable.getValue(action.value, vars)
+                        var item = ige.variable.getValue(action.item, vars)
+                        var value = ige.variable.getValue(action.number, vars)
 
                         if (item && item._category == 'item') {
                             item.streamUpdateData([{ fireRate: value }]);
