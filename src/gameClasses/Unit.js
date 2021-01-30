@@ -1642,7 +1642,11 @@ var Unit = IgeEntityBox2d.extend({
                         this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor &&
                         this._stats.currentBody && !this._stats.currentBody.fixedRotation
                     ) {
-                        self.rotateTo(0, 0, self.angleToTarget);
+                        if(this._stats.controls.absoluteRotation){
+                            self.rotateTo(0, 0, ownerPlayer.absoluteAngle);
+                        }else{
+                            self.rotateTo(0, 0, self.angleToTarget);
+                        }
                     }
                 }
 
