@@ -37,7 +37,12 @@ var PlayerUiComponent = IgeEntity.extend({
 		});
 
 		$('#player-input-modal').on('shown.bs.modal', function () {
-			$("#player-input-field").focus();
+			if (self.isDismissibleInputModalShown) {
+				$("#player-input-cancel").focus();
+			}
+			else {
+				$("#player-input-field").focus();
+			}
 		});
 
 		$('button#player-input-submit').on('click', function () {
@@ -132,6 +137,7 @@ var PlayerUiComponent = IgeEntity.extend({
 		var self = this;
 
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
+		self.isDismissibleInputModalShown = config.isDismissible;
 
 		$('#player-input-field-label').html(config.fieldLabel || 'Field');
 		$('#player-input-field').val('');
