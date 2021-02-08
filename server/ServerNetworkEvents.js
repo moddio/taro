@@ -666,7 +666,7 @@ var ServerNetworkEvents = {
 
 	_onPlayerCustomInput: function (data, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId)
-		if (player) {
+		if (player && data && data.status === 'submitted') {
 			player.lastCustomInput = data.inputText
 			ige.trigger.fire("playerCustomInput", { playerId: player.id() })
 		}

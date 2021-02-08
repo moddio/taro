@@ -47,7 +47,7 @@ var PlayerUiComponent = IgeEntity.extend({
 		});
 
 		$('button#player-input-cancel').on('click', function () {
-			self.pressedButton = true;
+			self.pressedButton = false;
 			ige.network.send('playerCustomInput', { status: 'cancelled' });
 			$('#player-input-modal').modal('hide');
 		});
