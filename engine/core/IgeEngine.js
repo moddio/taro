@@ -174,6 +174,14 @@ var IgeEngine = IgeEntity.extend({
 		return lifeSpan;
 	},
 
+	getIdleTimeoutMs: function () {
+		var defaultValue = 5;
+		var idleTimeoutHours = ige.server.tier == '0' ? ige.game.data.defaultData.privateServerIdleTimeout : 0;
+		var timeoutMins = idleTimeoutHours ? idleTimeoutHours * 60 : defaultValue;
+
+		return timeoutMins * 60 * 1000;
+	},
+
 	/**
 	 * Returns an object from the engine's object register by
 	 * the object's id. If the item passed is not a string id
@@ -959,6 +967,7 @@ var IgeEngine = IgeEntity.extend({
 				}
 
 				if (ige.isServer) {
+					this.emptyTimeLimit = this.getIdleTimeoutMs();
 					requestAnimFrame(ige.engineStep);
 				}
 
@@ -2098,6 +2107,7 @@ var IgeEngine = IgeEntity.extend({
 					var playerCount = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' }).length;
 
 					if (playerCount <= 0) {
+						console.log('self.emptyTimeLimit', self.emptyTimeLimit);
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}
