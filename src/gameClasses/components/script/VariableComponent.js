@@ -1727,6 +1727,12 @@ var VariableComponent = IgeEntity.extend({
 					}
 
 					break;
+				
+				case 'getTimeString':
+					var seconds = self.getValue(text.seconds, vars);
+
+					returnValue = new Date(parseFloat(seconds) * 1000).toISOString().substr(11, 8)
+					break;
 
 				case 'getValueOfEntityVariable':
 					var variableData = self.getValue(text.variable, vars);
