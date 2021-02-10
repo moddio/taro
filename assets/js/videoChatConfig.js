@@ -14,4 +14,5 @@ const videoChatConfig = {
     socketIOConfig: {
         url: ''
     }
+
 }
