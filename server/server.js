@@ -507,7 +507,7 @@ var Server = IgeClass.extend({
 						ige.addComponent(SoundComponent);
 						ige.addComponent(RegionManager);
 
-						if (window.location.protocol == "https" && ige.game.data.defaultData.enableVideoChat) {
+						if (ige.game.data.defaultData.enableVideoChat) {
 							ige.addComponent(VideoChatComponent);
 						}
 
