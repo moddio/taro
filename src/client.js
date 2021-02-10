@@ -73,7 +73,7 @@ var Client = IgeClass.extend({
                 maxPlayers: 32,
                 acceptingPlayers: true,
                 gameId: gameId,
-                url: 'wss://localhost:2001'
+                url: 'ws://localhost:2001'
             }
         ];
 
