@@ -507,7 +507,9 @@ var Server = IgeClass.extend({
 						ige.addComponent(SoundComponent);
 						ige.addComponent(RegionManager);
 
-						ige.addComponent(VideoChatComponent);
+						if (window.location.protocol == "https" && ige.game.data.defaultData.enableVideoChat) {
+							ige.addComponent(VideoChatComponent);
+						}
 
 						let map = ige.scaleMap(_.cloneDeep(ige.game.data.map));
 						ige.map.load(map)
