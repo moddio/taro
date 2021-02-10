@@ -58,7 +58,7 @@ var IgeNetIoClient = {
 
 						if (window.isStandalone) {
 							console.log("connecting to a standalone server")
-							url = "wss://" + window.location.hostname + ":2001";
+							url = "ws://" + window.location.hostname + ":2001";
 						} else {
 							url = server.url;
 						}
