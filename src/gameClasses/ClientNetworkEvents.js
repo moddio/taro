@@ -286,6 +286,17 @@ var ClientNetworkEvents = {
     },
 
     _onVideoChat: function (data) {
+        if (data.command) {
+            switch (data.command) {
+                case "joinGroup":
+                    switchRoom(data.groupId)
+                    break;
+                case "leaveGroup":
+                    switchRoom(myID)
+                    break;
+
+            }
+        }
         console.log("videoChat", data)
     },
 
@@ -500,8 +511,8 @@ var ClientNetworkEvents = {
                 }
                 break;
             case 'stopSoundForPlayer':
-				ige.sound.stopSound(sound, data.sound);
-				break;
+                ige.sound.stopSound(sound, data.sound);
+                break;
             default:
                 var soundData = ige.game.data.sound[data.id];
                 ige.sound.playSound(soundData, data.position, data.id);

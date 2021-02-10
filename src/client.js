@@ -73,7 +73,7 @@ var Client = IgeClass.extend({
                 maxPlayers: 32,
                 acceptingPlayers: true,
                 gameId: gameId,
-                url: 'ws://localhost:2001'
+                url: 'wss://localhost:2001'
             }
         ];
 
@@ -232,7 +232,7 @@ var Client = IgeClass.extend({
                     }
                 }
                 $('#server-list').val(self.server.id)
-                console.log('best server selected',self.server)
+                console.log('best server selected', self.server)
 
                 self.initEngine();
             }
@@ -510,7 +510,7 @@ var Client = IgeClass.extend({
                 }
             }
 
-            if(ige.game.data.defaultData.clientPhysicsEngine) {
+            if (ige.game.data.defaultData.clientPhysicsEngine) {
                 ige.addComponent(PhysicsComponent)
                     .physics.sleep(true);
             }
@@ -551,7 +551,7 @@ var Client = IgeClass.extend({
 
             ige.addComponent(AdComponent); // ads should only be shown in games
 
-            if(ige.physics) {
+            if (ige.physics) {
                 self.loadCSP(); // always enable CSP.
             }
             ige.addComponent(VariableComponent);
@@ -730,7 +730,7 @@ var Client = IgeClass.extend({
             ige.script.runScript('initialize', {});
         }
         if (ige.env == 'local') {
-            
+
         }
 
         // ige.physics.enableDebug(this.rootScene);
@@ -777,7 +777,7 @@ var Client = IgeClass.extend({
         ige.network.define('gameSuggestion', self._onGameSuggestion);
         ige.network.define('minimap', self._onMinimapEvent);
 
-        ige.network.define('createFloatingText',self._onCreateFloatingText)
+        ige.network.define('createFloatingText', self._onCreateFloatingText)
 
         ige.network.define('openShop', self._onOpenShop);
         ige.network.define('openDialogue', self._onOpenDialogue);
