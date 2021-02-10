@@ -71,17 +71,14 @@ var IgeChatComponent = IgeEventingClass.extend({
     sendChatMessage: function () {
 
         if (ige.isClient) {
-            var player = ige.client.myPlayer;
-            var gameData = ige.game && ige.game.data && ige.game.data.defaultData;
             var message = $("#message").val();
 
             // set character limit to 100 characters
             if (message.length > 80)
                 message = message.substr(0, 80);
-
-            //don't send chat message if user is ban or unverified.
-            if (player && (player._stats.banChat || (gameData && gameData.allowVerifiedUserToChat && !player._stats.isUserVerified))) {
-                // don't send message
+            var player = ige.client.myPlayer;
+            if (player && player._stats.banChat) {
+                //dont send chat message if player is ban
             }
             else {
                 ige.network.send('igeChatMsg', { "text": message, "roomId": "1" });
@@ -89,7 +86,9 @@ var IgeChatComponent = IgeEventingClass.extend({
             $("#message").blur();
             $("#message").val("");
             $('#chat-message-input').hide();
+
         }
+
     },
 
     escapeOutput: function(str) {

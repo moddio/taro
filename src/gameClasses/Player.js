@@ -653,7 +653,7 @@ var Player = IgeEntity.extend({
 					// if (ige.mobileControls && !ige.mobileControls.isMobile) {
 					// 	$("#dev-console").show() // if user has access of this game, show dev console
 					// }
-					// $('#game-suggestions-card').removeClass('d-xl-block');
+					$('#game-suggestions-card').removeClass('d-xl-block');
 					// $("#invite-players-card").show();
 					$("#toggle-dev-panels").show();
 					$("#kick-player").show();

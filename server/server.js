@@ -269,7 +269,7 @@ var Server = IgeClass.extend({
 
 				// cache minified file
 				shouldCache = shouldCache || path.endsWith(`.min.js`);
-				
+
 				if (shouldCache) {
 					res.set('Cache-Control', `public, max-age=${SECONDS_IN_A_WEEK}`);
 				}
@@ -278,12 +278,14 @@ var Server = IgeClass.extend({
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
 		app.get('/', (req, res) => {
-
+			const videoChatEnabled = ige.game.videoChatEnabled ? ige.game.videoChatEnabled : false;
+			//const videoChatEnabled = true;
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
 				title: global.standaloneGame.defaultData.title,
 				tier: global.standaloneGame.defaultData.tier,
-				gameSlug: global.standaloneGame.defaultData.gameSlug
+				gameSlug: global.standaloneGame.defaultData.gameSlug,
+				videoChatEnabled: videoChatEnabled
 			}
 			const options = {
 				isAuthenticated: false,
@@ -299,6 +301,7 @@ var Server = IgeClass.extend({
 					name: game.title,
 					tier: game.tier,
 					gameSlug: game.gameSlug,
+					videoChatEnabled: game.videoChatEnabled,
 				},
 				highScores: null,
 				hostedGames: null,
@@ -347,7 +350,7 @@ var Server = IgeClass.extend({
 	},
 
 	// run a specific game in this server
-	startGame: function (gameJson) {
+	startGame: function () {
 		console.log("ige.server.startGame()")
 		var self = this;
 
@@ -396,23 +399,19 @@ var Server = IgeClass.extend({
 				domain = global.beUrl;
 			}
 
+			var gameUrl = domain + "/api/game-client/" + ige.server.gameId + '/?source=gs';
+
 			console.log("connecting to BE:", global.beUrl)
-			
+			console.log("gameUrl", gameUrl)
 			var promise;
-			
-			if (gameJson) {
-				promise = Promise.resolve(gameJson);
-			}
-			else if (ige.server.gameId) {
-				var gameUrl = domain + "/api/game-client/" + ige.server.gameId + '/?source=gs';
-				console.log("gameUrl", gameUrl)
+			if (ige.server.gameId) {
 				promise = self.loadGameJSON(gameUrl);
 			} else {
 				promise = new Promise(function (resolve, reject) {
 					var game = fs.readFileSync(__dirname + '/../src/game.json');
 					game = JSON.parse(game);
 					game.defaultData = game;
-					var data = {data:{}};
+					var data = { data: {} };
 					for (let [key, value] of Object.entries(game)) {
 						data['data'][key] = value;
 					}
@@ -422,15 +421,13 @@ var Server = IgeClass.extend({
 					resolve(data);
 				});
 			}
-			
 			promise.then((game) => {
 				ige.addComponent(GameComponent)
-				self.gameStartedAt = new Date();
 
 				ige.game.data = game.data
 				ige.game.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
 
-				global.standaloneGame = game.data;				
+				global.standaloneGame = game.data;
 				var baseTilesize = 64;
 
 				// I'm assuming that both tilewidth and tileheight have same value
@@ -619,8 +616,8 @@ var Server = IgeClass.extend({
 		ige.network.define('gameSuggestion', self._onSomeBullshit);
 		ige.network.define('minimap', self._onSomeBullshit);
 
-		ige.network.define('createFloatingText',self._onSomeBullshit)
-		
+		ige.network.define('createFloatingText', self._onSomeBullshit)
+
 		ige.network.define('openShop', self._onSomeBullshit);
 		ige.network.define('openDialogue', self._onSomeBullshit);
 		ige.network.define('closeDialogue', self._onSomeBullshit);

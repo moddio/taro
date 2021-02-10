@@ -57,6 +57,7 @@ var IgeEngine = IgeEntity.extend({
 			//this._idCounter = 0
 			this.sanitizer = require('sanitizer').sanitize;
 			this.emptyTimeLimit = 5 * 60 * 1000; // in ms
+			this.startedAt = new Date()
 			this.lastCheckedAt = Date.now();
 		}
 
@@ -172,14 +173,6 @@ var IgeEngine = IgeEntity.extend({
 		}
 
 		return lifeSpan;
-	},
-
-	getIdleTimeoutMs: function () {
-		var defaultValue = 5;
-		var idleTimeoutHours = ige.server.tier == '0' ? ige.game.data.defaultData.privateServerIdleTimeout : 0;
-		var timeoutMins = idleTimeoutHours ? idleTimeoutHours * 60 : defaultValue;
-
-		return timeoutMins * 60 * 1000;
 	},
 
 	/**
@@ -967,7 +960,6 @@ var IgeEngine = IgeEntity.extend({
 				}
 
 				if (ige.isServer) {
-					this.emptyTimeLimit = this.getIdleTimeoutMs();
 					requestAnimFrame(ige.engineStep);
 				}
 
@@ -2107,7 +2099,6 @@ var IgeEngine = IgeEntity.extend({
 					var playerCount = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' }).length;
 
 					if (playerCount <= 0) {
-						console.log('self.emptyTimeLimit', self.emptyTimeLimit);
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}
@@ -2123,19 +2114,13 @@ var IgeEngine = IgeEntity.extend({
 					var lifeSpan = self.getLifeSpan();
 
 					// if server's lifeSpan is over, kill it (e.g. kill server after 5 hours)
-					var age = self.now - ige.server.gameStartedAt;
+					var age = self.now - self.startedAt;
 
 					var shouldLog = ige.server.logTriggers && ige.server.logTriggers.timerLogs;
 					if (shouldLog) {
-						console.log(self.now, ige.server.gameStartedAt, age, lifeSpan, age > lifeSpan);
+						console.log(self.now, self.startedAt, age, lifeSpan, age > lifeSpan);
 					}
 					if (age > lifeSpan) {
-						console.log({
-							lifeSpan,
-							age,
-							now: self.now,
-							startedAt: ige.server.gameStartedAt
-						});
 						ige.server.kill("server lifespan expired " + lifeSpan);
 					}
 				}

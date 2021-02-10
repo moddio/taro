@@ -253,12 +253,12 @@ var MenuUiComponent = IgeEntity.extend({
 	},
 	toggleGameSuggestionCard: function (show) {
 		if (show) {
-			// $('#game-suggestions-card').removeClass('d-xl-none');
-			// $('#game-suggestions-card').addClass('d-xl-block');
+			$('#game-suggestions-card').removeClass('d-xl-none');
+			$('#game-suggestions-card').addClass('d-xl-block');
 		}
 		else {
-			// $('#game-suggestions-card').removeClass('d-xl-block');
-			// $('#game-suggestions-card').addClass('d-xl-none');
+			$('#game-suggestions-card').removeClass('d-xl-block');
+			$('#game-suggestions-card').addClass('d-xl-none');
 		}
 	},
 	startLoading: function () {

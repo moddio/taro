@@ -255,7 +255,9 @@ var MobileControlsComponent = IgeEntity.extend({
 
             if (key == 'movementWheel'){
                 let moveStick = new Joystick({
-                    outerScale: { x: 1.2, y:1.2 },
+                    outer: PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1609245667104_joystick.png?version=123', { crossOrigin: true }),
+                    inner: PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1609244919482_joystick-handle.png?version=123', { crossOrigin: true }),
+                    outerScale: { x: 0.8, y:0.8 },
                     innerScale: { x: 0.5, y:0.5 },
                     onChange: (data) => { 
 
@@ -448,21 +450,10 @@ var MobileControlsComponent = IgeEntity.extend({
 			newButton.y = y;
 			newButton._key = key.toLowerCase();
 			
-			var iconUrl = null;
-			if (text == "BUTTON1") iconUrl = "https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png";
-			
-			if (iconUrl){
-				var icon = new PIXI.Sprite.from(iconUrl, { crossOrigin: true });
-				ige.pixi.mobileControls.addChild(icon);
-				icon.scale.set(0.5);
-				icon.anchor.set(0.5);
-				icon.position.set(x+(w / 2), y+(h / 2));
-			} else {
-				var label = new PIXI.Text(text, { fontFamily: 'Arial', fontSize: 24, fill: 0xffffff, align: 'center' });
-				ige.pixi.mobileControls.addChild(label);
-				label.anchor.set(0.5);
-				label.position.set(x+(w / 2), y+(h / 2));
-			}
+			var label = new PIXI.Text(text, { fontFamily: 'Arial', fontSize: 24, fill: 0xffffff, align: 'center' });
+			ige.pixi.mobileControls.addChild(label);
+			label.anchor.set(0.5);
+			label.position.set(x+(w / 2), y+(h / 2));
 			
 			newButton.isButton = true;
 			newButton.interactive = true;
