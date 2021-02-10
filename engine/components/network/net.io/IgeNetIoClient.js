@@ -25,7 +25,7 @@ var IgeNetIoClient = {
 	 * network has started.
 	 */
 	start: function (server, callback) {
-
+		
 		if (this._state === 3) {
 			// We're already connected
 			if (typeof (callback) === 'function') {
@@ -58,7 +58,7 @@ var IgeNetIoClient = {
 
 						if (window.isStandalone) {
 							console.log("connecting to a standalone server")
-							url = "wss://" + window.location.hostname + "/ws";
+							url = "ws://" + window.location.hostname + ":2001";
 						} else {
 							url = server.url;
 						}
@@ -340,7 +340,7 @@ var IgeNetIoClient = {
 		var self = this,
 			commandIndex = this._networkCommandsLookup[commandName],
 			ciEncoded;
-
+			
 		//console.log("sending");
 		if (commandIndex !== undefined) {
 			if (this.debug()) {
@@ -351,7 +351,7 @@ var IgeNetIoClient = {
 			ciEncoded = String.fromCharCode(commandIndex);
 
 			if (ige.env) {
-				setTimeout(function (ci, d) {
+				setTimeout(function(ci, d) {					
 					self._io.send([ci, d]);
 				}, (Math.random() * self.lagVariance) + self.artificialDelay, ciEncoded, data);
 			} else {
@@ -527,16 +527,16 @@ var IgeNetIoClient = {
 				}
 
 				if (Object.keys(obj).length) {
-
+					
 					// add the new snapshot into empty array
 					if (ige.snapshots.length == 0) {
 						ige.snapshots.push([newSnapshotTimeStamp, obj]);
 					} // if not empty, add it as ascending order based on timestamp
-					else {
+					else { 
 						var i = 0;
 						while (ige.snapshots[i] && ige.snapshots[i][0] < newSnapshotTimeStamp) {
 							i++;
-							var spliceIndex = i;
+							var spliceIndex = i;							
 						}
 
 						if (spliceIndex != undefined) {

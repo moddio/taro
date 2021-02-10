@@ -485,14 +485,14 @@ var ServerNetworkEvents = {
 						fromItem._stats.controls.permittedInventorySlots == undefined ||
 						fromItem._stats.controls.permittedInventorySlots.length == 0 ||
 						fromItem._stats.controls.permittedInventorySlots.includes(data.to + 1) ||
-						data.to + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
+						(data.to + 1 > unit._stats.inventorySize && fromItem._stats.controls.backpackAllowed == true) // any item can be moved into backpack slots if the backpackAllowed property is true
 					) &&
 					(
 						toItem._stats.controls == undefined ||
 						toItem._stats.controls.permittedInventorySlots == undefined ||
 						toItem._stats.controls.permittedInventorySlots.length == 0 ||
 						toItem._stats.controls.permittedInventorySlots.includes(data.from + 1) ||
-						data.from + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
+						(data.from + 1 > unit._stats.inventorySize && toItem._stats.controls.backpackAllowed == true) // any item can be moved into backpack slots if the backpackAllowed property is true
 					)
 				) {
 					fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
@@ -513,7 +513,7 @@ var ServerNetworkEvents = {
 					fromItem._stats.controls.permittedInventorySlots == undefined ||
 					fromItem._stats.controls.permittedInventorySlots.length == 0 ||
 					fromItem._stats.controls.permittedInventorySlots.includes(data.to + 1) ||
-					data.to + 1 > unit._stats.inventorySize // any item can be moved into backpack slots
+					(data.to + 1 > unit._stats.inventorySize && fromItem._stats.controls.backpackAllowed == true) // any item can be moved into backpack slots if the backpackAllowed property is true
 				)
 			) {
 				fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
@@ -666,7 +666,7 @@ var ServerNetworkEvents = {
 
 	_onPlayerCustomInput: function (data, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId)
-		if (player) {
+		if (player && data && data.status === 'submitted') {
 			player.lastCustomInput = data.inputText
 			ige.trigger.fire("playerCustomInput", { playerId: player.id() })
 		}
