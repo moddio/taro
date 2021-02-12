@@ -136,6 +136,12 @@ var IgeEntity = IgeObject.extend({
             self.streamUpdateData([{ stateId: stateId }]);
         } else if (ige.isClient) {
             self._stats.stateId = stateId;
+            if(newState.sound) {
+                for(var soundId in newState.sound) {
+                    var sound = newState.sound[soundId]
+                    ige.sound.playSound(sound, this._translate, soundId);
+                }
+            }
         }
 
         self.previousState = newState;
