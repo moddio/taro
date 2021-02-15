@@ -21,12 +21,7 @@ var VideoChatComponent = IgeEntity.extend({
 			var group = self.groups[groupId];
 			var polygons = self.getPolygons(group.playerIds)
 			self.groups[groupId].centoid = self.getCentoid(polygons);
-			if (isNaN(group.centoid.x)) {
-				delete self.groups[groupId];
-			} else {
-				console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
-			}
-		}
+			console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
 
 		for (var i = 0; i < players.length; i++) {
 			var player = players[i]
