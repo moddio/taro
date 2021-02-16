@@ -1094,6 +1094,15 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
+                    case 'setItemName':
+                        var item = ige.variable.getValue(action.item, vars)
+                        var name = ige.variable.getValue(action.name, vars)
+                        if (item) {
+                            item.streamUpdateData([{ name: name }]);
+                        }
+
+                        break;
+
                     case 'setFadingTextOfUnit':
                         var unit = ige.variable.getValue(action.unit, vars);
                         var text = ige.variable.getValue(action.text, vars);
