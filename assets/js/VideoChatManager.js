@@ -72,8 +72,9 @@ function switchRoom(_roomId) {
 
 //## connectToNewUser: used to establish peer connection using PeerJs
 function connectToNewUser(userId, stream, playerName = null) {
-    const call = myPeer.call(userId, stream)
+    console.log(userId, myPeer, "stream: ", stream)
     const video = document.createElement('video')
+    const call = stream ? myPeer.call(userId, stream) : myPeer.connect(userId)
     call.on('stream', userVideoStream => {
         addVideoStream(video, userVideoStream, userId, playerName, 'connectToNewUser')
     })
@@ -91,6 +92,9 @@ function connectToNewUser(userId, stream, playerName = null) {
 }
 //## addVideoStream: used to generate new videoelement.
 function addVideoStream(video, stream, peerID = null, playerName = null, from = 'null') {
+    if (!stream) {
+        return
+    }
     console.log("adding videostream FROM " + from);
     //#If we don't have settings for the peer we resore defaults.
     if (!peerSettings[peerID]) {
@@ -154,8 +158,19 @@ function setAudioStatus(peerID, status) {
     if (!videoEl) {
         return
     }
-    videoEl.muted = !status
-    peerSettings[peerID].muted = !status;
+    if (peerID == "myPeer") {
+        if (!myStream) {
+            myStream = window.stream
+        }
+        if (!myStream) {
+            return false;
+        }
+        console.log("audio will be: ", status)
+        myStream.getAudioTracks()[0].enabled = status;
+    } else {
+        videoEl.muted = !status
+        peerSettings[peerID].muted = !status;
+    }
 }
 //# status = true / visible, false / hidden
 function setVideoVisibility(peerID, status) {
@@ -202,7 +217,7 @@ function handleVideoUI(el) {
     }
     if (el.getAttribute("data-action") == "mute") {
         if (el.getAttribute("data-peer") == "myPeer") {
-            myStream.getAudioTracks()[0].enabled = !myStream.getAudioTracks()[0].enabled;
+            setAudioStatus(el.getAttribute("data-peer"), !myStream.getAudioTracks()[0].enabled)
         } else {
             // to set the new status (true / false) we send the current muted state (inverted state)
             setAudioStatus(el.getAttribute("data-peer"), videoEl.muted)
@@ -313,17 +328,26 @@ audioOutputSelect.onchange = changeAudioDestination;
 
 videoSelect.onchange = start;
 $(function () {
-    //# Starts the video/audio selection.
-    setTimeout(() => {
-        start();
-    }, 1000);
+    //#modal-step integration
+    $(".modal-step-link").on("click", function () {
+        const step = $(this).data("step")
+        $(this).closest(".modal-step").hide();
+        $(".modal-step-" + step).removeClass("d-none").show();
+        if (step == 2) {
+            //# Starts the video/audio selection.
+            setTimeout(() => {
+                start();
+            }, 100);
+        }
+    });
 
     $(".videochat-choice").on("click", function () {
         $(".modal-videochat, .modal-backdrop").removeClass("d-block").hide();
         const choice = $(this).attr("data-choice");
+        //moved from the IF below.
+        videoChatEnabled = true;
         if (choice == "enable") {
-            videoChatEnabled = true;
-            startVideoChat();
+            //startVideoChat();
         } else {
             videoElement.pause();
             videoElement.src = "";
@@ -332,12 +356,16 @@ $(function () {
                     track.stop();
                 });
             }
+            window.stream = null;
         }
+        startVideoChat();
         return false;
     });
 })
 function processMyStream(stream) {
-    addVideoStream(myVideo, stream, "myPeer")
+    if (stream) {
+        addVideoStream(myVideo, stream, "myPeer")
+    }
     myStream = stream;
     myVideo.muted = true
     myPeer.on('call', call => {
@@ -347,6 +375,16 @@ function processMyStream(stream) {
             addVideoStream(video, userVideoStream, call.peer, null, 'myPeerOnCall')
         })
     })
+    myPeer.on('connection', call => {
+        // call.answer(stream)
+        // const video = document.createElement('video')
+        // call.on('stream', userVideoStream => {
+        //     addVideoStream(video, userVideoStream, call.peer, null, 'myPeerOnCall')
+        // })
+        if (myStream) {
+            myPeer.call(call.peer, myStream)
+        }
+    })
     socket.on('users-updated', (_users) => {
         users = _users;
         updateUsers();
@@ -354,6 +392,7 @@ function processMyStream(stream) {
     socket.on('user-connected', (userId, playerName, _users) => {
         console.log("PlayerName: ", playerName)
         if (userId != myID) {
+            //console.log(userId, stream, playerName, " line: 369")
             connectToNewUser(userId, stream, playerName)
         }
         if (users) {
@@ -377,12 +416,13 @@ function startVideoChat() {
         if (window.stream) {
             processMyStream(window.stream)
         } else {
-            navigator.mediaDevices.getUserMedia({
-                video: { width: { max: 320 }, height: { max: 200 } },
-                audio: true
-            }).then(stream => {
-                processMyStream(stream)
-            })
+            processMyStream(null)
+            // navigator.mediaDevices.getUserMedia({
+            //     video: { width: { max: 320 }, height: { max: 200 } },
+            //     audio: true
+            // }).then(stream => {
+            //     processMyStream(stream)
+            // })
         }
 
 

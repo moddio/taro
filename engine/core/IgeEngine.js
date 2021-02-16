@@ -2107,7 +2107,7 @@ var IgeEngine = IgeEntity.extend({
 					var playerCount = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' }).length;
 
 					if (playerCount <= 0) {
-						console.log('self.emptyTimeLimit', self.emptyTimeLimit);
+						// console.log('self.emptyTimeLimit', self.emptyTimeLimit);
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}

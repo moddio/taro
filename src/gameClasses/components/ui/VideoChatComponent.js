@@ -15,20 +15,43 @@ var VideoChatComponent = IgeEntity.extend({
 
 	updatePlayerGroups: function (self) {
 		var players = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' })
+		// var players = ige.$$('player')
 
 		// update centoid of the groups
 		for (groupId in self.groups) {
 			var group = self.groups[groupId];
 			var polygons = self.getPolygons(group.playerIds)
-			self.groups[groupId].centoid = self.getCentoid(polygons);
-			console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
+			var centoid = self.getCentoid(polygons);
+			// delete empty group
+			if (centoid == undefined) {
+				delete self.groups[groupId]
+				continue;
+			}
+			self.groups[groupId].centoid = centoid;
+			// console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
+			// if (isNaN(group.centoid.x)) {
+			// 	console.log(self.groups[groupId])
+			// 	var playerIds = self.groups[groupId].playerIds;
+			// 	for (var i = 0; i < playerIds.length; i++) {
+			// 		var playerId = playerIds[i]
+			// 		console.log("inspecting player", playerId)
+			// 		var player = ige.$(playerId);
+			// 		var unit = player.getSelectedUnit();
+			// 		if (unit != undefined)
+			// 			console.log(unit._translate)
+			// 		else
+			// 			console.log("unit doesn't exist")
+			// 	}
+			// }
+		}
 
-			for (var i = 0; i < players.length; i++) {
-				var player = players[i]
-				if (player) {
-					var playerId = player.id()
-					var unit = player.getSelectedUnit();
-					if (unit && player.vcGroupId) {
+		for (var i = 0; i < players.length; i++) {
+			var player = players[i]
+			if (player) {
+				var playerId = player.id()
+				var unit = player.getSelectedUnit();
+				if (unit) {
+					if (player.vcGroupId) {
 						var group = self.groups[player.vcGroupId];
 						// if the Player belongs to a group and is out of range from the group's centoid, then kick that player out of the group
 						if (group) {
@@ -84,7 +107,7 @@ var VideoChatComponent = IgeEntity.extend({
 	createGroup: function (playerIds) {
 		var self = this;
 		// group needs ID, and its members' PlayerID and their positions
-		console.log("creating a group.. initial members:", playerIds)
+		// console.log("creating a group.. initial members:", playerIds)
 		var groupId = ige.newIdHex();
 		self.groups[groupId] = {
 			playerIds: []
@@ -175,15 +198,20 @@ var VideoChatComponent = IgeEntity.extend({
 		return polygons;
 	},
 
-	getCentoid: function (points) {
+	getCentoid: function (polygons) {
+		// console.log("polygons", polygons)
+		if (polygons == undefined || polygons.length == 0) {
+			return undefined;
+		}
+
 		var centroid = { x: 0, y: 0 };
-		for (var i = 0; i < points.length; i++) {
-			var point = points[i];
+		for (var i = 0; i < polygons.length; i++) {
+			var point = polygons[i];
 			centroid.x += point[0];
 			centroid.y += point[1];
 		}
-		centroid.x /= points.length;
-		centroid.y /= points.length;
+		centroid.x /= polygons.length;
+		centroid.y /= polygons.length;
 		return centroid;
 	}
 });
