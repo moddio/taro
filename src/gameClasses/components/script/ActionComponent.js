@@ -312,6 +312,15 @@ var ActionComponent = IgeEntity.extend({
                             item.streamUpdateData([{ description: description }]);
                         }
                         break;
+
+                    case 'changeItemInventoryImage':
+                        var item = ige.variable.getValue(action.item, vars);
+                        var url = ige.variable.getValue(action.url, vars);
+                        if (item && url) {
+                            item.streamUpdateData([{ inventoryImage: url }]);
+                        }
+                        break;
+
                     case 'startAcceptingPlayers':
                         ige.clusterClient.setAcceptingPlayerStatus(true);
                         break;
