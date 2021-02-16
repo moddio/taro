@@ -71,7 +71,8 @@ var VideoChatComponent = IgeEntity.extend({
 				}
 			}
 		}
-	},
+	}
+},
 
 	getDistance: function (A, B) {
 		var xDiff = A.x - B.x;
