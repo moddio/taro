@@ -95,7 +95,7 @@ var VideoChatComponent = IgeEntity.extend({
 				}
 			}
 		}
-	}
+	
 },
 
 	getDistance: function (A, B) {
