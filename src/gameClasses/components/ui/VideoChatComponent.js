@@ -23,46 +23,47 @@ var VideoChatComponent = IgeEntity.extend({
 			self.groups[groupId].centoid = self.getCentoid(polygons);
 			console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
 
-		for (var i = 0; i < players.length; i++) {
-			var player = players[i]
-			if (player) {
-				var playerId = player.id()
-				var unit = player.getSelectedUnit();
-				if (unit && player.vcGroupId) {
-					var group = self.groups[player.vcGroupId];
-					// if the Player belongs to a group and is out of range from the group's centoid, then kick that player out of the group
-					if (group) {
-						var centoid = group.centoid;
-						var distance = self.getDistance(centoid, unit._translate)
-						if (distance > self.chatLeaveDistance) {
-							self.removePlayerFromGroup(playerId)
-						}
-					}
-				} else { // if the Player doesn't belong in any group					
-					// check if the Player is within enter range of any group. If so, make Player enter the group.
-					for (groupId in self.groups) {
-						var group = self.groups[groupId];
+			for (var i = 0; i < players.length; i++) {
+				var player = players[i]
+				if (player) {
+					var playerId = player.id()
+					var unit = player.getSelectedUnit();
+					if (unit && player.vcGroupId) {
+						var group = self.groups[player.vcGroupId];
+						// if the Player belongs to a group and is out of range from the group's centoid, then kick that player out of the group
 						if (group) {
 							var centoid = group.centoid;
 							var distance = self.getDistance(centoid, unit._translate)
-							if (distance < self.chatEnterDistance) {
-								self.addPlayerToGroup(playerId, groupId)
-								break;
+							if (distance > self.chatLeaveDistance) {
+								self.removePlayerFromGroup(playerId)
 							}
 						}
-					}
-					// check if a player is within chat range. If that player also doesn't belong is a group, then create a new group
-					for (var j = 0; j < players.length; j++) {
-						var playerB = players[j]
-						if (playerB) {
-							var playerBId = playerB.id();
-							if (playerId != playerBId) {
-								var unitB = playerB.getSelectedUnit();
-								if (unitB && playerB.vcGroupId == undefined) {
-									var distance = self.getDistance(unit._translate, unitB._translate);
-									if (distance < self.chatEnterDistance) {
-										self.createGroup([playerId, playerBId])
-										break;
+					} else { // if the Player doesn't belong in any group					
+						// check if the Player is within enter range of any group. If so, make Player enter the group.
+						for (groupId in self.groups) {
+							var group = self.groups[groupId];
+							if (group) {
+								var centoid = group.centoid;
+								var distance = self.getDistance(centoid, unit._translate)
+								if (distance < self.chatEnterDistance) {
+									self.addPlayerToGroup(playerId, groupId)
+									break;
+								}
+							}
+						}
+						// check if a player is within chat range. If that player also doesn't belong is a group, then create a new group
+						for (var j = 0; j < players.length; j++) {
+							var playerB = players[j]
+							if (playerB) {
+								var playerBId = playerB.id();
+								if (playerId != playerBId) {
+									var unitB = playerB.getSelectedUnit();
+									if (unitB && playerB.vcGroupId == undefined) {
+										var distance = self.getDistance(unit._translate, unitB._translate);
+										if (distance < self.chatEnterDistance) {
+											self.createGroup([playerId, playerBId])
+											break;
+										}
 									}
 								}
 							}
