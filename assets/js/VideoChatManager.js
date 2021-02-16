@@ -335,7 +335,6 @@ $(function () {
         const choice = $(this).attr("data-choice");
         //moved from the IF below.
         videoChatEnabled = true;
-        startVideoChat();
         if (choice == "enable") {
             //startVideoChat();
         } else {
@@ -346,7 +345,9 @@ $(function () {
                     track.stop();
                 });
             }
+            window.stream = null;
         }
+        startVideoChat();
         return false;
     });
 })
