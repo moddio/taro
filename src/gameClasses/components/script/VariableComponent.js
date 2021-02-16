@@ -1249,7 +1249,7 @@ var VariableComponent = IgeEntity.extend({
 					if (item) {
 						returnValue = item._stats.name;
 					}
-          break;
+          			break;
 
 				case 'getItemDescription':
 					var item = self.getValue(text.item, vars)
