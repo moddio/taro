@@ -1243,16 +1243,27 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+
 				case 'getItemName':
 					var item = self.getValue(text.item, vars)
 					if (item) {
 						returnValue = item._stats.name;
 					}
+          break;
+
+				case 'getItemDescription':
+					var item = self.getValue(text.item, vars)
+					if (item && item._category == 'item') {
+						returnValue = item._stats.description;
+					}
+
 					break;
 
 				case 'getItemType':
 					returnValue = self.getValue(text.itemType, vars)
 					break;
+
+				
 
 				case 'getProjectileType': // get projectile type from env
 					returnValue = self.getValue(text.projectileType, vars)

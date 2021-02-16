@@ -117,47 +117,92 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Video and voice settings</h5>
                 </div>
-                <div class="modal-body">
-                    <div class="brand-alert alert alert-secondary">This game supports videochat.<br />You should accept
-                        your
-                        broswer permissions in order to enable in-game communication functionalities</div>
-                    <div class="row mt-4">
-                        <div class="col-4"><video id="my-video-preview" playsinline autoplay></video></div>
-                        <div class="col">
-                            <div>
-                                <div class="input-group mb-2">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text"><i class="fa fa-video"></i></div>
+                <div class="modal-step modal-step-1">
+                    <div class="modal-body">
+                        <div class="brand-alert alert alert-secondary">This game supports videochat.<br />You should
+                            accept
+                            your
+                            broswer permissions in order to enable in-game communication functionalities</div>
+                        <div class="row mt-4 step1">
+                            <img src="/assets/images/permission.jpg" alt="" width="100%">
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-secondary videochat-choice mr-auto"
+                            data-choice="disable">Play
+                            without
+                            VideoChat</button>
+                        <button type="button" class="btn btn-primary modal-step-link" data-step="2">Next</button>
+                    </div>
+                </div>
+                <div class="modal-step modal-step-2 d-none">
+                    <div class="modal-body">
+                        <div class="brand-alert alert alert-secondary">This game supports videochat.<br />You should
+                            accept
+                            your
+                            broswer permissions in order to enable in-game communication functionalities</div>
+                        <div class="row mt-4 ">
+                            <div class="col-4"><video id="my-video-preview" playsinline autoplay></video></div>
+                            <div class="col">
+                                <div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fa fa-video"></i></div>
+                                        </div>
+                                        <select class="form-control" id="video-inputs">
+                                            <option class="remove-me">Waiting for permissions...</option>
+                                        </select>
                                     </div>
-                                    <select class="form-control" id="video-inputs">
-                                        <option class="remove-me">Waiting for permissions...</option>
-                                    </select>
-                                </div>
-                                <div class="input-group mb-2">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text"><i class="fa fa-microphone"></i></div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fa fa-microphone"></i></div>
+                                        </div>
+                                        <select class="form-control" id="audio-inputs">
+                                            <option class="remove-me">Waiting for permissions...</option>
+                                        </select>
                                     </div>
-                                    <select class="form-control" id="audio-inputs">
-                                        <option class="remove-me">Waiting for permissions...</option>
-                                    </select>
-                                </div>
-                                <div class="input-group mb-2">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text"><i class="fa fa-volume-down"></i></div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fa fa-volume-down"></i></div>
+                                        </div>
+                                        <select class="form-control" id="audio-outputs">
+                                            <option class="remove-me">Waiting for permissions...</option>
+                                        </select>
                                     </div>
-                                    <select class="form-control" id="audio-outputs">
-                                        <option class="remove-me">Waiting for permissions...</option>
-                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-warning modal-step-link mr-auto" data-step="3">I can't
+                            see my
+                            video</button>
+                        <button type="button" class="btn btn-secondary videochat-choice mr-auto"
+                            data-choice="disable">Play
+                            without
+                            VideoChat</button>
+                        <button type="button" class="btn btn-primary videochat-choice" data-choice="enable">Save
+                            changes</button>
+                    </div>
                 </div>
-                <div class="modal-footer mt-2">
-                    <!-- <button type="button" class="btn btn-secondary videochat-choice" data-choice="disable">Play without
-                        VideoChat</button> -->
-                    <button type="button" class="btn btn-primary videochat-choice" data-choice="enable">Save
-                        changes</button>
+                <div class="modal-step modal-step-3 d-none">
+                    <div class="modal-body">
+                        <div class="brand-alert alert alert-secondary">You may have blocked permissions to your devices
+                            in the past.<br />
+                            To restore your device permission you can press the camera icon in your address bar and
+                            enable the access.
+                        </div>
+                        <div class="mt-4 step1 text-center">
+                            <img src="/assets/images/blocked.jpg" alt="" width="50%">
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-secondary videochat-choice mr-auto"
+                            data-choice="disable">Play
+                            without
+                            VideoChat</button>
+                        <button type="button" class="btn btn-primary modal-step-link" data-step="2">Next</button>
+                    </div>
                 </div>
             </div>
         </div>
