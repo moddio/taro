@@ -158,8 +158,19 @@ function setAudioStatus(peerID, status) {
     if (!videoEl) {
         return
     }
-    videoEl.muted = !status
-    peerSettings[peerID].muted = !status;
+    if (peerID == "myPeer") {
+        if (!myStream) {
+            myStream = window.stream
+        }
+        if (!myStream) {
+            return false;
+        }
+        console.log("audio will be: ", status)
+        myStream.getAudioTracks()[0].enabled = status;
+    } else {
+        videoEl.muted = !status
+        peerSettings[peerID].muted = !status;
+    }
 }
 //# status = true / visible, false / hidden
 function setVideoVisibility(peerID, status) {
@@ -206,7 +217,7 @@ function handleVideoUI(el) {
     }
     if (el.getAttribute("data-action") == "mute") {
         if (el.getAttribute("data-peer") == "myPeer") {
-            myStream.getAudioTracks()[0].enabled = !myStream.getAudioTracks()[0].enabled;
+            setAudioStatus(el.getAttribute("data-peer"), !myStream.getAudioTracks()[0].enabled)
         } else {
             // to set the new status (true / false) we send the current muted state (inverted state)
             setAudioStatus(el.getAttribute("data-peer"), videoEl.muted)
