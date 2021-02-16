@@ -86,8 +86,9 @@ var ControlComponent = IgeEntity.extend({
 		if (ige.isClient) {
 			this.isChatOpen = ($("#message").is(":focus") && !$("#player-input-field").is(":focus")) ||
 				$('#modd-dialogue-modal').hasClass('show') ||
-				($('#player-input-modal').hasClass('show') && $("#player-input-field").is(":focus")) ||
-				$('#modd-item-shop-modal').hasClass('show');
+				$('#player-input-modal').hasClass('show') ||
+				$('#modd-item-shop-modal').hasClass('show') ||
+				$('#custom-modal').hasClass('show');
 		}
 
 		this.lastActionAt = Date.now();

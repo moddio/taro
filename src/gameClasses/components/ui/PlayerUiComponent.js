@@ -36,6 +36,10 @@ var PlayerUiComponent = IgeEntity.extend({
 			$("#custom-modal").removeClass('d-flex');
 		});
 
+		$('#custom-modal').on('shown.bs.modal', function () {
+			$("#custom-modal-cancel").focus();
+		});
+
 		$('#player-input-modal').on('shown.bs.modal', function () {
 			if (self.isDismissibleInputModalShown) {
 				$("#player-input-cancel").focus();
