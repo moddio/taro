@@ -22,7 +22,7 @@ var VideoChatComponent = IgeEntity.extend({
 			var polygons = self.getPolygons(group.playerIds)
 			self.groups[groupId].centoid = self.getCentoid(polygons);
 			console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
-
+		}
 		for (var i = 0; i < players.length; i++) {
 			var player = players[i]
 			if (player) {
