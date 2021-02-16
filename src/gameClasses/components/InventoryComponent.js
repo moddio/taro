@@ -210,25 +210,27 @@ var InventoryComponent = IgeEntity.extend({
 
 		// check if this item can be merged with an existing item in the inventory
 		var totalInventorySize = this.getTotalInventorySize();
-		var quantity = itemData.quantity;
-		for (var i = 0; i < totalInventorySize; i++) {
-			var itemId = self._entity._stats.itemIds[i]
-			if (itemId) {
-				var item = ige.$(itemId)
-				// matching item found in inventory
-				if (item && item._stats.itemTypeId == itemTypeId) {
-					// matching item has infinite quantity. merge items unless item also has infinite quantity
-					if (item._stats.quantity == undefined && quantity!= undefined) {
-						return i + 1;
-					}
+		if(itemData.controls.canMerge){ //Check if the item can merge
+			var quantity = itemData.quantity;
+			for (var i = 0; i < totalInventorySize; i++) {
+				var itemId = self._entity._stats.itemIds[i]
+				if (itemId) {
+					var item = ige.$(itemId)
+					// matching item found in inventory
+					if (item && item._stats.itemTypeId == itemTypeId) {
+						// matching item has infinite quantity. merge items unless item also has infinite quantity
+						if (item._stats.quantity == undefined && quantity!= undefined) {
+							return i + 1;
+						}
 
-					// matching item isn't full, and new item can fit in.
-					if (item._stats.maxQuantity - item._stats.quantity > quantity) {
-						return i + 1;
-					} else {
-						if(item._stats.quantity != undefined){
-							// new item's quantity isn't enough to fill the existing item's. Deduct new item's quantity. and move on. This isn't done for undefined items
-							quantity -= (item._stats.maxQuantity - item._stats.quantity)
+						// matching item isn't full, and new item can fit in.
+						if (item._stats.maxQuantity - item._stats.quantity > quantity) {
+							return i + 1;
+						} else {
+							if(item._stats.quantity != undefined){
+								// new item's quantity isn't enough to fill the existing item's. Deduct new item's quantity. and move on. This isn't done for undefined items
+								quantity -= (item._stats.maxQuantity - item._stats.quantity)
+							}
 						}
 					}
 				}
