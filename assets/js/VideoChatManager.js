@@ -308,7 +308,7 @@ function handleError(error) {
     console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
 }
 
-function start() {
+function vChatStart() {
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
             track.stop();
@@ -323,10 +323,10 @@ function start() {
     navigator.mediaDevices.getUserMedia(constraints).then(gotStream).then(gotDevices).catch(handleError);
 }
 
-audioInputSelect.onchange = start;
+audioInputSelect.onchange = vChatStart;
 audioOutputSelect.onchange = changeAudioDestination;
 
-videoSelect.onchange = start;
+videoSelect.onchange = vChatStart;
 $(function () {
     //#modal-step integration
     $(".modal-step-link").on("click", function () {
@@ -336,7 +336,7 @@ $(function () {
         if (step == 2) {
             //# Starts the video/audio selection.
             setTimeout(() => {
-                start();
+                vChatStart();
             }, 100);
         }
     });

@@ -588,7 +588,12 @@ var Client = IgeClass.extend({
                 ige.sound.preLoadMusic();
 
                 window.activatePlayGame = true;
+                window.activatePlayGame = true;
                 $('#play-game-button-wrapper').removeClass('d-none-important');
+                $('.modal-videochat-backdrop, .modal-videochat').removeClass('d-none');
+                $('.modal-videochat').show();
+                $(".modal-step-link[data-step=2]").click();
+
                 if (self.preSelectedServerId && self.serverFound && params.joinGame === 'true' && userId) {
                     self.connectToServer();
                 }

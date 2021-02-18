@@ -110,14 +110,14 @@
         <script src="/assets/js/VideoChatManager.js" defer></script>
         <!-- end of Videochat modules -->
     </div>
-    <div class="modal-backdrop" style="opacity: 0.9;"></div>
-    <div class="brand-modal modal-videochat modal d-block" tabindex="-1">
+    <div class="modal-backdrop d-none modal-videochat-backdrop" style="opacity: 0.9;"></div>
+    <div class="brand-modal modal-videochat modal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Video and voice settings</h5>
                 </div>
-                <div class="modal-step modal-step-1">
+                <div class="modal-step modal-step-1 d-none">
                     <div class="modal-body">
                         <div class="brand-alert alert alert-secondary">This game supports videochat.<br />You should
                             accept
@@ -135,14 +135,21 @@
                         <button type="button" class="btn btn-primary modal-step-link" data-step="2">Next</button>
                     </div>
                 </div>
-                <div class="modal-step modal-step-2 d-none">
+                <div class="modal-step modal-step-2">
                     <div class="modal-body">
                         <div class="brand-alert alert alert-secondary">This game supports videochat.<br />You should
                             accept
                             your
                             broswer permissions in order to enable in-game communication functionalities</div>
                         <div class="row mt-4 ">
-                            <div class="col-4"><video id="my-video-preview" playsinline autoplay></video></div>
+                            <div class="col-4"><video id="my-video-preview" playsinline autoplay></video>
+                                <div>
+                                    <button type="button" class="btn btn-warning modal-step-link mr-auto mt-4"
+                                        data-step="3">I can't
+                                        see my
+                                        video</button>
+                                </div>
+                            </div>
                             <div class="col">
                                 <div>
                                     <div class="input-group mb-2">
@@ -174,9 +181,6 @@
                         </div>
                     </div>
                     <div class="modal-footer mt-2">
-                        <button type="button" class="btn btn-warning modal-step-link mr-auto" data-step="3">I can't
-                            see my
-                            video</button>
                         <button type="button" class="btn btn-secondary videochat-choice mr-auto"
                             data-choice="disable">Play
                             without
@@ -193,7 +197,7 @@
                             enable the access.
                         </div>
                         <div class="mt-4 step1 text-center">
-                            <img src="/assets/images/blocked.jpg" alt="" width="50%">
+                            <img src="/assets/images/videochathelp_combined.jpg" alt="" width="100%">
                         </div>
                     </div>
                     <div class="modal-footer mt-2">
