@@ -318,7 +318,7 @@ function vChatStart() {
     const videoSource = videoSelect.value;
     const constraints = {
         audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
-        video: { deviceId: videoSource ? { exact: videoSource } : undefined, width: { max: 320 }, height: { max: 200 } }
+        video: { deviceId: videoSource ? { exact: videoSource } : undefined, width: { max: 160 }, height: { max: 100 }, frameRate: { min: 5, max: 14 }, resizeMode: 'crop-and-scale' }
     };
     navigator.mediaDevices.getUserMedia(constraints).then(gotStream).then(gotDevices).catch(handleError);
 }
@@ -402,6 +402,11 @@ function processMyStream(stream) {
         //users = _users
         //console.log("USERS: ", users);
     })
+}
+function refreshUserName() {
+    if (socket) {
+        socket.emit('update-users');
+    }
 }
 function startVideoChat() {
     if (videoChatConfig.peerJSConfig) {
