@@ -6,8 +6,8 @@ var VideoChatComponent = IgeEntity.extend({
 		var self = this;
 		self._entity = entity;
 		self.groups = {};
-		self.chatEnterDistance = 300
-		self.chatLeaveDistance = 170
+		self.chatEnterDistance = 50000
+		self.chatLeaveDistance = 50000
 
 		// update player groups every 1s
 		setInterval(self.updatePlayerGroups, 1000, self);
