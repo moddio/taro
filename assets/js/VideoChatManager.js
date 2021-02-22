@@ -52,8 +52,32 @@ function disconnectFromRoom(newRoom = null) {
     }
 
 }
+function videoChatUpdateSpatialVideo(players) {
+    // if (Object.keys(players).length) {
+    //     console.log(players)
+    // }
+    for (p in players) {
+        const v = document.getElementById("video-" + p)
+        if (v) {
+            const dist = players[p]
+            let presence = (dist < ige.videoChat.minRange) ? 1 : 1 - ((dist - ige.videoChat.minRange) / (ige.videoChat.maxRange - ige.videoChat.minRange))
+            if (presence < 0) {
+                presence = 0
+            }
+            if (presence > 1) {
+                presence = 1
+            }
+            v.volume = presence
+            v.style = "opacity: " + presence
+        }
+    }
+}
 //## switchRoom: used to join a new room or switch (disconnecting from the previous) to a new one.
 function switchRoom(_roomId) {
+    if (!myID) {
+        switchRoomBuffer = _roomId
+        return
+    }
     if (!videoChatEnabled) {
         return false;
     }
@@ -95,7 +119,7 @@ function addVideoStream(video, stream, peerID = null, playerName = null, from = 
     if (!stream) {
         return
     }
-    console.log("adding videostream FROM " + from);
+    console.log(myID + ": adding videostream FROM " + from + " for: " + peerID);
     //#If we don't have settings for the peer we resore defaults.
     if (!peerSettings[peerID]) {
         peerSettings[peerID] = { muted: false, hidden: false }
@@ -358,7 +382,7 @@ $(function () {
             }
             window.stream = null;
         }
-        startVideoChat();
+        //startVideoChat();
         return false;
     });
 })
@@ -403,15 +427,17 @@ function processMyStream(stream) {
         //console.log("USERS: ", users);
     })
 }
-function refreshUserName() {
+function refreshUserName(_name) {
+    $("#video-div-id-myPeer .name-label").html(_name);
     if (socket) {
         socket.emit('update-users');
     }
 }
-function startVideoChat() {
+var switchRoomBuffer = null
+function startVideoChat(_peerID = undefined) {
     if (videoChatConfig.peerJSConfig) {
         socket = io(videoChatConfig.socketIOConfig.url)
-        myPeer = new Peer(undefined, videoChatConfig.peerJSConfig)
+        myPeer = new Peer(_peerID, videoChatConfig.peerJSConfig)
         //#EVENTS
         socket.on('sendPlayerName', data => {
             if (data.playerName) {
@@ -441,6 +467,10 @@ function startVideoChat() {
         myPeer.on('open', id => {
             //socket.emit('join-room', ROOM_ID, id)
             myID = id;
+            if (switchRoomBuffer) {
+                switchRoom(switchRoomBuffer)
+                switchRoomBuffer = null
+            }
         })
         if (ROOM_ID) {
             console.log(ROOM_ID)

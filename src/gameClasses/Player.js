@@ -62,7 +62,7 @@ var Player = IgeEntity.extend({
 		if (self._stats.userId) {
 			ige.clusterClient.userJoined(self._stats.userId);
 		}
-		
+
 		if (self._stats.playerJoined != true) {
 			if (self._stats.controlledBy == "human" && ige.script) // do not send trigger for neutral player
 			{
@@ -129,7 +129,7 @@ var Player = IgeEntity.extend({
 			this.selectFirstAvailableUnit()
 		}
 	},
-	
+
 	// remove unit from the array of units owned by this player
 	disownUnit: function (unit) {
 		var index = this._stats.unitIds.indexOf(unit.id());
@@ -175,7 +175,7 @@ var Player = IgeEntity.extend({
 				unit.renderMobileControl();
 				ige.client.selectedUnit = unit
 				ige.client.eventLog.push([ige._currentTime, 'my unit selected ' + unitId])
-				
+
 				if (ige.env == 'local') {
 					var graphics = new PIXI.Graphics();
 					graphics.lineStyle(2, 0x0000FF, 0.5);
@@ -444,6 +444,12 @@ var Player = IgeEntity.extend({
 					}
 				}
 				if (ige.isClient) {
+					if (attrName === 'name') {
+						//update here
+						if (typeof refreshUserName == 'function') {
+							refreshUserName(newValue)
+						}
+					}
 					if (attrName === 'equiped') {
 						var unit = self.getSelectedUnit();
 						if (unit) {
@@ -610,14 +616,14 @@ var Player = IgeEntity.extend({
 	},
 
 	tick: function (ctx) {
-		
-        // if entity (unit/item/player/projectile) has attribute, run regenerate
-        if (ige.isServer) {
-            if (this.attribute) {
-                this.attribute.regenerate();
-            }
-        }
-		
+
+		// if entity (unit/item/player/projectile) has attribute, run regenerate
+		if (ige.isServer) {
+			if (this.attribute) {
+				this.attribute.regenerate();
+			}
+		}
+
 		IgeEntity.prototype.tick.call(this, ctx);
 	},
 

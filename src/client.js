@@ -665,6 +665,9 @@ var Client = IgeClass.extend({
                         if (player._stats.clientId == ige.network.id()) {
                             ige.client.eventLog.push([ige._currentTime - ige.client.eventLogStartTime, 'my player created'])
                             ige.client.myPlayer = player; // declare my player
+                            if (typeof startVideoChat == "function") {
+                                startVideoChat(player.id())
+                            }
                             player.redrawUnits(['nameLabel']);
                         }
 

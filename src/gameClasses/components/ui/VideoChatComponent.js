@@ -6,20 +6,21 @@ var VideoChatComponent = IgeEntity.extend({
 		var self = this;
 		self._entity = entity;
 		self.groups = {};
-		self.playerDistances = {};		
+		self.playerDistances = {};
 
 		if (ige.isServer) {
 
 			self.chatEnterDistance = 50000
 			self.chatLeaveDistance = 50000
-		
+
 			// update player groups every 1s
 			setInterval(self.updatePlayerGroups, 1000, self);
 		} else if (ige.isClient) {
-			self.range = 700 // myPlayer's video & audio chat radius. when range is at 700, fade value & audio should be at 0.
+			self.minRange = 100 // myPlayer's video & audio chat radius. when range is at 700, fade value & audio should be at 0.
+			self.maxRange = 700
 			setInterval(self.updatePlayerDistanceMatrix, 200, self);
 		}
-		
+
 	},
 
 	updatePlayerGroups: function (self) {
@@ -224,16 +225,16 @@ var VideoChatComponent = IgeEntity.extend({
 		return centroid;
 	},
 
-	updatePlayerDistanceMatrix: function(self) {
-		
-		self.playerDistances = {};		
+	updatePlayerDistanceMatrix: function (self) {
+
+		self.playerDistances = {};
 		var players = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' });
 
 		for (var i = 0; i < players.length; i++) {
 			var playerA = players[i]
-			var playerAId = playerA.id()				
+			var playerAId = playerA.id()
 			if (playerA) {
-				
+
 				if (self.playerDistances[playerAId] == undefined) {
 					self.playerDistances[playerAId] = {}
 				}
@@ -243,22 +244,23 @@ var VideoChatComponent = IgeEntity.extend({
 					for (var j = 0; j < players.length; j++) {
 						if (i != j) { // dont compare distance between same unit
 							var playerB = players[j]
-							
+
 							if (playerB) {
-								var playerBId = playerB.id()							
+								var playerBId = playerB.id()
 								var unitB = playerB.getSelectedUnit();
 								if (unitB) {
 									self.playerDistances[playerAId][playerBId] = self.getDistance(unitA._translate, unitB._translate);
 								}
 							}
-						}						
+						}
 					}
 				}
 			}
 		}
 
 		// console.log(self.playerDistances)
-		console.log("distance to other players", self.playerDistances[ige.client.myPlayer.id()])
+		videoChatUpdateSpatialVideo(self.playerDistances[ige.client.myPlayer.id()])
+		//console.log("distance to other players", self.playerDistances[ige.client.myPlayer.id()])
 	}
 
 
