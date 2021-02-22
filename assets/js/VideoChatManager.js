@@ -68,13 +68,17 @@ function videoChatUpdateSpatialVideo(players) {
                 presence = 1
             }
             v.volume = presence
-            v.style = "opacity: " + presence
+            if (!peerSettings[p].hidden) {
+                v.style = "opacity: " + presence
+            }
             if (dist > ige.videoChat.maxRange) {
                 document.getElementById("video-div-id-" + p).style = "display: none"
                 v.pause()
             } else {
                 document.getElementById("video-div-id-" + p).style = "display: block"
-                v.play()
+                if (!peerSettings[p].hidden) {
+                    v.play()
+                }
             }
         }
     }
