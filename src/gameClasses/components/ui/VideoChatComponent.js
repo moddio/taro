@@ -6,14 +6,17 @@ var VideoChatComponent = IgeEntity.extend({
 		var self = this;
 		self._entity = entity;
 		self.groups = {};
-		self.chatEnterDistance = 50000
-		self.chatLeaveDistance = 50000
 		self.playerDistances = {};		
 
 		if (ige.isServer) {
+
+			self.chatEnterDistance = 50000
+			self.chatLeaveDistance = 50000
+		
 			// update player groups every 1s
 			setInterval(self.updatePlayerGroups, 1000, self);
 		} else if (ige.isClient) {
+			self.range = 700 // myPlayer's video & audio chat radius. when range is at 700, fade value & audio should be at 0.
 			setInterval(self.updatePlayerDistanceMatrix, 200, self);
 		}
 		
