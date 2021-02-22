@@ -8,9 +8,15 @@ var VideoChatComponent = IgeEntity.extend({
 		self.groups = {};
 		self.chatEnterDistance = 50000
 		self.chatLeaveDistance = 50000
+		self.playerDistances = {};		
 
-		// update player groups every 1s
-		setInterval(self.updatePlayerGroups, 1000, self);
+		if (ige.isServer) {
+			// update player groups every 1s
+			setInterval(self.updatePlayerGroups, 1000, self);
+		} else if (ige.isClient) {
+			setInterval(self.updatePlayerDistanceMatrix, 200, self);
+		}
+		
 	},
 
 	updatePlayerGroups: function (self) {
@@ -213,7 +219,42 @@ var VideoChatComponent = IgeEntity.extend({
 		centroid.x /= polygons.length;
 		centroid.y /= polygons.length;
 		return centroid;
+	},
+
+	updatePlayerDistanceMatrix: function() {
+		var self = this;
+		self.playerDistances = {};		
+		for (var i = 0; i < players.length; i++) {
+			var playerA = players[i]
+			var playerAId = playerA.id()				
+			if (playerA) {
+				
+				if (self.playerDistances[playerAId] == undefined) {
+					self.playerDistances[playerAId] = {}
+				}
+
+				var unitA = playerA.getSelectedUnit();
+				if (unitA) {
+					for (var j = 0; j < players.length; j++) {
+						if (i != j) { // dont compare distance between same unit
+							var playerB = players[j]
+							
+							if (playerB) {
+								var playerBId = playerB.id()							
+								var unitB = playerB.getSelectedUnit();
+								if (unitB) {
+									self.playerDistances[playerAId][playerBId] = self.getDistance(unitA._translate, unitB._translate);
+								}
+							}
+						}						
+					}
+				}
+			}
+		}
+		console.log(self.updatePlayerDistanceMatrix)
 	}
+
+
 });
 
 
