@@ -100,6 +100,9 @@ var SoundComponent = IgeEntity.extend({
     },
 
     getVolume: function (position, volume = 0) {
+        var settingsVolume = parseFloat(localStorage.getItem('sound-volume'));
+        settingsVolume = isNaN(settingsVolume) ? 1 : settingsVolume / 100;
+
         var distanceSoundShouldHeard = 500;
         if (ige.game.data.settings && ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
             distanceSoundShouldHeard = ige.game.data.settings.camera.zoom.default * 1.5;
@@ -113,7 +116,7 @@ var SoundComponent = IgeEntity.extend({
         if (distance < distanceSoundShouldHeard) {
             if (!volume) volume = 55;
             volume = (Math.max(0, distanceSoundShouldHeard - distance) / distanceSoundShouldHeard) * (volume / 100); // 55% of actual volume
-            return Math.min(volume, 1);
+            return Math.min(volume * settingsVolume, 1);
         } else {
             //we don't want to hear sounds that are outside distanceSoundShouldHeard
             return 0;
@@ -130,10 +133,11 @@ var SoundComponent = IgeEntity.extend({
                 var volume = position === null ? sound.volume / 100 : 0;
                 if (position) {
                     volume = this.getVolume(position, sound.volume);
+                } else {
+                    var settingsVolume = parseFloat(localStorage.getItem('sound-volume'));
+                    settingsVolume = isNaN(settingsVolume) ? 1 : settingsVolume / 100;
+                    volume = settingsVolume * volume;
                 }
-                // else if (!position) {
-                // 	volume = 0.50
-                // }
 
                 if (sound && sound.file) {
                     if (self.preLoadedSounds[key] && self.preLoadedSounds[key].src == sound.file) {
@@ -179,7 +183,13 @@ var SoundComponent = IgeEntity.extend({
         var playMusic;
         if (ige.isClient) {
             var musicSetting = localStorage.getItem('music');
+            var settingsVolume = parseFloat(localStorage.getItem('music-volume'));
+            settingsVolume = isNaN(settingsVolume) ? 1 : settingsVolume / 100;
+
             var volume = music.volume === undefined ? 1 : Math.min(music.volume / 100, 1);
+            var originalVolume = volume;
+            volume = settingsVolume * volume;
+
             if (music && music.file) {
                 if (self.preLoadedMusic[key] && self.preLoadedMusic[key].src === music.file) {
                     if (!self.preLoadedMusic[key].pause) {
@@ -196,7 +206,7 @@ var SoundComponent = IgeEntity.extend({
                     element.loop = shouldRepeat;
                     playMusic = element;
                 }
-
+                self.preLoadedMusic[key].originalVolume = originalVolume;
                 if (self.musicCurrentlyPlaying) {
                     self.stopMusic();
                 }
@@ -231,6 +241,15 @@ var SoundComponent = IgeEntity.extend({
                     console.log(e);
                 });
                 this.musicCurrentlyPlaying.currentTime = 0;
+            }
+        }
+    },
+
+    updateMusicVolume: function (volume) {
+        if (ige.isClient) {
+            if (this.musicCurrentlyPlaying) {
+                var originalVolume = this.musicCurrentlyPlaying.originalVolume;
+                this.musicCurrentlyPlaying.volume = Math.min(originalVolume * (volume / 100), 1);
             }
         }
     },
