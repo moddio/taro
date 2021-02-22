@@ -221,9 +221,11 @@ var VideoChatComponent = IgeEntity.extend({
 		return centroid;
 	},
 
-	updatePlayerDistanceMatrix: function() {
-		var self = this;
+	updatePlayerDistanceMatrix: function(self) {
+		
 		self.playerDistances = {};		
+		var players = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' });
+
 		for (var i = 0; i < players.length; i++) {
 			var playerA = players[i]
 			var playerAId = playerA.id()				
@@ -251,7 +253,7 @@ var VideoChatComponent = IgeEntity.extend({
 				}
 			}
 		}
-		console.log(self.updatePlayerDistanceMatrix)
+		console.log(self.playerDistances)
 	}
 
 

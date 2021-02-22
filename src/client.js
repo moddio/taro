@@ -629,7 +629,7 @@ var Client = IgeClass.extend({
             ige.network.send('igeChatJoinRoom', "1");
 
             ige.addComponent(IgeChatComponent);
-            ige.addComponent(IgeVideoChatComponent);
+            ige.addComponent(VideoChatComponent);
             ige.chat.on('messageFromServer', function (msgData) {
                 ige.chat.postMessage(msgData);
             });
