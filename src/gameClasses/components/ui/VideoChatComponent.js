@@ -261,7 +261,9 @@ var VideoChatComponent = IgeEntity.extend({
 		}
 
 		// console.log(self.playerDistances)
-		videoChatUpdateSpatialVideo(self.playerDistances[ige.client.myPlayer.id()])
+		if (ige.client.myPlayer != undefined) {
+			videoChatUpdateSpatialVideo(self.playerDistances[ige.client.myPlayer.id()])
+		}
 		//console.log("distance to other players", self.playerDistances[ige.client.myPlayer.id()])
 	}
 
