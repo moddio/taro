@@ -2185,7 +2185,7 @@ var IgeEngine = IgeEntity.extend({
 		// console.log(ige._tickTime, ige._tickTime, 1000/self._fpsRate)		
 
 		// slow engineTick restart only works on two houses (Braains.io)
-		if (ige.server.gameId == '5a7fd59b1014dc000eeec3dd')				
+		if (ige.server && ige.server.gameId == '5a7fd59b1014dc000eeec3dd')				
 			// restart server if physics engine is running slow as this will cause laggy experience for the players		
 			if (ige._tickTime > 1000 / self._fpsRate) {
 				self.lagOccurenceCount++;
