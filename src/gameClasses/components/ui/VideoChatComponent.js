@@ -18,7 +18,9 @@ var VideoChatComponent = IgeEntity.extend({
 		} else if (ige.isClient) {
 			self.minRange = 300 // myPlayer's video & audio chat radius. when range is at 700, fade value & audio should be at 0.
 			self.maxRange = 700
-			setInterval(self.updatePlayerDistanceMatrix, 200, self);
+			if (typeof videoChatUpdateSpatialVideo == 'function') {
+				setInterval(self.updatePlayerDistanceMatrix, 200, self);
+			}
 		}
 
 	},
