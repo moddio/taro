@@ -3,6 +3,9 @@ var VideoChatComponent = IgeEntity.extend({
 	componentId: 'videoChat',
 
 	init: function (entity, options) {
+		if (!ige.game.videoChatEnabled) {
+			return
+		}
 		var self = this;
 		self._entity = entity;
 		self.groups = {};

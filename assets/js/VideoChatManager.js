@@ -23,8 +23,16 @@ let users = {}
 //##updateUsers: used mostly to update username, for now.
 function updateUsers() {
     console.log("updating users...")
-    for (const u in users) {
-        $("#video-div-id-" + u + " .name-label").html(users[u]);
+    for (let p of ige.$$('player')) {
+        const uID = p.id()
+        p = p._stats
+        if (p.controlledBy && p.controlledBy == 'human') {
+            if (uID == myID) {
+                $("#video-div-id-myPeer .name-label").html(p.name)
+            } else {
+                $("#video-div-id-" + uID + " .name-label").html(p.name)
+            }
+        }
     }
 }
 //##disconnectFromRoom: used to disconnect user from current room.
@@ -439,10 +447,21 @@ function processMyStream(stream) {
     })
 }
 function refreshUserName(_name) {
-    $("#video-div-id-myPeer .name-label").html(_name);
-    if (socket) {
-        socket.emit('update-users');
+    for (let p of ige.$$('player')) {
+        const uID = p.id()
+        p = p._stats
+        if (p.controlledBy && p.controlledBy == 'human') {
+            if (uID == myID) {
+                $("#video-div-id-myPeer .name-label").html(p.name)
+            } else {
+                $("#video-div-id-" + uID + " .name-label").html(p.name)
+            }
+        }
     }
+    //$("#video-div-id-myPeer .name-label").html(_name);
+    // if (socket) {
+    //     socket.emit('update-users');
+    // }
 }
 var switchRoomBuffer = null
 function startVideoChat(_peerID = undefined) {
