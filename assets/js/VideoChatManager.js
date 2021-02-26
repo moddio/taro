@@ -241,6 +241,7 @@ function setVideoVisibility(peerID, status) {
 }
 //## handleVideoUI: used to manage video-controls button presses.
 function handleVideoUI(el) {
+    el.blur()
     let videoID = "video-" + el.getAttribute("data-peer");
     let videoEl = document.getElementById(videoID);
     // const btnIcon = el.querySelectorAll("i")[0];
@@ -343,11 +344,17 @@ function gotStream(stream) {
     console.log("stream refreshed")
     videoElement.srcObject = stream;
     videoElement.muted = true;
+    console.log("removing loading buttons")
+    $(".loading-button").addClass("d-none");
+    $(".videochat-choice").removeClass("d-none");
     // Refresh button list in case labels have become available
     return navigator.mediaDevices.enumerateDevices();
 }
 
 function handleError(error) {
+    console.log("removing loading buttons")
+    $(".loading-button").addClass("d-none");
+    $(".videochat-choice[data-choice=disable]").removeClass("d-none");
     console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
 }
 
