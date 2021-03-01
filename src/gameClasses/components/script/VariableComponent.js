@@ -1105,6 +1105,12 @@ var VariableComponent = IgeEntity.extend({
 					if (!isNaN(value))
 						return Math.floor(value);
 					break;
+				
+				case 'bitwiseInversion':
+					var value = self.getValue(text.value, vars);
+					if (!isNaN(value))
+						return ~Math.floor(value);
+					break;
 
 				case 'getEntireMapRegion':
 					var region = {
@@ -1829,6 +1835,24 @@ var VariableComponent = IgeEntity.extend({
 		}
 		else if (op == '%' || op.operator == "%") {
 			result = this.calculate(left, vars) % this.calculate(right, vars)
+		}
+		else if (op == "<<" || op.operator == "<<") {
+			result = this.calculate(left, vars) << this.calculate(right, vars)
+		}
+		else if (op == ">>" || op.operator == ">>") {
+			result = this.calculate(left, vars) >> this.calculate(right, vars)
+		}
+		else if (op == ">>>" || op.operator == ">>>") {
+			result = this.calculate(left, vars) >>> this.calculate(right, vars)
+		}
+		else if (op == "&" || op.operator == "&") {
+			result = this.calculate(left, vars) & this.calculate(right, vars)
+		}
+		else if (op == "|" || op.operator == "|") {
+			result = this.calculate(left, vars) | this.calculate(right, vars)
+		}
+		else if (op == "^" || op.operator == "^") {
+			result = this.calculate(left, vars) ^ this.calculate(right, vars)
 		}
 
 		if (isNaN(result)) {
