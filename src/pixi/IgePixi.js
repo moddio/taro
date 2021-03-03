@@ -2,39 +2,6 @@
 var IgeInitPixi = IgeEventingClass.extend({
     classId: 'IgeInitPixi',
     componentId: 'pixi',
-    //Event listening support
-    // listeners: {},
-    // addEventListener: function (event, callback, id = null) {
-    //     if (this.listeners[event]) {
-    //         this.listeners[event].push({ callback: callback, id: id })
-    //         return;
-    //     }
-    //     this.listeners[event] = [{ callback: callback, id: id }]
-    // },
-    // removeEventListener: function (event, callback = null, id = null) {
-    //     if (!this.listeners[event]) {
-    //         return;
-    //     }
-    //     let i = 0;
-    //     for (listener of this.listeners[event]) {
-    //         if (id && listener.id == id) {
-    //             this.listeners[event].splice(i, 1);
-    //             return
-    //         }
-    //         if (callback && listener.callback == callback) {
-    //             this.listeners[event].splice(i, 1);
-    //             return
-    //         }
-    //         i += 1;
-    //     }
-    // },
-    // emit: function (event) {
-    //     if (this.listeners[event]) {
-    //         for (listener of this.listeners[event]) {
-    //             listener['callback']();
-    //         }
-    //     }
-    // },
 
     init: function () {
         var self = this;
