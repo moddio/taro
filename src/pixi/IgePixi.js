@@ -1,7 +1,40 @@
 // var app, viewport, world;
-var IgeInitPixi = IgeClass.extend({
+var IgeInitPixi = IgeEventingClass.extend({
     classId: 'IgeInitPixi',
     componentId: 'pixi',
+    //Event listening support
+    // listeners: {},
+    // addEventListener: function (event, callback, id = null) {
+    //     if (this.listeners[event]) {
+    //         this.listeners[event].push({ callback: callback, id: id })
+    //         return;
+    //     }
+    //     this.listeners[event] = [{ callback: callback, id: id }]
+    // },
+    // removeEventListener: function (event, callback = null, id = null) {
+    //     if (!this.listeners[event]) {
+    //         return;
+    //     }
+    //     let i = 0;
+    //     for (listener of this.listeners[event]) {
+    //         if (id && listener.id == id) {
+    //             this.listeners[event].splice(i, 1);
+    //             return
+    //         }
+    //         if (callback && listener.callback == callback) {
+    //             this.listeners[event].splice(i, 1);
+    //             return
+    //         }
+    //         i += 1;
+    //     }
+    // },
+    // emit: function (event) {
+    //     if (this.listeners[event]) {
+    //         for (listener of this.listeners[event]) {
+    //             listener['callback']();
+    //         }
+    //     }
+    // },
 
     init: function () {
         var self = this;
@@ -9,7 +42,7 @@ var IgeInitPixi = IgeClass.extend({
         ige.addComponent(IgeInputComponent);
         ige.addComponent(IgePixiTexture);
         var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
-        
+
         this.app = new PIXI.Application({
             width: 800, // default: 800
             height: 600, // default: 600
@@ -44,19 +77,19 @@ var IgeInitPixi = IgeClass.extend({
         this.world.addChild(this.box2dDebug);
         //this.world.addChild(this.mobileControls);
         this.isUpdateLayersOrderQueued = false;
-		
 
-		// make the mobileControls container fit to width and anchored to bottom
-		this.mobileControls.y = window.innerHeight - 540;
-		var scaleToFit = window.innerWidth/960;
-		this.mobileControls.scale.set(scaleToFit,scaleToFit);
-		
-		/*
-		var test1 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png', { crossOrigin: true });
-		test1.alpha = 0.2;
-		this.mobileControls.addChild(test1);
-		*/
-		 
+
+        // make the mobileControls container fit to width and anchored to bottom
+        this.mobileControls.y = window.innerHeight - 540;
+        var scaleToFit = window.innerWidth / 960;
+        this.mobileControls.scale.set(scaleToFit, scaleToFit);
+
+        /*
+        var test1 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png', { crossOrigin: true });
+        test1.alpha = 0.2;
+        this.mobileControls.addChild(test1);
+        */
+
         this.ticker = PIXI.Ticker.shared;
         this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
 
@@ -120,6 +153,9 @@ var IgeInitPixi = IgeClass.extend({
             // mobile controls anchor
             ige.pixi.mobileControls.y = window.innerHeight - 540;
         }
+        if (typeof this.emit == "function") {
+            this.emit('resize');
+        }
     },
     viewport: function () {
         var self = this;
@@ -158,9 +194,9 @@ var IgeInitPixi = IgeClass.extend({
 
         viewport.addChild(this.world);
         this.app.stage.addChild(viewport);
-		
-		// mobile controls should not follow the viewport...
-		this.app.stage.addChild(this.mobileControls);
+
+        // mobile controls should not follow the viewport...
+        this.app.stage.addChild(this.mobileControls);
 
         var cull = new PIXI.extras.cull.Simple();
         cull.addList(this.world.children);
@@ -291,7 +327,7 @@ var IgeInitPixi = IgeClass.extend({
                         var ownerUnit = entity.getOwnerUnit();
                         if (ownerUnit) {
                             ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
-                            
+
                             // immediately rotate items for my own unit
                             if (ownerUnit == ige.client.selectedUnit) {
                                 if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
@@ -342,7 +378,8 @@ var IgeInitPixi = IgeClass.extend({
         if (ige.gameLoopTickHasExecuted) {
             ige.gameLoopTickHasExecuted = false;
         }
-    },
+        this.emit('updateAllEntities');
+    }
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
