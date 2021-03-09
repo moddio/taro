@@ -56,7 +56,31 @@ var VideoChatComponent = IgeEntity.extend({
 			// 	}
 			// }
 		}
+		/** NEW */
+		//Because we have to deal with switchRoom we need to know if we have to merge groups
+		//the structure is: key =  group to move, value = the group to move in
+		// So groupA: groupB will move groupA to groupB
+		// the smaller group will be moved in the bigger one.
+		const groupMutations = {}
+		//merge closest groups
+		for (groupAId in self.groups) {
+			const groupA = self.groups[groupAId];
+			for (groupBId in self.groups) {
+				const groupB = self.groups[groupBId];
+				if (groupA != groupB) {
+					if (!groupMutations.groupAId && groupA.playerIds) {
+						if (self.getDistance(groupA.centoid, groupB.centoid) < self.chatEnterDistance) {
+							const equalSize = groupA.playerIds.length == groupB.playerIds.length
+							// if they are equal in size, we compare the name of the group
+							const moveForm = (equalSize && groupAId < groupBId) || groupA.playerIds.length < groupB.playerIds.length ? groupAId : groupBId
+							const moveTo = moveForm == groupAId ? groupBId : groupAId
+							groupMutations[moveForm] = moveTo
+						}
+					}
+				}
+			}
 
+		}
 		for (var i = 0; i < players.length; i++) {
 			var player = players[i]
 			if (player) {
@@ -72,8 +96,14 @@ var VideoChatComponent = IgeEntity.extend({
 							if (distance > self.chatLeaveDistance) {
 								self.removePlayerFromGroup(playerId)
 							}
+							//Check if the group is in the mutationsList as a key (from)
+							if (groupMutations[player.vcGroupId]) {
+								self.removePlayerFromGroup(player.vcGroupId, false)
+								self.addPlayerToGroup(playerId, groupMutations[player.vcGroupId])
+							}
 						}
-					} else { // if the Player doesn't belong in any group					
+					} else {
+						// if the Player doesn't belong in any group					
 						// check if the Player is within enter range of any group. If so, make Player enter the group.
 						for (groupId in self.groups) {
 							var group = self.groups[groupId];
@@ -166,7 +196,7 @@ var VideoChatComponent = IgeEntity.extend({
 		}
 	},
 
-	removePlayerFromGroup: function (playerId) {
+	removePlayerFromGroup: function (playerId, sendNetworkEvent = true) {
 		var player = ige.$(playerId);
 		if (player) {
 			if (player.vcGroupId) {
@@ -176,7 +206,9 @@ var VideoChatComponent = IgeEntity.extend({
 						if (playerIds[i] == playerId) {
 							console.log("Removing player ", player._stats.name, "(", playerId, ") from the group", player.vcGroupId)
 							this.groups[player.vcGroupId].playerIds.splice(i, 1);
-							ige.network.send("videoChat", { command: "leaveGroup" }, player._stats.clientId)
+							if (sendNetworkEvent) {
+								ige.network.send("videoChat", { command: "leaveGroup" }, player._stats.clientId)
+							}
 
 							// if there's only 1 person in a group, destroy the group
 							if (this.groups[player.vcGroupId].playerIds.length <= 1) {
@@ -191,6 +223,7 @@ var VideoChatComponent = IgeEntity.extend({
 		} else {
 			console.log("Cannot add player to videoChat group. Player doesn't exist!")
 		}
+		//this.emit("playerRemovedFromGroup", [playerId])
 	},
 
 	getPolygons: function (playerIds) {
