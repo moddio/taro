@@ -892,13 +892,14 @@ var Client = IgeClass.extend({
             ige.client.eventLog.push([0, "joinGame sent. userId " + userId])
             ige.client.eventLogStartTime = ige._currentTime;
 
-            window.errorLogTimer = setTimeout(function () {
-                var list = ige.client.eventLog.reduce(function (p, e) {
-                    return p + "<li>" + JSON.stringify(e) + "</li>";
-                }, '');
-                $('#event-logs-content').html("<ul>" + list + "</ul>");
-                $('#event-logs-modal').modal('show');
-            }, 12000);
+            // disable eventlog timer
+            // window.errorLogTimer = setTimeout(function () {
+            //     var list = ige.client.eventLog.reduce(function (p, e) {
+            //         return p + "<li>" + JSON.stringify(e) + "</li>";
+            //     }, '');
+            //     $('#event-logs-content').html("<ul>" + list + "</ul>");
+            //     $('#event-logs-modal').modal('show');
+            // }, 12000);
         }
     },
 
