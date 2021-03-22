@@ -1104,6 +1104,12 @@ var VariableComponent = IgeEntity.extend({
 					var value = self.getValue(text.value, vars);
 					if (!isNaN(value))
 						return Math.floor(value);
+					break;	
+				
+				case 'roundToNearest': // round num1 to the nearest num2
+					var roundNum = self.getValue(text.num1, vars);
+					var toNum = self.getValue(text.num2, vars);
+					returnValue = parseInt(roundNum / toNum + 0.5) * toNum
 					break;
 
 				case 'getEntireMapRegion':
