@@ -4,7 +4,7 @@
   </a>
 </p>
 
-## 2D HTML5 Multiplayer Game Engine.
+## HTML5 Multiverse Game Engine.
 **Taro is a multi-player-first, cross-platform 2D HTML5 game engine.** 
 It can support up to 64 concurrent players hosted on a $5/month VM while running box2d physics.
 Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
