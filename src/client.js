@@ -892,6 +892,7 @@ var Client = IgeClass.extend({
             ige.client.eventLog.push([0, "joinGame sent. userId " + userId])
             ige.client.eventLogStartTime = ige._currentTime;
 
+            // disable eventlog timer
             // window.errorLogTimer = setTimeout(function () {
             //     var list = ige.client.eventLog.reduce(function (p, e) {
             //         return p + "<li>" + JSON.stringify(e) + "</li>";

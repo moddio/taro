@@ -1,6 +1,30 @@
 <%if (gameDetails.videoChatEnabled) { %>
     <div class="videochat">
         <style scoped>
+            @keyframes spinner-border {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .spinner-border {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                vertical-align: text-bottom;
+                border: .25em solid currentColor;
+                border-right-color: transparent;
+                border-radius: 50%;
+                -webkit-animation: spinner-border .75s linear infinite;
+                animation: spinner-border .75s linear infinite;
+                margin-right: 5px;
+            }
+
+            .spinner-border-sm {
+                height: 20px;
+                border-width: .2em;
+            }
+
             #video-grid {
                 position: absolute;
                 top: 60px;
@@ -190,12 +214,20 @@
                         </div>
                     </div>
                     <div class="modal-footer mt-2">
-                        <button type="button" class="btn btn-secondary videochat-choice mr-auto"
+                        <button type="button" class="btn btn-secondary videochat-choice mr-auto d-none"
                             data-choice="disable">Play
                             without
                             VideoChat</button>
-                        <button type="button" class="btn btn-primary videochat-choice" data-choice="enable">Save
-                            changes</button>
+                        <button class="btn btn-secondary mr-auto loading-button" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                        <button type="button" class="btn btn-primary videochat-choice d-none"
+                            data-choice="enable">Continue</button>
+                        <button class="btn btn-primary loading-button" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
                     </div>
                 </div>
                 <div class="modal-step modal-step-3 d-none">
