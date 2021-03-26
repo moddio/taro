@@ -206,7 +206,7 @@ var IgeChatServer = {
 				});
 			}
 
-			if (msg.roomId) {
+			if (msg.roomId && typeof msg.roomId == 'string' || typeof msg.roomId == 'number') {
 				room = self._rooms[msg.roomId];
 				if (room) {
 					if (room.users.indexOf(clientId) > -1) {
