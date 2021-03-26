@@ -5211,7 +5211,7 @@ var IgeEntity = IgeObject.extend({
         // instantly rotate unit to mouse cursor
         if (this == ige.client.selectedUnit) {
             var ownerPlayer = ige.$(this._stats.ownerId);
-            if (ownerPlayer) {
+            if (ownerPlayer && ownerPlayer.control && ownerPlayer.control.input) {
                 var mouse = ownerPlayer.control.input.mouse;
                 if (mouse) {
                     this.angleToTarget = Math.atan2(mouse.y - this._translate.y, mouse.x - this._translate.x) + Math.radians(90);
