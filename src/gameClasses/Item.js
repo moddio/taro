@@ -933,7 +933,25 @@ var Item = IgeEntityBox2d.extend({
 						}
 						break;
 					case 'description':
-						ige.itemUi.updateItemDescription(this);
+						var owner = self.getOwnerUnit();
+						if (ige.isClient && ige.client.selectedUnit == owner) {
+							ige.itemUi.updateItemDescription(this);
+						}
+
+						break;
+					case 'name':
+						var owner = self.getOwnerUnit();
+						if (ige.isClient && ige.client.selectedUnit == owner) {
+							ige.itemUi.updateItemInfo(this);
+							ige.itemUi.updateItemDescription(this);
+						}
+						break;
+
+					case 'inventoryImage':
+						var owner = self.getOwnerUnit();
+						if (ige.isClient && ige.client.selectedUnit == owner) {
+							ige.itemUi.updateItemSlot(this, this._stats.slotIndex);
+						}
 						break;
 					case 'slotIndex':
 						var owner = self.getOwnerUnit();

@@ -312,6 +312,15 @@ var ActionComponent = IgeEntity.extend({
                             item.streamUpdateData([{ description: description }]);
                         }
                         break;
+
+                    case 'changeItemInventoryImage':
+                        var item = ige.variable.getValue(action.item, vars);
+                        var url = ige.variable.getValue(action.url, vars);
+                        if (item && url) {
+                            item.streamUpdateData([{ inventoryImage: url }]);
+                        }
+                        break;
+
                     case 'startAcceptingPlayers':
                         ige.clusterClient.setAcceptingPlayerStatus(true);
                         break;
@@ -1090,6 +1099,15 @@ var ActionComponent = IgeEntity.extend({
                         var name = ige.variable.getValue(action.name, vars)
                         if (unit) {
                             unit.streamUpdateData([{ name: name }]);
+                        }
+
+                        break;
+
+                    case 'setItemName':
+                        var item = ige.variable.getValue(action.item, vars)
+                        var name = ige.variable.getValue(action.name, vars)
+                        if (item) {
+                            item.streamUpdateData([{ name: name }]);
                         }
 
                         break;
