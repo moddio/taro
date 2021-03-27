@@ -45,6 +45,7 @@ var IgeInitPixi = IgeClass.extend({
         //this.world.addChild(this.mobileControls);
         this.isUpdateLayersOrderQueued = false;
 		
+        this.resizeCount = 0;
 
 		// make the mobileControls container fit to width and anchored to bottom
 		this.mobileControls.y = window.innerHeight - 540;
@@ -89,7 +90,16 @@ var IgeInitPixi = IgeClass.extend({
             sort(self.world.children);
         };
 
-        window.onresize = this.resize;
+        // a hack to call resize only when browser 'finishes' resizing.
+        // calling resize() on window.resize event creates CPU bottleneck
+        var resizeTimer;
+        $(window).on('resize', function(e) {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                self.resize()                    
+            }, 250);
+        });
+
         if (typeof ga != 'undefined' && ige.env != 'local') {
             var renderingEngine = 'canvas';
             if (this.app.renderer.context.gl) {
@@ -103,6 +113,7 @@ var IgeInitPixi = IgeClass.extend({
         }
     },
     resize: function () {
+        
         if (ige.pixi.viewport && ige.pixi.viewport.scale) {
             var currentWindowHeight = window.innerHeight;
             var currentWindowWidth = window.innerWidth;
@@ -200,6 +211,7 @@ var IgeInitPixi = IgeClass.extend({
         ige._cullCounter++;
 
         ige.pixi.app.render();
+        // this.resizeCount = 0;
     },
     updateAllEntities: function (timeStamp) {
         var self = this;
