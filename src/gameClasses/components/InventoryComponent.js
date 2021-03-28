@@ -242,7 +242,7 @@ var InventoryComponent = IgeEntity.extend({
 		for (var i = 0; i < totalInventorySize; i++) {
 			// if item was mapped to a specific slot, then check if there's available slot in the backpack
 			// if item didn't have mapping, then return the first available slot including both inventory + backpack
-			if (mappedSlot == undefined || (i >= this._entity._stats.inventorySize && this._entity._stats.controls.backpackAllowed == true)) {
+			if (mappedSlot == undefined || (i >= this._entity._stats.inventorySize && itemData.controls.backpackAllowed == true)) {
 				var itemId = self._entity._stats.itemIds[i]
 				if (!(itemId && ige.$(itemId))) {
 					return i + 1; // empty slot found
