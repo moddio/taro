@@ -899,8 +899,7 @@ var Unit = IgeEntityBox2d.extend({
             } else {
                 // if designated item slot is already occupied, unit cannot get this item
                 var availableSlot = self.inventory.getFirstAvailableSlotForItem(itemData)
-                
-                if(itemData.controls.canMerge || itemData.controls.canMerge == undefined || itemData.controls.canMerge == null){ //Check if the item can merge
+                if(itemData.controls == undefined || (itemData.controls.canMerge || itemData.controls.canMerge == undefined || itemData.controls.canMerge == null)){ //Check if the item can merge
                     // insert/merge itemData's quantity into matching items in the inventory
                     var totalInventorySize = this.inventory.getTotalInventorySize();
                     for (var i = 0; i < totalInventorySize; i++) {

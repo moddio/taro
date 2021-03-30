@@ -210,7 +210,7 @@ var InventoryComponent = IgeEntity.extend({
 
 		// check if this item can be merged with an existing item in the inventory
 		var totalInventorySize = this.getTotalInventorySize();
-		if(itemData.controls.canMerge  || itemData.controls.canMerge == undefined || itemData.controls.canMerge == null){ //Check if the item can merge
+		if(itemData.controls == undefined || (itemData.controls.canMerge  || itemData.controls.canMerge == undefined || itemData.controls.canMerge)){ //Check if the item can merge
 			var quantity = itemData.quantity;
 			for (var i = 0; i < totalInventorySize; i++) {
 				var itemId = self._entity._stats.itemIds[i]
@@ -236,13 +236,14 @@ var InventoryComponent = IgeEntity.extend({
 				}
 			}
 		}
+		
 
 
 		// get first available empty slot including from backpack
 		for (var i = 0; i < totalInventorySize; i++) {
 			// if item was mapped to a specific slot, then check if there's available slot in the backpack
 			// if item didn't have mapping, then return the first available slot including both inventory + backpack
-			if (mappedSlot == undefined || (i >= this._entity._stats.inventorySize && itemData.controls.backpackAllowed == true)) {
+			if (mappedSlot == undefined || (i >= this._entity._stats.inventorySize && (itemData.controls == undefined || (itemData.controls.backpackAllowed == true || itemData.controls.backpackAllowed == undefined))) {
 				var itemId = self._entity._stats.itemIds[i]
 				if (!(itemId && ige.$(itemId))) {
 					return i + 1; // empty slot found
