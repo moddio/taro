@@ -43,7 +43,7 @@ var VideoChatComponent = IgeEntity.extend({
 				continue;
 			}
 			self.groups[groupId].centoid = centoid;
-			console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
+			//console.log("group", groupId, " size: ", group.playerIds.length, "centoid", group.centoid)
 			// if (isNaN(group.centoid.x)) {
 			// 	console.log(self.groups[groupId])
 			// 	var playerIds = self.groups[groupId].playerIds;
@@ -100,7 +100,8 @@ var VideoChatComponent = IgeEntity.extend({
 								}
 							}
 						}
-						// check if a player is within chat range. If that player also doesn't belong is a group, then create a new group
+						// check if a player is within chat range.
+						//If that player also doesn't belong is a group, then create a new group
 						if (!chatEntered) {
 							for (var j = 0; j < players.length; j++) {
 								var playerB = players[j]
@@ -144,6 +145,7 @@ var VideoChatComponent = IgeEntity.extend({
 				//compare the distance between all the groups.
 				if (groupA != groupB) {
 					if (!groupMutations.groupAId && groupA.playerIds) {
+						//We use the same distance as in chatEnterDistance, should we have a custom distance?
 						if (self.getDistance(groupA.centoid, groupB.centoid) < self.chatEnterDistance) {
 							const equalSize = groupA.playerIds.length == groupB.playerIds.length
 							// To prevent race-conditions we use the name of the group if the group have the same size.
@@ -245,6 +247,8 @@ var VideoChatComponent = IgeEntity.extend({
 			}
 			player.vcGroupId = undefined
 		} else {
+			//Not doing this is raising a race-condition:
+			//We check if the player is in a group and we remove him even if it doesn't exist.
 			if (this.groupedPlayers[playerId]) {
 				//indexOf is also very fast.
 				const key = this.groups[this.groupedPlayers[playerId]].playerIds.indexOf(playerId)
