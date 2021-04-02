@@ -899,49 +899,50 @@ var Unit = IgeEntityBox2d.extend({
             } else {
                 // if designated item slot is already occupied, unit cannot get this item
                 var availableSlot = self.inventory.getFirstAvailableSlotForItem(itemData)
-                
-                // insert/merge itemData's quantity into matching items in the inventory
-                var totalInventorySize = this.inventory.getTotalInventorySize();
-                for (var i = 0; i < totalInventorySize; i++) {
-                    var matchingItemId = self._stats.itemIds[i]
-                    if (matchingItemId) {
-                        var matchingItem = ige.$(matchingItemId)
+                if(itemData.controls == undefined || (itemData.controls.canMerge || itemData.controls.canMerge == undefined || itemData.controls.canMerge == null)){ //Check if the item can merge
+                    // insert/merge itemData's quantity into matching items in the inventory
+                    var totalInventorySize = this.inventory.getTotalInventorySize();
+                    for (var i = 0; i < totalInventorySize; i++) {
+                        var matchingItemId = self._stats.itemIds[i]
+                        if (matchingItemId) {
+                            var matchingItem = ige.$(matchingItemId)
 
-                        // if a matching item found in the inventory, try merging them
-                        if (matchingItem && matchingItem._stats.itemTypeId == itemTypeId) {
-                            ige.game.lastCreatedItemId = matchingItem.id(); // this is necessary in case item isn't a new instance, but an existing item getting quantity updated
+                            // if a matching item found in the inventory, try merging them
+                            if (matchingItem && matchingItem._stats.itemTypeId == itemTypeId) {
+                                ige.game.lastCreatedItemId = matchingItem.id(); // this is necessary in case item isn't a new instance, but an existing item getting quantity updated
 
-                            // matching item has infinite quantity. merge item unless new item is also infinite
-                            if (matchingItem._stats.quantity == undefined && itemData.quantity != undefined) {
-                                if (isItemInstance) { // remove if it's an instance
+                                // matching item has infinite quantity. merge item unless new item is also infinite
+                                if (matchingItem._stats.quantity == undefined && itemData.quantity != undefined) {
+                                    if (isItemInstance) { // remove if it's an instance
+                                        item.remove();
+                                    }
+                                    return true;
+                                }
+
+                                // the new item can fit in, because the matching item isn't full or has infinite quantity. Increase matching item's quantity only.
+                                if (
+                                    itemData.quantity > 0 && (matchingItem._stats.maxQuantity - matchingItem._stats.quantity > 0)
+                                ) {
+                                    if (matchingItem._stats.maxQuantity != undefined) {
+                                        var quantityToBeTakenFromItem = Math.min(itemData.quantity, matchingItem._stats.maxQuantity - matchingItem._stats.quantity)
+                                    } else {
+                                        // var quantityToBeTakenFromItem = itemData.quantity;
+                                        // if matching item has infinite quantity, do not take any quantity from the new item
+                                        var quantityToBeTakenFromItem = 0;
+                                    }
+
+                                    matchingItem.streamUpdateData([{ quantity: matchingItem._stats.quantity + quantityToBeTakenFromItem }])
+                                    itemData.quantity -= quantityToBeTakenFromItem
+                                }
+                            }
+
+                            // if the new item no longer has any quantity left, destroy it (if it's an instance).
+                            if (itemData.maxQuantity != 0 && itemData.quantity == 0) {
+                                if (isItemInstance) {
                                     item.remove();
                                 }
                                 return true;
                             }
-
-                            // the new item can fit in, because the matching item isn't full or has infinite quantity. Increase matching item's quantity only.
-                            if (
-                                itemData.quantity > 0 && (matchingItem._stats.maxQuantity - matchingItem._stats.quantity > 0)
-                            ) {
-                                if (matchingItem._stats.maxQuantity != undefined) {
-                                    var quantityToBeTakenFromItem = Math.min(itemData.quantity, matchingItem._stats.maxQuantity - matchingItem._stats.quantity)
-                                } else {
-                                    // var quantityToBeTakenFromItem = itemData.quantity;
-                                    // if matching item has infinite quantity, do not take any quantity from the new item
-                                    var quantityToBeTakenFromItem = 0;
-                                }
-
-                                matchingItem.streamUpdateData([{ quantity: matchingItem._stats.quantity + quantityToBeTakenFromItem }])
-                                itemData.quantity -= quantityToBeTakenFromItem
-                            }
-                        }
-
-                        // if the new item no longer has any quantity left, destroy it (if it's an instance).
-                        if (itemData.maxQuantity != 0 && itemData.quantity == 0) {
-                            if (isItemInstance) {
-                                item.remove();
-                            }
-                            return true;
                         }
                     }
                 }
