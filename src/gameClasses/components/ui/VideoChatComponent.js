@@ -324,6 +324,10 @@ var VideoChatComponent = IgeEntity.extend({
 						}
 					}
 				}
+			} else {
+				if (self.playerDistances[playerAId]) {
+					delete self.playerDistances[playerAId];
+				}
 			}
 		}
 
