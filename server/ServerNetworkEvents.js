@@ -507,7 +507,7 @@ var ServerNetworkEvents = {
 			if (
 				fromItem != undefined &&
 				toItem == undefined &&
-				data.to < unit.inventory.getTotalInventorySize() && 
+				data.to < unit.inventory.getTotalInventorySize() &&
 				(
 					fromItem._stats.controls == undefined ||
 					fromItem._stats.controls.permittedInventorySlots == undefined ||
