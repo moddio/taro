@@ -30,8 +30,8 @@ var IgeInitPixi = IgeClass.extend({
         ige.createFrontBuffer(true);
         // PIXI.settings.PRECISION_FRAGMENT = 'highp';
         this.app.renderer.autoDensity = true;
-        this.initialWindowWidth = 2048;
-        this.initialWindowHeight = 786;
+        this.initialWindowWidth = 800;
+        this.initialWindowHeight = 600;
         this.currentZoomValue = 0;
 
         this.trackEntityById = {};
@@ -92,12 +92,8 @@ var IgeInitPixi = IgeClass.extend({
 
         // a hack to call resize only when browser 'finishes' resizing.
         // calling resize() on window.resize event creates CPU bottleneck
-        var resizeTimer;
         $(window).on('resize', function(e) {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                self.resize()                    
-            }, 250);
+            self.resizeQueuedAt = ige._currentTime;
         });
 
         if (typeof ga != 'undefined' && ige.env != 'local') {
@@ -193,6 +189,11 @@ var IgeInitPixi = IgeClass.extend({
         ige.engineStep();
         ige.input.processInputOnEveryFps();
         this.timeStamp = Date.now();
+
+        if (this.resizeQueuedAt && this.resizeQueuedAt < ige._currentTime - 250) {
+            this.resize()
+            this.resizeQueuedAt = undefined;
+        }
 
         if (this && this.updateAllEntities) {
             this.updateAllEntities();
