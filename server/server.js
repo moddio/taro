@@ -278,8 +278,12 @@ var Server = IgeClass.extend({
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
 		app.get('/', (req, res) => {
-			const videoChatEnabled = ige.game.videoChatEnabled && req.protocol == "https" ? ige.game.videoChatEnabled : false;
-			//const videoChatEnabled = true;
+			let videoChatEnabled = ige.game.videoChatEnabled && req.protocol == "https" ? ige.game.videoChatEnabled : false;
+			const envArgs = JSON.parse(process.env.npm_config_argv)
+			if (envArgs.original && envArgs.original.indexOf('--videochat') !== -1) {
+				console.log("videochat enabled using argv");
+				videoChatEnabled = true
+			}
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
 				title: global.standaloneGame.defaultData.title,
