@@ -19,6 +19,7 @@ var AIComponent = IgeEntity.extend({
                 self.sensorResponse = unit._stats.ai.sensorResponse; // options: none/flee/none (default)
                 self.attackResponse = unit._stats.ai.attackResponse; // options: fight/flee/none (default)
                 self.maxTravelDistance = unit._stats.ai.maxTravelDistance; // how far unit's willing to flee/chase target until returning to its spawn position - options: undefined value for infinite distance
+                self.maxDistanceFromTarget = unit._stats.ai.maxDistanceFromTarget; // options: undefined value for infinite distance
                 self.maxAttackRange = unit._stats.ai.maxAttackRange;
                 self.previousPosition = {x: unit._translate.x, y: unit._translate.y} // last position recorded before fleeing
                 self.nextMoveAt = ige._currentTime;
@@ -278,7 +279,9 @@ var AIComponent = IgeEntity.extend({
                     // we've chased far enough. stop fighting and return to where i was before
                     if (!isNaN(parseInt(self.maxTravelDistance)) && distanceTravelled > self.maxTravelDistance) {
                         self.moveToTargetPosition(self.previousPosition.x, self.previousPosition.y);
-                    } else {
+                    } else if(!isNaN(parseInt(self.maxDistanceFromTarget)) && this.getDistanceToTarget() > self.maxDistanceFromTarget){ // if the target is far away from the unit, stop the chase
+                        self.goIdle();
+                    }else{
                         // stop moving, start attacking if my attack can reach the target
                         if (self.maxAttackRange > this.getDistanceToTarget()) {
                             unit.isMoving = false;
