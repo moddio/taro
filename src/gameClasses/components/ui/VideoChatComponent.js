@@ -6,7 +6,6 @@ var VideoChatComponent = IgeEntity.extend({
 		var self = this;
 		self._entity = entity;
 		self.groups = {};
-		self.mutations = {}
 		// Holds the player info: key = playerID, value = currentGroup
 		this.groupedPlayers = {}
 		self.playerDistances = {};
@@ -59,7 +58,12 @@ var VideoChatComponent = IgeEntity.extend({
 			// 	}
 			// }
 		}
-		self.getMutations();
+
+		videoChatGroup.mergeWith(groupId)
+
+		var mergeInstruction = self.getMergeInstruction();
+
+
 		for (var i = 0; i < players.length; i++) {
 			var player = players[i]
 			if (player) {
@@ -75,8 +79,8 @@ var VideoChatComponent = IgeEntity.extend({
 							if (distance > self.chatLeaveDistance) {
 								self.removePlayerFromGroup(playerId)
 							}
-							//Check if the group is in the mutationsList as a key (from)
-							// if (self.mutations[player.vcGroupId]) {
+							//Check if the group is in the mergeInstructionsList as a key (from)
+							// if (mergeInstruction[player.vcGroupId]) {
 							// 	console.log("merging groups")
 							// 	//we don't need to notify the client for the removal from a group as the function switchGroup will take account of the switch.
 							// 	self.removePlayerFromGroup(player.vcGroupId, false)
@@ -128,14 +132,14 @@ var VideoChatComponent = IgeEntity.extend({
 	/**
 	 * This function is used to calculate if we have to merge groups
 	 */
-	getMutations() {
+	getMergeInstruction() {
 		const self = this
 		/** NEW */
 		//Because we have to deal with switchRoom we need to know if we have to merge groups
 		//the structure is: key =  group to move, value = the group to move in
-		// So groupA: groupB will move groupA to groupB
+		// So {groupA: groupB} will move groupA to groupB
 		// the smaller group will be moved in the bigger one.
-		const groupMutations = {}
+		const mergeInstruction = {}
 		//merge closest groups
 		//Loop trough groups
 		for (groupAId in self.groups) {
@@ -144,7 +148,7 @@ var VideoChatComponent = IgeEntity.extend({
 				const groupB = self.groups[groupBId];
 				//compare the distance between all the groups.
 				if (groupA != groupB) {
-					if (!groupMutations.groupAId && groupA.playerIds) {
+					if (!mergeInstruction.groupAId && groupA.playerIds) {
 						//We use the same distance as in chatEnterDistance, should we have a custom distance?
 						if (self.getDistance(groupA.centoid, groupB.centoid) < self.chatEnterDistance) {
 							const equalSize = groupA.playerIds.length == groupB.playerIds.length
@@ -152,15 +156,16 @@ var VideoChatComponent = IgeEntity.extend({
 							// if they are equal in size, we compare the name of the group
 							const moveForm = (equalSize && groupAId < groupBId) || groupA.playerIds.length < groupB.playerIds.length ? groupAId : groupBId
 							const moveTo = moveForm == groupAId ? groupBId : groupAId
-							groupMutations[moveForm] = moveTo
+							mergeInstruction[moveForm] = moveTo
 						}
 					}
 				}
 			}
 
 		}
-		self.mutations = groupMutations
+		return mergeInstruction
 	},
+	
 	getDistance: function (A, B) {
 		var xDiff = A.x - B.x;
 		var yDiff = A.y - B.y;
