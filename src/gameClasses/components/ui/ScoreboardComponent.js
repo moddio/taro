@@ -108,20 +108,31 @@ var ScoreboardComponent = IgeEntity.extend({
 
 	convertNumbersToKMB: function (labelValue) {
 		if (ige.game.data.settings.prettifyingScoreboard) {
-			// Nine Zeroes for Billions
-			return Math.abs(Number(labelValue)) >= 1.0e+9
+			// Qi for quintillion
+			return Math.abs(Number(labelValue)) >= 1.0e+18
+			? (Math.abs(Number(labelValue)) / 1.0e+18).toFixed(2) + "Qi"
+			
+				// Qa for quadrillion
+				: Math.abs(Number(labelValue)) >= 1.0e+15 
+				? (Math.abs(Number(labelValue)) / 1.0e+15).toFixed(2) + "Qa"
 
-				? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + "B"
-				// Six Zeroes for Millions 
-				: Math.abs(Number(labelValue)) >= 1.0e+6
+					// T for trillion
+					: Math.abs(Number(labelValue)) >= 1.0e+12 
+					? (Math.abs(Number(labelValue)) / 1.0e+12).toFixed(2) + "T"
 
-					? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
-					// Three Zeroes for Thousands
-					: Math.abs(Number(labelValue)) >= 1.0e+3
+						// Nine Zeroes for Billions
+						: Math.abs(Number(labelValue)) >= 1.0e+9
+						? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + "B"
 
-						? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
+							// Six Zeroes for Millions 
+							: Math.abs(Number(labelValue)) >= 1.0e+6
+							? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
 
-						: Math.abs(Number(labelValue));
+								// Three Zeroes for Thousands
+								: Math.abs(Number(labelValue)) >= 1.0e+3
+								? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
+
+									: Math.abs(Number(labelValue));
 		}
 		else {
 			return labelValue
