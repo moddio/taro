@@ -4214,7 +4214,7 @@ var IgeEntity = IgeObject.extend({
                                     // update attribute if entity has such attribute
                                     if (ige.isClient) {
                                         if (this._category === 'unit') {
-                                            this.updateAttributeBar(this._stats.attributes[attributeTypeId]);
+                                            //this.updateAttributeBar(this._stats.attributes[attributeTypeId]);
                                             this.unitUi && this.unitUi.updateAttributeBar(this._stats.attributes[attributeTypeId]);
                                         }
                                     }
