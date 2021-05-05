@@ -92,6 +92,8 @@ var Unit = IgeEntityBox2d.extend({
         }
         self._stats.fadingTextQueue = [];
         self.particleEmitters = {}
+        
+        self._stats.buffs = []
 
         if (ige.isServer) {
 
@@ -858,6 +860,73 @@ var Unit = IgeEntityBox2d.extend({
                 self.unitUi.updateAllAttributeBars()
             }
             self.inventory.update()
+        }
+    },
+
+    addBuff: function (attributeId, value, time) {
+        var self = this;
+        if (!ige.isServer) return;
+        // 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
+        var currentType = this._category === 'unit' ? 'unitTypes' : 'playerTypes';
+        var currentEntityTypeId = this._category === 'unit' ? 'type' : 'playerTypeId';
+        var baseEntityStats = ige.game.getAsset(currentType, this._stats[currentEntityTypeId]);
+        if (!baseEntityStats) {
+            return;
+        }
+
+        if(!time){
+            return;
+        }
+        var timeLimit = Date.now() + time
+        var unit = self;
+
+        if (attributeId && value && unit) {
+            var selectedAttribute = this._stats.attributes[attributeId]
+            if (selectedAttribute) {
+                var currentAttributeValue = parseFloat(selectedAttribute.value) || 1;
+                var maxValue = parseFloat(selectedAttribute.max);
+
+                if (currentAttributeValue != undefined) {
+                    var newMax = maxValue + parseFloat(value);
+                    var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue)) + value;
+                        
+                    this.attribute.setMax(attributeId, newMax);
+                    this.attribute.update(attributeId, newValue, true);
+                    this._stats.buffs.push({"attrId": attributeId, "value": value, "timeLimit": timeLimit})
+                }
+            }
+            
+        }
+    },
+
+    removeBuff: function (attributeId, value, index) {
+        var self = this;
+        if (!ige.isServer) return;
+        // 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
+        var currentType = this._category === 'unit' ? 'unitTypes' : 'playerTypes';
+        var currentEntityTypeId = this._category === 'unit' ? 'type' : 'playerTypeId';
+        var baseEntityStats = ige.game.getAsset(currentType, this._stats[currentEntityTypeId]);
+        if (!baseEntityStats) {
+            return;
+        }
+        var unit = self;
+
+        if (attributeId && value && unit) {
+            var selectedAttribute = this._stats.attributes[attributeId]
+            if (selectedAttribute) {
+                var currentAttributeValue = parseFloat(selectedAttribute.value) || 1;
+                var maxValue = parseFloat(selectedAttribute.max);
+
+                if (currentAttributeValue != undefined) {
+                    var newMax = maxValue - parseFloat(value);
+                    var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue));
+                        
+                    this.attribute.setMax(attributeId, newMax);
+                    this.attribute.update(attributeId, newValue, true);
+                    this._stats.buffs.splice(index, 1)
+                }
+            }
+            
         }
     },
 
@@ -1759,6 +1828,14 @@ var Unit = IgeEntityBox2d.extend({
 
         // if entity (unit/item/player/projectile) has attribute, run regenerate
         if (ige.isServer || (ige.physics && ige.isClient && ige.client.selectedUnit == this && ige.game.cspEnabled )) {
+            if(this._stats.buffs && this._stats.buffs.length > 0){
+                for(let i = 0; i < this._stats.buffs.length; i++){
+                    var buff = this._stats.buffs[i]
+                    if(buff.timeLimit < Date.now()){
+                        this.removeBuff(buff.attrId, buff.value, i)
+                    }
+                }
+            }
             if (this.attribute) {
                 this.attribute.regenerate();
             }
