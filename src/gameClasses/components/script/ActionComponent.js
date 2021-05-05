@@ -2192,7 +2192,7 @@ var ActionComponent = IgeEntity.extend({
                                 isAttributeVisible = attribute.isVisible instanceof Array && attribute.isVisible.length > 0;
                             }*/
 
-                            entity.addBuff(attrId, value, time) // update attribute, and check for attribute becoming 0
+                            entity.addAttributeBuff(attrId, value, time) // update attribute, and check for attribute becoming 0
                         }
                         break;
 

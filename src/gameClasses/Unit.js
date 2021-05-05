@@ -863,7 +863,7 @@ var Unit = IgeEntityBox2d.extend({
         }
     },
 
-    addBuff: function (attributeId, value, time) {
+    addAttributeBuff: function (attributeId, value, time) {
         var self = this;
         if (!ige.isServer) return;
         // 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
@@ -899,7 +899,7 @@ var Unit = IgeEntityBox2d.extend({
         }
     },
 
-    removeBuff: function (attributeId, value, index) {
+    removeAttributeBuff: function (attributeId, value, index) {
         var self = this;
         if (!ige.isServer) return;
         // 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
@@ -1832,7 +1832,7 @@ var Unit = IgeEntityBox2d.extend({
                 for(let i = 0; i < this._stats.buffs.length; i++){
                     var buff = this._stats.buffs[i]
                     if(buff.timeLimit < Date.now()){
-                        this.removeBuff(buff.attrId, buff.value, i)
+                        this.removeAttributeBuff(buff.attrId, buff.value, i)
                     }
                 }
             }
