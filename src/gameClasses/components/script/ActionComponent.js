@@ -2176,7 +2176,7 @@ var ActionComponent = IgeEntity.extend({
                         }
                         break;
 
-                    case 'addBuffToUnit':
+                    case 'addAttributeBuffToUnit':
 
                         var attrId = ige.variable.getValue(action.attribute, vars)
                         var value = ige.variable.getValue(action.value, vars)
