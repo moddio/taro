@@ -2192,7 +2192,27 @@ var ActionComponent = IgeEntity.extend({
                                 isAttributeVisible = attribute.isVisible instanceof Array && attribute.isVisible.length > 0;
                             }*/
 
-                            entity.addAttributeBuff(attrId, value, time) // update attribute, and check for attribute becoming 0
+                            entity.addAttributeBuff(attrId, value, time, false) // update attribute, and check for attribute becoming 0
+                        }
+                        break;
+
+                    case 'addPercentageAttributeBuffToUnit':
+
+                        var attrId = ige.variable.getValue(action.attribute, vars)
+                        var value = ige.variable.getValue(action.value, vars)
+                        var entity = ige.variable.getValue(action.entity, vars)
+                        var time = ige.variable.getValue(action.time, vars)
+                        if (entity && self.entityCategories.indexOf(entity._category) > -1 && entity._stats.attributes && entity._stats.attributes[attrId] != undefined && value != undefined && entity._stats.buffs) {
+                            var isAttributeVisible = false;
+
+                            /*if (entity._category === 'player') {
+                                isAttributeVisible = !!attribute.isVisible;
+                            }
+                            else {
+                                isAttributeVisible = attribute.isVisible instanceof Array && attribute.isVisible.length > 0;
+                            }*/
+
+                            entity.addAttributeBuff(attrId, value, time, true) // update attribute, and check for attribute becoming 0
                         }
                         break;
 

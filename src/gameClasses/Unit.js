@@ -863,7 +863,7 @@ var Unit = IgeEntityBox2d.extend({
         }
     },
 
-    addAttributeBuff: function (attributeId, value, time) {
+    addAttributeBuff: function (attributeId, value, time, percentage) {
         var self = this;
         if (!ige.isServer) return;
         // 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
@@ -887,12 +887,18 @@ var Unit = IgeEntityBox2d.extend({
                 var maxValue = parseFloat(selectedAttribute.max);
 
                 if (currentAttributeValue != undefined) {
-                    var newMax = maxValue + parseFloat(value);
-                    var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue)) + value;
-                        
+                    if (percentage == true) {
+                        var newMax = maxValue * (1 + parseFloat(value) / 100);
+                        var newValue = currentAttributeValue * (1 + parseFloat(value) / 100);
+                        this._stats.buffs.push({"attrId": attributeId, "value": newMax - maxValue, "timeLimit": timeLimit, "percentage": percentage})
+                    } else {
+                        var newMax = maxValue + parseFloat(value);
+                        var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue)) + value;
+                        this._stats.buffs.push({"attrId": attributeId, "value": value, "timeLimit": timeLimit, "percentage": percentage})
+                    }  
+                    
                     this.attribute.setMax(attributeId, newMax);
                     this.attribute.update(attributeId, newValue, true);
-                    this._stats.buffs.push({"attrId": attributeId, "value": value, "timeLimit": timeLimit})
                 }
             }
             
@@ -1832,7 +1838,7 @@ var Unit = IgeEntityBox2d.extend({
                 for(let i = 0; i < this._stats.buffs.length; i++){
                     var buff = this._stats.buffs[i]
                     if(buff.timeLimit < Date.now()){
-                        this.removeAttributeBuff(buff.attrId, buff.value, i)
+                        this.removeAttributeBuff(buff.attrId, buff.value, i) 
                     }
                 }
             }
