@@ -5222,7 +5222,9 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
-        this.rotateTo(0, 0, rotate);
+        if(this._stats.stunned == undefined || this._stats.stunned != true){
+            this.rotateTo(0, 0, rotate);    
+        }
         this.translateTo(x, y, 0);
 
         this._lastTransformAt = ige._currentTime;

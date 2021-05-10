@@ -1043,6 +1043,20 @@ var ActionComponent = IgeEntity.extend({
                         }
                         break;
 
+                    case 'stunUnit':
+                        var unit = ige.variable.getValue(action.unit, vars);
+                        if (unit && unit._stats) {
+                            unit.streamUpdateData([{stunned:true}])
+                        }
+                        break;
+
+                    case 'removeStunFromUnit':
+                        var unit = ige.variable.getValue(action.unit, vars);
+                        if (unit && unit._stats) {
+                            unit.streamUpdateData([{stunned:false}])
+                        }
+                        break;
+
                     case 'resetDebrisPosition':
                         if (entity && entity._category == 'debris')
                             entity.resetPosition()

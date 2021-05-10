@@ -145,6 +145,7 @@ var Unit = IgeEntityBox2d.extend({
         self.playEffect('create');
         self.addBehaviour('unitBehaviour', self._behaviour);
         self.scaleDimensions(self._stats.width, self._stats.height);
+        self._stats.stunned = false;
     },
 
     shouldRenderAttribute: function (attribute) {
@@ -1516,6 +1517,9 @@ var Unit = IgeEntityBox2d.extend({
                             self._stats.ownerId = newValue;
                         }
                         break;
+                    case 'stun':
+                        self._stats.stunned = true;
+                        break;
                 }
             }
         }
@@ -1716,7 +1720,8 @@ var Unit = IgeEntityBox2d.extend({
                      // rotate unit
                     if (self.angleToTarget != undefined && !isNaN(self.angleToTarget) &&
                         this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor &&
-                        this._stats.currentBody && !this._stats.currentBody.fixedRotation
+                        this._stats.currentBody && !this._stats.currentBody.fixedRotation &&
+                        (this._stats.stunned == undefined || this._stats.stunned != true)
                     ) {
                         if(this._stats.controls.absoluteRotation){
                             self.rotateTo(0, 0, ownerPlayer.absoluteAngle);
@@ -1726,34 +1731,35 @@ var Unit = IgeEntityBox2d.extend({
                     }
                 }
 
+                if(self._stats.stunned == undefined || self._stats.stunned != true){
+                    // translate unit
+                    var speed = this._stats.attributes['speed'] && this._stats.attributes['speed'].value || 0;
+                    var vector = undefined;
+                    if (
+                        ( // either unit is AI unit that is currently moving
+                            ownerPlayer._stats.controlledBy != "human" && self.isMoving
+                        ) ||
+                        ( // or human player's unit that's "following cursor"
+                            ownerPlayer._stats.controlledBy == "human" && self._stats.controls &&
+                            self._stats.controls.movementControlScheme == 'followCursor' && self.distanceToTarget > this.width()
+                        )
+                    ) {
+                        if (self.angleToTarget != undefined && !isNaN(self.angleToTarget)) {
+                            vector = {
+                                x: (speed * Math.sin(self.angleToTarget)),
+                                y: -(speed * Math.cos(self.angleToTarget))
+                            };
+                        }
+                    } else if (ownerPlayer._stats.controlledBy == "human") { // WASD or AD movement
+                        // moving diagonally should reduce speed
+                        if (self.direction.x != 0 && self.direction.y != 0) {
+                            speed = speed / 1.41421356237
+                        }
 
-                // translate unit
-                var speed = this._stats.attributes['speed'] && this._stats.attributes['speed'].value || 0;
-                var vector = undefined;
-                if (
-                    ( // either unit is AI unit that is currently moving
-                        ownerPlayer._stats.controlledBy != "human" && self.isMoving
-                    ) ||
-                    ( // or human player's unit that's "following cursor"
-                        ownerPlayer._stats.controlledBy == "human" && self._stats.controls &&
-                        self._stats.controls.movementControlScheme == 'followCursor' && self.distanceToTarget > this.width()
-                    )
-                ) {
-                    if (self.angleToTarget != undefined && !isNaN(self.angleToTarget)) {
                         vector = {
-                            x: (speed * Math.sin(self.angleToTarget)),
-                            y: -(speed * Math.cos(self.angleToTarget))
-                        };
-                    }
-                } else if (ownerPlayer._stats.controlledBy == "human") { // WASD or AD movement
-                    // moving diagonally should reduce speed
-                    if (self.direction.x != 0 && self.direction.y != 0) {
-                        speed = speed / 1.41421356237
-                    }
-
-                    vector = {
-                        x: self.direction.x * speed,
-                        y: self.direction.y * speed
+                            x: self.direction.x * speed,
+                            y: self.direction.y * speed
+                        }
                     }
                 }
 
