@@ -267,11 +267,6 @@ var Item = IgeEntityBox2d.extend({
 			return;
 		}
 
-		//if its owner unit is stunned, return
-		if(owner._stats.stunned != undefined && owner._stats.stunned == true){
-			return;
-		}
-
 		if (self.hasQuantityRemaining()) {
 			ige.game.lastUsedItemId = self.id();
 
