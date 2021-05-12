@@ -158,7 +158,11 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
-                        
+                    case 'setLastAttackingItem':
+                        var item = ige.variable.getValue(action.item, vars)
+                        ige.game.lastAttackingItemId = item.id();
+
+                        break;
 
                         
                     /* Player */
