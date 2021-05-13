@@ -108,7 +108,7 @@ var ControlComponent = IgeEntity.extend({
 		if (unit && unit._category == 'unit') {
 			if (ige.isServer || (ige.isClient && !this.isChatOpen)) {
 				var unitAbility = null;
-				if(unit._stats.stunned == undefined || unit._stats.stunned != true){
+				if(unit._stats.isStunned == undefined || unit._stats.isStunned != true){
 					if (unit._stats.controls) {
 						if (unit._stats.controls.movementControlScheme == 'ad') {
 							switch (key) {

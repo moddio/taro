@@ -1050,14 +1050,15 @@ var ActionComponent = IgeEntity.extend({
                     case 'stunUnit':
                         var unit = ige.variable.getValue(action.unit, vars);
                         if (unit && unit._stats) {
-                            unit.streamUpdateData([{stunned:true}])
+                            unit.ability.stopUsingItem()
+                            unit.streamUpdateData([{isStunned:true}])
                         }
                         break;
 
                     case 'removeStunFromUnit':
                         var unit = ige.variable.getValue(action.unit, vars);
                         if (unit && unit._stats) {
-                            unit.streamUpdateData([{stunned:false}])
+                            unit.streamUpdateData([{isStunned:false}])
                         }
                         break;
 

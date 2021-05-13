@@ -3931,7 +3931,7 @@ var IgeEntity = IgeObject.extend({
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
                     var item = ige.$(itemId);
-                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.disabledInBackpack != true){
+                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.isDisabledInBackpack != true){
                         unit.updateStats(itemId, true);
                     }
                     
@@ -3949,7 +3949,7 @@ var IgeEntity = IgeObject.extend({
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
                     var item = ige.$(itemId);
-                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.disabledInBackpack != true){
+                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.isDisabledInBackpack != true){
                         unit.updateStats(itemId);
                     }
                     
@@ -5230,7 +5230,7 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
-        if(this._stats.stunned == undefined || this._stats.stunned != true){
+        if(this._stats.isStunned == undefined || this._stats.isStunned != true){
             this.rotateTo(0, 0, rotate);    
         }
         this.translateTo(x, y, 0);
