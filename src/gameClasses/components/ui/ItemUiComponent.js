@@ -351,7 +351,8 @@ var ItemUiComponent = IgeEntity.extend({
 					value = ige.game.secondsToHms(attribute.value);
 				}
 				else {
-					value = parseInt(attribute.value);
+					var decimalPlace = parseInt(attribute.decimalPlaces) || 0;
+					value = parseFloat(attribute.value).toFixed(decimalPlace);
 				}
 				info += '<b>' + attribute.name + ': </b>' + (value || 0);
 				info += '</p>';
