@@ -3930,7 +3930,11 @@ var IgeEntity = IgeObject.extend({
             //remove all passive attributes applyed to this unit
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
-                    unit.updateStats(itemId, true);
+                    var item = ige.$(itemId);
+                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.disabledInBackpack != true){
+                        unit.updateStats(itemId, true);
+                    }
+                    
                 }
             });
         }
@@ -3944,7 +3948,11 @@ var IgeEntity = IgeObject.extend({
             //add all passive attributes applyed to this unit
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
-                    unit.updateStats(itemId);
+                    var item = ige.$(itemId);
+                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.disabledInBackpack != true){
+                        unit.updateStats(itemId);
+                    }
+                    
                 }
             });
         }

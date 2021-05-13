@@ -778,7 +778,10 @@ var Unit = IgeEntityBox2d.extend({
             var item = ige.$(itemId);
             if (item) {
                 // removing passive attributes
-                self.updateStats(itemId, true);
+                if(item._stats.slotIndex < this._stats.inventorySize || item._stats.disabledInBackpack != true){
+                    self.updateStats(itemId, true);
+                }
+
 
                 // if the new unit type cannot carry the item, then remove it.
                 if (self.canCarryItem(item._stats) == false) {
@@ -798,7 +801,9 @@ var Unit = IgeEntityBox2d.extend({
                 }
 
                 // adding back passive attributes
-                self.updateStats(itemId);
+                if(item._stats.slotIndex < this._stats.inventorySize || item._stats.disabledInBackpack != true){
+                    self.updateStats(itemId);
+                }
             }
         }
 
@@ -1036,7 +1041,9 @@ var Unit = IgeEntityBox2d.extend({
                                     {quantity: itemData.quantity},
                                     {slotIndex: slotIndex }
                                 ])
-                    self.updateStats(item.id())
+                    if(item._stats.slotIndex < self._stats.inventorySize || item._stats.disabledInBackpack != true){
+                        self.updateStats(item.id())
+                    }
 
                     if (slotIndex == self._stats.currentItemIndex) {
                         item.setState('selected');
@@ -1234,7 +1241,9 @@ var Unit = IgeEntityBox2d.extend({
                 }
 
                 self.inventory.removeItem(itemIndex, item.id());
-                self.updateStats(item.id(), true);
+                if(item._stats.slotIndex < this._stats.inventorySize || item._stats.disabledInBackpack != true){
+                    self.updateStats(item.id(), true)
+                }
                 self.detachEntity(item.id());
 
                 ige.trigger && ige.trigger.fire("unitDroppedAnItem", {
