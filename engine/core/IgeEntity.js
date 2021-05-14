@@ -3930,7 +3930,11 @@ var IgeEntity = IgeObject.extend({
             //remove all passive attributes applyed to this unit
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
-                    unit.updateStats(itemId, true);
+                    var item = ige.$(itemId);
+                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.isDisabledInBackpack != true){
+                        unit.updateStats(itemId, true);
+                    }
+                    
                 }
             });
         }
@@ -3944,7 +3948,11 @@ var IgeEntity = IgeObject.extend({
             //add all passive attributes applyed to this unit
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
-                    unit.updateStats(itemId);
+                    var item = ige.$(itemId);
+                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.isDisabledInBackpack != true){
+                        unit.updateStats(itemId);
+                    }
+                    
                 }
             });
         }
@@ -4265,13 +4273,10 @@ var IgeEntity = IgeObject.extend({
                             // this case is in igeEntity.js instead of item.js, because if it's in item.js, 
                             // we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
                             if (ige.isClient) {
-                                // ignore item use stream for my own unit                            
-                                if (this.getOwnerUnit() != ige.client.selectedUnit) {
                                     this._stats.isBeingUsed = newValue;
                                     if (newValue == false) {
                                         this.playEffect('none');
                                     }
-                                }
                             }                            
                             break;
 
@@ -5222,7 +5227,9 @@ var IgeEntity = IgeObject.extend({
             }
         }
 
-        this.rotateTo(0, 0, rotate);
+        if(this._stats.isStunned == undefined || this._stats.isStunned != true){
+            this.rotateTo(0, 0, rotate);    
+        }
         this.translateTo(x, y, 0);
 
         this._lastTransformAt = ige._currentTime;

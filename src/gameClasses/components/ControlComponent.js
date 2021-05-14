@@ -108,63 +108,65 @@ var ControlComponent = IgeEntity.extend({
 		if (unit && unit._category == 'unit') {
 			if (ige.isServer || (ige.isClient && !this.isChatOpen)) {
 				var unitAbility = null;
-				if (unit._stats.controls) {
-					if (unit._stats.controls.movementControlScheme == 'ad') {
-						switch (key) {
-							case 'a':
-							case 'left':
-								unit.ability.moveLeft();
-								break;
+				if(unit._stats.isStunned == undefined || unit._stats.isStunned != true){
+					if (unit._stats.controls) {
+						if (unit._stats.controls.movementControlScheme == 'ad') {
+							switch (key) {
+								case 'a':
+								case 'left':
+									unit.ability.moveLeft();
+									break;
 
-							case 'd':
-							case 'right':
-								unit.ability.moveRight();
-								break;
-						}
-					} else if (unit._stats.controls.movementControlScheme != 'followCursor') { // WASD movement is default
-						switch (key) {
-							case 'w':
-							case 'up':
-								unit.ability.moveUp();
-								// ige.inputReceived = Date.now();
-								break;
+								case 'd':
+								case 'right':
+									unit.ability.moveRight();
+									break;
+							}
+						} else if (unit._stats.controls.movementControlScheme != 'followCursor') { // WASD movement is default
+							switch (key) {
+								case 'w':
+								case 'up':
+									unit.ability.moveUp();
+									// ige.inputReceived = Date.now();
+									break;
 
-							case 'a':
-							case 'left':
-								unit.ability.moveLeft();
-								break;
+								case 'a':
+								case 'left':
+									unit.ability.moveLeft();
+									break;
 
-							case 's':
-							case 'down':
-								unit.ability.moveDown();
-								break;
+								case 's':
+								case 'down':
+									unit.ability.moveDown();
+									break;
 
-							case 'd':
-							case 'right':
-								unit.ability.moveRight();
-								break;
+								case 'd':
+								case 'right':
+									unit.ability.moveRight();
+									break;
+							}
 						}
 					}
-				}
 
-				switch (key) {
-					case 'e':
-						unit.ability.pickupItem();
-						break;
+					switch (key) {
+						case 'e':
+							unit.ability.pickupItem();
+							break;
 
-					case 'g':
-						unit.ability.dropItem();
-						break;
+						case 'g':
+							unit.ability.dropItem();
+							break;
 
-					case 'i':
-						if (ige.isClient && $('#open-inventory-button').css('display') !== 'none') {
-							$('#open-inventory-button').click();
-						}
-						break;
+						case 'i':
+							if (ige.isClient && $('#open-inventory-button').css('display') !== 'none') {
+								$('#open-inventory-button').click();
+							}
+							break;
 
-					case 'button1':
-						unit.ability.startUsingItem();
-						break;
+						case 'button1':
+							unit.ability.startUsingItem();
+							break;
+					}
 				}
 
 				if (!unitAbility && unit._stats.controls && unit._stats.controls.abilities) {

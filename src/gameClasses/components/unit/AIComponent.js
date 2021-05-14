@@ -67,7 +67,7 @@ var AIComponent = IgeEntity.extend({
             });
             
             var ownerPlayerOfTargetUnit = ige.$(unit._stats.ownerId);
-            if (ownerPlayer && ownerPlayer.isHostileTo(ownerPlayerOfTargetUnit)) {
+            if (ownerPlayer && ownerPlayer.isHostileTo(ownerPlayerOfTargetUnit) && unit._stats.isUnTargetable != true) {
                 // if I already have a target, re-target if new target unit is closer
                 var targetUnit = this.getTargetUnit();
                 if (targetUnit == undefined || (self.maxAttackRange < this.getDistanceToTarget())) {
@@ -283,7 +283,7 @@ var AIComponent = IgeEntity.extend({
                         self.goIdle();
                     }else{
                         // stop moving, start attacking if my attack can reach the target
-                        if (self.maxAttackRange > this.getDistanceToTarget()) {
+                        if (self.maxAttackRange > this.getDistanceToTarget() && unit._stats.isStunned != true) {
                             unit.isMoving = false;
                             unit.ability.startUsingItem()
 

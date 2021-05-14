@@ -158,7 +158,11 @@ var ActionComponent = IgeEntity.extend({
 
                         break;
 
-                        
+                    case 'setLastAttackingItem':
+                        var item = ige.variable.getValue(action.item, vars)
+                        ige.game.lastAttackingItemId = item.id();
+
+                        break;
 
                         
                     /* Player */
@@ -1040,6 +1044,21 @@ var ActionComponent = IgeEntity.extend({
                             if (!isNaN(radius)) {
                                 sensor.updateRadius(radius)
                             }
+                        }
+                        break;
+
+                    case 'stunUnit':
+                        var unit = ige.variable.getValue(action.unit, vars);
+                        if (unit && unit._stats) {
+                            unit.ability.stopUsingItem()
+                            unit.streamUpdateData([{isStunned:true}])
+                        }
+                        break;
+
+                    case 'removeStunFromUnit':
+                        var unit = ige.variable.getValue(action.unit, vars);
+                        if (unit && unit._stats) {
+                            unit.streamUpdateData([{isStunned:false}])
                         }
                         break;
 
