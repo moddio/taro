@@ -4273,10 +4273,10 @@ var IgeEntity = IgeObject.extend({
                             // this case is in igeEntity.js instead of item.js, because if it's in item.js, 
                             // we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
                             if (ige.isClient) {
+                                if (newValue == false) {
                                     this._stats.isBeingUsed = newValue;
-                                    if (newValue == false) {
-                                        this.playEffect('none');
-                                    }
+                                    this.playEffect('none');
+                                }
                             }                            
                             break;
 
