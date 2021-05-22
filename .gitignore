@@ -1,3 +1,4 @@
+build/
 heapdump/
 log.log
 typings/**
