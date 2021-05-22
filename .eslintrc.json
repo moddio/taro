@@ -94,9 +94,6 @@
         // Use templating strings with backticks whenever possible.
         "prefer-template": 1,
 
-        // Prefer const myFunction = () => {}; rather than function myFunction () {}.
-        "func-style": 1,
-
         // Prefer fat arrow functions.
         "prefer-arrow-callback": 1,
         "arrow-body-style": ["warn", "as-needed"],
@@ -112,6 +109,7 @@
         "no-use-before-define": 0,
         "no-unused-vars": 0,
         "no-unused-expressions": 0,
+        "no-void": 0,
         "prefer-const": 0,
 
         // Unnecessary.
@@ -130,6 +128,16 @@
         "no-useless-escape": 0,
         "no-func-assign": 0,
         "no-global-assign": 0,
-        "no-self-assign": 0
+        "no-self-assign": 0,
+        "func-style": 0,
+        "no-proto": 0,
+        "no-undef-init": 0,
+        "no-unsafe-finally": 0,
+        "no-return-assign": 0,
+        "no-redeclare": 0,
+        "array-callback-return": 0,
+        "no-prototype-builtins": 0,
+        "no-case-declarations": 0,
+        "use-isnan": 0
     }
 }
