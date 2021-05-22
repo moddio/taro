@@ -275,6 +275,7 @@ var Server = IgeClass.extend({
 				}
 			}
 		}));
+
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
 		app.get('/', (req, res) => {
