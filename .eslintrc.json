@@ -101,8 +101,8 @@
         "prefer-arrow-callback": 1,
         "arrow-body-style": ["warn", "as-needed"],
         "prefer-arrow/prefer-arrow-functions": ["warn", {
-            "disallowPrototype": "writable",
-            "singleReturnOnly": "writable",
+            "disallowPrototype": true,
+            "singleReturnOnly": true,
             "classPropertiesAllowed": false
         }],
 
