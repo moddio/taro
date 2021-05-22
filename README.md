@@ -1,16 +1,26 @@
-<p align="center">
+<div align="center">
   <a href="https://modd.io">
     <img src="./assets/images/logo.png" width="400" alt="Taro Engine logo">
   </a>
-</p>
+</div>
 
-## HTML5 Multiverse Game Engine.
-**Taro is a multiplayer HTML5 game engine.** 
-It can support up to 64 concurrent players hosted on a $5/month VM while running box2d physics.
-Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
+<div align="center">
+  <h2>HTML5 Game Engine</h2>
+  <p>Taro is a multiplayer game engine. It can support up to 64 concurrent players hosted on a $5 / month VM while running Box2D physics. Join us on <a href="https://discord.gg/XRe8T7K">Discord</a> or support us on <a href="https://www.patreon.com/moddio">Patreon</a>.
+</div>
 
-## Demo ##
-[<img src="./assets/images/demo.png" width="390" alt="demo">](http://taro.town)
+<div align="center">
+  <img src="https://img.shields.io/github/contributors/moddio/taro?style=for-the-badge&color=f01313">
+  <img src="https://img.shields.io/github/last-commit/moddio/taro?style=for-the-badge&color=f01313">
+  <img src="https://img.shields.io/github/languages/code-size/moddio/taro?style=for-the-badge&color=f01313">
+</div>
+
+
+<div align="center">
+  <h3>Demo</h3>
+  <a href="http://taro.town"><img src="./assets/images/demo.png" width="390" alt="Taro demo"></a>
+</div>
+<br>
 
 ## What's included in the box
 - Box2D Physics
