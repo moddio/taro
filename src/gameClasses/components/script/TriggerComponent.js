@@ -17,9 +17,9 @@ var TriggerComponent = IgeEntity.extend({
 			return;
 
 		if (entityA._stats && entityB._stats) {
-			
+
 			// a unit's sensor detected another unit
-			
+
 			if (entityB._category == 'sensor') {
 				var tempEntity = entityA;
 				entityA = entityB;
@@ -42,7 +42,7 @@ var TriggerComponent = IgeEntity.extend({
 				}
 				return;
 			}
-			
+
 
 			// ensure entityA is prioritized by this order: region, unit, item, projectile, wall
 			// this is to ensure that contact event is fired once when two entities touch each other. instead of this event being called twice.
@@ -54,7 +54,7 @@ var TriggerComponent = IgeEntity.extend({
 								entityB._category == 'item' || (
 									entityA._category != 'item' && (
 										entityB._category == 'projectile' ||
-										entityB._category == undefined										
+										entityB._category == undefined
 									)
 								)
 							)
@@ -79,6 +79,7 @@ var TriggerComponent = IgeEntity.extend({
 								unitId: entityB.id(),
 								region: region
 							});
+							ige.trigger.emit("unitRegionEntered", { region: region, unit: entityB })
 							break;
 
 						case 'item':
@@ -103,7 +104,7 @@ var TriggerComponent = IgeEntity.extend({
 					}
 					ige.game.lastTouchingUnitId = entityA.id()
 					ige.game.lastTouchedUnitId = entityB.id()
-							
+
 					switch (entityB._category) {
 
 						case 'unit':
@@ -140,7 +141,7 @@ var TriggerComponent = IgeEntity.extend({
 							ige.game.lastAttackingUnitId = entityB._stats.sourceUnitId;
 							ige.game.lastAttackedUnitId = entityA.id()
 							ige.trigger.fire("unitTouchesProjectile", triggeredBy);
-							
+
 							break;
 
 						case undefined:
@@ -164,7 +165,7 @@ var TriggerComponent = IgeEntity.extend({
 							break;
 					}
 					break;
-							
+
 				case 'projectile':
 					switch (entityB._category) {
 
@@ -209,14 +210,27 @@ var TriggerComponent = IgeEntity.extend({
 
 	},
 
-	_endContactCallback: function(contact) {
-		
+	_endContactCallback: function (contact) {
+		var entityA = contact.m_fixtureA.m_body._entity
+		var entityB = contact.m_fixtureB.m_body._entity
+		const region = entityA._category == 'region' ? ige.variable.getValue({
+			function: "getVariable",
+			variableName: entityA._stats.id
+		}) : false;
+		if (!region) {
+			return;
+		}
+		if (entityB._category == 'unit') {
+			//by moving to the same id as the user the user gets disconnected from any room.
+			ige.trigger.emit("unitRegionExit", { region: entityA, unit: entityB })
+			//cleaner callback, to implement
+		}
 	},
 
 	_enableContactListener: function () {
 		// Set the contact listener methods to detect when
 		// contacts (collisions) begin and end
-		ige.physics.contactListener(this._beginContactCallback, this.endContactCallback)
+		ige.physics.contactListener(this._beginContactCallback, this._endContactCallback)
 	},
 
 	/*
@@ -230,9 +244,9 @@ var TriggerComponent = IgeEntity.extend({
 			for (scriptId in ige.game.data.scripts) {
 				var script = ige.game.data.scripts[scriptId]
 				var triggered = false;
-	
+
 				// look for matching trigger within the script's triggers
-	
+
 				if (script && script.triggers) {
 					for (j = 0; j < script.triggers.length; j++) {
 						var scriptTrigger = script.triggers[j]
@@ -240,29 +254,29 @@ var TriggerComponent = IgeEntity.extend({
 							triggered = true;
 						}
 					}
-	
+
 					if (triggered) {
 						ige.script.scriptLog('\ntrigger: ' + triggerName)
-	
+
 						var localVariables = {
 							triggeredBy: triggeredBy
 						}
 						ige.script.runScript(scriptId, localVariables)
 					}
 				}
-	
+
 			}
 		}
-		
+
 		if (triggeredBy && triggeredBy.projectileId) {
 			var projectile = ige.$(triggeredBy.projectileId);
 			if (projectile) {
 				switch (triggerName) {
-					case 'unitTouchesProjectile':				
+					case 'unitTouchesProjectile':
 						var attackedUnit = ige.$(ige.game.lastTouchingUnitId);
 						if (attackedUnit) {
 							var damageHasBeenInflicted = attackedUnit.inflictDamage(projectile._stats.damageData);
-							
+
 							if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith['units'] && damageHasBeenInflicted) {
 								projectile.destroy();
 							}
@@ -282,10 +296,10 @@ var TriggerComponent = IgeEntity.extend({
 						if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith['walls']) {
 							projectile.destroy();
 						}
-						break;	
+						break;
 				}
 			}
-		}		
+		}
 	}
 });
 

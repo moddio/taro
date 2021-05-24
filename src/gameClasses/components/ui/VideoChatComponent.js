@@ -14,9 +14,16 @@ var VideoChatComponent = IgeEntity.extend({
 
 			self.chatEnterDistance = 50000
 			self.chatLeaveDistance = 50000
-
+			//event triggered on region entered
+			ige.trigger.on('unitRegionEntered', function (data) {
+				self.addPlayerToGroup(data.unit.id(), data.region.id());
+			});
+			ige.trigger.on('unitRegionExit', function (data) {
+				self.removePlayerFromGroup(data.unit.id());
+			});
 			// update player groups every 1s
-			setInterval(self.updatePlayerGroups, 1000, self);
+			//setInterval(self.updatePlayerGroups, 1000, self);
+
 		} else if (ige.isClient) {
 			self.minRange = 300 // myPlayer's video & audio chat radius. when range is at 700, fade value & audio should be at 0.
 			self.maxRange = 700
@@ -26,7 +33,6 @@ var VideoChatComponent = IgeEntity.extend({
 		}
 
 	},
-
 	updatePlayerGroups: function (self) {
 		var players = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' })
 		// var players = ige.$$('player')
@@ -166,9 +172,12 @@ var VideoChatComponent = IgeEntity.extend({
 	addPlayerToGroup: function (playerId, groupId) {
 		var player = ige.$(playerId);
 		if (player) {
+			if (!this.groups[groupId]) {
+				this.groups[groupId] = { playerIds: [] };
+			}
 			this.groups[groupId].playerIds.push(playerId)
 			player.vcGroupId = groupId;
-			console.log("Adding player ", player._stats.name, "(", playerId, ") from the group", groupId)
+			console.log("Adding player ", player._stats.name, "(", playerId, ") to the group", groupId)
 			this.groupedPlayers[playerId] = groupId
 			ige.network.send("videoChat", { command: "joinGroup", groupId: groupId }, player._stats.clientId)
 		} else {
@@ -204,7 +213,6 @@ var VideoChatComponent = IgeEntity.extend({
 			}
 			player.vcGroupId = undefined
 		} else {
-			console.log("hello");
 			//Not doing this is raising a race-condition:
 			//We check if the player is in a group and we remove him even if it doesn't exist.
 			if (this.groupedPlayers[playerId]) {
