@@ -542,7 +542,7 @@ var VariableComponent = IgeEntity.extend({
 					var num = self.getValue(text.value, vars);
 					var precision = self.getValue(text.precision, vars);
 
-					returnValue = parseFloat(num).toFixed(precision)
+					returnValue = parseFloat(parseFloat(num).toFixed(precision))
 
 					// nishant's code
 					// num = typeof num === 'number' ? num : undefined;
