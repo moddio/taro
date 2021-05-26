@@ -810,7 +810,7 @@ var Item = IgeEntityBox2d.extend({
 		var ownerUnit = ige.$(this._stats.ownerUnitId)
 		if (ownerUnit) {
 			// remove its passive attributes from its ownerUnit unit.
-			if(this._stats.slotIndex < ownerUnit._stats.inventorySize || this._stats.isDisabledInBackpack != true){
+			if(this._stats.slotIndex < ownerUnit._stats.inventorySize || this._stats.bonus.passive.isDisabledInBackpack != true){
 				ownerUnit.updateStats(this.id(), true);
 			}
 			

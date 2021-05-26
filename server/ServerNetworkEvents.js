@@ -497,15 +497,15 @@ var ServerNetworkEvents = {
 				) {
 					fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
 					toItem.streamUpdateData([{ slotIndex: parseInt(data.from) }]);
-					if(fromItem.isDisabledInBackpack == true && data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
+					if(fromItem._stats.bonus.passive.isDisabledInBackpack == true && data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
 						unit.updateStats(fromItem.id(), true)
-					}else if(fromItem.isDisabledInBackpack == true && data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize){
+					}else if(fromItem._stats.bonus.passive.isDisabledInBackpack == true && data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize){
 						unit.updateStats(fromItem.id())
 					}
 
-					if(toItem.isDisabledInBackpack == true && data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize){
+					if(toItem._stats.bonus.passive.isDisabledInBackpack == true && data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize){
 						unit.updateStats(toItem.id(), true)
-					}else if(toItem.isDisabledInBackpack == true && data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
+					}else if(toItem._stats.bonus.passive.isDisabledInBackpack == true && data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
 						unit.updateStats(toItem.id())
 					}
 					var temp = itemIds[data.from];
@@ -528,9 +528,9 @@ var ServerNetworkEvents = {
 				)
 			) {
 				fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
-				if(fromItem.isDisabledInBackpack == true && data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
+				if(fromItem._stats.bonus.passive.isDisabledInBackpack == true && data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
 					unit.updateStats(fromItem.id(), true)
-				}else if(fromItem.isDisabledInBackpack == true && data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize){
+				}else if(fromItem._stats.bonus.passive.isDisabledInBackpack == true && data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize){
 					unit.updateStats(fromItem.id())
 				}
 				itemIds[data.to] = itemIds[data.from];
