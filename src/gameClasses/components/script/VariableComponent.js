@@ -541,7 +541,8 @@ var VariableComponent = IgeEntity.extend({
 				case 'toFixed':
 					var num = self.getValue(text.value, vars);
 					var precision = self.getValue(text.precision, vars);
-
+					
+					// toFixed() returns a string, so we have to parseFloat again
 					returnValue = parseFloat(parseFloat(num).toFixed(precision))
 
 					// nishant's code
