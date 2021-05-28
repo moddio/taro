@@ -3931,9 +3931,14 @@ var IgeEntity = IgeObject.extend({
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
                     var item = ige.$(itemId);
-                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                    if(item._stats.bonus && item._stats.bonus.passive){
+                        if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                        unit.updateStats(itemId, true);
+                        }
+                    }else{
                         unit.updateStats(itemId, true);
                     }
+                    
                     
                 }
             });
@@ -3949,9 +3954,13 @@ var IgeEntity = IgeObject.extend({
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
                     var item = ige.$(itemId);
-                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                    if(item._stats.bonus && item._stats.bonus.passive){
+                        if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                            unit.updateStats(itemId);
+                        }
+                    }else{
                         unit.updateStats(itemId);
-                    }
+                    }   
                     
                 }
             });
