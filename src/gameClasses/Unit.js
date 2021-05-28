@@ -778,11 +778,11 @@ var Unit = IgeEntityBox2d.extend({
             var item = ige.$(itemId);
             if (item) {
                 // removing passive attributes
-                if(item._stats.bonus && item._stats.bonus.passive){
-                    if(item._stats.slotIndex < this._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                if (item._stats.bonus && item._stats.bonus.passive) {
+                    if (item._stats.slotIndex < this._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
                         self.updateStats(itemId, true);
                     }
-                }else{
+                } else {
                     self.updateStats(itemId, true);
                 }
                 
@@ -806,11 +806,11 @@ var Unit = IgeEntityBox2d.extend({
                 }
 
                 // adding back passive attributes
-                if(item._stats.bonus && item._stats.bonus.passive){
-                    if(item._stats.slotIndex < this._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                if (item._stats.bonus && item._stats.bonus.passive) {
+                    if (item._stats.slotIndex < this._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
                         self.updateStats(itemId);
                     }
-                }else{
+                } else {
                     self.updateStats(itemId);
                 }
             }
@@ -1051,11 +1051,11 @@ var Unit = IgeEntityBox2d.extend({
                                     {slotIndex: slotIndex }
                                 ])
                     
-                    if(item._stats.bonus && item._stats.bonus.passive){
-                        if(item._stats.slotIndex < self._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                    if (item._stats.bonus && item._stats.bonus.passive) {
+                        if (item._stats.slotIndex < self._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
                             self.updateStats(item.id())
                         }
-                    }else{
+                    } else {
                         self.updateStats(item.id())
                     }
 
@@ -1256,11 +1256,11 @@ var Unit = IgeEntityBox2d.extend({
 
                 self.inventory.removeItem(itemIndex, item.id());
 
-                if(item._stats.bonus && item._stats.bonus.passive){
-                    if(item._stats.slotIndex < this._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true){
+                if (item._stats.bonus && item._stats.bonus.passive) {
+                    if (item._stats.slotIndex < this._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
                         self.updateStats(item.id(), true)
                     }
-                }else{
+                } else {
                     self.updateStats(item.id(), true)
                 }
                 
