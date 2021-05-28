@@ -65,17 +65,13 @@ var VideoChatComponent = IgeEntity.extend({
 				var playerId = player.id()
 				var unit = player.getSelectedUnit();
 				if (unit) {
-					//if player.vcGroupId has an id and self.groups[player.vcGroupId] exists I only check if the player
-					// is outside the group range. 
+					// if the Player belongs to a group and is out of range from the group's centoid OR if that player's group no longer exists, then kick that player out of the group
 					if (player.vcGroupId && self.groups[player.vcGroupId]) {
 						var group = self.groups[player.vcGroupId];
-						// if the Player belongs to a group and is out of range from the group's centoid, then kick that player out of the group
-						if (group) {
-							var centoid = group.centoid;
-							var distance = self.getDistance(centoid, unit._translate)
-							if (distance > self.chatLeaveDistance) {
-								self.removePlayerFromGroup(playerId)
-							}
+						var centoid = group.centoid;
+						var distance = self.getDistance(centoid, unit._translate)
+						if (distance > self.chatLeaveDistance) {
+							self.removePlayerFromGroup(playerId)
 						}
 					} else {
 						// if the Player doesn't belong in any group					
