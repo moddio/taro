@@ -278,8 +278,7 @@ var Server = IgeClass.extend({
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
 		app.get('/', (req, res) => {
-			let videoChatEnabled = ige.game.videoChatEnabled && req.protocol == "https" ? ige.game.videoChatEnabled : false;
-			videoChatEnabled = true;
+			const videoChatEnabled = ige.game.videoChatEnabled && req.protocol == "https" ? ige.game.videoChatEnabled : false;			
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
 				title: global.standaloneGame.defaultData.title,
