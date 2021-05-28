@@ -515,8 +515,7 @@ var ServerNetworkEvents = {
 							unit.updateStats(toItem.id())
 						}
 					}
-					
-
+          
 					var temp = itemIds[data.from];
 					itemIds[data.from] = itemIds[data.to];
 					itemIds[data.to] = temp;
