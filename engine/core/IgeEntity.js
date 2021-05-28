@@ -3933,7 +3933,7 @@ var IgeEntity = IgeObject.extend({
                     var item = ige.$(itemId);
                     if (item._stats.bonus && item._stats.bonus.passive) {
                         if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
-                        unit.updateStats(itemId, true);
+                            unit.updateStats(itemId, true);
                         }
                     } else {
                         unit.updateStats(itemId, true);
