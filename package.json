@@ -9,6 +9,7 @@
     "server:remote": "cross-env ENV=standalone-remote node server/ige.js -g ./src",
     "build": "cross-env TEST=true node server/ige.js -deploy ./src -to ../be/assets",
     "build:gs": "cross-env TEST=true node server/ige.js -deploy ./src -to ../../be/assets",
+    "build:git": "cross-env TEST=true node server/ige.js -deploy ./src -to ./build",
     "debug": "cross-env ENV=standalone node --inspect server/ige.js -g ./src"
   },
   "dependencies": {
