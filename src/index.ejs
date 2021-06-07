@@ -1,41 +1,48 @@
 <html>
 
 <head>
-    <!-- bootstrap -->
-    <script crossorigin="anonymous" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script crossorigin="anonymous"
-        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
-    <script crossorigin="anonymous" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <title>Taro</title>
+    <meta name="description" content="A multiplayer HTML5 game engine">
+    <meta name="keywords" content="modd.io, taro, multiplayer">
 
-    <!-- lzstring -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <!-- OpenGraph Metadata -->
+    <meta property="og:title" content="Taro">
+    <meta property="og:description" content="A multiplayer HTML5 game engine">
 
-    <!-- lodash -->
-    <script crossorigin="anonymous" type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
+    <!-- Icon -->
+    <link rel="icon" href="/assets/images/favicon.png" size="64">
 
-    <!-- context menu -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
 
-    <!-- jquery UI -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
-    <script crossorigin="anonymous" type="text/javascript"
-        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/common.css">
 
-    <!-- font awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-    <!-- sweet alert -->
-    <script crossorigin="anonymous"
-        src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-contextmenu@2.9.2/dist/jquery.contextMenu.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-contextmenu@2.9.2/dist/jquery.ui.position.min.js"></script>
 
-    <link href="/assets/css/common.css" rel="stylesheet" crossorigin="anonymous" />
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
 
-    <!-- game variables -->
+    <!-- LZ-String -->
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>    
+
+    <!-- Lodash -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>    
+
+    <!-- Sweet Alert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.16.6/sweetalert2.min.js"></script>
+
+    <!-- Pixi.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/pixi.js-legacy@6.0.4/dist/browser/pixi-legacy.min.js"></script>
+
+    <!-- Game Variables -->
     <script>
         var mode = 'play';
         var gameId = '<%= gameId %>';
@@ -58,22 +65,23 @@
 <body>
     <div id="game-div" style="overflow: hidden">
         <%- include('templates/dev-console'); -%>
-            <%- include('templates/menu'); -%>
-                <%- include('templates/shop'); -%>
-                    <%- include('templates/gui'); -%>
-                        <%- include('templates/chat'); -%>
-                            <%- include('templates/inventory'); -%>
-                                <%- include('templates/dialogue'); -%>
-                                    <%- include('templates/trade'); -%>
+        <%- include('templates/menu'); -%>
+        <%- include('templates/shop'); -%>
+        <%- include('templates/gui'); -%>
+        <%- include('templates/chat'); -%>
+        <%- include('templates/inventory'); -%>
+        <%- include('templates/dialogue'); -%>
+        <%- include('templates/trade'); -%>
     </div>
     <%- include('templates/videochat.ejs'); -%>
-        <!-- load engine -->
-        <script type="text/javascript">
-            var igeRoot = './engine/';
-            window.isStandalone = true;
-            gameStarted = false;
-        </script>
-        <script>
+
+    <!-- load engine -->
+    <script type="text/javascript">
+        var igeRoot = './engine/';
+        window.isStandalone = true;
+        gameStarted = false;
+    </script>
+    <script>
             (function ($) {
                 $.fn.writeText = function (content, duration, callback) {
                     content = content || '';
@@ -118,8 +126,6 @@
             })(jQuery);
         </script>
 
-        <!-- pixi -->
-        <script type="text/javascript" src="/src/pixi/pixi-legacy.js"></script>
         <script type="text/javascript" src="/engine/loader.js"></script>
 </body>
 
