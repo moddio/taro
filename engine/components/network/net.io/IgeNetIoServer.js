@@ -48,7 +48,7 @@ var IgeNetIoServer = {
     });
 
     // Start network sync
-    this.timeSyncStart();
+    // this.timeSyncStart();
 
     return this._entity;
   },

@@ -44,7 +44,7 @@ var IgeSocketIoServer = {
 		this.define('_igeNetTimeSync', function () { self._onTimeSync.apply(self, arguments); });
 
 		// Start network sync
-		this.timeSyncStart();
+		// this.timeSyncStart();
 
 		return this._entity;
 	},

@@ -152,7 +152,23 @@ NetIo.Client = NetIo.EventingClass.extend({
 
 	},
 
-	_onOpen: function () {
+	_onOpen: function (event) {
+		var url = event.target.url;
+		var urlWithoutProtocol = url.split('://')[1];
+		var serverDomain = urlWithoutProtocol.split('/')[0];
+		var serverName = serverDomain.split(':')[0];
+
+		$.ajax({
+			url: '/socket-error-count',
+			dataType: "json",
+			type: 'POST',
+			data: {
+				status: true,
+				server: serverName,
+				tier: window.tier
+			},
+		});
+		
 		this._state = 2;
 	},
 
@@ -231,6 +247,23 @@ NetIo.Client = NetIo.EventingClass.extend({
 
 		console.log('close event', event, { state: this._state, reason: this._disconnectReason });
 
+		if (code === 1006) {
+			var url = event.target.url;
+			var urlWithoutProtocol = url.split('://')[1];
+			var serverDomain = urlWithoutProtocol.split('/')[0];
+			var serverName = serverDomain.split(':')[0];
+
+			$.ajax({
+				url: '/socket-error-count',
+				dataType: "json",
+				type: 'POST',
+				data: {
+					status: false,
+					server: serverName,
+					tier: window.tier
+				},
+			});
+		}
 		// if (code === 1006) {
 		// 	console.log('experienced issue 1006');
 		// 	var baseUrl = location.host + location.pathname;

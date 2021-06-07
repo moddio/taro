@@ -3931,9 +3931,14 @@ var IgeEntity = IgeObject.extend({
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
                     var item = ige.$(itemId);
-                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.isDisabledInBackpack != true){
+                    if (item._stats.bonus && item._stats.bonus.passive) {
+                        if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
+                            unit.updateStats(itemId, true);
+                        }
+                    } else {
                         unit.updateStats(itemId, true);
                     }
+                    
                     
                 }
             });
@@ -3949,9 +3954,13 @@ var IgeEntity = IgeObject.extend({
             unit._stats.itemIds.forEach(function (itemId) {
                 if (itemId) {
                     var item = ige.$(itemId);
-                    if(item._stats.slotIndex < unit._stats.inventorySize || item._stats.isDisabledInBackpack != true){
+                    if (item._stats.bonus && item._stats.bonus.passive) {
+                        if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
+                            unit.updateStats(itemId);
+                        }
+                    } else {
                         unit.updateStats(itemId);
-                    }
+                    }   
                     
                 }
             });
@@ -4273,10 +4282,22 @@ var IgeEntity = IgeObject.extend({
                             // this case is in igeEntity.js instead of item.js, because if it's in item.js, 
                             // we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
                             if (ige.isClient) {
+                                if (this.getOwnerUnit() != ige.client.selectedUnit) {
                                     this._stats.isBeingUsed = newValue;
                                     if (newValue == false) {
                                         this.playEffect('none');
                                     }
+                                }
+                            }                            
+                            break;
+
+                        case 'stopUsing':
+                            // This will only be called when we stop the unit from using an item from the server side, to prevent issues.
+                            if (ige.isClient) {
+                                this._stats.isBeingUsed = newValue;
+                                if (newValue == false) {
+                                    this.playEffect('none');
+                                }
                             }                            
                             break;
 

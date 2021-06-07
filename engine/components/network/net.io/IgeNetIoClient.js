@@ -247,7 +247,7 @@ var IgeNetIoClient = {
 							self._onMessageFromServer.apply(self, self.dataB4Init[i]);
 						}
 					}
-					self.timeSyncStart();
+					// self.timeSyncStart();
 
 					// setTimeout(function () {
 					// 	if (location.protocol === 'http:' && location.search.indexOf('redirected=true') > -1) {
@@ -526,8 +526,17 @@ var IgeNetIoClient = {
 					}
 				}
 
-				if (Object.keys(obj).length) {
+				
 
+				if (Object.keys(obj).length) {
+					// sync server's timestamp with client's
+					
+					if (ige._currentTime > newSnapshotTimeStamp + 100 || ige._currentTime < newSnapshotTimeStamp - 100) {
+						ige._currentTime = newSnapshotTimeStamp;
+					} else {
+						ige._currentTime = ige._currentTime + ((newSnapshotTimeStamp - ige._currentTime)/5); //rubberband
+					}
+					ige.renderTime = ige._currentTime - 80;
 					// add the new snapshot into empty array
 					if (ige.snapshots.length == 0) {
 						ige.snapshots.push([newSnapshotTimeStamp, obj]);

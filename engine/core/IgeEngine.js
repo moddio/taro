@@ -155,7 +155,7 @@ var IgeEngine = IgeEntity.extend({
 		this.prevSnapshot = undefined;
 		this.tempSnapshot = [0, {}];
 		this.nextSnapshot = [0, {}];
-		this.renderTime = undefined;
+		this.renderTime = 0;
 		
 		this.remainderFromLastStep = 0;
 
@@ -2013,6 +2013,7 @@ var IgeEngine = IgeEntity.extend({
 					snapshot = ige.snapshots.shift();
 					ige.prevSnapshot = ige.nextSnapshot;
 					ige.nextSnapshot = snapshot;
+					// console.log(ige.snapshots.length)
 				}
 
 				// if (ige.nextSnapshot && ige.renderTime > ige.nextSnapshot[0]) {

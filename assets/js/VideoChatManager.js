@@ -311,7 +311,7 @@ function gotDevices(deviceInfos) {
     });
 }
 
-navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+
 
 // Attach audio output device to video element using device/sink ID.
 function attachSinkId(element, sinkId) {
@@ -347,6 +347,8 @@ function gotStream(stream) {
     console.log("removing loading buttons")
     $(".loading-button").addClass("d-none");
     $(".videochat-choice").removeClass("d-none");
+    //stream correctly initialized.
+    gotStr = true;
     // Refresh button list in case labels have become available
     return navigator.mediaDevices.enumerateDevices();
 }
@@ -357,7 +359,8 @@ function handleError(error) {
     $(".videochat-choice[data-choice=disable]").removeClass("d-none");
     console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
 }
-
+//this variable holds the state of the execution of the "gotStream" promise. -1 = not started, false = not fullfilled, true = fullfilled.
+let gotStr = -1;
 function vChatStart() {
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
@@ -370,6 +373,19 @@ function vChatStart() {
         audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
         video: { deviceId: videoSource ? { exact: videoSource } : undefined, width: { max: 160 }, height: { max: 100 }, frameRate: { min: 5, max: 14 }, resizeMode: 'crop-and-scale' }
     };
+    //if gotStr == -1 getusermedia was never executed so the interval will be started to check every 5 seconds if the stream was correctly initialized.
+    if (gotStr == -1) {
+        gotStr = false;
+        var streamCheckerTimer = setInterval(function () {
+            if (gotStr) {
+                clearInterval(streamCheckerTimer);
+                return;
+            }
+            console.log("retrying activating stream...")
+            vChatStart();
+        }, 5000);
+    }
+
     navigator.mediaDevices.getUserMedia(constraints).then(gotStream).then(gotDevices).catch(handleError);
 }
 
@@ -378,6 +394,7 @@ audioOutputSelect.onchange = changeAudioDestination;
 
 videoSelect.onchange = vChatStart;
 $(function () {
+    navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
     //#modal-step integration
     $(".modal-step-link").on("click", function () {
         const step = $(this).data("step")

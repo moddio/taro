@@ -1052,6 +1052,10 @@ var ActionComponent = IgeEntity.extend({
                         if (unit && unit._stats) {
                             unit.ability.stopUsingItem()
                             unit.streamUpdateData([{isStunned:true}])
+                            var item = unit.getCurrentItem();
+                            if(item){
+                                item.streamUpdateData([{stopUsing:false}])
+                            }
                         }
                         break;
 
@@ -1169,6 +1173,7 @@ var ActionComponent = IgeEntity.extend({
                         if (entity && entity._category == 'item') {
                             entity.stopUsing()
                             entity.streamUpdateData([{ isBeingUsedFromScript: false }]);
+                            entity.streamUpdateData([{ stopUsing: false }]);
                         }
 
                         break;
