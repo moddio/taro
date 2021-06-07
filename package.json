@@ -13,7 +13,7 @@
     "dev:lint": "eslint . --fix"
   },
   "dependencies": {
-    "@clusterws/cws": "^0.15.2",
+    "@clusterws/cws": "^3.0.0",
     "babel-core": "^6.26.3",
     "bad-words": "^3.0.2",
     "bcrypt-nodejs": "0.0.3",
@@ -39,7 +39,7 @@
     "sha1": "^1.1.1",
     "tick": "0.1.1",
     "validator": "^5.7.0",
-    "ws": "^7.1.2",
+    "ws": "^7.4.6",
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
