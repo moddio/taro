@@ -456,7 +456,7 @@ var IgeNode = IgeClass.extend({
 			compressed_ast,
 			finCode;
 
-		var babel = require("babel-core");
+		var babel = require("@babel/core");
 		// Remove client-exclude marked code
 		source = source.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
 
