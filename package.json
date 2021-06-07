@@ -15,7 +15,7 @@
   "dependencies": {
     "@clusterws/cws": "^3.0.0",
     "babel-core": "^6.26.3",
-    "bad-words": "^3.0.2",
+    "bad-words": "^3.0.4",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.0",
     "clusterws": "^3.3.1",

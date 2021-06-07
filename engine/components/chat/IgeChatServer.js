@@ -187,7 +187,7 @@ var IgeChatServer = {
 		// msg.text = self.validator.whitelist(msg.text, self.regex)
 		// msg.text = self.sanitizer.sanitize(msg.text);
 		// msg.text = self.validator.escape(msg.text);
-		msg.text = self.filter.clean(msg.text);
+		// msg.text = self.filter.clean(msg.text);
 		if (msg == undefined || msg.text == undefined)
 			return;
 
