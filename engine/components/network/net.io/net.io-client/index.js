@@ -251,15 +251,14 @@ NetIo.Client = NetIo.EventingClass.extend({
 			var url = event.target.url;
 			var urlWithoutProtocol = url.split('://')[1];
 			var serverDomain = urlWithoutProtocol.split('/')[0];
-			var serverName = serverDomain.split(':')[0];
-
+			
 			$.ajax({
 				url: '/socket-error-count',
 				dataType: "json",
 				type: 'POST',
 				data: {
 					status: false,
-					server: serverName,
+					server: serverDomain,
 					tier: window.tier
 				},
 			});
