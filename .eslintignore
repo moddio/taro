@@ -2,7 +2,7 @@
 *.min.js
 
 # Manual linting required before automatic linting can be done; breaking changes.
-engine/
+# engine/
 
 # Don't minify libs.
 src/lib/
