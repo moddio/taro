@@ -1,13 +1,10 @@
 # Don't lint minified files.
 *.min.js
 
-# Manual linting required before automatic linting can be done; breaking changes.
-# engine/
-
-# Don't minify libs.
+# Don't lint minified libs.
 src/lib/
 src/pixi/pixi-legacy.js
 
-# Client compiled script.
+# Compiled source.
 client.js
 
