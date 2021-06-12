@@ -1,0 +1,143 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "standard",
+        "eslint:recommended"
+    ],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "requireConfigFile": false
+    },
+
+    "globals": {
+        "process": "writable",
+        "module": "writable",
+        "ige": "writable",
+        "$":"writable",
+        "window":"writable",
+        "IgeEntityBox2d": "writable",
+        "Item": "writable",
+        "FloatingText": "writable",
+        "localStorage": "writable",
+        "IgeArray": "writable",
+        "IgeBase": "writable",
+        "IgeBaseScene": "writable",
+        "IgeCamera": "writable",
+        "IgeCellSheet": "writable",
+        "IgeClass": "writable",
+        "IgeCollisionMap2d": "writable",
+        "IgeDummyCanvas": "writable",
+        "IgeDummyContext": "writable",
+        "IgeEngine": "writable",
+        "IgeEntity": "writable",
+        "IgeEventingClass": "writable",
+        "IgeFilters": "writable",
+        "IgeFontEntity": "writable",
+        "IgeFontSheet": "writable",
+        "IgeFSM": "writable",
+        "IgeInterval": "writable",
+        "IgeMap2d": "writable",
+        "IgeMapStack2d": "writable",
+        "IgeMatrix2d": "writable",
+        "IgeObject": "writable",
+        "IgeParticle": "writable",
+        "IgeParticleEmitter": "writable",
+        "IgePathFinder": "writable",
+        "IgePathNode": "writable",
+        "IgePoint2d": "writable",
+        "IgePoint3d": "writable",
+        "IgePoly2d": "writable",
+        "IgeQuest": "writable",
+        "IgeRect": "writable",
+        "IgeScene2d": "writable",
+        "IgeSceneGraph": "writable",
+        "IgeSpriteSheet": "writable",
+        "IgeTexture": "writable",
+        "IgeTextureAtlas": "writable",
+        "IgeTextureMap": "writable",
+        "IgeTileMap2d": "writable",
+        "IgeTimeout": "writable",
+        "IgeTween": "writable",
+        "IgeUiElement": "writable",
+        "IgeUiEntity": "writable",
+        "IgeViewport": "writable"
+    },
+    "plugins": [
+        "prefer-arrow",
+        "import",
+        "node",
+        "promise"
+    ],
+    "rules": {
+        // Eval should never be allowed, regardless of use case.
+        "no-eval": 2,
+
+        // } else {}
+        "brace-style": 1,
+
+        // Indents should be four spaces.
+        "indent": [1, 4, {
+            "SwitchCase": 1
+        }],
+
+        // Semicolons and singlequotes should always be used.
+        "semi": [2, "always"],
+        "quotes": [2, "single"], // Backticks preferrably?
+
+
+        // Use templating strings with backticks whenever possible.
+        "prefer-template": 1,
+
+        // Prefer fat arrow functions.
+        // "prefer-arrow-callback": 1,
+        // "arrow-body-style": ["warn", "as-needed"],
+        // "prefer-arrow/prefer-arrow-functions": ["warn", {
+        //     "disallowPrototype": true,
+        //     "singleReturnOnly": true,
+        //     "classPropertiesAllowed": false
+        // }],
+
+        // ESLint globals have not been configured for these.
+        "no-undef": 0,
+        "no-var": 0,
+        "no-use-before-define": 0,
+        "no-unused-vars": 0,
+        "no-unused-expressions": 0,
+        "no-void": 0,
+        "prefer-const": 0,
+
+        // Unnecessary.
+        "no-mixed-operators": 0,
+
+        // More redundant manual linting.
+        "new-cap": 0,
+        "eqeqeq": 0,
+        "curly": 0,
+        "camelcase": 0,
+        "no-sequences": 0,
+        "no-tabs": 0,
+        "no-mixed-spaces-and-tabs": 0,
+
+        "prefer-regex-literals": 0,
+        "no-useless-escape": 0,
+        "no-func-assign": 0,
+        "no-global-assign": 0,
+        "no-self-assign": 0,
+        "func-style": 0,
+        "no-proto": 0,
+        "no-undef-init": 0,
+        "no-unsafe-finally": 0,
+        "no-return-assign": 0,
+        "no-redeclare": 0,
+        "array-callback-return": 0,
+        "no-prototype-builtins": 0,
+        "no-case-declarations": 0,
+        "use-isnan": 0
+    }
+}
