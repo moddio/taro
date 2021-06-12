@@ -133,6 +133,7 @@ function connectToNewUser(userId, stream, playerName = null) {
     peers[userId] = call
 
 }
+var streams = {}
 //## addVideoStream: used to generate new videoelement.
 function addVideoStream(video, stream, peerID = null, playerName = null, from = 'null') {
     if (!stream) {
@@ -147,7 +148,36 @@ function addVideoStream(video, stream, peerID = null, playerName = null, from = 
         //document.getElementById("video-div-id-" + peerID).remove();
         return
     }
-    video.srcObject = stream
+    if (!streams[peerID]) {
+        streams[peerID] = {}
+    }
+    streams[peerID].stream = stream
+    if (document.getElementById("video-myPeer")) {
+        const l = Object.keys(streams).length
+        console.log("l: ", l)
+        merger.setOutputSize(l * 100, merger.height)
+        merger.addStream(stream, {
+            x: 100 * (l - 1), // position of the topleft corner
+            y: 0,
+            width: 100,
+            height: 130,
+            mute: true
+        })
+        var myVideo = document.getElementById("video-myPeer")
+        //console.log(myVideo)
+        myVideo.setAttribute("style", "opacity: 1; width: " + (100 * l) + "px")
+        return
+    }
+    //video.srcObject = stream
+    merger.addStream(stream, {
+        x: 0, // position of the topleft corner
+        y: 0,
+        width: 100,
+        height: 130,
+        mute: true
+    })
+    merger.start()
+    video.srcObject = merger.result
     //#setting up the video container.
     let videoDiv = document.createElement('div');
     videoDiv.setAttribute("class", "video-div")
@@ -391,6 +421,9 @@ function vChatStart() {
 
 audioInputSelect.onchange = vChatStart;
 audioOutputSelect.onchange = changeAudioDestination;
+var merger = new VideoStreamMerger({
+    width: 100, height: 130
+})
 
 videoSelect.onchange = vChatStart;
 $(function () {
