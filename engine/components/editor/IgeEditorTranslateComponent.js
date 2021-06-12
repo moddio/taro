@@ -52,7 +52,7 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 	},
 
 	/**
-	 * Gets / sets the enabled flag. If set to true, 
+	 * Gets / sets the enabled flag. If set to true,
 	 * operations will be processed. If false, no operations will
 	 * occur.
 	 * @param {Boolean=} val
@@ -67,12 +67,12 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 			// Reset pan values.
 			// This prevents problems if the component is disabled mid-operation.
 			this._opPreStart = false;
-			this._opStarted  = false;
+			this._opStarted = false;
 
 			if (this._enabled) {
 				if (ige._sgTreeSelected) {
 					this._targetEntity = ige.$(ige._sgTreeSelected);
-					
+
 					if (this._targetEntity.classId() == 'IgeViewport') {
 						// Disable translation mode
 						this.log('Editor: Mouse translate disabled');
@@ -116,8 +116,8 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 
 			this._opPreStart = true;
 			this._opStarted = false;
-			
-			document.getElementById('igeSgEditorStatus').innerHTML = 'X: ' + this._targetEntity._translate.x + ' Y:' + this._targetEntity._translate.y;
+
+			document.getElementById('igeSgEditorStatus').innerHTML = `X: ${this._targetEntity._translate.x} Y:${this._targetEntity._translate.y}`;
 		}
 	},
 
@@ -131,13 +131,13 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 		if (this._enabled && this._targetEntity) {
 			// Pan the camera if the mouse is down
 			if (this._opStartMouse) {
-				var curMousePos = ige._mousePos,
-					panCords = {
-						x: this._opStartMouse.x - curMousePos.x,
-						y: this._opStartMouse.y - curMousePos.y
-					}, distX = Math.abs(panCords.x), distY = Math.abs(panCords.y),
-					panFinalX = this._opStartTranslate.x - (panCords.x / ige._currentViewport.camera._scale.x),
-					panFinalY = this._opStartTranslate.y - (panCords.y / ige._currentViewport.camera._scale.y);
+				var curMousePos = ige._mousePos;
+				var panCords = {
+					x: this._opStartMouse.x - curMousePos.x,
+					y: this._opStartMouse.y - curMousePos.y
+				}; var distX = Math.abs(panCords.x); var distY = Math.abs(panCords.y);
+				var panFinalX = this._opStartTranslate.x - (panCords.x / ige._currentViewport.camera._scale.x);
+				var panFinalY = this._opStartTranslate.y - (panCords.y / ige._currentViewport.camera._scale.y);
 
 				// Check if we have a limiter on the rectangle area
 				// that we should allow panning inside.
@@ -185,8 +185,8 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 
 					this.emit('panMove');
 				}
-				
-				document.getElementById('igeSgEditorStatus').innerHTML = 'X: ' + panFinalX + ' Y:' + panFinalY;
+
+				document.getElementById('igeSgEditorStatus').innerHTML = `X: ${panFinalX} Y:${panFinalY}`;
 			}
 		}
 	},
@@ -202,13 +202,13 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 			// End the pan
 			if (this._opStarted) {
 				if (this._opStartMouse) {
-					var curMousePos = ige._mousePos,
-						panCords = {
-							x: this._opStartMouse.x - curMousePos.x,
-							y: this._opStartMouse.y - curMousePos.y
-						},
-						panFinalX = this._opStartTranslate.x - (panCords.x / ige._currentViewport.camera._scale.x),
-						panFinalY = this._opStartTranslate.y - (panCords.y / ige._currentViewport.camera._scale.y);
+					var curMousePos = ige._mousePos;
+					var panCords = {
+						x: this._opStartMouse.x - curMousePos.x,
+						y: this._opStartMouse.y - curMousePos.y
+					};
+					var panFinalX = this._opStartTranslate.x - (panCords.x / ige._currentViewport.camera._scale.x);
+					var panFinalY = this._opStartTranslate.y - (panCords.y / ige._currentViewport.camera._scale.y);
 
 					// Check if we have a limiter on the rectangle area
 					// that we should allow panning inside.
@@ -237,8 +237,8 @@ var IgeEditorTranslateComponent = IgeEventingClass.extend({
 						panFinalY,
 						0
 					);
-					
-					document.getElementById('igeSgEditorStatus').innerHTML = 'X: ' + panFinalX + ' Y:' + panFinalY; 
+
+					document.getElementById('igeSgEditorStatus').innerHTML = `X: ${panFinalX} Y:${panFinalY}`;
 
 					// Remove the pan start data to end the pan operation
 					delete this._opStartMouse;

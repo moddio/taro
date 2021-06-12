@@ -5,13 +5,13 @@
 var IgeFontSmartTexture = {
 	measureTextWidth: function (text, entity) {
 		if (entity._nativeFont) {
-			var lineArr = [],
-				lineIndex,
-				measuredWidth,
-				maxWidth = 0,
-				canvas = document.createElement('canvas'),
-				ctx = canvas.getContext('2d');
-			
+			var lineArr = [];
+			var lineIndex;
+			var measuredWidth;
+			var maxWidth = 0;
+			var canvas = document.createElement('canvas');
+			var ctx = canvas.getContext('2d');
+
 			// Handle multi-line text
 			if (text.indexOf('\n') > -1) {
 				// Split each line into an array item
@@ -33,31 +33,31 @@ var IgeFontSmartTexture = {
 					ctx.strokeStyle = entity._colorOverlay;
 				}
 			}
-			
+
 			for (lineIndex = 0; lineIndex < lineArr.length; lineIndex++) {
 				// Measure text
 				measuredWidth = ctx.measureText(lineArr[lineIndex]).width;
-				
+
 				if (measuredWidth > maxWidth) {
 					maxWidth = measuredWidth;
 				}
 			}
-			
+
 			return maxWidth;
 		}
-		
+
 		return -1;
 	},
-	
+
 	render: function (ctx, entity) {
 		if (entity._nativeFont && entity._renderText) {
-			var text = entity._renderText,
-				lineArr = [],
-				textSize,
-				renderStartY,
-				renderY,
-				lineHeight,
-				i;
+			var text = entity._renderText;
+			var lineArr = [];
+			var textSize;
+			var renderStartY;
+			var renderY;
+			var lineHeight;
+			var i;
 
 			ctx.font = entity._nativeFont;
 			ctx.textBaseline = 'middle';
@@ -74,7 +74,7 @@ var IgeFontSmartTexture = {
 
 			if (entity._textAlignX === 1) {
 				ctx.textAlign = 'center';
-				//ctx.translate(-entity._bounds2d.x2, 0);
+				// ctx.translate(-entity._bounds2d.x2, 0);
 			}
 
 			if (entity._textAlignX === 2) {

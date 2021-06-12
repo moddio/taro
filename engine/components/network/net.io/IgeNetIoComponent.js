@@ -1,5 +1,5 @@
 var IgeNetIoComponent = IgeEventingClass.extend([
-	{extension: IgeTimeSyncExtension, overwrite: false}
+	{ extension: IgeTimeSyncExtension, overwrite: false }
 ], {
 	classId: 'IgeNetIoComponent',
 	componentId: 'network',
@@ -25,7 +25,7 @@ var IgeNetIoComponent = IgeEventingClass.extend([
 		this._timeSyncLog = {};
 		this._latency = 0;
 		this.latency = 0;
-		this.latencyHistory = []
+		this.latencyHistory = [];
 		this.rttSamples = [];
 		this.lastClientTime = 0;
 		this.lastServerTime = 0;
@@ -45,7 +45,7 @@ var IgeNetIoComponent = IgeEventingClass.extend([
 			this.implement(IgeNetIoClient);
 		}
 
-		this.log('Network component initiated with Net.IO version: ' + this._netio.version);
+		this.log(`Network component initiated with Net.IO version: ${this._netio.version}`);
 	},
 
 	/**
@@ -91,4 +91,4 @@ var IgeNetIoComponent = IgeEventingClass.extend([
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeNetIoComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeNetIoComponent; }

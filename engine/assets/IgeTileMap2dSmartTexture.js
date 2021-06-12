@@ -1,40 +1,40 @@
 var IgeTileMap2dSmartTexture = {
 	render: function (ctx, entity) {
-		var tileWidth = entity._tileWidth,
-			tileHeight = entity._tileHeight,
-			bounds2d = entity.bounds2d(),
-			gridSize = entity._gridSize,
-			x = 0, y = 0;
+		var tileWidth = entity._tileWidth;
+		var tileHeight = entity._tileHeight;
+		var bounds2d = entity.bounds2d();
+		var gridSize = entity._gridSize;
+		var x = 0; var y = 0;
 
-		/*ctx.save();
+		/* ctx.save();
 		var triggerPoly = entity.tileMapHitPolygon();
-		
+
 		ctx.strokeStyle = '#00ff00';
 		ctx.fillStyle = '#ff99f4';
-		
+
 		if (entity._processTriggerHitTests()) {
 			ctx.fillStyle = '#ff26e8';
 		}
-		
+
 		if (entity._mountMode === 0) {
 			ctx.translate(bounds2d.x2, bounds2d.y2);
 		}
-		
+
 		if (entity._mountMode === 1) {
 			ctx.translate(-entity._translate.x, -entity._translate.y);
 			triggerPoly.render(ctx, true);
 		}
-		
+
 		//
-		ctx.restore();*/
+		ctx.restore(); */
 
 		if (entity._drawGrid) {
 			ctx.strokeStyle = entity._gridColor;
-			var gridMaxX = x + tileWidth * gridSize.x,
-				gridMaxY = y + tileHeight * gridSize.y,
-				index,
-				gStart,
-				gEnd;
+			var gridMaxX = x + tileWidth * gridSize.x;
+			var gridMaxY = y + tileHeight * gridSize.y;
+			var index;
+			var gStart;
+			var gEnd;
 
 			x = 0;
 			y = 0;
@@ -146,11 +146,11 @@ var IgeTileMap2dSmartTexture = {
 		if (entity._drawMouse) {
 			// console.log(entity.id(), ige._selectedViewport.id())
 			// Get mouse position
-			var mousePos = ige._selectedViewport.mousePos(),
-				mouseTile = entity.mouseToTile(ige._selectedViewport),
-				tilePoint,
-				text,
-				textMeasurement;
+			var mousePos = ige._selectedViewport.mousePos();
+			var mouseTile = entity.mouseToTile(ige._selectedViewport);
+			var tilePoint;
+			var text;
+			var textMeasurement;
 
 			if (mouseTile.x >= 0 && mouseTile.y >= 0 && mouseTile.x < gridSize.x && mouseTile.y < gridSize.y) {
 				// Paint the tile the mouse is currently intersecting
@@ -190,7 +190,7 @@ var IgeTileMap2dSmartTexture = {
 				}
 
 				if (entity._drawMouseData) {
-					text = 'Tile X: ' + mouseTile.x + ' Y: ' + mouseTile.y;
+					text = `Tile X: ${mouseTile.x} Y: ${mouseTile.y}`;
 					textMeasurement = ctx.measureText(text);
 					ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
 					ctx.fillRect(Math.floor(mousePos.x - textMeasurement.width / 2 - 5), Math.floor(mousePos.y - 40), Math.floor(textMeasurement.width + 10), 14);

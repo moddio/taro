@@ -4,18 +4,18 @@
 var IgeAudioComponent = IgeEventingClass.extend({
 	classId: 'IgeAudioComponent',
 	componentId: 'audio',
-	
+
 	init: function (entity, options) {
 		this._active = false;
 		this._disabled = false;
 		this._ctx = this.getContext();
-		
+
 		if (!this._ctx) {
 			this.log('No web audio API support, cannot play sounds!', 'warning');
 			this._disabled = true;
 			return;
 		}
-		
+
 		this.log('Web audio API connected successfully');
 	},
 
@@ -29,7 +29,7 @@ var IgeAudioComponent = IgeEventingClass.extend({
 			this._active = val;
 			return this;
 		}
-		
+
 		return this._active;
 	},
 
@@ -39,7 +39,7 @@ var IgeAudioComponent = IgeEventingClass.extend({
 	 */
 	getContext: function () {
 		var ctxProto = window.AudioContext || window.webkitAudioContext;
-		
+
 		if (ctxProto) {
 			return new ctxProto();
 		} else {
@@ -54,7 +54,7 @@ var IgeAudioComponent = IgeEventingClass.extend({
 	 */
 	load: function (url, id) {
 		var audio = new IgeAudio(url);
-		
+
 		if (id) {
 			audio.id(id);
 		}
@@ -72,7 +72,7 @@ var IgeAudioComponent = IgeEventingClass.extend({
 			callback(err);
 		});
 	},
-	
+
 	play: function (id) {
 		var audio = ige.$(id);
 		if (audio) {

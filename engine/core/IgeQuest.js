@@ -79,10 +79,10 @@ var IgeQuest = IgeEventingClass.extend({
 			this._items = val;
 
 			// Set the event and item counts
-			var arr = this._items,
-				arrCount = arr.length,
-				i,
-				eventCount = 0;
+			var arr = this._items;
+			var arrCount = arr.length;
+			var i;
+			var eventCount = 0;
 
 			for (i = 0; i < arrCount; i++) {
 				eventCount += arr[i].count;
@@ -147,10 +147,10 @@ var IgeQuest = IgeEventingClass.extend({
 	 */
 	start: function () {
 		if (!this._started) {
-			var self = this,
-				arr = this._items,
-				arrCount = arr.length,
-				i;
+			var self = this;
+			var arr = this._items;
+			var arrCount = arr.length;
+			var i;
 
 			// Mark the quest as started
 			this._started = true;
@@ -199,9 +199,9 @@ var IgeQuest = IgeEventingClass.extend({
 	 * original values and cancels all current event listeners.
 	 */
 	reset: function () {
-		var arr = this._items,
-			arrCount = arr.length,
-			i, item;
+		var arr = this._items;
+		var arrCount = arr.length;
+		var i; var item;
 
 		for (i = 0; i < arrCount; i++) {
 			item = arr[i];
@@ -295,8 +295,8 @@ var IgeQuest = IgeEventingClass.extend({
 	 * @private
 	 */
 	_itemComplete: function (item) {
-		var itemIndex,
-			arr = this._items;
+		var itemIndex;
+		var arr = this._items;
 
 		// Mark the item as complete
 		item._complete = true;
@@ -357,4 +357,4 @@ var IgeQuest = IgeEventingClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeQuest; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeQuest; }

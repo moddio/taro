@@ -11,12 +11,12 @@ var IgeSpriteSheet = IgeTexture.extend({
 
 		IgeTexture.prototype.init.call(this, url);
 	},
-	
+
 	_textureLoaded: function () {
 		if (this.image) {
 			// Store the cell sheet image
 			this._sheetImage = this.image;
-			var i, cells = this._spriteCells;
+			var i; var cells = this._spriteCells;
 
 			if (!cells) {
 				// Try to automatically determine cells
@@ -32,11 +32,11 @@ var IgeSpriteSheet = IgeTexture.extend({
 				if (this._checkModulus) {
 					// Check cell for division by 2 modulus warnings
 					if (cells[i][2] % 2) {
-						this.log('This texture\'s cell definition defines a cell width is not divisible by 2 which can cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ' + this._url, 'warning', cells[i]);
+						this.log(`This texture's cell definition defines a cell width is not divisible by 2 which can cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ${this._url}`, 'warning', cells[i]);
 					}
 
 					if (cells[i][3] % 2) {
-						this.log('This texture\'s cell definition defines a cell height is not divisible by 2 which can cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ' + this._url, 'warning', cells[i]);
+						this.log(`This texture's cell definition defines a cell height is not divisible by 2 which can cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ${this._url}`, 'warning', cells[i]);
 					}
 				}
 			}
@@ -45,7 +45,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 			// TODO: Low-priority - Support cell sheets from smart-textures
 			this.log('Cannot create cell-sheet because texture has not loaded an image!', 'error');
 		}
-		
+
 		IgeTexture.prototype._textureLoaded.call(this);
 	},
 
@@ -57,12 +57,12 @@ var IgeSpriteSheet = IgeTexture.extend({
 	 */
 	detectCells: function (img) {
 		// Create a temp canvas
-		var canvas = document.createElement('canvas'),
-			ctx = canvas.getContext('2d'),
-			pixels,
-			x, y,
-			newRect,
-			spriteRects = [];
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+		var pixels;
+		var x; var y;
+		var newRect;
+		var spriteRects = [];
 
 		canvas.width = img.width;
 		canvas.height = img.height;
@@ -101,9 +101,9 @@ var IgeSpriteSheet = IgeTexture.extend({
 	},
 
 	_pixelInRects: function (rects, x, y) {
-		var rectIndex,
-			rectCount = rects.length,
-			rect;
+		var rectIndex;
+		var rectCount = rects.length;
+		var rect;
 
 		for (rectIndex = 0; rectIndex < rectCount; rectIndex++) {
 			rect = rects[rectIndex];
@@ -119,9 +119,9 @@ var IgeSpriteSheet = IgeTexture.extend({
 	},
 
 	_determineRect: function (pixels, x, y) {
-		var pixArr = [{x: x, y: y}],
-			rect = {x: x, y: y, width: 1, height: 1},
-			currentPixel;
+		var pixArr = [{ x: x, y: y }];
+		var rect = { x: x, y: y, width: 1, height: 1 };
+		var currentPixel;
 
 		while (pixArr.length) {
 			// De-queue front item
@@ -152,7 +152,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x - 1, currentPixel.y - 1);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x - 1, y: currentPixel.y - 1})
+				pixArr.push({ x: currentPixel.x - 1, y: currentPixel.y - 1 });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x, currentPixel.y - 1)) {
@@ -160,7 +160,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x, currentPixel.y - 1);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x, y: currentPixel.y - 1})
+				pixArr.push({ x: currentPixel.x, y: currentPixel.y - 1 });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x + 1, currentPixel.y - 1)) {
@@ -168,7 +168,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x + 1, currentPixel.y - 1);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x + 1, y: currentPixel.y - 1})
+				pixArr.push({ x: currentPixel.x + 1, y: currentPixel.y - 1 });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x - 1, currentPixel.y)) {
@@ -176,7 +176,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x - 1, currentPixel.y);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x - 1, y: currentPixel.y})
+				pixArr.push({ x: currentPixel.x - 1, y: currentPixel.y });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x + 1, currentPixel.y)) {
@@ -184,7 +184,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x + 1, currentPixel.y);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x + 1, y: currentPixel.y})
+				pixArr.push({ x: currentPixel.x + 1, y: currentPixel.y });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x - 1, currentPixel.y + 1)) {
@@ -192,7 +192,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x - 1, currentPixel.y + 1);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x - 1, y: currentPixel.y + 1})
+				pixArr.push({ x: currentPixel.x - 1, y: currentPixel.y + 1 });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x, currentPixel.y + 1)) {
@@ -200,7 +200,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x, currentPixel.y + 1);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x, y: currentPixel.y + 1})
+				pixArr.push({ x: currentPixel.x, y: currentPixel.y + 1 });
 			}
 
 			if (!pixels.isTransparent(currentPixel.x + 1, currentPixel.y + 1)) {
@@ -208,7 +208,7 @@ var IgeSpriteSheet = IgeTexture.extend({
 				pixels.makeTransparent(currentPixel.x + 1, currentPixel.y + 1);
 
 				// Add pixel position to queue
-				pixArr.push({x: currentPixel.x + 1, y: currentPixel.y + 1})
+				pixArr.push({ x: currentPixel.x + 1, y: currentPixel.y + 1 });
 			}
 		}
 
@@ -231,8 +231,8 @@ var IgeSpriteSheet = IgeTexture.extend({
 	 * to or -1 if a corresponding index could not be found.
 	 */
 	cellIdToIndex: function (id) {
-		var cells = this._cells,
-			i;
+		var cells = this._cells;
+		var i;
 		for (i = 1; i < cells.length; i++) {
 			if (cells[i][4] === id) {
 				// Found the cell id so return the index
@@ -249,14 +249,14 @@ var IgeSpriteSheet = IgeTexture.extend({
 	 * @return {String}
 	 */
 	stringify: function () {
-		var str = "new " + this.classId() + "('" + this.url() + "', " + this._cells.toString() + ")";
+		var str = `new ${this.classId()}('${this.url()}', ${this._cells.toString()})`;
 
 		// Every object has an ID, assign that first
 		// IDs are automatically generated from texture urls
-		//str += ".id('" + this.id() + "');";
+		// str += ".id('" + this.id() + "');";
 
 		return str;
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeSpriteSheet; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeSpriteSheet; }

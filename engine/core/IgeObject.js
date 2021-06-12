@@ -56,7 +56,7 @@ var IgeObject = IgeEventingClass.extend({
 
 	/**
 	 * Gets / set the managed mode from 0 to 2. 0 = off, 1 = static, 2 = dynamic.
-	 * 
+	 *
 	 * @param {Number=} val Set to 0 to switch off managed mode, 1 to set to static
 	 * managed mode or 2 to dynamic managed mode. When in a managed mode and when
 	 * the parent of this entity has an entity manager component enabled, the entity
@@ -102,7 +102,7 @@ var IgeObject = IgeEventingClass.extend({
 				if (ige._register[id]) {
 					// Already an object with this ID!
 					if (ige._register[id] !== this) {
-						this.log('Cannot set ID of object to "' + id + '" because that ID is already in use by another object!', 'error');
+						this.log(`Cannot set ID of object to "${id}" because that ID is already in use by another object!`, 'error');
 					}
 				} else {
 					// Check if we already have an id assigned
@@ -152,13 +152,13 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Set category to some name
 	 *     var entity = new IgeEntity()
 	 *         .category('myCategory');
-	 *         
+	 *
 	 *     // Will output "myCategory"
 	 *     console.log(entity.category());
-	 *     
+	 *
 	 *     // Now remove the category
 	 *     entity.category('');
-	 *     
+	 *
 	 *     // Will return ""
 	 *     console.log(entity.category());
 	 * @return {*}
@@ -217,9 +217,9 @@ var IgeObject = IgeEventingClass.extend({
 	 * @return {*}
 	 */
 	addGroup: function () {
-		var arrCount = arguments.length,
-			groupName,
-			groupItemCount;
+		var arrCount = arguments.length;
+		var groupName;
+		var groupItemCount;
 
 		while (arrCount--) {
 			groupName = arguments[arrCount];
@@ -262,19 +262,19 @@ var IgeObject = IgeEventingClass.extend({
 	 * @example #Check if the entity is in a group
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2');
-	 *	
+	 *
 	 *     // Will output true since entity is part of g1 group
 	 *     console.log(entity.inGroup('g1', false);
-	 *	
+	 *
 	 *     // Will output false since entity is not part of g3 group
 	 *     console.log(entity.inGroup('g3', false);
 	 * @example #Check if the entity is in an array of groups using ANY and ALL options
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2');
-	 *     
+	 *
 	 *     // Will output true since entity is part of g1 group
 	 *     console.log(entity.inGroup(['g1, 'g3'], false);
-	 *     
+	 *
 	 *     // Will output false since entity is not part of g3 group
 	 *     console.log(entity.inGroup(['g1, 'g3'], true);
 	 * @return {Boolean}
@@ -302,13 +302,13 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Add a couple of groups
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup(['g1', 'g2']);
-	 *	
+	 *
 	 *     // This will output "false" (entity is not part of g3)
 	 *     console.log(entity.inAllGroups(['g1', 'g3']));
-	 *	
+	 *
 	 *     // This will output "true"
 	 *     console.log(entity.inAllGroups('g1'));
-	 *	
+	 *
 	 *     // This will output "true"
 	 *     console.log(entity.inAllGroups(['g1', 'g2']));
 	 * @return {Boolean}
@@ -346,10 +346,10 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Add a couple of groups
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2');
-	 *	
+	 *
 	 *     // This will output "false"
 	 *     console.log(entity.inAnyGroup('g3'));
-	 *	
+	 *
 	 *     // This will output "true"
 	 *     console.log(entity.inAnyGroup(['g3', 'g1']));
 	 * @return {Boolean}
@@ -381,7 +381,7 @@ var IgeObject = IgeEventingClass.extend({
 	 * @example #Get array of groups entity belongs to
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2');
-	 *	
+	 *
 	 *     // This will output "['g1', 'g2']"
 	 *     console.log(entity.groups());
 	 * @return {*}
@@ -395,7 +395,7 @@ var IgeObject = IgeEventingClass.extend({
 	 * @example #Get number of groups entity belongs to
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2');
-	 *	
+	 *
 	 *     // This will output "2"
 	 *     console.log(entity.groupCount());
 	 * @return {Number}
@@ -413,58 +413,58 @@ var IgeObject = IgeEventingClass.extend({
 	 * @example #Remove entity from single group
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2');
-	 *	
+	 *
 	 *     // This will output "['g1', 'g2']"
 	 *     console.log(entity.groups());
-	 *	
+	 *
 	 *     // Remove entity from a single group
 	 *     entity.removeGroup('g1');
-	 *	
+	 *
 	 *     // This will output "['g2']"
 	 *     console.log(entity.groups());
 	 * @example #Remove entity from multiple groups
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g3', 'g2');
-	 *	
+	 *
 	 *     // This will output "['g1', 'g3', 'g2']"
 	 *     console.log(entity.groups());
-	 *	
+	 *
 	 *     // Remove entity from multiple groups
 	 *     entity.removeGroup('g1', 'g3');
-	 *	
+	 *
 	 *     // This will output "['g2']"
 	 *     console.log(entity.groups());
 	 * @example #Remove entity from multiple groups via an array
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g3', 'g2');
-	 *	
+	 *
 	 *     // This will output "['g1', 'g3', 'g2']"
 	 *     console.log(entity.groups());
-	 *	
+	 *
 	 *     // Remove entity from multiple groups
 	 *     entity.removeGroup(['g1', 'g3']);
-	 *	
+	 *
 	 *     // This will output "['g2']"
 	 *     console.log(entity.groups());
 	 * @example #Remove entity from multiple groups via multiple arrays
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7');
-	 *	
+	 *
 	 *     // This will output "['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7']"
 	 *     console.log(entity.groups());
-	 *	
+	 *
 	 *     // Remove entity from multiple groups
 	 *     entity.removeGroup(['g1', 'g3'], ['g5', 'g6', 'g7']);
-	 *	
+	 *
 	 *     // This will output "['g2', 'g4']"
 	 *     console.log(entity.groups());
 	 * @return {*}
 	 */
 	removeGroup: function () {
 		if (this._groups) {
-			var arrCount = arguments.length,
-				groupName,
-				groupNameCount;
+			var arrCount = arguments.length;
+			var groupName;
+			var groupNameCount;
 
 			while (arrCount--) {
 				groupName = arguments[arrCount];
@@ -495,13 +495,13 @@ var IgeObject = IgeEventingClass.extend({
 	 * @example #Remove entity from all groups
 	 *     var entity = new IgeEntity();
 	 *     entity.addGroup('g1', 'g3', 'g2');
-	 *	
+	 *
 	 *     // This will output "['g1', 'g3', 'g2']"
 	 *     console.log(entity.groups());
-	 *	
+	 *
 	 *     // Remove all the groups
 	 *     entity.removeAllGroups();
-	 *	
+	 *
 	 *     // This will output "[]"
 	 *     console.log(entity.groups());
 	 * @return {*}
@@ -509,8 +509,8 @@ var IgeObject = IgeEventingClass.extend({
 	removeAllGroups: function () {
 		if (this._groups) {
 			// Loop through all groups and un-register one at a time
-			var arr = this._groups,
-				arrCount = arr.length;
+			var arr = this._groups;
+			var arrCount = arr.length;
 
 			while (arrCount--) {
 				ige.groupUnRegister(this, arr[arrCount]);
@@ -535,7 +535,7 @@ var IgeObject = IgeEventingClass.extend({
 	 *         // keyword such as:
 	 *         this._somePropertyOfTheEntity = 'moo';
 	 *     });
-	 *     
+	 *
 	 *     // Now since each update we are setting _somePropertyOfTheEntity
 	 *     // to equal "moo" we can console log the property and get
 	 *     // the value as "moo"
@@ -583,7 +583,7 @@ var IgeObject = IgeEventingClass.extend({
 	 *         // keyword such as:
 	 *         this._somePropertyOfTheEntity = 'moo';
 	 *     });
-	 *     
+	 *
 	 *     // Now remove the "myBehaviour" behaviour
 	 *     entity.removeBehaviour('myBehaviour');
 	 * @return {*} Returns this on success or false on failure.
@@ -629,7 +629,7 @@ var IgeObject = IgeEventingClass.extend({
 	 *         // keyword such as:
 	 *         this._somePropertyOfTheEntity = 'moo';
 	 *     });
-	 *     
+	 *
 	 *     // Now check for the "myBehaviour" behaviour
 	 *     console.log(entity.hasBehaviour('myBehaviour')); // Will log "true"
 	 * @return {*} Returns this on success or false on failure.
@@ -792,11 +792,11 @@ var IgeObject = IgeEventingClass.extend({
 	 * @returns {Array}
 	 */
 	$$: function (categoryName) {
-		var objArr = ige.$$(categoryName),
-			arrCount = objArr.length,
-			obj,
-			finalArr = [],
-			thisId = this.id();
+		var objArr = ige.$$(categoryName);
+		var arrCount = objArr.length;
+		var obj;
+		var finalArr = [];
+		var thisId = this.id();
 
 		// Scan all objects that have the specified category
 		// and see if we are it's parent or an ancestor
@@ -820,13 +820,13 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Create a couple of entities and give them ids
 	 *     var entity1 = new IgeEntity().id('entity1'),
 	 *         entity2 = new IgeEntity().id('entity2');
-	 *     
+	 *
 	 *     // Mount entity2 to entity1
 	 *     entity2.mount(entity1);
-	 *     
+	 *
 	 *     // Get the parent of entity2 (which is entity1)
 	 *     var parent = entity2.parent();
-	 *     
+	 *
 	 *     // Log the parent's id (will output "entity1")
 	 *     console.log(parent.id());
 	 * @return {*}
@@ -853,13 +853,13 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Create a couple of entities and give them ids
 	 *     var entity1 = new IgeEntity().id('entity1'),
 	 *         entity2 = new IgeEntity().id('entity2');
-	 *	
+	 *
 	 *     // Mount entity2 to entity1
 	 *     entity2.mount(entity1);
-	 *	
+	 *
 	 *     // Get the chilren array entity1
 	 *     var childArray = entity1.children();
-	 *	
+	 *
 	 *     // Log the child array contents (will contain entity2)
 	 *     console.log(childArray);
 	 * @return {Array} The array of child objects.
@@ -875,7 +875,7 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Create a couple of entities and give them ids
 	 *     var entity1 = new IgeEntity().id('entity1'),
 	 *         entity2 = new IgeEntity().id('entity2');
-	 *	
+	 *
 	 *     // Mount entity2 to entity1
 	 *     entity2.mount(entity1);
 	 * @return {*} Returns this on success or false on failure.
@@ -897,7 +897,6 @@ var IgeObject = IgeEventingClass.extend({
 			}
 
 			if (obj._children) {
-
 				// Check that the engine will allow us to register this object
 				this.id(); // Generates a new id if none is currently set, and registers it on the object register!
 
@@ -913,7 +912,7 @@ var IgeObject = IgeEventingClass.extend({
 
 				this._parent = obj;
 
-				// Delete orphans after entity is mounted actually - Entity Manager 
+				// Delete orphans after entity is mounted actually - Entity Manager
 				if (ige.isClient && ige.$('baseScene')._orphans) {
 					delete ige.$('baseScene')._orphans[this._id];
 				}
@@ -922,9 +921,9 @@ var IgeObject = IgeEventingClass.extend({
 				if (!this._ignoreCamera && this._parent._ignoreCamera) {
 					this._ignoreCamera = this._parent._ignoreCamera;
 
-					/*if (this.ignoreCameraComposite) {
+					/* if (this.ignoreCameraComposite) {
 						this.ignoreCameraComposite(this._parent._ignoreCamera);
-					}*/
+					} */
 				}
 
 				// Make sure we keep the child's room id in sync with it's parent
@@ -967,10 +966,10 @@ var IgeObject = IgeEventingClass.extend({
 	 *     // Create a couple of entities and give them ids
 	 *     var entity1 = new IgeEntity().id('entity1'),
 	 *         entity2 = new IgeEntity().id('entity2');
-	 *	
+	 *
 	 *     // Mount entity2 to entity1
 	 *     entity2.mount(entity1);
-	 *     
+	 *
 	 *     // Now unmount entity2 from entity1
 	 *     entity2.unMount();
 	 * @return {*} Returns this on success or false on failure.
@@ -980,7 +979,7 @@ var IgeObject = IgeEventingClass.extend({
 		if (this._pixiContainer) {
 			if (this._pixiContainer.parent && self.entityId) {
 				if (this._pixiTexture.parent.children) {
-					var index = this._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId });
+					var index = this._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId; });
 					if (index > -1) {
 						this._pixiContainer.parent.removeChildAt(index);
 					}
@@ -989,9 +988,9 @@ var IgeObject = IgeEventingClass.extend({
 			return this;
 		}
 		if (this._parent) {
-			var childArr = this._parent._children,
-				index = childArr.indexOf(this),
-				oldParent = this._parent;
+			var childArr = this._parent._children;
+			var index = childArr.indexOf(this);
+			var oldParent = this._parent;
 
 			if (index > -1) {
 				// Found this in the parent._children array so remove it
@@ -1178,25 +1177,25 @@ var IgeObject = IgeEventingClass.extend({
 	 *     var entity1 = new IgeEntity(),
 	 *         entity2 = new IgeEntity(),
 	 *         entity3 = new IgeEntity();
-	 *         
+	 *
 	 *     // Set entity1 to at layer zero and depth 100
 	 *     entity1.layer(0)
 	 *         .depth(100);
-	 *     
+	 *
 	 *     // Set entity2 and 3 to be at layer 1
 	 *     entity2.layer(1);
 	 *     entity3.layer(1);
-	 *	
+	 *
 	 *     // Set entity3 to have a higher depth than entity2
 	 *     entity2.depth(0);
 	 *     entity3.depth(1);
-	 *     
+	 *
 	 *     // The engine sorts first based on layer from lowest to highest
 	 *     // and then within each layer, by depth from lowest to highest.
 	 *     // This means that entity1 will be drawn before entity 2 and 3
 	 *     // because even though it's depth is higher, it is not on the same
 	 *     // layer as entity 2 and 3.
-	 *     
+	 *
 	 *     // Based on the layers and depths we have assigned, here
 	 *     // is how the engine will sort the draw order of the entities
 	 *     // entity1
@@ -1276,8 +1275,8 @@ var IgeObject = IgeEventingClass.extend({
 	 * internal _children array.
 	 */
 	destroyChildren: function () {
-		var arr = this._children,
-			arrCount;
+		var arr = this._children;
+		var arrCount;
 
 		if (arr) {
 			arrCount = arr.length;
@@ -1307,8 +1306,8 @@ var IgeObject = IgeEventingClass.extend({
 	 * @return {*}
 	 */
 	destroyComponents: function () {
-		var arr = this._components,
-			arrCount;
+		var arr = this._components;
+		var arrCount;
 
 		if (arr) {
 			arrCount = arr.length;
@@ -1359,10 +1358,10 @@ var IgeObject = IgeEventingClass.extend({
 	depthSortChildren: function () {
 		if (this._depthSortMode !== -1) {
 			// TODO: Optimise this method, it is not especially efficient at the moment!
-			var arr = this._children,
-				arrCount,
-				sortObj,
-				i, j;
+			var arr = this._children;
+			var arrCount;
+			var sortObj;
+			var i; var j;
 
 			if (arr) {
 				arrCount = arr.length;
@@ -1432,13 +1431,13 @@ var IgeObject = IgeEventingClass.extend({
 
 								if (layerIndex === 0) {
 									// On same layer so sort by depth
-									//if (a._projectionOverlap(b)) {
+									// if (a._projectionOverlap(b)) {
 									if (a.isBehind(b)) {
 										return -1;
 									} else {
 										return 1;
 									}
-									//}
+									// }
 								} else {
 									// Not on same layer so sort by layer
 									return layerIndex;
@@ -1514,10 +1513,10 @@ var IgeObject = IgeEventingClass.extend({
 	 */
 	viewCheckChildren: function () {
 		if (ige._currentViewport) {
-			var arr = this._children,
-				arrCount = arr.length,
-				vpViewArea = ige._currentViewport.viewArea(),
-				item;
+			var arr = this._children;
+			var arrCount = arr.length;
+			var vpViewArea = ige._currentViewport.viewArea();
+			var item;
 
 			while (arrCount--) {
 				item = arr[arrCount];
@@ -1574,9 +1573,9 @@ var IgeObject = IgeEventingClass.extend({
 			// 	}
 			// }
 			if (this._newBorn) { this._newBorn = false; }
-			var arr = this._children,
-				arrCount,
-				ts, td;
+			var arr = this._children;
+			var arrCount;
+			var ts; var td;
 
 			if (arr) {
 				arrCount = arr.length;
@@ -1632,19 +1631,19 @@ var IgeObject = IgeEventingClass.extend({
 	tick: function (ctx, renderChildBelowUnit) {
 		// Check that we are alive before processing further
 		if (this._alive) {
-			var arr = this._children,
-				parentLayer = parseInt(this.layer()),
-				parentDepth = parseInt(this.depth()),
-				arrCount,
-				ts, td;
+			var arr = this._children;
+			var parentLayer = parseInt(this.layer());
+			var parentDepth = parseInt(this.depth());
+			var arrCount;
+			var ts; var td;
 			if (this._viewChecking) {
 				// Set the in-scene flag for each child based on
 				// the current viewport
 				this.viewCheckChildren();
 			}
-			//dont render regions if they are not visible		
+			// dont render regions if they are not visible
 			if (this._category === 'regionUi' && this._stats.default && !(this._stats.default.inside || this._stats.default.outside)) {
-				return
+				return;
 			}
 			// Loop the child objects of this object
 			if (arr) {
@@ -1654,7 +1653,7 @@ var IgeObject = IgeEventingClass.extend({
 				if (igeConfig.debug._timing) {
 					while (arrCount--) {
 						if (!arr[arrCount]) {
-							this.log('Object _children is undefined for index ' + arrCount + ' and _id: ' + this._id, 'error');
+							this.log(`Object _children is undefined for index ${arrCount} and _id: ${this._id}`, 'error');
 							continue;
 						}
 
@@ -1664,7 +1663,7 @@ var IgeObject = IgeEventingClass.extend({
 								var childLayer = parseInt(arr[arrCount].layer());
 								var childDepth = parseInt(arr[arrCount].depth());
 
-								//render child if its depth is below units depth
+								// render child if its depth is below units depth
 								if (childLayer <= parentLayer && childDepth < parentDepth) {
 									renderChild = true;
 									if (!arr[arrCount]._hidden) {
@@ -1699,7 +1698,7 @@ var IgeObject = IgeEventingClass.extend({
 				} else {
 					while (arrCount--) {
 						if (!arr[arrCount]) {
-							this.log('Object _children is undefined for index ' + arrCount + ' and _id: ' + this._id, 'error');
+							this.log(`Object _children is undefined for index ${arrCount} and _id: ${this._id}`, 'error');
 							continue;
 						}
 
@@ -1709,7 +1708,7 @@ var IgeObject = IgeEventingClass.extend({
 								var childLayer = parseInt(arr[arrCount].layer());
 								var childDepth = parseInt(arr[arrCount].depth());
 
-								//render child if its depth is below units depth
+								// render child if its depth is below units depth
 								if (childLayer <= parentLayer && childDepth < parentDepth) {
 									renderChild = true;
 									if (!arr[arrCount]._hidden) {
@@ -1734,9 +1733,9 @@ var IgeObject = IgeEventingClass.extend({
 	},
 
 	_depthSortVisit: function (u, sortObj) {
-		var arr = sortObj.adj[u],
-			arrCount = arr.length,
-			i, v;
+		var arr = sortObj.adj[u];
+		var arrCount = arr.length;
+		var i; var v;
 
 		sortObj.c[u] = 1;
 
@@ -1761,8 +1760,8 @@ var IgeObject = IgeEventingClass.extend({
 	 * @private
 	 */
 	_resizeEvent: function (event) {
-		var arr = this._children,
-			arrCount;
+		var arr = this._children;
+		var arrCount;
 
 		if (arr) {
 			arrCount = arr.length;
@@ -1771,8 +1770,6 @@ var IgeObject = IgeEventingClass.extend({
 				arr[arrCount]._resizeEvent(event);
 			}
 		}
-
-
 	},
 
 	/**
@@ -1780,8 +1777,8 @@ var IgeObject = IgeEventingClass.extend({
 	 * @private
 	 */
 	_processUpdateBehaviours: function (ctx, tickDelta) {
-		var arr = this._updateBehaviours,
-			arrCount;
+		var arr = this._updateBehaviours;
+		var arrCount;
 
 		if (arr) {
 			arrCount = arr.length;
@@ -1796,8 +1793,8 @@ var IgeObject = IgeEventingClass.extend({
 	 * @private
 	 */
 	_processTickBehaviours: function (ctx) {
-		var arr = this._tickBehaviours,
-			arrCount;
+		var arr = this._tickBehaviours;
+		var arrCount;
 
 		if (arr) {
 			arrCount = arr.length;
@@ -1901,9 +1898,9 @@ var IgeObject = IgeEventingClass.extend({
 
 			case '_children':
 				if (obj._children.length) {
-					var childIndex,
-						child,
-						arr = [];
+					var childIndex;
+					var child;
+					var arr = [];
 
 					for (childIndex = 0; childIndex < obj._children.length; childIndex++) {
 						child = obj._children[childIndex];
@@ -1938,11 +1935,11 @@ var IgeObject = IgeEventingClass.extend({
 	loadGraph: function (obj) {
 		if (obj.igeClass && obj.data) {
 			// Create a new class instance
-			var classInstance = ige.newClassInstance(obj.igeClass),
-				newId,
-				childArr,
-				childIndex,
-				parentId;
+			var classInstance = ige.newClassInstance(obj.igeClass);
+			var newId;
+			var childArr;
+			var childIndex;
+			var parentId;
 
 			classInstance.objLoad(obj);
 
@@ -1976,12 +1973,12 @@ var IgeObject = IgeEventingClass.extend({
 	},
 
 	_objSaveReassign: function (obj, ref) {
-		var copyObj,
-			specialKeys = this._specialProp,
-			refIndex,
-			specProp,
-			specPropKey,
-			i;
+		var copyObj;
+		var specialKeys = this._specialProp;
+		var refIndex;
+		var specProp;
+		var specPropKey;
+		var i;
 
 		if (typeof (obj) === 'object' && !(obj instanceof Array)) {
 			copyObj = {};
@@ -1994,8 +1991,8 @@ var IgeObject = IgeEventingClass.extend({
 							refIndex = ref.indexOf(obj[i]);
 
 							if (refIndex > -1) {
-								copyObj[i] = '{ref:' + refIndex + '}';
-								this.log('Possible circular reference for property ' + i);
+								copyObj[i] = `{ref:${refIndex}}`;
+								this.log(`Possible circular reference for property ${i}`);
 							} else {
 								ref.push(obj[i]);
 								copyObj[i] = this._objSaveReassign(obj[i], ref);
@@ -2034,10 +2031,10 @@ var IgeObject = IgeEventingClass.extend({
 	},
 
 	_objLoadReassign: function (obj, newProps) {
-		var specialKeys = this._specialProp,
-			specProp,
-			specPropKey,
-			i;
+		var specialKeys = this._specialProp;
+		var specProp;
+		var specPropKey;
+		var i;
 
 		for (i in newProps) {
 			if (newProps.hasOwnProperty(i)) {
@@ -2082,16 +2079,16 @@ var IgeObject = IgeEventingClass.extend({
 		// Make sure we have an options object
 		if (options === undefined) { options = {}; }
 
-		var str = "new " + this.classId() + "()";
+		var str = `new ${this.classId()}()`;
 
 		// Every object has an ID, assign that first
 		if (options.id !== false) {
-			str += ".id('" + this.id() + "')";
+			str += `.id('${this.id()}')`;
 		}
 
 		// Now check if there is a parent and mount that
 		if (options.mount !== false && this.parent()) {
-			str += ".mount(ige.$('" + this.parent().id() + "'))";
+			str += `.mount(ige.$('${this.parent().id()}'))`;
 		}
 
 		// Now get all other properties
@@ -2112,38 +2109,38 @@ var IgeObject = IgeEventingClass.extend({
 		// Make sure we have an options object
 		if (options === undefined) { options = {}; }
 
-		var str = '', i;
+		var str = ''; var i;
 
 		// Loop properties and add property assignment code to string
 		for (i in this) {
 			if (this.hasOwnProperty(i) && this[i] !== undefined) {
 				switch (i) {
 					case '_category':
-						str += ".category(" + this.category() + ")";
+						str += `.category(${this.category()})`;
 						break;
 					case '_drawBounds':
-						str += ".drawBounds(" + this.drawBounds() + ")";
+						str += `.drawBounds(${this.drawBounds()})`;
 						break;
 					case '_drawBoundsData':
-						str += ".drawBoundsData(" + this.drawBoundsData() + ")";
+						str += `.drawBoundsData(${this.drawBoundsData()})`;
 						break;
 					case '_drawMouse':
-						str += ".drawMouse(" + this.drawMouse() + ")";
+						str += `.drawMouse(${this.drawMouse()})`;
 						break;
 					case '_mode':
-						str += ".mode(" + this.mode() + ")";
+						str += `.mode(${this.mode()})`;
 						break;
 					case '_isometricMounts':
-						str += ".isometricMounts(" + this.isometricMounts() + ")";
+						str += `.isometricMounts(${this.isometricMounts()})`;
 						break;
 					case '_indestructible':
-						str += ".indestructible(" + this.indestructible() + ")";
+						str += `.indestructible(${this.indestructible()})`;
 						break;
 					case '_layer':
-						str += ".layer(" + this.layer() + ")";
+						str += `.layer(${this.layer()})`;
 						break;
 					case '_depth':
-						str += ".depth(" + this.depth() + ")";
+						str += `.depth(${this.depth()})`;
 						break;
 				}
 			}

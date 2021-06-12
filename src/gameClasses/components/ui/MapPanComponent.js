@@ -78,7 +78,7 @@ var MapPanComponent = IgeEventingClass.extend({
 				this._entity.mouseDown(function (event) { if (event.which === 3) self._mouseDown(event); });
 				this._entity.mouseMove(function (event) { self._mouseMove(event); });
 				this._entity.mouseUp(function (event) { self._mouseUp(event); });
-				this._entity.mouseWheel(function (event) { self._mouseWheel(event) });
+				this._entity.mouseWheel(function (event) { self._mouseWheel(event); });
 			} else {
 				// Remove the pan start data
 				delete this._panStartMouse;
@@ -120,7 +120,7 @@ var MapPanComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseMove: function (event) {
-		var vpId = event && event.igeViewport && event.igeViewport.id()
+		var vpId = event && event.igeViewport && event.igeViewport.id();
 		if (vpId === 'minimapVp') {
 			vpId = 'vp1';
 		}
@@ -130,13 +130,13 @@ var MapPanComponent = IgeEventingClass.extend({
 		if (this._enabled) {
 			// Pan the camera if the mouse is down
 			if (this._panStartMouse) {
-				var curMousePos = ige._mousePos,
-					panCords = {
-						x: this._panStartMouse.x - curMousePos.x,
-						y: this._panStartMouse.y - curMousePos.y
-					}, distX = Math.abs(panCords.x), distY = Math.abs(panCords.y),
-					panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x,
-					panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
+				var curMousePos = ige._mousePos;
+				var panCords = {
+					x: this._panStartMouse.x - curMousePos.x,
+					y: this._panStartMouse.y - curMousePos.y
+				}; var distX = Math.abs(panCords.x); var distY = Math.abs(panCords.y);
+				var panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x;
+				var panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
 
 				// Check if we have a limiter on the rectangle area
 				// that we should allow panning inside.
@@ -204,13 +204,13 @@ var MapPanComponent = IgeEventingClass.extend({
 			// End the pan
 			if (this._panStarted) {
 				if (this._panStartMouse) {
-					var curMousePos = ige._mousePos,
-						panCords = {
-							x: this._panStartMouse.x - curMousePos.x,
-							y: this._panStartMouse.y - curMousePos.y
-						},
-						panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x,
-						panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
+					var curMousePos = ige._mousePos;
+					var panCords = {
+						x: this._panStartMouse.x - curMousePos.x,
+						y: this._panStartMouse.y - curMousePos.y
+					};
+					var panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x;
+					var panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
 
 					// Check if we have a limiter on the rectangle area
 					// that we should allow panning inside.

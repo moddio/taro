@@ -52,7 +52,7 @@ var IgeEditorRotateComponent = IgeEventingClass.extend({
 	},
 
 	/**
-	 * Gets / sets the enabled flag. If set to true, 
+	 * Gets / sets the enabled flag. If set to true,
 	 * operations will be processed. If false, no operations will
 	 * occur.
 	 * @param {Boolean=} val
@@ -67,12 +67,12 @@ var IgeEditorRotateComponent = IgeEventingClass.extend({
 			// Reset rotate values.
 			// This prevents problems if the component is disabled mid-operation.
 			this._opPreStart = false;
-			this._opStarted  = false;
+			this._opStarted = false;
 
 			if (this._enabled) {
 				if (ige._sgTreeSelected && ige._sgTreeSelected !== 'ige') {
 					this._targetEntity = ige.$(ige._sgTreeSelected);
-					
+
 					if (this._targetEntity.classId() == 'IgeViewport') {
 						// Disable translation mode
 						this.log('Editor: Mouse rotate disabled');
@@ -115,8 +115,8 @@ var IgeEditorRotateComponent = IgeEventingClass.extend({
 
 			this._opPreStart = true;
 			this._opStarted = false;
-			
-			document.getElementById('igeSgEditorStatus').innerHTML = 'Degrees: ' + Math.degrees(this._targetEntity._rotate.z);
+
+			document.getElementById('igeSgEditorStatus').innerHTML = `Degrees: ${Math.degrees(this._targetEntity._rotate.z)}`;
 		}
 	},
 
@@ -130,11 +130,11 @@ var IgeEditorRotateComponent = IgeEventingClass.extend({
 		if (this._enabled && this._targetEntity) {
 			// Rotate the camera if the mouse is down
 			if (this._opStartMouse) {
-				var curMousePos = ige._mousePos,
-					rotateCords = {
-						x: this._opStartMouse.x - curMousePos.x
-					},
-					distX = rotateCords.x - this._opStartRotate.x;
+				var curMousePos = ige._mousePos;
+				var rotateCords = {
+					x: this._opStartMouse.x - curMousePos.x
+				};
+				var distX = rotateCords.x - this._opStartRotate.x;
 
 				if (this._opPreStart) {
 					// Check if we've reached the start threshold
@@ -160,8 +160,8 @@ var IgeEditorRotateComponent = IgeEventingClass.extend({
 
 					this.emit('rotateMove');
 				}
-				
-				document.getElementById('igeSgEditorStatus').innerHTML = 'Degrees: ' + Math.degrees(this._targetEntity._rotate.z);
+
+				document.getElementById('igeSgEditorStatus').innerHTML = `Degrees: ${Math.degrees(this._targetEntity._rotate.z)}`;
 			}
 		}
 	},
@@ -177,19 +177,19 @@ var IgeEditorRotateComponent = IgeEventingClass.extend({
 			// End the rotate
 			if (this._opStarted) {
 				if (this._opStartMouse) {
-					var curMousePos = ige._mousePos,
-						rotateCords = {
-							x: this._opStartMouse.x - curMousePos.x
-						},
-						distX = rotateCords.x - this._opStartRotate.x;
+					var curMousePos = ige._mousePos;
+					var rotateCords = {
+						x: this._opStartMouse.x - curMousePos.x
+					};
+					var distX = rotateCords.x - this._opStartRotate.x;
 
 					this._targetEntity.rotateTo(
 						this._targetEntity._rotate.x,
 						this._targetEntity._rotate.y,
 						Math.radians(-distX)
 					);
-					
-					document.getElementById('igeSgEditorStatus').innerHTML = 'Degrees: ' + Math.degrees(this._targetEntity._rotate.z); 
+
+					document.getElementById('igeSgEditorStatus').innerHTML = `Degrees: ${Math.degrees(this._targetEntity._rotate.z)}`;
 
 					// Remove the rotate start data to end the rotate operation
 					delete this._opStartMouse;

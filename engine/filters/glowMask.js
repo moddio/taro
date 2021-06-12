@@ -1,9 +1,9 @@
 IgeFilters.glowMask = function (canvas, ctx, originalImage, texture, data) {
-	var oneNinth = 1 / 9,
-		pixelData,
-		tempCanvas,
-		tempCtx,
-		i;
+	var oneNinth = 1 / 9;
+	var pixelData;
+	var tempCanvas;
+	var tempCtx;
+	var i;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -23,15 +23,15 @@ IgeFilters.glowMask = function (canvas, ctx, originalImage, texture, data) {
 			pixelData = IgeFilters._convolute(
 				pixelData,
 				[
-					oneNinth, oneNinth,  oneNinth,
-					oneNinth, oneNinth,  oneNinth,
-					oneNinth, oneNinth,  oneNinth
+					oneNinth, oneNinth, oneNinth,
+					oneNinth, oneNinth, oneNinth,
+					oneNinth, oneNinth, oneNinth
 				],
 				false
 			);
 		}
 
-		tempCanvas = document.createElement("canvas");
+		tempCanvas = document.createElement('canvas');
 		tempCtx = tempCanvas.getContext('2d');
 
 		tempCanvas.width = canvas.width;
@@ -44,7 +44,7 @@ IgeFilters.glowMask = function (canvas, ctx, originalImage, texture, data) {
 
 	ctx.drawImage(originalImage, 0, 0);
 
-	ctx.globalCompositeOperation = "lighter";
+	ctx.globalCompositeOperation = 'lighter';
 
 	for (i = 0; i < data.glowPasses; i++) {
 		// Apply the filter and then put the new pixel data

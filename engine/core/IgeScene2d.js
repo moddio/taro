@@ -16,7 +16,7 @@ var IgeScene2d = IgeEntity.extend({
 		// width / height - used when positioning UI elements
 		this._bounds2d.x = ige._bounds2d.x;
 		this._bounds2d.y = ige._bounds2d.y;
-		
+
 		this.streamSections(['transform', 'ignoreCamera']);
 	},
 
@@ -24,8 +24,8 @@ var IgeScene2d = IgeEntity.extend({
 	 * Gets / sets the stream room id. If set, any streaming entities that
 	 * are mounted to this scene will only sync with clients that have been
 	 * assigned to this room id.
-	 * 
-	 * @param {String} id The id of the room. 
+	 *
+	 * @param {String} id The id of the room.
 	 * @returns {*}
 	 */
 	streamRoomId: function (id) {
@@ -33,7 +33,7 @@ var IgeScene2d = IgeEntity.extend({
 			this._streamRoomId = id;
 			return this;
 		}
-		
+
 		return this._streamRoomId;
 	},
 
@@ -59,7 +59,7 @@ var IgeScene2d = IgeEntity.extend({
 					return String(this._ignoreCamera);
 				}
 				break;
-			
+
 			default:
 				IgeEntity.prototype.streamSectionData.call(this, sectionId, data);
 				break;
@@ -75,7 +75,7 @@ var IgeScene2d = IgeEntity.extend({
 	 * @return {*}
 	 */
 	autoSize: function (val) {
-		if (typeof(val) !== 'undefined') {
+		if (typeof (val) !== 'undefined') {
 			this._autoSize = val;
 			return this;
 		}
@@ -113,7 +113,7 @@ var IgeScene2d = IgeEntity.extend({
 
 		return this._ignoreCamera;
 	},
-	
+
 	update: function (ctx, tickDelta) {
 		if (this._ignoreCamera) {
 			// Translate the scene so it is always center of the camera
@@ -121,9 +121,9 @@ var IgeScene2d = IgeEntity.extend({
 			this.translateTo(cam._translate.x, cam._translate.y, cam._translate.z);
 			this.scaleTo(1 / cam._scale.x, 1 / cam._scale.y, 1 / cam._scale.z);
 			this.rotateTo(-cam._rotate.x, -cam._rotate.y, -cam._rotate.z);
-			//this._localMatrix.multiply(ige._currentCamera._worldMatrix.getInverse());
+			// this._localMatrix.multiply(ige._currentCamera._worldMatrix.getInverse());
 		}
-		
+
 		IgeEntity.prototype.update.call(this, ctx, tickDelta);
 	},
 
@@ -149,8 +149,8 @@ var IgeScene2d = IgeEntity.extend({
 		}
 
 		// Resize any children
-		var arr = this._children,
-			arrCount = arr.length;
+		var arr = this._children;
+		var arrCount = arr.length;
 
 		while (arrCount--) {
 			arr[arrCount]._resizeEvent(event);
@@ -167,17 +167,17 @@ var IgeScene2d = IgeEntity.extend({
 	 */
 	_stringify: function () {
 		// Get the properties for all the super-classes
-		var str = IgeEntity.prototype._stringify.call(this), i;
+		var str = IgeEntity.prototype._stringify.call(this); var i;
 
 		// Loop properties and add property assignment code to string
 		for (i in this) {
 			if (this.hasOwnProperty(i) && this[i] !== undefined) {
 				switch (i) {
 					case '_shouldRender':
-						str += ".shouldRender(" + this.shouldRender() + ")";
+						str += `.shouldRender(${this.shouldRender()})`;
 						break;
 					case '_autoSize':
-						str += ".autoSize(" + this.autoSize() + ")";
+						str += `.autoSize(${this.autoSize()})`;
 						break;
 				}
 			}
@@ -187,4 +187,4 @@ var IgeScene2d = IgeEntity.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeScene2d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeScene2d; }

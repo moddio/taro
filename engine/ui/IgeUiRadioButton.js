@@ -20,9 +20,9 @@ var IgeUiRadioButton = IgeUiButton.extend({
 			// Loop the parent object's children, find any
 			// radio buttons that belong to this radio group
 			// and then deselect them
-			var arr = this._parent._children,
-				arrCount = arr.length,
-				item;
+			var arr = this._parent._children;
+			var arrCount = arr.length;
+			var item;
 
 			while (arrCount--) {
 				item = arr[arrCount];
@@ -70,4 +70,4 @@ var IgeUiRadioButton = IgeUiButton.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeUiRadioButton; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeUiRadioButton; }

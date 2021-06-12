@@ -18,4 +18,4 @@ var IgeCollisionMap2d = IgeEntity.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeCollisionMap2d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeCollisionMap2d; }

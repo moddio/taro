@@ -18,7 +18,7 @@ var IgeSocketIoClient = {
 			return '';
 		}
 	},
-	
+
 	/**
 	 * Starts the network for the client.
 	 * @param {*} data The game server URL.
@@ -29,17 +29,17 @@ var IgeSocketIoClient = {
 		var self = this;
 
 		// Check if the io library exists and use ioNoDom otherwise
-		if (typeof(io) === 'undefined') {
+		if (typeof (io) === 'undefined') {
 			io = ioNoDom;
 		}
 
 		self._startCallback = callback;
 
-		if (typeof(data) !== 'undefined') {
+		if (typeof (data) !== 'undefined') {
 			this._port = data;
 		}
 
-		this.log('Connecting to socket.io server at "' + this._port + '"...');
+		this.log(`Connecting to socket.io server at "${this._port}"...`);
 
 		this._io = io.connect(data);
 
@@ -51,7 +51,7 @@ var IgeSocketIoClient = {
 		// Define message listener
 		this._io.on('message', function (data) {
 			if (!self._initDone) {
-				var i, commandCount = 0;
+				var i; var commandCount = 0;
 
 				// Check if the data is an init packet
 				if (data.cmd === 'init') {
@@ -74,10 +74,10 @@ var IgeSocketIoClient = {
 					self.define('_igeResponse', function () { self._onResponse.apply(self, arguments); });
 					self.define('_igeNetTimeSync', function () { self._onTimeSync.apply(self, arguments); });
 
-					self.log('Received network command list with count: ' + commandCount);
+					self.log(`Received network command list with count: ${commandCount}`);
 
 					// Now fire the start() callback
-					if (typeof(self._startCallback) === 'function') {
+					if (typeof (self._startCallback) === 'function') {
 						self._startCallback();
 						delete self._startCallback;
 					}
@@ -109,7 +109,7 @@ var IgeSocketIoClient = {
 			if (this._networkCommandsLookup[commandName] !== undefined) {
 				this._networkCommands[commandName] = callback;
 			} else {
-				this.log('Cannot define network command "' + commandName + '" because it does not exist on the server. Please edit your server code and define the network command there before trying to define it on the client!', 'error');
+				this.log(`Cannot define network command "${commandName}" because it does not exist on the server. Please edit your server code and define the network command there before trying to define it on the client!`, 'error');
 			}
 
 			return this._entity;
@@ -124,10 +124,10 @@ var IgeSocketIoClient = {
 		if (commandIndex !== undefined) {
 			this._io.json.send([commandIndex, data]);
 		} else {
-			this.log('Cannot send network packet with command "' + commandName + '" because the command has not been defined!', 'error');
+			this.log(`Cannot send network packet with command "${commandName}" because the command has not been defined!`, 'error');
 		}
 	},
-	
+
 	/**
 	 * Sends a network request. This is different from a standard
 	 * call to send() because the recipient code will be able to
@@ -186,7 +186,7 @@ var IgeSocketIoClient = {
 			delete this._requests[requestId];
 		}
 	},
-	
+
 	/**
 	 * Generates a new 16-character hexadecimal unique ID
 	 * @return {String}
@@ -195,7 +195,7 @@ var IgeSocketIoClient = {
 		this._idCounter++;
 		return (this._idCounter + (Math.random() * Math.pow(10, 17) + Math.random() * Math.pow(10, 17) + Math.random() * Math.pow(10, 17) + Math.random() * Math.pow(10, 17))).toString(16);
 	},
-	
+
 	_onRequest: function (data) {
 		// The message is a network request so fire
 		// the command event with the request id and
@@ -276,4 +276,4 @@ var IgeSocketIoClient = {
 	}
 };
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeSocketIoClient; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeSocketIoClient; }

@@ -17,7 +17,7 @@ igeClassStore = {};
 igeConfig = {
 	debug: {
 		_enabled: false,
-		_node: typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined',
+		_node: typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined',
 		_level: ['log', 'warning', 'error'],
 		_stacks: true,
 		_throwErrors: true,
@@ -25,20 +25,20 @@ igeConfig = {
 		enabled: function (val) {
 			if (val !== undefined) {
 				this._enabled = val;
-	
+
 				if (!val) {
 					this._timing = false;
-	
+
 					// Check if the engine exists
 					if (ige) {
 						// Turn off stats display in the engine
 						ige.showStats(0);
 					}
 				}
-	
+
 				return this;
 			}
-	
+
 			return this._enabled;
 		}
 	}
@@ -52,9 +52,9 @@ if (igeConfig.debug._node) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Object.prototype, 'tween', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -87,9 +87,9 @@ Object.defineProperty(Object.prototype, 'tween', {
  * Make property non-enumerable.
  */
 Object.defineProperty(Object.prototype, 'theSameAs', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -108,9 +108,9 @@ Object.prototype.theSameAs = function (obj) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'clone', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -119,7 +119,7 @@ Object.defineProperty(Array.prototype, 'clone', {
  * @return {*}
  */
 Array.prototype.clone = function () {
-	var i, newArray = [];
+	var i; var newArray = [];
 	for (i in this) {
 		if (this.hasOwnProperty(i)) {
 			if (this[i] instanceof Array) {
@@ -137,9 +137,9 @@ Array.prototype.clone = function () {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'pull', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -161,9 +161,9 @@ Array.prototype.pull = function (item) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'pushUnique', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -177,7 +177,7 @@ Array.prototype.pushUnique = function (item) {
 		this.push(item);
 		return true;
 	}
-	
+
 	return false;
 };
 
@@ -185,9 +185,9 @@ Array.prototype.pushUnique = function (item) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'each', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -196,8 +196,8 @@ Object.defineProperty(Array.prototype, 'each', {
  * @param {Function} callback
  */
 Array.prototype.each = function (callback) {
-	var len = this.length,
-		i;
+	var len = this.length;
+	var i;
 
 	for (i = 0; i < len; i++) {
 		callback(this[i]);
@@ -208,9 +208,9 @@ Array.prototype.each = function (callback) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'eachReverse', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -219,8 +219,8 @@ Object.defineProperty(Array.prototype, 'eachReverse', {
  * @param {Function} callback
  */
 Array.prototype.eachReverse = function (callback) {
-	var arrCount = this.length,
-		i;
+	var arrCount = this.length;
+	var i;
 
 	for (i = arrCount - 1; i >= 0; i--) {
 		callback(this[i]);
@@ -231,9 +231,9 @@ Array.prototype.eachReverse = function (callback) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'destroyAll', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -242,11 +242,11 @@ Object.defineProperty(Array.prototype, 'destroyAll', {
  * array of IgeEntity instances.
  */
 Array.prototype.destroyAll = function () {
-	var arrCount = this.length,
-		i;
+	var arrCount = this.length;
+	var i;
 
 	for (i = arrCount - 1; i >= 0; i--) {
-		if (typeof(this[i].destroy) === 'function') {
+		if (typeof (this[i].destroy) === 'function') {
 			this[i].destroy();
 		}
 	}
@@ -256,9 +256,9 @@ Array.prototype.destroyAll = function () {
  * Make property non-enumerable.
  */
 Object.defineProperty(Array.prototype, 'eachIsolated', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -270,9 +270,9 @@ Object.defineProperty(Array.prototype, 'eachIsolated', {
  * @param {Function} callback
  */
 Array.prototype.eachIsolated = function (callback) {
-	var arr = [],
-		arrCount = arr.length,
-		i;
+	var arr = [];
+	var arrCount = arr.length;
+	var i;
 
 	// Create a copy of the array
 	for (i = 0; i < arrCount; i++) {
@@ -291,9 +291,9 @@ Array.prototype.eachIsolated = function (callback) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Math, 'PI180', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -306,9 +306,9 @@ Math.PI180 = Math.PI / 180;
  * Make property non-enumerable.
  */
 Object.defineProperty(Math, 'PI180R', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -321,25 +321,25 @@ Math.PI180R = 180 / Math.PI;
  * Make property non-enumerable.
  */
 Object.defineProperty(Math, 'toIso', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 Math.toIso = function (x, y, z) {
-	var sx = x - y,
-		sy = (-z) * 1.2247 + (x + y) * 0.5;
+	var sx = x - y;
+	var sy = (-z) * 1.2247 + (x + y) * 0.5;
 
-	return {x: sx, y: sy};
+	return { x: sx, y: sy };
 };
 
 /**
  * Make property non-enumerable.
  */
 Object.defineProperty(Math, 'radians', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -355,9 +355,9 @@ Math.radians = function (degrees) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Math, 'degrees', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -373,9 +373,9 @@ Math.degrees = function (radians) {
  * Make property non-enumerable.
  */
 Object.defineProperty(Math, 'distance', {
-	enumerable:false,
-	writable:true,
-	configurable:true
+	enumerable: false,
+	writable: true,
+	configurable: true
 });
 
 /**
@@ -390,27 +390,27 @@ Math.distance = function (x1, y1, x2, y2) {
 	return Math.sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
 };
 
-if (typeof(CanvasRenderingContext2D) !== 'undefined') {
+if (typeof (CanvasRenderingContext2D) !== 'undefined') {
 	// Extend the canvas context to add some helper methods
 	/**
 	 * Make property non-enumerable.
 	 */
 	Object.defineProperty(CanvasRenderingContext2D.prototype, 'circle', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	Object.defineProperty(CanvasRenderingContext2D.prototype, 'strokeCircle', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	Object.defineProperty(CanvasRenderingContext2D.prototype, 'fillCircle', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	CanvasRenderingContext2D.prototype.circle = function (x, y, radius) {
@@ -434,14 +434,14 @@ if (typeof(CanvasRenderingContext2D) !== 'undefined') {
 	};
 }
 
-if (typeof(ImageData) !== 'undefined') {
+if (typeof (ImageData) !== 'undefined') {
 	/**
 	 * Make property non-enumerable.
 	 */
 	Object.defineProperty(ImageData.prototype, 'pixelAt', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	/**
@@ -454,8 +454,8 @@ if (typeof(ImageData) !== 'undefined') {
 	 * {r, g, b, a}.
 	 */
 	ImageData.prototype.pixelAt = function (x, y) {
-		var data = this.data,
-			pixelStart = (y * this.width * 4) + (x * 4);
+		var data = this.data;
+		var pixelStart = (y * this.width * 4) + (x * 4);
 
 		return {
 			r: data[pixelStart],
@@ -469,9 +469,9 @@ if (typeof(ImageData) !== 'undefined') {
 	 * Make property non-enumerable.
 	 */
 	Object.defineProperty(ImageData.prototype, 'isTransparent', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	/**
@@ -483,8 +483,8 @@ if (typeof(ImageData) !== 'undefined') {
 	 * @return {Boolean} True if fully transparent, false if not.
 	 */
 	ImageData.prototype.isTransparent = function (x, y) {
-		var data = this.data,
-			pixelStart = (y * this.width * 4) + (x * 4);
+		var data = this.data;
+		var pixelStart = (y * this.width * 4) + (x * 4);
 
 		return data[pixelStart + 3] === 0;
 	};
@@ -493,9 +493,9 @@ if (typeof(ImageData) !== 'undefined') {
 	 * Make property non-enumerable.
 	 */
 	Object.defineProperty(ImageData.prototype, 'makeTransparent', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	/**
@@ -506,8 +506,8 @@ if (typeof(ImageData) !== 'undefined') {
 	 * @param {Number} y The y co-ordinate of the pixel.
 	 */
 	ImageData.prototype.makeTransparent = function (x, y) {
-		var data = this.data,
-			pixelStart = (y * this.width * 4) + (x * 4);
+		var data = this.data;
+		var pixelStart = (y * this.width * 4) + (x * 4);
 
 		data[pixelStart + 3] = 0;
 	};
@@ -519,7 +519,7 @@ if (typeof(ImageData) !== 'undefined') {
  */
 var disableContextMenu = function (obj) {
 	if (obj !== null) {
-		//this.log('Disabling context menus for ' + obj, 'info');
+		// this.log('Disabling context menus for ' + obj, 'info');
 		obj.oncontextmenu = function () { return false; };
 	}
 };
@@ -528,14 +528,14 @@ var disableContextMenu = function (obj) {
  * Adds the indexOf method to all array objects if it does not already exist which
  * would you believe can still happen even in 2012!
  */
-if(!Array.prototype.indexOf){
+if (!Array.prototype.indexOf) {
 	/**
 	 * Make property non-enumerable.
 	 */
 	Object.defineProperty(Array.prototype, 'indexOf', {
-		enumerable:false,
-		writable:true,
-		configurable:true
+		enumerable: false,
+		writable: true,
+		configurable: true
 	});
 
 	/**
@@ -543,10 +543,10 @@ if(!Array.prototype.indexOf){
 	 * @param {*} obj The item to find the index for.
 	 * @return {Number} The index of the passed item or -1 if not found.
 	 */
-	Array.prototype.indexOf = function(obj) {
-		var i, l = this.length;
+	Array.prototype.indexOf = function (obj) {
+		var i; var l = this.length;
 		for (i = 0; i < l; i++) {
-			if(this[i] === obj){
+			if (this[i] === obj) {
 				return i;
 			}
 		}
@@ -554,23 +554,23 @@ if(!Array.prototype.indexOf){
 	};
 }
 
-if (typeof(window) !== 'undefined') {
+if (typeof (window) !== 'undefined') {
 	/**
 	 * A cross-browser/platform requestAnimationFrame method.
 	 */
-	/*window.requestAnimFrame = (function(){
+	/* window.requestAnimFrame = (function(){
 		return function(callback, element){
 			setTimeout(function () { callback(new Date().getTime()); }, 1000 / 60);
 		};
-	}());*/
+	}()); */
 
-	requestAnimFrame = (function(){
-		return  window.requestAnimationFrame       ||
+	requestAnimFrame = (function () {
+		return window.requestAnimationFrame ||
 				window.webkitRequestAnimationFrame ||
-				window.mozRequestAnimationFrame    ||
-				window.oRequestAnimationFrame      ||
-				window.msRequestAnimationFrame     ||
-		function(callback, element){
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+		function (callback, element) {
 			setTimeout(function () { callback(new Date().getTime()); }, 1000 / 60);
 		};
 	}());
@@ -578,22 +578,22 @@ if (typeof(window) !== 'undefined') {
 	/**
 	 * A cross-browser/platform requestAnimationFrame method.
 	 */
-	requestAnimFrame = (function(){
-		return function(callback, element){
+	requestAnimFrame = (function () {
+		return function (callback, element) {
 			setTimeout(function () { callback(new Date().getTime()); }, 1000 / 60);
 		};
 	}());
 }
 
 // Check console method existence
-if (typeof(console) === 'object') {
-	if (typeof(console.log) === 'function') {
-		if (typeof(console.info) === 'undefined') {
+if (typeof (console) === 'object') {
+	if (typeof (console.log) === 'function') {
+		if (typeof (console.info) === 'undefined') {
 			// We have console.log but not console.info so add it as a replica of console.log
 			console.info = console.log;
 		}
 
-		if (typeof(console.warn) === 'undefined') {
+		if (typeof (console.warn) === 'undefined') {
 			// We have console.log but not console.warn so add it as a replica of console.log
 			console.warn = console.log;
 		}

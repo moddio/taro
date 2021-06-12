@@ -131,7 +131,7 @@ var IgeTween = IgeClass.extend({
 
 		return this;
 	},
-	
+
 	/**
 	 * Defines a step in a multi-stage tween. Uses the properties
 	 * as deltas, not as destination values
@@ -151,7 +151,7 @@ var IgeTween = IgeClass.extend({
 			easing,
 			true
 		);
-		
+
 		return this;
 	},
 
@@ -283,7 +283,7 @@ var IgeTween = IgeClass.extend({
 		if (timeMs !== undefined) {
 			this.startTime(timeMs + ige._currentTime);
 		}
-		
+
 		ige.tween.start(this);
 
 		// Add the tween to the target object's tween array
@@ -334,4 +334,4 @@ var IgeTween = IgeClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeTween; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeTween; }

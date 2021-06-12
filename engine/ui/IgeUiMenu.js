@@ -50,13 +50,13 @@ var IgeUiMenu = IgeUiElement.extend({
 
 	addItem: function (item) {
 		if (item !== undefined) {
-			
+
 		}
 	},
 
 	_buildMenu: function (data, parent) {
-		var arrCount = data.length, i,
-			item, ent, left = 0, top = 0;
+		var arrCount = data.length; var i;
+		var item; var ent; var left = 0; var top = 0;
 
 		for (i = 0; i < arrCount; i++) {
 			item = data[i];
@@ -95,7 +95,7 @@ var IgeUiMenuItem = IgeUiElement.extend({
 			if (menuData.mouseOut) { this.mouseOut(menuData.mouseOut); }
 
 			this._labelEntity = new IgeFontEntity()
-				.id(this.id() + '_label')
+				.id(`${this.id()}_label`)
 				.texture(this._fontSheet)
 				.left(5)
 				.middle(0)
@@ -133,7 +133,7 @@ var IgeUiMenuItem = IgeUiElement.extend({
 	open: function () {
 		if (this._menuData.items) {
 			this._childMenu = new IgeUiMenu()
-				.id(this.id() + '_childMenu')
+				.id(`${this.id()}_childMenu`)
 				.depth(this.depth() + 1)
 				.fontSheet(this._fontSheet)
 				.left(0)

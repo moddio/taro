@@ -8,15 +8,15 @@ var IgePoint3d = IgeClass.extend({
 		// Set values to the passed parameters or
 		// zero if they are undefined
 		// Commented for increase performance over stability checks
-		/*if (x === undefined) { debugger; }
+		/* if (x === undefined) { debugger; }
 		if (y === undefined) { debugger; }
-		if (z === undefined) { debugger; }*/
+		if (z === undefined) { debugger; } */
 		this.x = x = x !== undefined ? x : 0;
 		this.y = y = y !== undefined ? y : 0;
 		this.z = z = z !== undefined ? z : 0;
-		
+
 		this._floor = floor !== undefined;
-		
+
 		if (this._floor) {
 			this.x2 = Math.floor(x / 2);
 			this.y2 = Math.floor(y / 2);
@@ -65,7 +65,7 @@ var IgePoint3d = IgeClass.extend({
 		this.x = point.x;
 		this.y = point.y;
 		this.z = point.z;
-		
+
 		return this;
 	},
 
@@ -75,10 +75,10 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {Object}
 	 */
 	toIso: function () {
-		var sx = this.x - this.y,
-			sy = (-this.z) * 1.2247 + (this.x + this.y) * 0.5;
+		var sx = this.x - this.y;
+		var sy = (-this.z) * 1.2247 + (this.x + this.y) * 0.5;
 
-		return {x: sx, y: sy};
+		return { x: sx, y: sy };
 	},
 
 	/**
@@ -100,10 +100,10 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {Object}
 	 */
 	to2d: function () {
-		var sx = this.y + this.x / 2,
-			sy = this.y - this.x / 2;
+		var sx = this.y + this.x / 2;
+		var sy = this.y - this.x / 2;
 
-		return {x: sx, y: sy};
+		return { x: sx, y: sy };
 	},
 
 	/**
@@ -217,7 +217,7 @@ var IgePoint3d = IgeClass.extend({
 	divide: function (x, y, z) {
 		return new IgePoint3d(this.x / x, this.y / y, this.z / z);
 	},
-	
+
 	/**
 	 * Divides this point's data by the point specified
 	 * and returns a new IgePoint3d whose values are the result.
@@ -225,14 +225,14 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {*}
 	 */
 	dividePoint: function (point) {
-		var newX = this.x,
-			newY = this.y,
-			newZ = this.z;
-		
+		var newX = this.x;
+		var newY = this.y;
+		var newZ = this.z;
+
 		if (point.x) { newX = this.x / point.x; }
 		if (point.y) { newY = this.y / point.y; }
 		if (point.z) { newZ = this.z / point.z; }
-		
+
 		return new IgePoint3d(newX, newY, newZ);
 	},
 
@@ -271,12 +271,12 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {*}
 	 */
 	interpolate: function (endPoint, startTime, currentTime, endTime) {
-		var totalX = endPoint.x - this.x,
-			totalY = endPoint.y - this.y,
-			totalZ = endPoint.z - this.z,
-			totalTime = endTime - startTime,
-			deltaTime = totalTime - (currentTime - startTime),
-			timeRatio = deltaTime / totalTime;
+		var totalX = endPoint.x - this.x;
+		var totalY = endPoint.y - this.y;
+		var totalZ = endPoint.z - this.z;
+		var totalTime = endTime - startTime;
+		var deltaTime = totalTime - (currentTime - startTime);
+		var timeRatio = deltaTime / totalTime;
 
 		return new IgePoint3d(endPoint.x - (totalX * timeRatio), endPoint.y - (totalY * timeRatio), endPoint.z - (totalZ * timeRatio));
 	},
@@ -287,14 +287,14 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {IgePoint3d} A new point with the rotated x, y.
 	 */
 	rotate: function (radians) {
-		var s = Math.sin(radians),
-			c = Math.cos(radians),
-			x = c * this.x - s * this.y,
-			y = s * this.x - c * this.y;
-		
+		var s = Math.sin(radians);
+		var c = Math.cos(radians);
+		var x = c * this.x - s * this.y;
+		var y = s * this.x - c * this.y;
+
 		return new IgePoint3d(x, y, this.z);
 	},
-	
+
 	/**
 	 * Rotates the point by the given radians and updates this point
 	 * to the new x, y values.
@@ -302,14 +302,14 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {IgePoint3d} This point.
 	 */
 	thisRotate: function (radians) {
-		var s = Math.sin(radians),
-			c = Math.cos(radians),
-			x = this.x,
-			y = this.y;
-		
+		var s = Math.sin(radians);
+		var c = Math.cos(radians);
+		var x = this.x;
+		var y = this.y;
+
 		this.x = c * x - s * y;
 		this.y = s * x - c * y;
-		
+
 		return this;
 	},
 
@@ -322,18 +322,16 @@ var IgePoint3d = IgeClass.extend({
 	 * @return {String}
 	 */
 	toString: function (precision) {
-		if (precision === undefined) 
-		{ 
-			precision = 2; 
+		if (precision === undefined) {
+			precision = 2;
 		}
 
-		if (this.x == undefined || this.y  == undefined || this.z == undefined)
-		{
-			return "0,0,0";
+		if (this.x == undefined || this.y == undefined || this.z == undefined) {
+			return '0,0,0';
 		}
 
-		return parseFloat(this.x).toFixed(precision) + ',' + parseFloat(this.y).toFixed(precision) + ',' + parseFloat(this.z).toFixed(precision);
+		return `${parseFloat(this.x).toFixed(precision)},${parseFloat(this.y).toFixed(precision)},${parseFloat(this.z).toFixed(precision)}`;
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgePoint3d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePoint3d; }

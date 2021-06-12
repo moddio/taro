@@ -1,12 +1,12 @@
-//var appInsights = require("applicationinsights");
-//appInsights.setup("db8b2d10-212b-4e60-8af0-2482871ccf1d").start();
+// var appInsights = require("applicationinsights");
+// appInsights.setup("db8b2d10-212b-4e60-8af0-2482871ccf1d").start();
 var net = require('net');
 const publicIp = require('public-ip');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 var request = require('request');
-const fs = require("fs");
+const fs = require('fs');
 const cluster = require('cluster');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 _ = require('lodash');
@@ -16,8 +16,7 @@ const { FILE } = require('dns');
 const Console = console.constructor;
 // redirect global console object to log file
 
-
-function logfile(file) {
+function logfile (file) {
 	var con = new Console(fs.createWriteStream(file));
 	Object.keys(Console.prototype).forEach(function (name) {
 		console[name] = function () {
@@ -48,14 +47,14 @@ if (process.env.ENV == 'production') {
 	});
 
 	process.on('uncaughtException', function (err) {
-		global.rollbar.log(err)
-		console.log('server.js uncaughtException: ' + err.stack);
+		global.rollbar.log(err);
+		console.log(`server.js uncaughtException: ${err.stack}`);
 		process.exit(0);
-	})
+	});
 }
 
 process.on('exit', function () {
-	console.log("process exit called.");
+	console.log('process exit called.');
 	console.trace();
 });
 
@@ -64,12 +63,11 @@ var Server = IgeClass.extend({
 	Server: true,
 
 	init: function (options) {
-
 		var self = this;
 
 		self.buildNumber = 466;
 
-		self.status = "stopped";
+		self.status = 'stopped';
 		self.totalUnitsCreated = 0;
 		self.totalWallsCreated = 0;
 		self.totalItemsCreated = 0;
@@ -78,7 +76,7 @@ var Server = IgeClass.extend({
 		self.retryCount = 0;
 		self.maxRetryCount = 3;
 		self.started_at = new Date();
-		self.lastSnapshot = []
+		self.lastSnapshot = [];
 
 		self.logTriggers = {
 
@@ -93,14 +91,14 @@ var Server = IgeClass.extend({
 
 		self.tier = process.env.TIER || 2;
 		self.region = process.env.REGION || 'apocalypse';
-		self.isScriptLogOn = process.env.SCRIPTLOG == 'on'
+		self.isScriptLogOn = process.env.SCRIPTLOG == 'on';
 		self.gameLoaded = false;
 		self.coinUpdate = {};
 
 		self.socketConnectionCount = {
 			connected: 0,
 			disconnected: 0,
-			immediatelyDisconnected: 0,
+			immediatelyDisconnected: 0
 		};
 
 		self.serverStartTime = new Date();// record start time
@@ -112,16 +110,16 @@ var Server = IgeClass.extend({
 			player: 0,
 			projectile: 0,
 			region: 0,
-			sensor: 0,
-		}
+			sensor: 0
+		};
 
 		self.serverStartTime = new Date();// record start time
-		global.isDev = ige.env == "dev" || ige.env == 'local' || ige.env === 'standalone' || ige.env === 'standalone-remote';
+		global.isDev = ige.env == 'dev' || ige.env == 'local' || ige.env === 'standalone' || ige.env === 'standalone-remote';
 		global.myIp = process.env.IP;
 		global.beUrl = self.config.BE_URL;
 
-		console.log("environment", ige.env, self.config);
-		console.log("isDev =", global.isDev);
+		console.log('environment', ige.env, self.config);
+		console.log('isDev =', global.isDev);
 
 		self.internalPingCount = 0;
 
@@ -129,32 +127,32 @@ var Server = IgeClass.extend({
 
 		var rateLimiterOptions = {
 			points: 20, // 6 points
-			duration: 60, // Per second
-		}
+			duration: 60 // Per second
+		};
 		ige.rateLimiter = new RateLimiterMemory(rateLimiterOptions);
 
 		self.keysToRemoveBeforeSend = [
-			"abilities", "animations", "bodies", "body", "cellSheet",
-			"defaultData.rotation", "defaultData.translate",
-			"buffTypes", "bonus", "bulletStartPosition", "canBePurchasedBy", "carriedBy", "damage",
-			"description", "handle", "hits", "inventoryImage", "isGun", "isStackable", "maxQuantity",
-			"texture", "sound", "states", "frames", "inventorySize", "particles", "price", "skin",
-			"variables", "canBuyItem", "canBePurchasedBy", "inventoryImage", "isPurchasable", "oldState",
-			"raycastCollidesWith", "effects", "defaultProjectile", "currentBody",
-			'penetration', "bulletDistance", "bulletType", "ammoSize", "ammo", "ammoTotal", "reloadRate",
-			"recoilForce", "fireRate", "knockbackForce", "canBeUsedBy", "spawnChance", "consumeBonus",
-			"isConsumedImmediately", "lifeSpan", "removeWhenEmpty", "spawnPosition", "baseSpeed", "bonusSpeed",
-			"flip", "fadingTextQueue", "points", "highscore", "jointsOn", "totalTime", "email", "isEmailVerified",
-			"isUserAdmin", "isUserMod", "newHighscore", "streamedOn", "controls"
+			'abilities', 'animations', 'bodies', 'body', 'cellSheet',
+			'defaultData.rotation', 'defaultData.translate',
+			'buffTypes', 'bonus', 'bulletStartPosition', 'canBePurchasedBy', 'carriedBy', 'damage',
+			'description', 'handle', 'hits', 'inventoryImage', 'isGun', 'isStackable', 'maxQuantity',
+			'texture', 'sound', 'states', 'frames', 'inventorySize', 'particles', 'price', 'skin',
+			'variables', 'canBuyItem', 'canBePurchasedBy', 'inventoryImage', 'isPurchasable', 'oldState',
+			'raycastCollidesWith', 'effects', 'defaultProjectile', 'currentBody',
+			'penetration', 'bulletDistance', 'bulletType', 'ammoSize', 'ammo', 'ammoTotal', 'reloadRate',
+			'recoilForce', 'fireRate', 'knockbackForce', 'canBeUsedBy', 'spawnChance', 'consumeBonus',
+			'isConsumedImmediately', 'lifeSpan', 'removeWhenEmpty', 'spawnPosition', 'baseSpeed', 'bonusSpeed',
+			'flip', 'fadingTextQueue', 'points', 'highscore', 'jointsOn', 'totalTime', 'email', 'isEmailVerified',
+			'isUserAdmin', 'isUserMod', 'newHighscore', 'streamedOn', 'controls'
 		];
 
-		//for debugging reasons
+		// for debugging reasons
 		global.isServer = ige.isServer;
 
 		if (typeof HttpComponent != 'undefined') {
 			ige.addComponent(HttpComponent);
 		}
-		console.log('cluster.isMaster', cluster.isMaster)
+		console.log('cluster.isMaster', cluster.isMaster);
 		if (cluster.isMaster) {
 			if (process.env.ENV === 'standalone') {
 				self.gameId = process.env.npm_config_game;
@@ -165,49 +163,46 @@ var Server = IgeClass.extend({
 			} else if (typeof ClusterServerComponent != 'undefined') {
 				ige.addComponent(ClusterServerComponent);
 			}
-		}
-		else {
+		} else {
 			if (typeof ClusterClientComponent != 'undefined') {
-				ige.addComponent(ClusterClientComponent) // backend component will retrieve "start" command from BE
+				ige.addComponent(ClusterClientComponent); // backend component will retrieve "start" command from BE
 			}
 
 			// if production, then get ip first, and then start
 			if (['production', 'staging', 'standalone-remote'].includes(ige.env)) {
-				console.log("getting IP address")
+				console.log('getting IP address');
 				publicIp.v4().then(ip => { // get public ip of server
 					self.ip = ip;
 					self.start();
 				});
-			}
-			else // use 127.0.0.1 if dev env
+			} else // use 127.0.0.1 if dev env
 			{
 				self.ip = '127.0.0.1';
 				self.start();
 			}
 		}
 
-		//periodicaly update user coins to db for inapp purchase
+		// periodicaly update user coins to db for inapp purchase
 		setInterval(function () {
 			if (Object.keys(self.coinUpdate || {}).length > 0) {
 				self.postConsumeCoinsForUsers();
 			}
-		}, 10000)
-
+		}, 10000);
 	},
 
 	// start server
 	start: function () {
-		var self = this
-		console.log("ip", self.ip)
+		var self = this;
+		console.log('ip', self.ip);
 
 		if (self.gameLoaded) {
-			console.log("Warning: Game already loaded in this server!!")
+			console.log('Warning: Game already loaded in this server!!');
 			return;
 		}
 
 		// Add the server-side game methods / event handlers
 		this.implement(ServerNetworkEvents);
-		ige.addComponent(IgeNetIoComponent)
+		ige.addComponent(IgeNetIoComponent);
 	},
 
 	loadGameJSON: function (gameUrl) {
@@ -218,10 +213,10 @@ var Server = IgeClass.extend({
 				self.retryCount++;
 
 				if (self.retryCount > self.maxRetryCount) {
-					return reject(new Error('Could not load game'))
+					return reject(new Error('Could not load game'));
 				}
 
-				request(gameUrl + '&num=' + self.retryCount, (error, response, body) => {
+				request(`${gameUrl}&num=${self.retryCount}`, (error, response, body) => {
 					if (error) {
 						console.log('LOADING GAME-JSON ERROR', self.retryCount, error);
 						return self.loadGameJSON(gameUrl)
@@ -231,8 +226,7 @@ var Server = IgeClass.extend({
 
 					if (response.statusCode == 200) {
 						return resolve(JSON.parse(body));
-					}
-					else {
+					} else {
 						console.log('LOADING GAME-JSON ERROR', self.retryCount, response.statusCode, body);
 						return self.loadGameJSON(gameUrl)
 							.then((data) => resolve(data))
@@ -245,7 +239,7 @@ var Server = IgeClass.extend({
 	startServer: function () {
 		const app = express();
 		const port = process.env.PORT || 2000;
-		this.port = 2001; //game started on
+		this.port = 2001; // game started on
 
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
@@ -257,10 +251,10 @@ var Server = IgeClass.extend({
 		app.use('/engine', express.static(path.resolve('./engine/')));
 
 		const FILES_TO_CACHE = [
-			`pixi-legacy.js`,
-			`stats.js`,
-			`dat.gui.min.js`,
-			`msgpack.min.js`,
+			'pixi-legacy.js',
+			'stats.js',
+			'dat.gui.min.js',
+			'msgpack.min.js'
 		];
 		const SECONDS_IN_A_WEEK = 7 * 24 * 60 * 60;
 		app.use('/src', express.static(path.resolve('./src/'), {
@@ -268,7 +262,7 @@ var Server = IgeClass.extend({
 				let shouldCache = FILES_TO_CACHE.some((filename) => path.endsWith(filename));
 
 				// cache minified file
-				shouldCache = shouldCache || path.endsWith(`.min.js`);
+				shouldCache = shouldCache || path.endsWith('.min.js');
 
 				if (shouldCache) {
 					res.set('Cache-Control', `public, max-age=${SECONDS_IN_A_WEEK}`);
@@ -279,14 +273,14 @@ var Server = IgeClass.extend({
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
 		app.get('/', (req, res) => {
-			const videoChatEnabled = ige.game.videoChatEnabled && req.protocol == "https" ? ige.game.videoChatEnabled : false;			
+			const videoChatEnabled = ige.game.videoChatEnabled && req.protocol == 'https' ? ige.game.videoChatEnabled : false;
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
 				title: global.standaloneGame.defaultData.title,
 				tier: global.standaloneGame.defaultData.tier,
 				gameSlug: global.standaloneGame.defaultData.gameSlug,
 				videoChatEnabled: videoChatEnabled
-			}
+			};
 			const options = {
 				isAuthenticated: false,
 				env: process.env.ENV,
@@ -301,7 +295,7 @@ var Server = IgeClass.extend({
 					name: game.title,
 					tier: game.tier,
 					gameSlug: game.gameSlug,
-					videoChatEnabled: game.videoChatEnabled,
+					videoChatEnabled: game.videoChatEnabled
 				},
 				highScores: null,
 				hostedGames: null,
@@ -351,17 +345,17 @@ var Server = IgeClass.extend({
 
 	// run a specific game in this server
 	startGame: function (gameJson) {
-		console.log("ige.server.startGame()")
+		console.log('ige.server.startGame()');
 		var self = this;
 
 		if (self.gameLoaded) {
-			console.log("Warning: Game already loaded in this server!!")
+			console.log('Warning: Game already loaded in this server!!');
 			return;
 		}
 
 		this.socket = {};
 
-		self.url = "http://" + self.ip + ":" + self.port
+		self.url = `http://${self.ip}:${self.port}`;
 
 		this.duplicateIpCount = {};
 		this.bannedIps = [];
@@ -374,19 +368,18 @@ var Server = IgeClass.extend({
 		self.maxPlayers = self.maxPlayers || 32;
 		this.maxPlayersAllowed = self.maxPlayers || 32;
 
-		console.log("maxPlayersAllowed", this.maxPlayersAllowed)
-		console.log("starting netIoServer at", self.url)
+		console.log('maxPlayersAllowed', this.maxPlayersAllowed);
+		console.log('starting netIoServer at', self.url);
 
 		// Define an object to hold references to our player entities
 		this.clients = {};
 
 		// Add the networking component
-		ige.network.debug(self.isDebugging)
+		ige.network.debug(self.isDebugging);
 		// Start the network server
 		ige.network.start(self.port, function (data) {
-
-			console.log("IgeNetIoComponent: listening to", self.url)
-			console.log("connecting to BE:", global.beUrl)
+			console.log('IgeNetIoComponent: listening to', self.url);
+			console.log('connecting to BE:', global.beUrl);
 
 			var domain = null;
 
@@ -394,56 +387,54 @@ var Server = IgeClass.extend({
 			if (ige.env == 'standalone' || ige.env == 'standalone-remote' || ige.env === 'production') { // production or staging gets map data from API
 				// using BE's URL instead of GS Manager because GS Manager is overloaded right now so..
 				domain = 'https://www.modd.io';
-			}
-			else {
+			} else {
 				domain = global.beUrl;
 			}
 
-			console.log("connecting to BE:", global.beUrl)
+			console.log('connecting to BE:', global.beUrl);
 
 			var promise;
 
 			if (gameJson) {
 				promise = Promise.resolve(gameJson);
-			}
-			else if (ige.server.gameId) {
-				var gameUrl = domain + "/api/game-client/" + ige.server.gameId + '/?source=gs';
-				console.log("gameUrl", gameUrl)
+			} else if (ige.server.gameId) {
+				var gameUrl = `${domain}/api/game-client/${ige.server.gameId}/?source=gs`;
+				console.log('gameUrl', gameUrl);
 				promise = self.loadGameJSON(gameUrl);
 			} else {
 				promise = new Promise(function (resolve, reject) {
-					var game = fs.readFileSync(__dirname + '/../src/game.json');
+					var game = fs.readFileSync(`${__dirname}/../src/game.json`);
 					game = JSON.parse(game);
 					game.defaultData = game;
 					var data = { data: {} };
 					for (let [key, value] of Object.entries(game)) {
-						data['data'][key] = value;
+						data.data[key] = value;
 					}
 					for (let [key, value] of Object.entries(game.data)) {
-						data['data'][key] = value;
+						data.data[key] = value;
 					}
 					resolve(data);
 				});
 			}
 
 			promise.then((game) => {
-				ige.addComponent(GameComponent)
+				ige.addComponent(GameComponent);
 				self.gameStartedAt = new Date();
 
-				ige.game.data = game.data
+				ige.game.data = game.data;
 				ige.game.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
 
 				global.standaloneGame = game.data;
 				var baseTilesize = 64;
 
 				// I'm assuming that both tilewidth and tileheight have same value
-				// tilesize ratio is ratio of base tile size over tilesize of current map 
+				// tilesize ratio is ratio of base tile size over tilesize of current map
 				var tilesizeRatio = baseTilesize / game.data.map.tilewidth;
 
-				var engineTickFrameRate = 15
-				console.log(game.data.defaultData)
+				var engineTickFrameRate = 15;
+				console.log(game.data.defaultData);
 				if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
-					engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)) // keep fps range between 15 and 60
+					engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)); // keep fps range between 15 and 60
 				}
 
 				// ige.setFps(engineTickFrameRate)
@@ -452,23 +443,23 @@ var Server = IgeClass.extend({
 				// Add physics and setup physics world
 				ige.addComponent(PhysicsComponent)
 					.physics.sleep(true)
-					.physics.tilesizeRatio(tilesizeRatio)
+					.physics.tilesizeRatio(tilesizeRatio);
 
 				if (game.data.settings) {
-					var gravity = game.data.settings.gravity
+					var gravity = game.data.settings.gravity;
 					if (gravity) {
-						console.log("setting gravity", gravity)
-						ige.physics.gravity(gravity.x, gravity.y)
+						console.log('setting gravity', gravity);
+						ige.physics.gravity(gravity.x, gravity.y);
 					}
 				}
 
-				ige.physics.createWorld()
+				ige.physics.createWorld();
 				ige.physics.start();
-				console.log("box2d world started")
+				console.log('box2d world started');
 
 				// console.log("game data", game)
 				// mapComponent needs to be inside IgeStreamComponent, because debris' are created and streaming is enabled which requires IgeStreamComponent
-				console.log("initializing components")
+				console.log('initializing components');
 
 				ige.network.on('connect', self._onClientConnect);
 				ige.network.on('disconnect', self._onClientDisconnect);
@@ -477,7 +468,7 @@ var Server = IgeClass.extend({
 				ige.start(function (success) {
 					// Check if the engine started successfully
 					if (success) {
-						console.log("IgeNetIoComponent started successfully")
+						console.log('IgeNetIoComponent started successfully');
 
 						self.defineNetworkEvents();
 						// console.log("game data", ige.game.data.settings)
@@ -512,29 +503,27 @@ var Server = IgeClass.extend({
 						}
 
 						let map = ige.scaleMap(_.cloneDeep(ige.game.data.map));
-						ige.map.load(map)
+						ige.map.load(map);
 
-						ige.game.start()
+						ige.game.start();
 
 						self.gameLoaded = true;
 
-
 						// send dev logs to developer every second
 						var logInterval = setInterval(function () {
-
 							// send only if developer client is connect
 							if (ige.isServer && ((self.developerClientId && ige.server.clients[self.developerClientId]) || process.env.ENV == 'standalone')) {
-								ige.variable.devLogs['status'] = ige.server.getStatus()
-								ige.network.send("devLogs", ige.variable.devLogs, self.developerClientId)
+								ige.variable.devLogs.status = ige.server.getStatus();
+								ige.network.send('devLogs', ige.variable.devLogs, self.developerClientId);
 
 								if (ige.script.errorLogs != {}) {
 									ige.network.send('errorLogs', ige.script.errorLogs, self.developerClientId);
-									ige.script.errorLogs = {}
+									ige.script.errorLogs = {};
 								}
 							}
 							// console.log(ige.physicsTickCount, ige.unitBehaviourCount)
-							ige.physicsTickCount = 0
-							ige.unitBehaviourCount = 0
+							ige.physicsTickCount = 0;
+							ige.unitBehaviourCount = 0;
 						}, 1000);
 
 						setInterval(function () {
@@ -542,7 +531,7 @@ var Server = IgeClass.extend({
 							self.socketConnectionCount = {
 								connected: 0,
 								disconnected: 0,
-								immediatelyDisconnected: 0,
+								immediatelyDisconnected: 0
 							};
 
 							ige.clusterClient && ige.clusterClient.recordSocketConnections(copyCount);
@@ -560,7 +549,7 @@ var Server = IgeClass.extend({
 	defineNetworkEvents: function () {
 		var self = this;
 
-		console.log("server.js: defineNetworkEvents")
+		console.log('server.js: defineNetworkEvents');
 		ige.network.define('joinGame', self._onJoinGameWrapper);
 		ige.network.define('gameOver', self._onGameOver);
 
@@ -624,7 +613,7 @@ var Server = IgeClass.extend({
 		ige.network.define('gameSuggestion', self._onSomeBullshit);
 		ige.network.define('minimap', self._onSomeBullshit);
 
-		ige.network.define('createFloatingText', self._onSomeBullshit)
+		ige.network.define('createFloatingText', self._onSomeBullshit);
 
 		ige.network.define('openShop', self._onSomeBullshit);
 		ige.network.define('openDialogue', self._onSomeBullshit);
@@ -641,11 +630,10 @@ var Server = IgeClass.extend({
 		ige.network.define('trade', self._onTrade);
 	},
 
-
 	unpublish: function (from) {
-		console.log("unpublishing...")
-		ige.clusterClient.unpublish(from)
-		process.exit(0)
+		console.log('unpublishing...');
+		ige.clusterClient.unpublish(from);
+		process.exit(0);
 	},
 
 	saveLastPlayedTime: function (data) {
@@ -659,11 +647,11 @@ var Server = IgeClass.extend({
 
 		// send a message to master cluster
 		if (ige.env != 'dev' && process && process.send) {
-			process.send({ chat: "kill server called" });
+			process.send({ chat: 'kill server called' });
 		}
 		// ige.clusterClient.disconnect();
 
-		ige.clusterClient && ige.clusterClient.kill(log)
+		ige.clusterClient && ige.clusterClient.kill(log);
 	},
 
 	// get client with _id from BE
@@ -681,7 +669,7 @@ var Server = IgeClass.extend({
 		if (coin && player._stats && player._stats.userId && (ige.game.data.defaultData.tier == 3 || ige.game.data.defaultData.tier == 4)) {
 			request({
 				method: 'POST',
-				url: global.beUrl + '/api/user/updateCoins',
+				url: `${global.beUrl}/api/user/updateCoins`,
 				body: {
 					creatorId: ige.game.data.defaultData.owner,
 					userId: player._stats.userId,
@@ -702,17 +690,14 @@ var Server = IgeClass.extend({
 
 				if (body) {
 					if (body.status === 'success') {
-						player.streamUpdateData([{ coins: body.message }])
+						player.streamUpdateData([{ coins: body.message }]);
 					}
 					if (body.status === 'error') {
-						ige.chat.sendToRoom("1", `cannot create ${itemName}. ${body.message.username} is out of coins`, player._stats.clientId, undefined)
+						ige.chat.sendToRoom('1', `cannot create ${itemName}. ${body.message.username} is out of coins`, player._stats.clientId, undefined);
 					}
 				} else {
 					console.log(new Error('BE responded without body (giveCoinToUser)'));
 				}
-
-
-
 			});
 			// console.log('player stream update', coin)
 		}
@@ -721,7 +706,7 @@ var Server = IgeClass.extend({
 		var self = this;
 		request({
 			method: 'POST',
-			url: global.beUrl + '/api/user/consumecoins',
+			url: `${global.beUrl}/api/user/consumecoins`,
 			body: self.coinUpdate,
 			json: true
 		}, (err, httpResponse, body) => {
@@ -737,16 +722,15 @@ var Server = IgeClass.extend({
 
 			if (body) {
 				if (body.status === 'success') {
-
 					if (body.message && body.message.length > 0) {
 						body.message.forEach(function (updatedCoinsValue) {
 							var foundPlayer = ige.$$('player').find(function (player) {
 								return player && player._stats && player._stats.clientId == updatedCoinsValue.clientId;
 							});
 							if (foundPlayer) {
-								foundPlayer.streamUpdateData([{ coins: updatedCoinsValue.coinsLeft }])
+								foundPlayer.streamUpdateData([{ coins: updatedCoinsValue.coinsLeft }]);
 							}
-						})
+						});
 					}
 					self.coinUpdate = {};
 				}
@@ -767,28 +751,26 @@ var Server = IgeClass.extend({
 						coins: coins,
 						game: ige.game.data.defaultData._id,
 						boughtItems: []
-					}
-				}
-				else {
+					};
+				} else {
 					self.coinUpdate[player._stats.clientId].coins += coins;
 				}
 				if (self.coinUpdate[player._stats.clientId].boughtItems) {
 					self.coinUpdate[player._stats.clientId].boughtItems.push({
 						itemId: boughtItemId,
 						date: new Date(),
-						userId: player._stats.userId,
+						userId: player._stats.userId
 					});
 				}
 			}
 		}
 	},
 	getStatus: function () {
-
 		var self = this;
 
 		var cpuDelta = null;
 		if (ige._lastCpuUsage) {
-			//console.log('before',ige._lastCpuUsage);
+			// console.log('before',ige._lastCpuUsage);
 			cpuDelta = process.cpuUsage(ige._lastCpuUsage);
 			ige._lastCpuUsage = process.cpuUsage();
 		} else {
@@ -807,13 +789,13 @@ var Server = IgeClass.extend({
 			var returnData = {
 				clientCount: Object.keys(ige.network._socketById).length,
 				entityCount: {
-					player: ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' }).length,
-					unit: ige.$$("unit").length,
-					item: ige.$$("item").length,
-					debris: ige.$$("debris").length,
-					projectile: ige.$$("projectile").length,
-					sensor: ige.$$("sensor").length,
-					region: ige.$$("region").length
+					player: ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human'; }).length,
+					unit: ige.$$('unit').length,
+					item: ige.$$('item').length,
+					debris: ige.$$('debris').length,
+					projectile: ige.$$('projectile').length,
+					sensor: ige.$$('sensor').length,
+					region: ige.$$('region').length
 				},
 				bandwidth: self.bandwidthUsage,
 				heapUsed: process.memoryUsage().heapUsed / 1024 / 1024,
@@ -836,7 +818,7 @@ var Server = IgeClass.extend({
 				},
 				cpu: cpuDelta,
 				lastSnapshotLength: JSON.stringify(ige.server.lastSnapshot).length
-			}
+			};
 
 			self.bandwidthUsage = {
 				unit: 0,
@@ -845,14 +827,12 @@ var Server = IgeClass.extend({
 				player: 0,
 				projectile: 0,
 				region: 0,
-				sensor: 0,
-			}
+				sensor: 0
+			};
 
 			return returnData;
 		}
 	}
 });
-
-
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Server; }

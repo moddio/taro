@@ -21,25 +21,25 @@ var IgeEventingClass = IgeClass.extend({
 	 *     myEntity.on('hello', function (arg1, arg2) {
 	 *         console.log(arg1, arg2);
 	 *     }
-	 *     
+	 *
 	 *     // Emit the event named "hello"
 	 *     myEntity.emit('hello', ['data1', 'data2']);
-	 *     
+	 *
 	 *     // The console output is:
 	 *     //    data1, data2
 	 */
 	on: function (eventName, call, context, oneShot, sendEventName) {
-		var self = this,
-			newListener,
-			addListener,
-			existingIndex,
-			elArr,
-			multiEvent,
-			eventIndex,
-			eventData,
-			eventObj,
-			multiEventName,
-			i;
+		var self = this;
+		var newListener;
+		var addListener;
+		var existingIndex;
+		var elArr;
+		var multiEvent;
+		var eventIndex;
+		var eventData;
+		var eventObj;
+		var multiEventName;
+		var i;
 
 		// Check that we have an event listener object
 		this._eventListeners = this._eventListeners || {};
@@ -107,13 +107,13 @@ var IgeEventingClass = IgeClass.extend({
 				}
 			}
 		} else {
-			if (typeof(eventName) !== 'string') {
+			if (typeof (eventName) !== 'string') {
 				eventName = '*Multi-Event*';
 			}
-			this.log('Cannot register event listener for event "' + eventName + '" because the passed callback is not a function!', 'error');
+			this.log(`Cannot register event listener for event "${eventName}" because the passed callback is not a function!`, 'error');
 		}
 	},
-	
+
 	/**
 	 * Remove an event listener. If the _processing flag is true
 	 * then the removal will be placed in the removals array to be
@@ -128,13 +128,13 @@ var IgeEventingClass = IgeClass.extend({
 	 * then the listener will not immediately be removed but will be queued for removal before
 	 * the next listener loop is fired. In this case you may like to be informed via callback
 	 * when the listener has been fully removed in which case, provide a method for this argument.
-	 * 
+	 *
 	 * The callback will be passed a single boolean argument denoting if the removal was successful
 	 * (true) or the listener did not exist to remove (false).
 	 * @example #Switch off an Event Listener
 	 *     // Register event lister and store in "evt"
 	 *     var evt = myEntity.on('mouseDown', function () { console.log('down'); });
-	 *     
+	 *
 	 *     // Switch off event listener
 	 *     myEntity.off('mouseDown', evt);
 	 * @return {Boolean}
@@ -153,7 +153,7 @@ var IgeEventingClass = IgeClass.extend({
 						}
 						return true;
 					} else {
-						this.log('Failed to cancel event listener for event named "' + eventName + '" !', 'warning', evtListener);
+						this.log(`Failed to cancel event listener for event named "${eventName}" !`, 'warning', evtListener);
 					}
 				} else {
 					this.log('Failed to cancel event listener!');
@@ -196,10 +196,10 @@ var IgeEventingClass = IgeClass.extend({
 	 *     myEntity.on('hello', function (arg1, arg2) {
 	 *         console.log(arg1, arg2);
 	 *     }
-	 *     
+	 *
 	 *     // Emit the event named "hello"
 	 *     myEntity.emit('hello', ['data1', 'data2']);
-	 *     
+	 *
 	 *     // The console output is:
 	 *     //    data1, data2
 	 */
@@ -207,16 +207,15 @@ var IgeEventingClass = IgeClass.extend({
 		if (this._eventListeners) {
 			// Check if the event has any listeners
 			if (this._eventListeners[eventName]) {
-
 				// Fire the listeners for this event
-				var eventCount = this._eventListeners[eventName].length,
-					eventCount2 = this._eventListeners[eventName].length - 1,
-					finalArgs, i, cancelFlag, eventIndex, tempEvt, retVal;
+				var eventCount = this._eventListeners[eventName].length;
+				var eventCount2 = this._eventListeners[eventName].length - 1;
+				var finalArgs; var i; var cancelFlag; var eventIndex; var tempEvt; var retVal;
 
 				// If there are some events, ensure that the args is ready to be used
 				if (eventCount) {
 					finalArgs = [];
-					if (typeof(args) === 'object' && args !== null && args[0] !== null && args[0] !== undefined) {
+					if (typeof (args) === 'object' && args !== null && args[0] !== null && args[0] !== undefined) {
 						for (i in args) {
 							if (args.hasOwnProperty(i)) {
 								finalArgs[i] = args[i];
@@ -233,7 +232,6 @@ var IgeEventingClass = IgeClass.extend({
 					while (eventCount--) {
 						eventIndex = eventCount2 - eventCount;
 						tempEvt = this._eventListeners[eventName][eventIndex];
-
 
 						// If the sendEventName flag is set, overwrite the arguments with the event name
 						if (tempEvt.sendEventName) { finalArgs = [eventName]; }
@@ -252,7 +250,7 @@ var IgeEventingClass = IgeClass.extend({
 							// The event has a oneShot flag so since we have fired the event,
 							// lets cancel the listener now
 							if (this.off(eventName, tempEvt) === true) {
-								eventCount2--;	
+								eventCount2--;
 							}
 						}
 					}
@@ -270,9 +268,7 @@ var IgeEventingClass = IgeClass.extend({
 					if (cancelFlag) {
 						return 1;
 					}
-
 				}
-
 			}
 		}
 	},
@@ -284,7 +280,7 @@ var IgeEventingClass = IgeClass.extend({
 	eventList: function () {
 		return this._eventListeners;
 	},
-	
+
 	/**
 	 * Loops the removals array and processes off() calls for
 	 * each array item.
@@ -292,10 +288,10 @@ var IgeEventingClass = IgeClass.extend({
 	 */
 	_processRemovals: function () {
 		if (this._eventListeners) {
-			var remArr = this._eventListeners._removeQueue,
-				arrCount,
-				item,
-				result;
+			var remArr = this._eventListeners._removeQueue;
+			var arrCount;
+			var item;
+			var result;
 
 			// If the removal array exists
 			if (remArr) {
@@ -323,4 +319,4 @@ var IgeEventingClass = IgeClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeEventingClass; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEventingClass; }

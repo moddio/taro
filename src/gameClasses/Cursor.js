@@ -1,20 +1,18 @@
 var Cursor = IgeEntity.extend({
 	classId: 'Cursor',
 
-	init: function () 
-	{
+	init: function () {
 		IgeEntity.prototype.init.call(this);
-		
+
 		var self = this;
-		
-		if (ige.isClient)
-		{
-			var tex = new IgeTexture(ige.map.mapUrl+"/spritesheet/baseball_bat.png");
+
+		if (ige.isClient) {
+			var tex = new IgeTexture(`${ige.map.mapUrl}/spritesheet/baseball_bat.png`);
 			self.depth(10)
 				.layer(20)
 				.width(50)
 				.height(50)
-				.texture(tex)
+				.texture(tex);
 		}
 	},
 
@@ -28,4 +26,4 @@ var Cursor = IgeEntity.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Cursor; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Cursor; }

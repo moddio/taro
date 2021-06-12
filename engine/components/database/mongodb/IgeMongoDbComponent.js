@@ -8,9 +8,9 @@ var IgeMongoDbComponent = IgeEventingClass.extend({
 
 		// Setup the mongo module
 		this._mongo = {};
-		this._mongo.Db = require('../../../' + modulePath + 'mongodb').Db;
-		this._mongo.Connection = require('../../../' + modulePath + 'mongodb').Connection;
-		this._mongo.Server = require('../../../' + modulePath + 'mongodb').Server;
+		this._mongo.Db = require(`../../../${modulePath}mongodb`).Db;
+		this._mongo.Connection = require(`../../../${modulePath}mongodb`).Connection;
+		this._mongo.Server = require(`../../../${modulePath}mongodb`).Server;
 		this._mongo.BSON = this._mongo.Db.bson_serializer;
 
 		// Implement the mongo methods
@@ -23,4 +23,4 @@ var IgeMongoDbComponent = IgeEventingClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeMongoDbComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeMongoDbComponent; }

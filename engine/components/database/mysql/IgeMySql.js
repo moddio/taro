@@ -22,17 +22,17 @@ var IgeMySql = {
 	connect: function (callback) {
 		var self = this;
 
-		this.log('Connecting to mysql database "'  + this._database + '" @' + this._host + ':' + this._port);
+		this.log(`Connecting to mysql database "${this._database}" @${this._host}:${this._port}`);
 		self.client = this._mysql.createConnection({
-				host: self._host,
-				port: parseInt(self._port, 10),
-				user: self._username,
-				password: self._password,
-				database: self._database
-			});
+			host: self._host,
+			port: parseInt(self._port, 10),
+			user: self._username,
+			password: self._password,
+			database: self._database
+		});
 
 		// Handle disconnects with auto-reconnect
-		self.client.on('error', function(err) {
+		self.client.on('error', function (err) {
 			if (!err.fatal) {
 				return;
 			}
@@ -41,7 +41,7 @@ var IgeMySql = {
 				throw err;
 			}
 
-			self.log('Re-connecting lost connection: ' + err.stack);
+			self.log(`Re-connecting lost connection: ${err.stack}`);
 
 			self.client = self._mysql.createConnection({
 				host: self._host,
@@ -69,7 +69,7 @@ var IgeMySql = {
 	 * @param callback
 	 */
 	disconnect: function (callback) {
-		this.log("Closing DB connection...");
+		this.log('Closing DB connection...');
 		this.client.end(function () {
 			callback();
 		});
@@ -101,7 +101,7 @@ var IgeMySql = {
 			this.emit('connectionError');
 		}
 
-		if (typeof(callback) === 'function') {
+		if (typeof (callback) === 'function') {
 			callback.apply(this, [err, db]);
 		}
 	},
@@ -124,7 +124,7 @@ var IgeMySql = {
 	 * @param callback
 	 */
 	findAll: function (coll, json, callback) {
-		var i, whereClause, select = 'SELECT * FROM ' + coll;
+		var i; var whereClause; var select = `SELECT * FROM ${coll}`;
 
 		// Convert a json object's data into a select query
 		for (i in json) {
@@ -132,12 +132,12 @@ var IgeMySql = {
 				if (whereClause) {
 					whereClause += ' AND ';
 				}
-				whereClause += i + ' = "' + json[i] + '"';
+				whereClause += `${i} = "${json[i]}"`;
 			}
 		}
 
 		if (whereClause) {
-			whereClause = ' WHERE ' + whereClause;
+			whereClause = ` WHERE ${whereClause}`;
 		}
 
 		this.query(select + whereClause, callback);
@@ -173,16 +173,16 @@ var IgeMySql = {
 						}
 					} else {
 						self.log('Items you submit to be inserted in the database must be wrapped in an array. Are you wrapping it like [jsonObj] ?');
-						self.log('Mongo cannot insert item into database, error: ' + err, 'warning', json);
+						self.log(`Mongo cannot insert item into database, error: ${err}`, 'warning', json);
 					}
 
 					// Callback the result
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback(err, docs);
 					}
 				});
 			} else {
-				this.log('Mongo cannot get collection ' + coll + ' with error: ' + err, 'warning', tempCollection);
+				this.log(`Mongo cannot get collection ${coll} with error: ${err}`, 'warning', tempCollection);
 			}
 		});
 	},
@@ -197,15 +197,15 @@ var IgeMySql = {
 				self.collectionIdToId(coll, json);
 
 				// Got the collection (or err)
-				tempCollection.remove(json, {safe:true}, function (err, tempCollection) {
+				tempCollection.remove(json, { safe: true }, function (err, tempCollection) {
 					// Got results array (or err)
 					// Callback the result array
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback.apply(self, [err]);
 					}
 				});
 			} else {
-				self.log('Mongo cannot run a remove on collection ' + coll + ' with error: ' + err, 'error', tempCollection);
+				self.log(`Mongo cannot run a remove on collection ${coll} with error: ${err}`, 'error', tempCollection);
 			}
 		});
 	},
@@ -216,17 +216,17 @@ var IgeMySql = {
 	useful when making Mongo data compatible with other databases whose tables will usually have
 	their ID (primary key) fields in the format of tableName_dbId */
 	idToCollectionId: function (coll, obj) {
-		obj[coll + '_db_id'] = String(obj._id);
+		obj[`${coll}_db_id`] = String(obj._id);
 		delete obj._id;
 	},
 
 	/* collectionIdToId - MongoDB specific - Reverse of the idToCollectionId method */
 	collectionIdToId: function (coll, obj) {
-		if (obj[coll + '_db_id']) {
-			obj._id = new this.client.bson_serializer.ObjectID(obj[coll + '_db_id']);
-			delete obj[coll + '_db_id'];
+		if (obj[`${coll}_db_id`]) {
+			obj._id = new this.client.bson_serializer.ObjectID(obj[`${coll}_db_id`]);
+			delete obj[`${coll}_db_id`];
 		}
 	}
 };
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeMySql; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeMySql; }

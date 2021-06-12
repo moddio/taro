@@ -8,28 +8,22 @@ var EffectComponent = IgeEntity.extend({
 		this._entity = entity;
 
 		// attach particle emitters on this item, so we can emit particles
-		self.particleEmitters = {}
+		self.particleEmitters = {};
 
-		if (entity._stats.effects)
-		{
-			for (event in entity._stats.effects)
-			{
+		if (entity._stats.effects) {
+			for (event in entity._stats.effects) {
 				// load particle emitters
-				var particles = entity._stats.effects[event].particles
-				self.particleEmitters[event] = {}
-				for (particleTypeId in particles)
-				{
-					var particleData = particles[particleTypeId]
-					if (particleData)
-					{
+				var particles = entity._stats.effects[event].particles;
+				self.particleEmitters[event] = {};
+				for (particleTypeId in particles) {
+					var particleData = particles[particleTypeId];
+					if (particleData) {
 						// console.log("particleData", particleData, particleData.dimensions)
-						if (particleData.dimensions == undefined)
-						{
-							particleData.dimensions = { width: 5, height: 5 }
+						if (particleData.dimensions == undefined) {
+							particleData.dimensions = { width: 5, height: 5 };
 						}
 
-						if (particleData['z-index'] === undefined)
-						{
+						if (particleData['z-index'] === undefined) {
 							particleData['z-index'] = {
 								layer: 3,
 								depth: 5
@@ -43,7 +37,7 @@ var EffectComponent = IgeEntity.extend({
 							.size(particleData.dimensions.height, particleData.dimensions.width)
 							.particle(Particle)
 							.lifeBase(parseFloat(particleData.lifeBase)) // Set particle life to 300ms
-							.quantityBase(parseFloat(particleData.quantityBase)) // Set output to 60 particles a second (1000ms) 
+							.quantityBase(parseFloat(particleData.quantityBase)) // Set output to 60 particles a second (1000ms)
 							.quantityTimespan(parseFloat(particleData.quantityTimespan))
 							.deathOpacityBase(parseFloat(particleData.deathOpacityBase)) // Set the particle's death opacity to zero so it fades out as it's lifespan runs out
 							.velocityVector(
@@ -58,15 +52,13 @@ var EffectComponent = IgeEntity.extend({
 				}
 			}
 		}
-
 	},
 
 	// start particle and/or sound effect
 	start: function (event) {
-		var self = this
-		if (this._entity._stats.effects && this._entity._stats.effects[event])
-		{
-			var data = this._entity._stats.effects[event]
+		var self = this;
+		if (this._entity._stats.effects && this._entity._stats.effects[event]) {
+			var data = this._entity._stats.effects[event];
 
 			// emit particles
 			// the particle emitter must be within myPlayer's camera viewing range
@@ -75,25 +67,19 @@ var EffectComponent = IgeEntity.extend({
 				self._entity._translate.x < ige.client.vp1.camera._translate.x + 1000 &&
 				self._entity._translate.y > ige.client.vp1.camera._translate.y - 1000 &&
 				self._entity._translate.y < ige.client.vp1.camera._translate.y + 1000
-			)
-			{
-				for (particleTypeId in data.particles)
-				{
-					if (self.particleEmitters[event] && self.particleEmitters[event][particleTypeId])
-					{
-						self.particleEmitters[event][particleTypeId].emitOnce()
+			) {
+				for (particleTypeId in data.particles) {
+					if (self.particleEmitters[event] && self.particleEmitters[event][particleTypeId]) {
+						self.particleEmitters[event][particleTypeId].emitOnce();
 					}
 				}
 			}
 
 			// play sound
-			for (soundId in data.sound)
-			{
-				if (this._entity._stats.effects && this._entity._stats.effects[event])
-				{
-					var data = this._entity._stats.effects[event]
-					if (data.sound && data.sound[soundId])
-					{
+			for (soundId in data.sound) {
+				if (this._entity._stats.effects && this._entity._stats.effects[event]) {
+					var data = this._entity._stats.effects[event];
+					if (data.sound && data.sound[soundId]) {
 						// console.log('play sound called',this._entity)
 						ige.sound.playSound(data.sound[soundId], this._entity._translate, soundId);
 					}

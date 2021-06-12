@@ -24,10 +24,10 @@ var IgeVelocityComponent = IgeClass.extend({
 	},
 
 	byAngleAndPower: function (radians, power, relative) {
-		var vel = this._velocity,
-			x = Math.cos(radians) * power,
-			y = Math.sin(radians) * power,
-			z = 0;
+		var vel = this._velocity;
+		var x = Math.cos(radians) * power;
+		var y = Math.sin(radians) * power;
+		var z = 0;
 
 		if (!relative) {
 			vel.x = x;
@@ -95,14 +95,14 @@ var IgeVelocityComponent = IgeClass.extend({
 	},
 
 	vector3: function (vector, relative) {
-		if (typeof(vector.scale) !== 'number') {
+		if (typeof (vector.scale) !== 'number') {
 			vector.scale = 1; // Default to 1
 		}
 
-		var vel = this._velocity,
-			x = vector.x,
-			y = vector.y,
-			z = vector.z;
+		var vel = this._velocity;
+		var x = vector.x;
+		var y = vector.y;
+		var z = vector.z;
 
 		if (!relative) {
 			vel.x = x;
@@ -131,10 +131,10 @@ var IgeVelocityComponent = IgeClass.extend({
 
 	linearForce: function (degrees, power) {
 		power /= 1000;
-		var radians = (degrees * Math.PI / 180),
-			x = Math.cos(radians) * power,
-			y = Math.sin(radians) * power,
-			z = x * y;
+		var radians = (degrees * Math.PI / 180);
+		var x = Math.cos(radians) * power;
+		var y = Math.sin(radians) * power;
+		var z = x * y;
 		this._linearForce = new IgePoint3d(x, y, z);
 
 		return this._entity;
@@ -146,10 +146,10 @@ var IgeVelocityComponent = IgeClass.extend({
 	},
 
 	linearForceVector3: function (vector, power, relative) {
-		var force = this._linearForce = this._linearForce || new IgePoint3d(0, 0, 0),
-			x = vector.x / 1000,
-			y = vector.y / 1000,
-			z = vector.z / 1000;
+		var force = this._linearForce = this._linearForce || new IgePoint3d(0, 0, 0);
+		var x = vector.x / 1000;
+		var y = vector.y / 1000;
+		var z = vector.z / 1000;
 
 		if (!relative) {
 			force.x = x || 0;
@@ -175,8 +175,8 @@ var IgeVelocityComponent = IgeClass.extend({
 	},
 
 	_applyFriction: function () {
-		var vel = this._velocity,
-			fric = this._friction;
+		var vel = this._velocity;
+		var fric = this._friction;
 
 		vel.x *= fric.x;
 		vel.y *= fric.y;
@@ -184,13 +184,13 @@ var IgeVelocityComponent = IgeClass.extend({
 	},
 
 	tick: function (ctx) {
-		var delta = ige._tickDelta,
-			vel = this._velocity,
-			x, y, z;
+		var delta = ige._tickDelta;
+		var vel = this._velocity;
+		var x; var y; var z;
 
 		if (delta) {
 			this._applyLinearForce(delta);
-			//this._applyFriction();
+			// this._applyFriction();
 
 			x = vel.x * delta;
 			y = vel.y * delta;
@@ -203,4 +203,4 @@ var IgeVelocityComponent = IgeClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeVelocityComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeVelocityComponent; }

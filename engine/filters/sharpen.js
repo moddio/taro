@@ -1,6 +1,6 @@
-IgeFilters.sharpen = function (canvas, ctx, originalImage, texture, data) {		
-	var strength = 1,
-		loop;
+IgeFilters.sharpen = function (canvas, ctx, originalImage, texture, data) {
+	var strength = 1;
+	var loop;
 
 	if (data && data.value) {
 		strength = data.value;
@@ -16,9 +16,9 @@ IgeFilters.sharpen = function (canvas, ctx, originalImage, texture, data) {
 					canvas.width,
 					canvas.height
 				),
-				[  0, -1,  0,
-					-1,  5, -1,
-					0, -1,  0 ]
+				[0, -1, 0,
+					-1, 5, -1,
+					0, -1, 0]
 			),
 			0,
 			0

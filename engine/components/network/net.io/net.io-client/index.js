@@ -87,14 +87,14 @@ NetIo.Client = NetIo.EventingClass.extend({
 	},
 
 	connect: function (url) {
-		this.log('Connecting to server at ' + url);
+		this.log(`Connecting to server at ${url}`);
 		var self = this;
 
 		// Set the state to connecting
 		this._state = 1;
 
 		/*
-// Replace http:// with ws:// 
+// Replace http:// with ws://
 		if (window.location.protocol == 'https:'){
 				url = url.replace('http://', 'wss://');
 		} else {
@@ -103,7 +103,7 @@ NetIo.Client = NetIo.EventingClass.extend({
 		*/
 
 		// Create new websocket to the url
-		this._socket = new WebSocket(url + '?token=' + localStorage.getItem('token'), 'netio1');
+		this._socket = new WebSocket(`${url}?token=${localStorage.getItem('token')}`, 'netio1');
 
 		// Setup event listeners
 		this._socket.onopen = function () { self._onOpen.apply(self, arguments); };
@@ -114,11 +114,10 @@ NetIo.Client = NetIo.EventingClass.extend({
 
 	disconnect: function (reason) {
 		this._socket.close(1000, reason);
-		this.emit("_igeStreamDestroy");
+		this.emit('_igeStreamDestroy');
 	},
 
 	send: function (data) {
-
 		if (this._socket.readyState == 1) {
 			var str = this._encode(data);
 			this._socket.send(str);
@@ -144,12 +143,9 @@ NetIo.Client = NetIo.EventingClass.extend({
 					statsPanels.sent._sentPanel.update(this._sendRate, this._averageSendRate * 2);
 				}
 			}
-
-		}
-		else {
+		} else {
 			this.disconnect();
 		}
-
 	},
 
 	_onOpen: function (event) {
@@ -160,15 +156,15 @@ NetIo.Client = NetIo.EventingClass.extend({
 
 		$.ajax({
 			url: '/socket-error-count',
-			dataType: "json",
+			dataType: 'json',
 			type: 'POST',
 			data: {
 				status: true,
 				server: serverName,
 				tier: window.tier
-			},
+			}
 		});
-		
+
 		this._state = 2;
 	},
 
@@ -178,8 +174,6 @@ NetIo.Client = NetIo.EventingClass.extend({
 	},
 
 	_onDecode: function (packet, data) {
-
-
 		// how many UTF8 characters did we receive (assume 1 byte per char and mostly ascii)
 		// var receivedBytes = data.data.size;
 		var receivedBytes = (data.data && data.data.length) || 0;
@@ -237,7 +231,6 @@ NetIo.Client = NetIo.EventingClass.extend({
 			// The packet is normal data
 			this.emit('message', [packet]);
 		}
-
 	},
 
 	_onClose: function (event) {
@@ -251,16 +244,16 @@ NetIo.Client = NetIo.EventingClass.extend({
 			var url = event.target.url;
 			var urlWithoutProtocol = url.split('://')[1];
 			var serverDomain = urlWithoutProtocol.split('/')[0];
-			
+
 			$.ajax({
 				url: '/socket-error-count',
-				dataType: "json",
+				dataType: 'json',
 				type: 'POST',
 				data: {
 					status: false,
 					server: serverDomain,
 					tier: window.tier
-				},
+				}
 			});
 		}
 		// if (code === 1006) {
@@ -335,16 +328,15 @@ NetIo.Client = NetIo.EventingClass.extend({
 	},
 
 	_decode: function (data) {
-
 		var self = this;
 
 		var jsonString = LZString.decompressFromUTF16(data.data);
 		// var jsonString = data.data;
 
 		// NOTE: make sure than COMPRESSION_THRESHOLD is same on both client and server
-		// LOGIC: 
+		// LOGIC:
 		//     1. if json string has less than COMPRESSION_THRESHOLD chars (e.g. 9998)
-		//        then it was compressed on server side so decompress it 
+		//        then it was compressed on server side so decompress it
 		//        (because we are comparing with COMPRESSION_THRESHOLD before compressing it)
 		//     2. if json string has more than COMPRESSION_THRESHOLD chars (10001)
 		//        then it was not compressed on server side so don't run decompression on it

@@ -186,8 +186,8 @@ var IgeEntityManagerComponent = IgeClass.extend({
 		if (x !== undefined && y !== undefined) {
 			// Adjust the passed x, y to account for this
 			// texture map's translation
-			var ent = this._entity,
-				offset;
+			var ent = this._entity;
+			var offset;
 
 			if (ent._mode === 0) {
 				// 2d mode
@@ -257,8 +257,8 @@ var IgeEntityManagerComponent = IgeClass.extend({
 			this.areaCenter(entTranslate.x, entTranslate.y);
 		}
 
-		var areaRect = this._areaRect,
-			areaCenter = this._areaCenter;
+		var areaRect = this._areaRect;
+		var areaCenter = this._areaCenter;
 
 		if (areaRect && areaCenter) {
 			return new IgeRect(Math.floor(areaRect.x + areaCenter.x), Math.floor(areaRect.y + areaCenter.y), Math.floor(areaRect.width), Math.floor(areaRect.height));
@@ -292,23 +292,23 @@ var IgeEntityManagerComponent = IgeClass.extend({
 	 * @private
 	 */
 	_behaviour: function (ctx) {
-		var self = this.entityManager,
-			currentArea,
-			currentAreaTiles,
-			arr = this._children,
-			arrCount = arr.length,
-			item,
-			maps = self._maps,
-			map,
-			mapIndex,
-			mapData,
-			currentTile,
-			renderX, renderY,
-			renderWidth, renderHeight,
-			x, y,
-			tileData,
-			renderSize,
-			ratio;
+		var self = this.entityManager;
+		var currentArea;
+		var currentAreaTiles;
+		var arr = this._children;
+		var arrCount = arr.length;
+		var item;
+		var maps = self._maps;
+		var map;
+		var mapIndex;
+		var mapData;
+		var currentTile;
+		var renderX; var renderY;
+		var renderWidth; var renderHeight;
+		var x; var y;
+		var tileData;
+		var renderSize;
+		var ratio;
 
 		if ((!self._areaRect || ige._resized) && self._areaRectAutoSize) {
 			self._resizeEvent();
@@ -317,11 +317,11 @@ var IgeEntityManagerComponent = IgeClass.extend({
 		currentArea = self.currentArea();
 
 		if (self._areaCenter && self._areaRect && !currentArea.compare(self._lastArea)) {
-			////////////////////////////////////
+			/// /////////////////////////////////
 			// ENTITY REMOVAL CHECKS          //
-			////////////////////////////////////
+			/// /////////////////////////////////
 
-			/*// Check if the area metrics have changed
+			/* // Check if the area metrics have changed
 			if (this._overwatchMode === 0 && (!currentArea.compare(self._lastArea))) {
 				// Overwatch mode is zero so only scan for entities to remove
 				// if the area metrics have changed.
@@ -347,7 +347,7 @@ var IgeEntityManagerComponent = IgeClass.extend({
 						}
 					}
 				}
-			}*/
+			} */
 
 			currentTile = this.pointToTile(self._areaCenter);
 			renderX = currentTile.x;
@@ -391,10 +391,10 @@ var IgeEntityManagerComponent = IgeClass.extend({
 				this._highlightTileRect = currentAreaTiles;
 			}
 
-			////////////////////////////////////
+			/// /////////////////////////////////
 			// ENTITY REMOVAL CHECKS          //
-			////////////////////////////////////
-			//this._highlightTileRect = currentAreaTiles;
+			/// /////////////////////////////////
+			// this._highlightTileRect = currentAreaTiles;
 
 			map = this.map;
 			while (arrCount--) {
@@ -412,9 +412,9 @@ var IgeEntityManagerComponent = IgeClass.extend({
 				}
 			}
 
-			////////////////////////////////////
+			/// /////////////////////////////////
 			// ENTITY CREATION CHECKS         //
-			////////////////////////////////////
+			/// /////////////////////////////////
 			for (mapIndex in maps) {
 				if (maps.hasOwnProperty(mapIndex)) {
 					map = maps[mapIndex];
@@ -447,14 +447,14 @@ var IgeEntityManagerComponent = IgeClass.extend({
 	},
 
 	processQueues: function () {
-		var createArr = this._createArr,
-			createCount = createArr.length,
-			createLimit = this._maxCreatePerTick !== undefined ? this._maxCreatePerTick : 0,
-			createEntityFunc = this._createEntityFromMapData,
-			removeArr = this._removeArr,
-			removeCount = removeArr.length,
-			removeLimit = this._maxRemovePerTick !== undefined ? this._maxRemovePerTick : 0,
-			i;
+		var createArr = this._createArr;
+		var createCount = createArr.length;
+		var createLimit = this._maxCreatePerTick !== undefined ? this._maxCreatePerTick : 0;
+		var createEntityFunc = this._createEntityFromMapData;
+		var removeArr = this._removeArr;
+		var removeCount = removeArr.length;
+		var removeLimit = this._maxRemovePerTick !== undefined ? this._maxRemovePerTick : 0;
+		var i;
 
 		if (createLimit && createCount > createLimit) { createCount = createLimit; }
 		if (removeLimit && removeCount > removeLimit) { removeCount = removeLimit; }
@@ -483,8 +483,8 @@ var IgeEntityManagerComponent = IgeClass.extend({
 	_resizeEvent: function (event) {
 		// Set width / height of scene to match parent
 		if (this._areaRectAutoSize) {
-			var geom = this._entity._parent._bounds2d,
-				additionX = 0, additionY = 0;
+			var geom = this._entity._parent._bounds2d;
+			var additionX = 0; var additionY = 0;
 
 			if (this._areaRectAutoSizeOptions) {
 				if (this._areaRectAutoSizeOptions.bufferMultiple) {

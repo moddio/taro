@@ -17,20 +17,20 @@ IgeFilters.threshold = function (canvas, ctx, originalImage, texture, data) {
 };
 
 IgeFilters._threshold = function (imageData, texture, data) {
-	var arr,
-		arrCount,
-		i, r, g, b, v,
-		threshold = texture.data('IgeFilters.threshold.value') || data.value;
+	var arr;
+	var arrCount;
+	var i; var r; var g; var b; var v;
+	var threshold = texture.data('IgeFilters.threshold.value') || data.value;
 
 	arr = imageData.data;
 	arrCount = arr.length;
 
 	for (i = 0; i < arrCount; i += 4) {
 		r = arr[i];
-		g = arr[i+1];
-		b = arr[i+2];
-		v = (0.2126*r + 0.7152*g + 0.0722*b >= threshold) ? 255 : 0;
-		arr[i] = arr[i+1] = arr[i+2] = v;
+		g = arr[i + 1];
+		b = arr[i + 2];
+		v = (0.2126 * r + 0.7152 * g + 0.0722 * b >= threshold) ? 255 : 0;
+		arr[i] = arr[i + 1] = arr[i + 2] = v;
 	}
 
 	return imageData;

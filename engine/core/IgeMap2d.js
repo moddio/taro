@@ -78,7 +78,7 @@ var IgeMap2d = IgeClass.extend({
 
 		return false;
 	},
-	
+
 	/**
 	 * Checks if the tile area passed has data stored in it that matches
 	 * the passed data. If so, returns true, otherwise false.
@@ -106,7 +106,7 @@ var IgeMap2d = IgeClass.extend({
 
 		return false;
 	},
-	
+
 	/**
 	 * Checks if the tile area passed has data stored in it that matches
 	 * the passed data and does not collide with any other stored tile
@@ -118,9 +118,9 @@ var IgeMap2d = IgeClass.extend({
 	 * @param data
 	 */
 	collisionWithOnly: function (x, y, width, height, data) {
-		var xi, yi,
-			tileData,
-			withData = false;
+		var xi; var yi;
+		var tileData;
+		var withData = false;
 
 		if (width === undefined) { width = 1; }
 		if (height === undefined) { height = 1; }
@@ -157,7 +157,7 @@ var IgeMap2d = IgeClass.extend({
 			} else {
 				// Loop the map data and apply based on the start positions
 				var x, y;
-				
+
 				for (y in val) {
 					for (x in val[y]) {
 						this._mapData[startY + parseInt(y)][startX + parseInt(x)] = val[y][x];
@@ -169,37 +169,37 @@ var IgeMap2d = IgeClass.extend({
 
 		return this._mapData;
 	},
-	
+
 	sortedMapDataAsArray: function () {
-		var data = this.mapData(),
-			finalData = {};
-		
+		var data = this.mapData();
+		var finalData = {};
+
 		var x, y, xArr, yArr, i, k;
-				
+
 		yArr = this._sortKeys(data);
-		
+
 		for (i = 0; i < yArr.length; i++) {
 			y = yArr[i];
 			xArr = this._sortKeys(data[y]);
-			
+
 			finalData[y] = finalData[y] || {};
-			
+
 			for (k = 0; k < xArr.length; k++) {
 				x = xArr[k];
 				finalData[y][x] = data[y][x];
 			}
 		}
-		
+
 		return finalData;
 	},
-	
+
 	_sortKeys: function (obj) {
 		var arr = [];
-		
+
 		for (var i in obj) {
 			arr.push(i);
 		}
-		
+
 		arr.sort();
 		return arr;
 	},
@@ -221,7 +221,7 @@ var IgeMap2d = IgeClass.extend({
 	 * @param {Number} y
 	 * @param {Array} val The map data array.
 	 */
-		//TODO: Write this function's internals!
+	// TODO: Write this function's internals!
 	insertMapData: function (x, y, val) {
 		// Loop the data and fill the map data with it
 	},
@@ -233,36 +233,36 @@ var IgeMap2d = IgeClass.extend({
 	 * @param {Array} val The map data array to rotate.
 	 * @param {Number} mode Either -90, 90 or 180 to denote the type of rotation to perform.
 	 */
-		//TODO: Write this function's internals!
+	// TODO: Write this function's internals!
 	rotateData: function (val, mode) {
 		switch (mode) {
 			case -90:
 				// Rotate the data
-			break;
+				break;
 
 			case 180:
-			break;
+				break;
 
 			case 90:
 			default:
-			break;
+				break;
 		}
 	},
-	
+
 	translateDataBy: function (transX, transY) {
-		var yArr = this.mapData(),
-			newArr = [],
-			x, y,
-			xArr,
-			i, k;
-		
+		var yArr = this.mapData();
+		var newArr = [];
+		var x; var y;
+		var xArr;
+		var i; var k;
+
 		for (y in yArr) {
 			if (yArr.hasOwnProperty(y)) {
 				i = parseInt(y, 10);
 				xArr = yArr[i];
-				
+
 				newArr[i + transY] = newArr[i + transY] || {};
-				
+
 				for (x in xArr) {
 					if (xArr.hasOwnProperty(x)) {
 						k = parseInt(x, 10);
@@ -271,9 +271,9 @@ var IgeMap2d = IgeClass.extend({
 				}
 			}
 		}
-		
+
 		this.mapData(newArr, 0, 0);
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeMap2d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeMap2d; }

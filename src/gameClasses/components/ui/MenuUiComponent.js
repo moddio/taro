@@ -3,20 +3,19 @@ var MenuUiComponent = IgeEntity.extend({
 	componentId: 'menuUi',
 
 	init: function () {
-
-		var self = this
+		var self = this;
 
 		if (ige.isClient) {
-			console.log("initializing UI elements...")
+			console.log('initializing UI elements...');
 			self.shopType = '';
 			self.shopKey = '';
-			self.shopPage = 1
+			self.shopPage = 1;
 
-			$("#reconnect-button").on("click", function () {
+			$('#reconnect-button').on('click', function () {
 				location.reload();
 			});
 
-			$("#kick-player").on("click", function () {
+			$('#kick-player').on('click', function () {
 				$('#kick-players-outofgame-modal').modal('show');
 			});
 
@@ -28,14 +27,13 @@ var MenuUiComponent = IgeEntity.extend({
 			// 	}
 			// });
 
-			$("#resolution-high").on("click", function () {
+			$('#resolution-high').on('click', function () {
 				localStorage.setItem('resolution', 'high');
 				self.setResolution();
 			});
 
-			$("#resolution-low").on("click", function () {
-
-				//setting 640x480 resolution as low resolution
+			$('#resolution-low').on('click', function () {
+				// setting 640x480 resolution as low resolution
 				if ($('#igeFrontBuffer').attr('width') != 640 && $('#igeFrontBuffer').attr('height') != 480) {
 					localStorage.setItem('resolution', 'low');
 					self.setResolution();
@@ -45,51 +43,51 @@ var MenuUiComponent = IgeEntity.extend({
 				}
 			});
 
-			//register error log modal btn;
+			// register error log modal btn;
 			$('#dev-error-button').on('click', function () {
 				$('#error-log-modal').modal('show');
 			});
-	
+
 			$('#bandwidth-usage').on('click', function () {
 				$('#dev-status-modal').modal('show');
 			});
-	
+
 			$('#leaderboard-link').on('click', function (e) {
 				e.preventDefault();
 				$('#leaderboard-modal').modal('show');
 			});
-			
-			$("#refresh-server-list-button").on("click", function () {
+
+			$('#refresh-server-list-button').on('click', function () {
 				ige.client.refreshServerList();
 			});
 
-			$("#max-players").on("change", function () {
+			$('#max-players').on('change', function () {
 				ige.client.refreshServerList();
 			});
 
-			$("#map-list").on("change", function () {
+			$('#map-list').on('change', function () {
 				ige.client.refreshServerList();
 			});
 
-			$("#kick-player-body").on("click", ".kick-player-btn", function () {
-				var clientId = $(this).attr("data-clientid");
+			$('#kick-player-body').on('click', '.kick-player-btn', function () {
+				var clientId = $(this).attr('data-clientid');
 				if ((ige.game.data.isDeveloper || (ige.client.myPlayer && ige.client.myPlayer._stats.isUserMod)) && clientId) {
 					ige.network.send('kick', clientId);
 				}
 			});
 
-			$("#kick-player-body").on("click", ".ban-player-btn", function () {
-				var userId = $(this).attr("data-userId");
-				var gameId = $(this).attr("data-gameId");
-				var clientId = $(this).attr("data-clientid");
+			$('#kick-player-body').on('click', '.ban-player-btn', function () {
+				var userId = $(this).attr('data-userId');
+				var gameId = $(this).attr('data-gameId');
+				var clientId = $(this).attr('data-clientid');
 				if ((ige.game.data.isDeveloper || (ige.client.myPlayer && ige.client.myPlayer._stats.isUserMod)) && userId) {
 					ige.network.send('ban-user', { kickuserId: clientId, userId: userId });
 				}
 			});
 
-			$("#kick-player-body").on("click", ".ban-ip-btn", function () {
-				var gameId = $(this).attr("data-gameId");
-				var clientId = $(this).attr("data-clientid");
+			$('#kick-player-body').on('click', '.ban-ip-btn', function () {
+				var gameId = $(this).attr('data-gameId');
+				var clientId = $(this).attr('data-clientid');
 				if ((ige.game.data.isDeveloper || (ige.client.myPlayer && ige.client.myPlayer._stats.isUserMod)) && gameId) {
 					ige.network.send('ban-ip', {
 						gameId: gameId,
@@ -98,9 +96,9 @@ var MenuUiComponent = IgeEntity.extend({
 				}
 			});
 
-			$("#kick-player-body").on("click", ".ban-chat-btn", function () {
-				var gameId = $(this).attr("data-gameId");
-				var clientId = $(this).attr("data-clientid");
+			$('#kick-player-body').on('click', '.ban-chat-btn', function () {
+				var gameId = $(this).attr('data-gameId');
+				var clientId = $(this).attr('data-clientid');
 				if ((ige.game.data.isDeveloper || (ige.client.myPlayer && ige.client.myPlayer._stats.isUserMod)) && gameId) {
 					ige.network.send('ban-chat', {
 						gameId: gameId,
@@ -109,40 +107,37 @@ var MenuUiComponent = IgeEntity.extend({
 				}
 			});
 
-
-
 			$('#open-inventory-button').on('click', function () {
-				if ($("#backpack").is(':visible')) {
+				if ($('#backpack').is(':visible')) {
 					$('#backpack').hide();
-				}
-				else {
+				} else {
 					$('#backpack').show();
 				}
 			});
 
-			$(".open-menu-button").on("click", function () {
+			$('.open-menu-button').on('click', function () {
 				self.toggleMenu();
 				$('.open-menu-button').hide();
-			})
+			});
 
-			$('#change-server').on("click", function () {
-				window.location.replace("/play/" + gameSlug + "?serverId=" + ige.client.changedServer + "&joinGame=true");
-			})
+			$('#change-server').on('click', function () {
+				window.location.replace(`/play/${gameSlug}?serverId=${ige.client.changedServer}&joinGame=true`);
+			});
 
-			$("#add-player-instance").on("click", function () {
-				var url = window.location.host + '/play/' + gameSlug + '?add-instance=true';
+			$('#add-player-instance').on('click', function () {
+				var url = `${window.location.host}/play/${gameSlug}?add-instance=true`;
 				Swal({
-					html: "<div class='swal2-title'>Want to add player instance?</div><div class='swal2-text' style='user-select: text;'>Copy the link given below and open it in incognito mode.<br/><input type='text' class='form-control mt-2' value='" + url + "' /></div>",
-					button: "close",
+					html: `<div class='swal2-title'>Want to add player instance?</div><div class='swal2-text' style='user-select: text;'>Copy the link given below and open it in incognito mode.<br/><input type='text' class='form-control mt-2' value='${url}' /></div>`,
+					button: 'close'
 				});
-			})
+			});
 
 			// once modal is hidden, then it's no longer shown when the game starts
 			$('#help-modal').on('hidden.bs.modal', function (e) {
-				localStorage.setItem('tutorial', 'off')
-			})
+				localStorage.setItem('tutorial', 'off');
+			});
 
-			$("#server-list").on("change", function () {
+			$('#server-list').on('change', function () {
 				var gameSlug = $(this).attr('game-slug');
 				ige.client.gameSlug = gameSlug;
 
@@ -155,53 +150,51 @@ var MenuUiComponent = IgeEntity.extend({
 						}
 					}
 				}
-			})
+			});
 
 			if (typeof isLoggedIn !== 'undefined' && isLoggedIn) {
-				$("#logged-in-as-a-guest").hide();
+				$('#logged-in-as-a-guest').hide();
 				// $("#menu-buttons").hide();
-			}
-			else {
-				$("#logged-in-as-a-guest").show();
+			} else {
+				$('#logged-in-as-a-guest').show();
 			}
 
-			$("#menu-form").keyup(function (e) {
+			$('#menu-form').keyup(function (e) {
 				if (e.keyCode == 13) {
-					ige.client.login()
+					ige.client.login();
 				}
 			});
 
-			$("#login-button").on("click", function () {
-				ige.client.login()
+			$('#login-button').on('click', function () {
+				ige.client.login();
 			});
 
-			$("#close-game-suggestion").on("click", function () {
-				$('#more-games').removeClass('slideup-menu-animation').addClass('slidedown-menu-animation')
-			})
+			$('#close-game-suggestion').on('click', function () {
+				$('#more-games').removeClass('slideup-menu-animation').addClass('slidedown-menu-animation');
+			});
 
-			$("#play-as-guest-button").on("click", function () {
+			$('#play-as-guest-button').on('click', function () {
 				// console.log("Play !");
 				// ige.client.joinGame()
 				self.playGame();
 			});
-			$("#server-list").on("blur", function () {
-				$("#server-list").attr("size", 1);
+			$('#server-list').on('blur', function () {
+				$('#server-list').attr('size', 1);
 			});
-			$("#server-list").on("click", function () {
-				$("#server-list").attr("size", 1);
+			$('#server-list').on('click', function () {
+				$('#server-list').attr('size', 1);
 			});
-			$("#play-game-button").on("click", function () {
+			$('#play-game-button').on('click', function () {
 				if (this.innerText.includes('Connection Failed')) {
 					var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
-					$('#server-list').attr("size", serverLength);
+					$('#server-list').attr('size', serverLength);
 					$('#server-list').focus();
-				}
-				else {
+				} else {
 					// did user tried to change server
 					var isServerChanged = window.connectedServer && ige.client.server.id !== window.connectedServer.id;
 
 					if (isServerChanged) {
-						window.location = window.location.pathname + '?serverId=' + ige.client.server.id + '&joinGame=true';
+						window.location = `${window.location.pathname}?serverId=${ige.client.server.id}&joinGame=true`;
 						return;
 					}
 
@@ -209,34 +202,30 @@ var MenuUiComponent = IgeEntity.extend({
 						var wasGamePaused = this.innerText.includes('Continue');
 						self.playGame(wasGamePaused);
 						self.setResolution();
-					}
-					else {
-						$('#play-game-button').attr("disabled", true);
+					} else {
+						$('#play-game-button').attr('disabled', true);
 						self.startLoading();
 						ige.client.connectToServer();
 					}
 				}
 				$('#play-game-button-wrapper').addClass('d-none-important');
-			})
+			});
 
-			$("#help-button").on("click", function () {
-				$("#help-modal").modal("show");
+			$('#help-button').on('click', function () {
+				$('#help-modal').modal('show');
 			});
 		}
-
 	},
 	toggleScoreBoard: function (show) {
 		if (ige.game.data && ige.game.data.settings && !ige.game.data.settings.displayScoreboard) {
 			$('#scoreboard-header').hide();
 			$('#scoreboard').hide();
-		}
-		else {
+		} else {
 			if (show) {
 				$('#scoreboard-header').show();
 				$('#scoreboard').show();
 				$('#leaderboard').show();
-			}
-			else {
+			} else {
 				$('#scoreboard-header').hide();
 				$('#scoreboard').hide();
 				$('#leaderboard').hide();
@@ -246,8 +235,7 @@ var MenuUiComponent = IgeEntity.extend({
 	toggleLeaderBoard: function (show) {
 		if (show) {
 			$('#leaderboard').show();
-		}
-		else {
+		} else {
 			$('#leaderboard').hide();
 		}
 	},
@@ -255,8 +243,7 @@ var MenuUiComponent = IgeEntity.extend({
 		if (show) {
 			// $('#game-suggestions-card').removeClass('d-xl-none');
 			// $('#game-suggestions-card').addClass('d-xl-block');
-		}
-		else {
+		} else {
 			// $('#game-suggestions-card').removeClass('d-xl-block');
 			// $('#game-suggestions-card').addClass('d-xl-none');
 		}
@@ -265,7 +252,7 @@ var MenuUiComponent = IgeEntity.extend({
 		var html = $('#play-game-button .content').html();
 
 		if (/connecting/i.test(html)) {
-			//loader is already shown
+			// loader is already shown
 			return;
 		}
 
@@ -283,7 +270,7 @@ var MenuUiComponent = IgeEntity.extend({
 			var html = $('#play-game-button .content').html();
 
 			if (/connecting/i.test(html)) {
-				$.post(analyticsUrl + 'api/game-report/game-access/' + gameId + '/infinite-connecting')
+				$.post(`${analyticsUrl}api/game-report/game-access/${gameId}/infinite-connecting`);
 			}
 		}, 10000);
 
@@ -293,12 +280,12 @@ var MenuUiComponent = IgeEntity.extend({
 			if (window.innerWidth < 1000) {
 				setTimeout(() => {
 					// $('#invite-players-card').addClass('d-none');
-					$("#show-chat").removeClass('d-none');
-					$("#chat-box").addClass('d-none');
+					$('#show-chat').removeClass('d-none');
+					$('#chat-box').addClass('d-none');
 				}, 1500);
 			}
 
-			$.post(analyticsUrl + 'api/game-report/game-access/' + gameId + '/play-button')
+			$.post(`${analyticsUrl}api/game-report/game-access/${gameId}/play-button`)
 				.then(function () { }, function (xhr, status, error) {
 					$.post('/api/log', {
 						event: 'play-button',
@@ -306,7 +293,7 @@ var MenuUiComponent = IgeEntity.extend({
 						status: xhr.status,
 						text: xhr.statusText
 					});
-				});;
+				});
 		}
 
 		ige.client.joinGame();
@@ -318,26 +305,26 @@ var MenuUiComponent = IgeEntity.extend({
 
 	kickPlayerFromGame: function (excludeEntity) {
 		var self = this;
-		var players = ige.$$('player').filter(function (player) { if (player && player._stats && player._stats.controlledBy === 'human' && player._alive && player.id() !== excludeEntity) return true; })
+		var players = ige.$$('player').filter(function (player) { if (player && player._stats && player._stats.controlledBy === 'human' && player._alive && player.id() !== excludeEntity) return true; });
 		var html = '<table class="table table-hover">';
 		html += '<tr class="border-bottom">';
 		html += '<th class="border-top-0">Name</th>';
 		html += '<th class="border-top-0 text-center">Action</th>';
-		html += '</tr>'
+		html += '</tr>';
 		players.forEach(function (player) {
 			html += '<tr class="border-bottom">';
-			html += '<td class="border-top-0">' + player._stats.name;
+			html += `<td class="border-top-0">${player._stats.name}`;
 			if (ige.client.myPlayer && player.id() === ige.client.myPlayer.id()) {
-				html += " (you)";
+				html += ' (you)';
 			}
 			html += '</td>';
 			html += '<td class="border-top-0 text-center">';
-			html += '<div class="btn-group" role="group" aria-label="Basic example">'
-			html += '<button class="btn btn-danger kick-player-btn" data-clientid="' + player._stats.clientId + '" > Kick</button>';
+			html += '<div class="btn-group" role="group" aria-label="Basic example">';
+			html += `<button class="btn btn-danger kick-player-btn" data-clientid="${player._stats.clientId}" > Kick</button>`;
 			// html += '<button class="btn btn-warning ban-player-btn" data-clientid="' + player._stats.clientId + '" data-gameId="' + ige.game.data.defaultData._id + '" data-userId="' + player._stats.userId + '">Ban user</button>'
-			html += '<button class="btn btn-success ban-ip-btn" data-clientid="' + player._stats.clientId + '" data-gameId="' + ige.game.data.defaultData._id + '">Ban Ip</button>'
-			html += '<button class="btn btn-primary ban-chat-btn" data-clientid="' + player._stats.clientId + '" data-gameId="' + ige.game.data.defaultData._id + '">' + (player._stats.banChat ? 'unmute' : 'mute') + '</button>'
-			html += '</div>'
+			html += `<button class="btn btn-success ban-ip-btn" data-clientid="${player._stats.clientId}" data-gameId="${ige.game.data.defaultData._id}">Ban Ip</button>`;
+			html += `<button class="btn btn-primary ban-chat-btn" data-clientid="${player._stats.clientId}" data-gameId="${ige.game.data.defaultData._id}">${player._stats.banChat ? 'unmute' : 'mute'}</button>`;
+			html += '</div>';
 			html += '</td>';
 			html += '</tr>';
 		});
@@ -353,7 +340,7 @@ var MenuUiComponent = IgeEntity.extend({
 			var gameSlug = window.location.pathname.split('/').pop();
 
 			if (window.isStandalone) {
-				return $("#menu-wrapper").removeClass('d-none').addClass('d-flex');
+				return $('#menu-wrapper').removeClass('d-none').addClass('d-flex');
 			}
 
 			if (!ige.mobileControls || !ige.mobileControls.isMobile) {
@@ -366,15 +353,15 @@ var MenuUiComponent = IgeEntity.extend({
 			this.toggleGameSuggestionCard(false);
 
 			$.ajax({
-				type: "GET",
-				url: '/api/game-server/' + gameId,
+				type: 'GET',
+				url: `/api/game-server/${gameId}`,
 				success: function (res) {
 					if (res.status == 'success') {
 						var servers = res.message;
 						var serversList = '';
 						var index = 0;
 
-						function separate(str) {
+						function separate (str) {
 							var alphabets = '';
 							var numbers = '';
 							var chars = str.split('');
@@ -387,41 +374,40 @@ var MenuUiComponent = IgeEntity.extend({
 								if (numberRegex.test(char)) {
 									numbers = char + numbers;
 									chars.pop();
-								}
-								else {
+								} else {
 									break;
 								}
 							}
 
 							return {
 								alphabets: chars.join(''),
-								numbers: numbers,
+								numbers: numbers
 							};
 						}
 
-						//generate server list
+						// generate server list
 						servers.forEach(function (server) {
-							var protocol = location.protocol.indexOf("https") > -1 ? "wss" : "ws";
-							var dataUrl = protocol + "://" + server.ip + ((server.port) ? ":" + server.port : '');
+							var protocol = location.protocol.indexOf('https') > -1 ? 'wss' : 'ws';
+							var dataUrl = `${protocol}://${server.ip}${(server.port) ? `:${server.port}` : ''}`;
 							if (server) {
 								var serverIP = server.ip.slice(0, server.ip.indexOf('.'));
 								var separated = separate(serverIP);
-								var optionText = separated.alphabets + ' ' + separated.numbers;
-								var acceptingPlayers = server.acceptingPlayers ? '' : ' not accepting players'
-								serversList += '<option '
-									+ ' class="game-server"'
-									+ ' id="server-option-' + index++ + '"'
-									+ ' owner="' + server.owner + '"'
-									+ ' player-count="' + server.playerCount + '"'
-									+ ' max-players="' + server.maxPlayers + '"'
-									+ ' data-server-id="' + server.id + '"'
-									+ ' data-url="' + dataUrl + '"'
-									+ ' value="' + server.id + '"'
-									+ '>' + optionText + ' (' + server.playerCount + ' / ' + server.maxPlayers + ')'
-									+ acceptingPlayers + '</option>';
+								var optionText = `${separated.alphabets} ${separated.numbers}`;
+								var acceptingPlayers = server.acceptingPlayers ? '' : ' not accepting players';
+								serversList += `${'<option ' +
+									' class="game-server"' +
+									' id="server-option-'}${index++}"` +
+									` owner="${server.owner}"` +
+									` player-count="${server.playerCount}"` +
+									` max-players="${server.maxPlayers}"` +
+									` data-server-id="${server.id}"` +
+									` data-url="${dataUrl}"` +
+									` value="${server.id}"` +
+									`>${optionText} (${server.playerCount} / ${server.maxPlayers})${
+									 acceptingPlayers}</option>`;
 							}
 
-							//select best server in avail servers
+							// select best server in avail servers
 							if (selectBestServer && !selectedServer && server.acceptingPlayers) {
 								selectedServer = server;
 							}
@@ -438,27 +424,25 @@ var MenuUiComponent = IgeEntity.extend({
 								$('#server-list').val(selectedServer.id);
 								$('#play-game-button').hide();
 								$('#change-server').show();
-							}
-							else {
+							} else {
 								$('#server-list').val(ige.client.server.id);
 							}
 							self.getServerPing();
-						}
-						else {
+						} else {
 							$('#server-list').hide();
 						}
 					}
-					$("#menu-wrapper").removeClass('d-none').addClass('d-flex')
+					$('#menu-wrapper').removeClass('d-none').addClass('d-flex');
 				}
 			});
 		}
 	},
 
 	getServerPing: function (shouldPickOneWithLeast) {
-		var serverOptions = $("option.game-server:enabled");
+		var serverOptions = $('option.game-server:enabled');
 		var promises = [];
 		var self = this;
-		return;
+
 		// if (typeof user === 'undefined' || !user || !user.local || (user.local.username !== "nishant" && user.local.username !== "m0dE")) {
 		// 	return;
 		// }
@@ -492,22 +476,22 @@ var MenuUiComponent = IgeEntity.extend({
 	},
 
 	getPing: function (serverOption, duration) {
-		return new Promise(function promiseFunction(resolve, reject) {
+		return new Promise(function promiseFunction (resolve, reject) {
 			var data = $(serverOption).data();
-			var socket = new WebSocket(data.url + "/?token=");
+			var socket = new WebSocket(`${data.url}/?token=`);
 			var ping = Number.MAX_VALUE;
 
 			socket.onopen = function (event) {
 				socket.send(JSON.stringify({
-					type: "ping",
-					sentAt: Date.now(),
+					type: 'ping',
+					sentAt: Date.now()
 				}));
 
 				setTimeout(function () {
 					if (socket.readyState !== WebSocket.CLOSED && socket.readyState !== WebSocket.CLOSING) {
 						socket.close();
 						var existingText = $(serverOption).text();
-						$(serverOption).text(existingText + " (" + Number.POSITIVE_INFINITY + " ms)");
+						$(serverOption).text(`${existingText} (${Number.POSITIVE_INFINITY} ms)`);
 						resolve({
 							server: serverOption,
 							ping: ping
@@ -520,13 +504,13 @@ var MenuUiComponent = IgeEntity.extend({
 				var jsonString = LZString.decompressFromUTF16(event.data);
 				var json = JSON.parse(jsonString);
 
-				if (json.type === "pong") {
+				if (json.type === 'pong') {
 					ping = Date.now() - json.clientSentAt;
 					var existingText = $(serverOption).text();
 					socket.close();
 
 					console.log(json);
-					$(serverOption).text(existingText + " (" + ping + " ms)");
+					$(serverOption).text(`${existingText} (${ping} ms)`);
 					resolve({
 						server: serverOption,
 						ping: ping
@@ -537,7 +521,7 @@ var MenuUiComponent = IgeEntity.extend({
 			socket.onerror = function (err) {
 				console.log('Error while testing ping', err);
 				reject(err);
-			}
+			};
 		});
 	},
 
@@ -565,8 +549,7 @@ var MenuUiComponent = IgeEntity.extend({
 				mobileChatBox.addClass('d-none');
 				shopButton.removeClass('d-inline');
 				homeButton.removeClass('d-none');
-			}
-			else {
+			} else {
 				topMenuButtons.removeClass('d-none');
 				leaderBoard.removeClass('d-none');
 				topText.removeClass('d-none');
@@ -591,12 +574,11 @@ var MenuUiComponent = IgeEntity.extend({
 				var newWidth = isMenuVisible ? 0 : ige.miniMap.maxMapDimension.width;
 				ige.miniMap.miniMap.width(newWidth);
 			}
-
 		}
 	},
 
 	hideMenu: function () {
-		$("#menu-wrapper").removeClass('d-flex').addClass('d-none');
+		$('#menu-wrapper').removeClass('d-flex').addClass('d-none');
 
 		if (!ige.mobileControls || !ige.mobileControls.isMobile) {
 			$('#friends-panel').addClass('d-none');
@@ -609,12 +591,10 @@ var MenuUiComponent = IgeEntity.extend({
 	},
 
 	toggleMenu: function () {
-		if ($("#menu-wrapper").is(":visible")) {
+		if ($('#menu-wrapper').is(':visible')) {
 			this.hideMenu();
-			return;
-		}
-		else {
-			this.showMenu()
+		} else {
+			this.showMenu();
 		}
 	},
 	clipImageForShop: function () {
@@ -630,32 +610,31 @@ var MenuUiComponent = IgeEntity.extend({
 				if (replacingImage) {
 					let url = data.dataset.src;
 					let itemDetails = ige.game.data.unitTypes[dataSets.key];
-					let originalHeight = itemDetails && (image.height / itemDetails.cellSheet.rowCount) + "px";
-					let originalWidth = itemDetails && (image.width / itemDetails.cellSheet.columnCount) + "px";
+					let originalHeight = itemDetails && `${image.height / itemDetails.cellSheet.rowCount}px`;
+					let originalWidth = itemDetails && `${image.width / itemDetails.cellSheet.columnCount}px`;
 					// clipping = "height:" + originalHeight + "px;width:" + originalWidth + "px;background:url('" + item.image + "') 0px 0px no-repeat;";
 					replacingImage.style.height = originalHeight;
 					replacingImage.style.width = originalWidth;
-					replacingImage.style.backgroundImage = "url('" + url + "')";
-					replacingImage.style.maxHeight = "64px";
-					replacingImage.style.maxWidth = "64px";
+					replacingImage.style.backgroundImage = `url('${url}')`;
+					replacingImage.style.maxHeight = '64px';
+					replacingImage.style.maxWidth = '64px';
 					if (itemDetails && itemDetails.cellSheet.rowCount <= 1 && itemDetails.cellSheet.columnCount <= 1) {
-						replacingImage.style.backgroundRepeat = "no-repeat";
-						replacingImage.style.backgroundPosition = "center center";
-						replacingImage.style.backgroundSize = "contain";
+						replacingImage.style.backgroundRepeat = 'no-repeat';
+						replacingImage.style.backgroundPosition = 'center center';
+						replacingImage.style.backgroundSize = 'contain';
 					}
 				}
-			}
+			};
 		}
 	},
 	getUrlVars: function () {
-
 		// edited for play/:gameId
 		var gameId = window.location.pathname.split('/')[2];
 		var vars = {
 			gameId: gameId
 		};
 
-		//if serverId is present then add it to vars
+		// if serverId is present then add it to vars
 		window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 			vars[key] = value;
 		});

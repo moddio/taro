@@ -1,5 +1,5 @@
 var IgeSocketIoComponent = IgeEventingClass.extend([
-	{extension: IgeTimeSyncExtension, overwrite: false}
+	{ extension: IgeTimeSyncExtension, overwrite: false }
 ], {
 	classId: 'IgeSocketIoComponent',
 	componentId: 'network',
@@ -27,7 +27,7 @@ var IgeSocketIoComponent = IgeEventingClass.extend([
 		/* CEXCLUDE */
 		if (ige.isServer) {
 			this.implement(IgeSocketIoServer);
-			this._socketio = require('../../../' + modulePath + 'socket.io');
+			this._socketio = require(`../../../${modulePath}socket.io`);
 			this._acceptConnections = false;
 		}
 		/* CEXCLUDE */
@@ -37,7 +37,7 @@ var IgeSocketIoComponent = IgeEventingClass.extend([
 			this.implement(IgeSocketIoClient);
 		}
 
-		this.log('Network component initiated with socket.io version: ' + this._socketio.version);
+		this.log(`Network component initiated with socket.io version: ${this._socketio.version}`);
 	},
 
 	/**
@@ -83,4 +83,4 @@ var IgeSocketIoComponent = IgeEventingClass.extend([
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeSocketIoComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeSocketIoComponent; }

@@ -22,32 +22,32 @@ var IgeMongoDb = {
 	 * @param callback
 	 */
 	connect: function (callback) {
-		this.log('Connecting to mongo database "'  + this._database + '" @' + this._host + ':' + this._port);
+		this.log(`Connecting to mongo database "${this._database}" @${this._host}:${this._port}`);
 
 		var mongoServer = new this._mongo.Server(
 			this._host,
 			parseInt(this._port),
 			{}
-		), self = this;
+		); var self = this;
 
 		this.client = new this._mongo.Db(
 			this._database,
 			mongoServer,
-			{native_parser: this._nativeParser}
+			{ native_parser: this._nativeParser }
 		);
 
 		this.client.strict = this._strict;
 
 		// Open the database connection
-		this.client.open(function(err, db) {
+		this.client.open(function (err, db) {
 			// If we have a username then authenticate!
 			if (self._username) {
 				self.client.authenticate(self._username, self._password, function (err) {
 					if (err) {
 						self.log('Error when authenticating with the database!');
-						//console.log(err);
+						// console.log(err);
 
-						if (typeof(callback) === 'function') {
+						if (typeof (callback) === 'function') {
 							callback.apply(self, [err]);
 						}
 					} else {
@@ -58,9 +58,9 @@ var IgeMongoDb = {
 			} else {
 				if (err) {
 					self.log('Error when connecting to the database!');
-					//console.log(err);
+					// console.log(err);
 
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback.apply(self, [err]);
 					}
 				} else {
@@ -69,7 +69,6 @@ var IgeMongoDb = {
 				}
 			}
 		});
-
 	},
 
 	/**
@@ -77,7 +76,7 @@ var IgeMongoDb = {
 	 * @param callback
 	 */
 	disconnect: function (callback) {
-		this.log("Closing DB connection...");
+		this.log('Closing DB connection...');
 		this.client.close();
 
 		callback();
@@ -100,7 +99,7 @@ var IgeMongoDb = {
 			this.emit('connectionError');
 		}
 
-		if (typeof(callback) === 'function') {
+		if (typeof (callback) === 'function') {
 			callback.apply(this, [err, db]);
 		}
 	},
@@ -137,16 +136,16 @@ var IgeMongoDb = {
 						}
 					} else {
 						self.log('Items you submit to be inserted in the database must be wrapped in an array. Are you wrapping it like [jsonObj] ?');
-						self.log('Mongo cannot insert item into database, error: ' + err, 'warning', json);
+						self.log(`Mongo cannot insert item into database, error: ${err}`, 'warning', json);
 					}
 
 					// Callback the result
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback(err, docs);
 					}
 				});
 			} else {
-				this.log('Mongo cannot get collection ' + coll + ' with error: ' + err, 'warning', tempCollection);
+				this.log(`Mongo cannot get collection ${coll} with error: ${err}`, 'warning', tempCollection);
 			}
 		});
 	},
@@ -167,15 +166,15 @@ var IgeMongoDb = {
 				self.collectionIdToId(coll, json);
 
 				// Got the collection (or err)
-				tempCollection.remove(json, {safe: true, single: false}, function (err, tempCollection) {
+				tempCollection.remove(json, { safe: true, single: false }, function (err, tempCollection) {
 					// Got results array (or err)
 					// Callback the result array
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback.apply(self, [err]);
 					}
 				});
 			} else {
-				self.log('Mongo cannot run a remove on collection ' + coll + ' with error: ' + err, 'error', tempCollection);
+				self.log(`Mongo cannot run a remove on collection ${coll} with error: ${err}`, 'error', tempCollection);
 			}
 		});
 	},
@@ -208,13 +207,13 @@ var IgeMongoDb = {
 						}
 
 						// Callback the results
-						if (typeof(callback) === 'function') {
+						if (typeof (callback) === 'function') {
 							callback.apply(self, [err, results]);
 						}
 					});
 				});
 			} else {
-				self.log('Mongo cannot run a findAll on collection ' + coll + ' with error: ' + err, 'error', tempCollection);
+				self.log(`Mongo cannot run a findAll on collection ${coll} with error: ${err}`, 'error', tempCollection);
 			}
 		});
 	},
@@ -253,19 +252,19 @@ var IgeMongoDb = {
 
 				// Ensure we only update, not overwrite!
 				finalUpdateJson = {
-					'$set': updateJson
+					$set: updateJson
 				};
 
 				// Got the collection (or err)
-				tempCollection.update(searchJson, finalUpdateJson, options,  function (err, results) {
+				tempCollection.update(searchJson, finalUpdateJson, options, function (err, results) {
 					// Got the result cursor (or err)
 					// Callback the results
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback.apply(self, [err, results]);
 					}
 				});
 			} else {
-				self.log('Mongo cannot run a findAll on collection ' + coll + ' with error: ' + err, 'error', tempCollection);
+				self.log(`Mongo cannot run a findAll on collection ${coll} with error: ${err}`, 'error', tempCollection);
 			}
 		});
 	},
@@ -299,7 +298,7 @@ var IgeMongoDb = {
 				self.collectionIdToId(coll, overwriteJson);
 
 				// Got the collection (or err)
-				tempCollection.update(searchJson, overwriteJson, options,  function (err, tempCursor) {
+				tempCollection.update(searchJson, overwriteJson, options, function (err, tempCursor) {
 					// Got the result cursor (or err)
 					if (!err) {
 						tempCursor.toArray(function (err, results) {
@@ -316,12 +315,12 @@ var IgeMongoDb = {
 					}
 
 					// Callback the results
-					if (typeof(callback) === 'function') {
+					if (typeof (callback) === 'function') {
 						callback.apply(self, [err, results]);
 					}
 				});
 			} else {
-				self.log('Mongo cannot run a findAll on collection ' + coll + ' with error: ' + err, 'error', tempCollection);
+				self.log(`Mongo cannot run a findAll on collection ${coll} with error: ${err}`, 'error', tempCollection);
 			}
 		});
 	},
@@ -336,7 +335,7 @@ var IgeMongoDb = {
 	 * @param obj
 	 */
 	idToCollectionId: function (coll, obj) {
-		obj[coll + '_db_id'] = String(obj._id);
+		obj[`${coll}_db_id`] = String(obj._id);
 		delete obj._id;
 	},
 
@@ -346,11 +345,11 @@ var IgeMongoDb = {
 	 * @param obj
 	 */
 	collectionIdToId: function (coll, obj) {
-		if (obj[coll + '_db_id']) {
-			obj._id = new this.client.bson_serializer.ObjectID(obj[coll + '_db_id']);
-			delete obj[coll + '_db_id'];
+		if (obj[`${coll}_db_id`]) {
+			obj._id = new this.client.bson_serializer.ObjectID(obj[`${coll}_db_id`]);
+			delete obj[`${coll}_db_id`];
 		}
 	}
 };
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeMongoDb; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeMongoDb; }

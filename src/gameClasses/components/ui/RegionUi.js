@@ -2,7 +2,6 @@ var RegionUi = IgeEntity.extend({
 	classId: 'RegionUi',
 
 	init: function (region, regionName, entity) {
-
 		IgeUiEntity.prototype.init.call(this);
 
 		var self = this;
@@ -12,7 +11,6 @@ var RegionUi = IgeEntity.extend({
 		self.category('regionUi');
 
 		if ((mode === 'play' && (region.default.inside || region.default.outside)) || mode === 'sandbox') {
-
 			var graphic = new PIXI.Graphics();
 			// graphic.lineStyle(3, 0x000000, 0.7);
 			graphic.beginFill(0xFF0000, 0.4);

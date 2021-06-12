@@ -61,9 +61,9 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 */
 	negate: function (entity) {
 		if (entity !== undefined) {
-			var x, y,
-				entityMapData = entity.map._mapData,
-				thisMapData = this.map._mapData;
+			var x; var y;
+			var entityMapData = entity.map._mapData;
+			var thisMapData = this.map._mapData;
 
 			for (y in entityMapData) {
 				if (entityMapData.hasOwnProperty(y)) {
@@ -107,8 +107,8 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 */
 	allTexturesLoaded: function () {
 		if (!this._allTexturesLoaded) {
-			var arr = this._textureList,
-				arrCount = arr.length;
+			var arr = this._textureList;
+			var arrCount = arr.length;
 
 			while (arrCount--) {
 				if (!arr[arrCount]._loaded) {
@@ -158,13 +158,13 @@ var IgeTextureMap = IgeTileMap2d.extend({
 			// Empty the existing array
 			this._textureList = [];
 
-			var tex = [], i,
-				self = this;
+			var tex = []; var i;
+			var self = this;
 
 			// Loop the texture list and create each texture object
 			for (i = 0; i < map.textures.length; i++) {
 				// Load each texture
-				eval('tex[' + i + '] = ' + map.textures[i]);
+				eval(`tex[${i}] = ${map.textures[i]}`);
 				self.addTexture(tex[i]);
 			}
 
@@ -185,10 +185,10 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 */
 	saveMap: function () {
 		// in URL format
-		var textures = [], i,
-			x, y,
-			dataX = 0, dataY = 0,
-			mapData = this.map._mapData;
+		var textures = []; var i;
+		var x; var y;
+		var dataX = 0; var dataY = 0;
+		var mapData = this.map._mapData;
 
 		// Grab all the texture definitions
 		for (i = 0; i < this._textureList.length; i++) {
@@ -239,7 +239,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	reset: function () {
 		this.clearMap();
 		this._textureList = [];
-		
+
 		return this;
 	},
 
@@ -286,8 +286,8 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 * @return {Object} The new map data.
 	 */
 	convertHorizontalData: function (mapData) {
-		var newData = [],
-			x, y;
+		var newData = [];
+		var x; var y;
 
 		for (x in mapData) {
 			if (mapData.hasOwnProperty(x)) {
@@ -309,24 +309,24 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 * @param {CanvasRenderingContext2d} ctx
 	 */
 	tick: function (ctx) {
-        if (ige.isClient && !ige.client.mapRenderEnabled) return;
+		if (ige.isClient && !ige.client.mapRenderEnabled) return;
 
 		// TODO: This is being called at the wrong time, drawing children before this parent! FIX THIS
 		// Run the IgeTileMap2d tick method
 		IgeTileMap2d.prototype.tick.call(this, ctx);
 
 		// Draw each image that has been defined on the map
-		var mapData = this.map._mapData,
-			x, y,
-			tx, ty,
-			xInt, yInt,
-			finalX, finalY,
-			finalPoint,
-			tileData, tileEntity = this._newTileEntity(), // TODO: This is wasteful, cache it?
-			sectionX, sectionY,
-			tempSectionX, tempSectionY,
-			_ctx,
-			regions, region, i;
+		var mapData = this.map._mapData;
+		var x; var y;
+		var tx; var ty;
+		var xInt; var yInt;
+		var finalX; var finalY;
+		var finalPoint;
+		var tileData; var tileEntity = this._newTileEntity(); // TODO: This is wasteful, cache it?
+		var sectionX; var sectionY;
+		var tempSectionX; var tempSectionY;
+		var _ctx;
+		var regions; var region; var i;
 
 		if (this._autoSection > 0) {
 			if (this._cacheDirty) {
@@ -336,10 +336,10 @@ var IgeTextureMap = IgeTileMap2d.extend({
 					// data first
 				    // TODO: Shouldn't we be replacing these arrays with new ones to drop the old ones from memory?
 				    // TODO: Gonna do that now and see what the result is.
-                    this._sections = []; //this._sections || [];
-                    this._sectionCtx = []; //this._sectionCtx || [];
-                    // TODO: This isn't ideal because we are almost certainly dropping sections that are still relevant,
-                    // TODO: so we should scan and garbage collect I think, instead.
+					this._sections = []; // this._sections || [];
+					this._sectionCtx = []; // this._sectionCtx || [];
+					// TODO: This isn't ideal because we are almost certainly dropping sections that are still relevant,
+					// TODO: so we should scan and garbage collect I think, instead.
 
 					// Loop the map data
 					for (y in mapData) {
@@ -373,11 +373,11 @@ var IgeTextureMap = IgeTileMap2d.extend({
 									// Work out which section to paint to
 									sectionX = Math.floor(finalX / this._autoSection);
 									sectionY = Math.floor(finalY / this._autoSection);
-									
+
 									// Check if an off-screen canvas already exists for this section
 									// and if not, create one
 									this._ensureSectionExists(sectionX, sectionY);
-									
+
 									// Grab the drawing context for the section
 									_ctx = this._sectionCtx[sectionX][sectionY];
 
@@ -460,7 +460,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 							if (mapData[y].hasOwnProperty(x)) {
 								// Grab the tile data to paint
 								tileData = mapData[y][x];
-	
+
 								if (tileData) {
 									this._renderTile(ctx, x, y, tileData, tileEntity);
 								}
@@ -495,11 +495,11 @@ var IgeTextureMap = IgeTileMap2d.extend({
 			// Ensure the canvas is using the correct image antialiasing mode
 			if (!ige._globalSmoothing) {
 				sectionCtx.imageSmoothingEnabled = false;
-				//sectionCtx.webkitImageSmoothingEnabled = false;
+				// sectionCtx.webkitImageSmoothingEnabled = false;
 				sectionCtx.mozImageSmoothingEnabled = false;
 			} else {
 				sectionCtx.imageSmoothingEnabled = true;
-				//sectionCtx.webkitImageSmoothingEnabled = true;
+				// sectionCtx.webkitImageSmoothingEnabled = true;
 				sectionCtx.mozImageSmoothingEnabled = true;
 			}
 
@@ -514,14 +514,14 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 * @private
 	 */
 	_drawSectionsToCtx: function (ctx) {
-		var x, y, tileData,
-			sectionRenderX, sectionRenderY,
-			sectionAbsX, sectionAbsY,
-			sectionWidth, sectionHeight,
-			viewArea = ige._currentViewport.viewArea();
+		var x; var y; var tileData;
+		var sectionRenderX; var sectionRenderY;
+		var sectionAbsX; var sectionAbsY;
+		var sectionWidth; var sectionHeight;
+		var viewArea = ige._currentViewport.viewArea();
 
 		// Render the map sections
-		//ctx.translate(-(this._tileWidth / 2), -(this._tileHeight / 2));
+		// ctx.translate(-(this._tileWidth / 2), -(this._tileHeight / 2));
 
 		sectionWidth = (this._tileWidth * this._autoSection);
 		sectionHeight = (this._tileHeight * this._autoSection);
@@ -578,7 +578,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 
 	/**
 	 * Private method, renders a tile texture based on data from the texture map,
-	 * to a cached section. 
+	 * to a cached section.
 	 * @param {CanvasRenderingContext2d} ctx
 	 * @param {Number} x The tile x co-ordinate.
 	 * @param {Number} y The tile y co-ordinate.
@@ -592,13 +592,13 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	 */
 	_renderTile: function (ctx, x, y, tileData, tileEntity, rect, sectionX, sectionY) {
 		// TODO: Handle scaling so tiles don't loose res on scaled cached sections
-		var finalX, finalY, regions,
-			xm1, xp1, ym1, yp1, regObj,
-			xAdjust = this._mountMode === 1 ? this._tileWidth / 2 : 0,
-			yAdjust = this._mountMode === 1 ? this._tileHeight / 2 : 0,
-			tx, ty, sx, sy,
-			texture;
-		
+		var finalX; var finalY; var regions;
+		var xm1; var xp1; var ym1; var yp1; var regObj;
+		var xAdjust = this._mountMode === 1 ? this._tileWidth / 2 : 0;
+		var yAdjust = this._mountMode === 1 ? this._tileHeight / 2 : 0;
+		var tx; var ty; var sx; var sy;
+		var texture;
+
 		// Translate the canvas to the tile position
 		if (this._mountMode === 0) {
 			finalX = x * this._tileWidth;
@@ -634,7 +634,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 
 		if (finalX - (xAdjust) < 0) {
 			regions = regions || [];
-			regions.push({x: -1});
+			regions.push({ x: -1 });
 			xm1 = true;
 
 			regObj = regObj || {};
@@ -643,7 +643,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 
 		if (finalX + (xAdjust) > (ctx.canvas.width - (this._tileWidth))) {
 			regions = regions || [];
-			regions.push({x: 1});
+			regions.push({ x: 1 });
 			xp1 = true;
 
 			regObj = regObj || {};
@@ -652,7 +652,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 
 		if (finalY - (0) < 0) {
 			regions = regions || [];
-			regions.push({y: -1});
+			regions.push({ y: -1 });
 			ym1 = true;
 
 			regObj = regObj || {};
@@ -661,7 +661,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 
 		if (finalY + (0) > (ctx.canvas.height - (this._tileHeight))) {
 			regions = regions || [];
-			regions.push({y: 1});
+			regions.push({ y: 1 });
 			yp1 = true;
 
 			regObj = regObj || {};
@@ -674,7 +674,7 @@ var IgeTextureMap = IgeTileMap2d.extend({
 
 		ctx.save();
 		ctx.translate(finalX, finalY);
-		
+
 		// Set the correct texture data
 		texture = this._textureList[tileData[0]];
 		tileEntity._cell = tileData[1];
@@ -727,4 +727,4 @@ var IgeTextureMap = IgeTileMap2d.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeTextureMap; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeTextureMap; }

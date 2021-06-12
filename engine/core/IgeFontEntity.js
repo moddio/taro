@@ -37,11 +37,11 @@ var IgeFontEntity = IgeUiEntity.extend({
 		}
 
 		var retVal = IgeUiEntity.prototype.width.call(this, val, lockAspect, modifier, noUpdate);
-		
+
 		if (this._autoWrap) {
 			this._applyAutoWrap();
 		}
-		
+
 		return retVal;
 	},
 
@@ -73,7 +73,7 @@ var IgeFontEntity = IgeUiEntity.extend({
 	 * line-broken text that the auto-wrapper method creates. When the
 	 * entity renders it's text string it ALWAYS renders from "_renderText"
 	 * and not the value of "_text". Effectively this means that "_text"
-	 * contains the unaltered version of your original text and 
+	 * contains the unaltered version of your original text and
 	 * "_renderText" will be either the same as "_text" if auto-wrapping
 	 * is disable or a wrapped version otherwise.
 	 * @param {String} text The text string to render.
@@ -82,23 +82,23 @@ var IgeFontEntity = IgeUiEntity.extend({
 	text: function (text) {
 		if (text !== undefined) {
 			var wasDifferent = false;
-			
+
 			// Ensure we have a string
 			text = String(text);
-			
+
 			if (this._text !== text) {
 				this.clearCache();
 				wasDifferent = true;
 			}
-			
+
 			this._text = text;
-			
+
 			if (this._autoWrap && wasDifferent) {
 				this._applyAutoWrap();
 			} else {
 				this._renderText = text;
 			}
-			
+
 			return this;
 		}
 
@@ -241,7 +241,7 @@ var IgeFontEntity = IgeUiEntity.extend({
 			// Assign the native font smart texture
 			var tex = new IgeTexture(IgeFontSmartTexture);
 			this.texture(tex);
-			
+
 			// Set the flag indicating we are using a native font
 			this._nativeMode = true;
 
@@ -297,7 +297,7 @@ var IgeFontEntity = IgeUiEntity.extend({
 	autoWrap: function (val) {
 		if (val !== undefined) {
 			this._autoWrap = val;
-			
+
 			// Execute an auto-wrap modification of the text
 			if (this._text) {
 				this._applyAutoWrap();
@@ -305,7 +305,7 @@ var IgeFontEntity = IgeUiEntity.extend({
 			}
 			return this;
 		}
-		
+
 		return this._autoWrap;
 	},
 
@@ -317,39 +317,38 @@ var IgeFontEntity = IgeUiEntity.extend({
 	_applyAutoWrap: function () {
 		if (this._text) {
 			// Un-wrap the text so it is all on one line
-			var oneLineText = this._text.replace(/\n/g, ' '),
-				words,
-				wordIndex,
-				textArray = [],
-				currentTextLine = '',
-				lineWidth;
-			
+			var oneLineText = this._text.replace(/\n/g, ' ');
+			var words;
+			var wordIndex;
+			var textArray = [];
+			var currentTextLine = '';
+			var lineWidth;
+
 			// Break the text into words
 			words = oneLineText.split(' ');
-			
+
 			// There are multiple words - loop the words
 			for (wordIndex = 0; wordIndex < words.length; wordIndex++) {
 				if (currentTextLine) {
 					currentTextLine += ' ';
 				}
 				currentTextLine += words[wordIndex];
-				
+
 				// Check the width and if greater than the width of the entity,
 				// add a line break before the word
 				lineWidth = this.measureTextWidth(currentTextLine);
-				
+
 				if (lineWidth >= this._bounds2d.x) {
 					// Start a new line
 					currentTextLine = words[wordIndex];
-					
+
 					// Add a line break
-					textArray.push('\n' + words[wordIndex]);
+					textArray.push(`\n${words[wordIndex]}`);
 				} else {
 					textArray.push(words[wordIndex]);
 				}
-				
 			}
-			
+
 			this._renderText = textArray.join(' ');
 		}
 	},
@@ -364,7 +363,7 @@ var IgeFontEntity = IgeUiEntity.extend({
 	 */
 	measureTextWidth: function (text) {
 		text = text || this._text;
-		
+
 		// Both IgeFontSheet and the IgeFontSmartTexture have a method
 		// called measureTextWidth() so we can just asks the current
 		// texture for the width :)
@@ -400,23 +399,23 @@ var IgeFontEntity = IgeUiEntity.extend({
 	 */
 	_stringify: function () {
 		// Get the properties for all the super-classes
-		var str = IgeUiEntity.prototype._stringify.call(this), i;
+		var str = IgeUiEntity.prototype._stringify.call(this); var i;
 
 		// Loop properties and add property assignment code to string
 		for (i in this) {
 			if (this.hasOwnProperty(i) && this[i] !== undefined) {
 				switch (i) {
 					case '_text':
-						str += ".text(" + this.text() + ")";
+						str += `.text(${this.text()})`;
 						break;
 					case '_textAlignX':
-						str += ".textAlignX(" + this.textAlignX() + ")";
+						str += `.textAlignX(${this.textAlignX()})`;
 						break;
 					case '_textAlignY':
-						str += ".textAlignY(" + this.textAlignY() + ")";
+						str += `.textAlignY(${this.textAlignY()})`;
 						break;
 					case '_textLineSpacing':
-						str += ".textLineSpacing(" + this.textLineSpacing() + ")";
+						str += `.textLineSpacing(${this.textLineSpacing()})`;
 						break;
 				}
 			}
@@ -426,4 +425,4 @@ var IgeFontEntity = IgeUiEntity.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeFontEntity; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeFontEntity; }

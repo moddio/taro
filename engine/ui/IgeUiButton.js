@@ -1,11 +1,11 @@
 var IgeUiButton = IgeUiElement.extend({
 	classId: 'IgeUiButton',
-	
+
 	init: function () {
 		var self = this;
-		
+
 		IgeUiElement.prototype.init.call(this);
-		
+
 		this.on('mouseDown', function () {
 			if (self._autoCell) {
 				// React to the mouse events
@@ -13,7 +13,7 @@ var IgeUiButton = IgeUiElement.extend({
 				self.cacheDirty(true);
 			}
 		});
-		
+
 		this.on('mouseUp', function () {
 			if (self._autoCell) {
 				// React to the mouse events
@@ -34,16 +34,16 @@ var IgeUiButton = IgeUiElement.extend({
 	autoCell: function (val) {
 		if (val !== undefined) {
 			this._autoCell = val;
-			
+
 			if (val) {
 				this.mouseEventsActive(true);
 			}
 			return this;
 		}
-		
+
 		return this._autoCell;
 	},
-	
+
 	/**
 	 * Fires a mouse-down and a mouse-up event for the entity.
 	 * @returns {*}
@@ -54,25 +54,25 @@ var IgeUiButton = IgeUiElement.extend({
 
 		return this;
 	},
-	
+
 	tick: function (ctx) {
 		IgeUiElement.prototype.tick.call(this, ctx);
-		
+
 		// Now draw any ui overlays
-		
+
 		// Check for the old way to assign text to the button
 		var uiData = this.data('ui');
 		if (uiData) {
 			// Draw text
-			if (uiData['text']) {
-				ctx.font = uiData['text'].font || "normal 12px Verdana";
-				ctx.textAlign = uiData['text'].align || 'center';
-				ctx.textBaseline = uiData['text'].baseline || 'middle';
-				ctx.fillStyle = uiData['text'].color || '#ffffff';
-				ctx.fillText(uiData['text'].value, 0, 0);
+			if (uiData.text) {
+				ctx.font = uiData.text.font || 'normal 12px Verdana';
+				ctx.textAlign = uiData.text.align || 'center';
+				ctx.textBaseline = uiData.text.baseline || 'middle';
+				ctx.fillStyle = uiData.text.color || '#ffffff';
+				ctx.fillText(uiData.text.value, 0, 0);
 			}
 		}
-		
+
 		// Check for the new way to assign text to the button
 		if (this._value) {
 			// Draw text
@@ -84,4 +84,4 @@ var IgeUiButton = IgeUiElement.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeUiButton; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeUiButton; }

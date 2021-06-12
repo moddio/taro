@@ -3,9 +3,9 @@ var IgeNode = IgeClass.extend({
 
 	init: function () {
 		// Include required node modules
-		var argParse = require("node-arguments").process,
-			args = argParse(process.argv, { separator: '-' }),
-			self = this;
+		var argParse = require('node-arguments').process;
+		var args = argParse(process.argv, { separator: '-' });
+		var self = this;
 
 		this.fs = require('fs');
 
@@ -18,12 +18,12 @@ var IgeNode = IgeClass.extend({
 			if (args['-g']) {
 				// Output our header
 				console.log('------------------------------------------------------------------------------');
-				console.log('* Isogenic Game Engine Server ' + igeVersion + '                                          *');
+				console.log(`* Isogenic Game Engine Server ${igeVersion}                                          *`);
 				console.log('* (C)opyright 2012 Irrelon Software Limited                                  *');
 				console.log('* http://www.isogenicengine.com                                              *');
 				console.log('------------------------------------------------------------------------------');
 				this.log('Starting pre-init process. IGE Game Server loading...');
-				this.log('Current working directory is: ' + process.cwd());
+				this.log(`Current working directory is: ${process.cwd()}`);
 
 				// Setup any passed arguments
 				if (this.gamePath(args['-g'])) {
@@ -51,7 +51,7 @@ var IgeNode = IgeClass.extend({
 
 	printHelp: function () {
 		console.log('------------------------------------------------------------------------------');
-		console.log('* Isogenic Game Engine Server ' + igeVersion + '                                          *');
+		console.log(`* Isogenic Game Engine Server ${igeVersion}                                          *`);
 		console.log('* (C)opyright 2012 Irrelon Software Limited                                  *');
 		console.log('* http://www.isogenicengine.com                                              *');
 		console.log('------------------------------------------------------------------------------');
@@ -68,79 +68,77 @@ var IgeNode = IgeClass.extend({
 	},
 
 	gamePath: function (gamePath) {
-
-
-		this.serverPath = process.cwd() + '/server/';
+		this.serverPath = `${process.cwd()}/server/`;
 
 		if (typeof (gamePath) !== 'undefined') {
 			if (gamePath.substr(0, 1) === '/') {
 				// Absolute path
-				//this.log('Game path is absolute: ' + gamePath);
-				this._gamePath = gamePath + '/';
+				// this.log('Game path is absolute: ' + gamePath);
+				this._gamePath = `${gamePath}/`;
 			} else {
 				// Relative path
-				//this.log('Game path is relative: ' + gamePath);
-				this._gamePath = process.cwd() + '/' + gamePath + '/';
+				// this.log('Game path is relative: ' + gamePath);
+				this._gamePath = `${process.cwd()}/${gamePath}/`;
 			}
 
 			// Check that the game's required files exist
-			if (!this.fs.existsSync(this.serverPath + 'server.js')) {
+			if (!this.fs.existsSync(`${this.serverPath}server.js`)) {
 				// The server.js file is missing, throw an error!
-				this.log('The game\'s server.js file cannot be found at: "' + this.serverPath + 'server.js", exiting!', 'warning');
+				this.log(`The game's server.js file cannot be found at: "${this.serverPath}server.js", exiting!`, 'warning');
 				setTimeout(this.exitProcess, 50);
 				return false;
-			} else if (!this.fs.existsSync(this._gamePath + 'index.js')) {
+			} else if (!this.fs.existsSync(`${this._gamePath}index.js`)) {
 				// The index.js file is missing, throw an error!
-				this.log('The game\'s index.js file cannot be found at: "' + this._gamePath + 'index.js", exiting!', 'warning');
+				this.log(`The game's index.js file cannot be found at: "${this._gamePath}index.js", exiting!`, 'warning');
 				setTimeout(this.exitProcess, 50);
 				return false;
-			} else if (!this.fs.existsSync(this.serverPath + 'ServerConfig.js')) {
+			} else if (!this.fs.existsSync(`${this.serverPath}ServerConfig.js`)) {
 				// The index.js file is missing, throw an error!
-				this.log('The game\'s ServerConfig.js file cannot be found at: "' + this.serverPath + 'ServerConfig.js", exiting!', 'warning');
+				this.log(`The game's ServerConfig.js file cannot be found at: "${this.serverPath}ServerConfig.js", exiting!`, 'warning');
 				setTimeout(this.exitProcess, 50);
 				return false;
 			} else {
-				this.log('Starting game server in path: ' + process.cwd() + '/' + gamePath);
+				this.log(`Starting game server in path: ${process.cwd()}/${gamePath}`);
 				return true;
 			}
 		}
 	},
 
 	main: function () {
-		this.Server = require(this.serverPath + 'server.js');
-		this.Game = require(this._gamePath + 'index.js');
+		this.Server = require(`${this.serverPath}server.js`);
+		this.Game = require(`${this._gamePath}index.js`);
 
 		// Load the configuration file and load any modules
-		this.config = require(this.serverPath + 'ServerConfig.js');
+		this.config = require(`${this.serverPath}ServerConfig.js`);
 
-		var arr = this.config.include,
-			arrCount = arr.length,
-			i, item, itemModule;
+		var arr = this.config.include;
+		var arrCount = arr.length;
+		var i; var item; var itemModule;
 
 		// Loop the module items and check they exist first
-		this.log('Checking module paths declared in: ' + this.serverPath + 'ServerConfig.js');
+		this.log(`Checking module paths declared in: ${this.serverPath}ServerConfig.js`);
 		for (i = 0; i < arrCount; i++) {
 			item = arr[i];
 
-			if (!this.fs.existsSync(this.serverPath + item.path + '.js')) {
+			if (!this.fs.existsSync(`${this.serverPath + item.path}.js`)) {
 				// The module file is missing, throw an error!
-				console.log('Cannot load module from: "' + this.serverPath + item.path + '.js", exiting!', 'warning');
-				this.log('Cannot load module from: "' + this.serverPath + item.path + '.js", exiting!', 'warning');
+				console.log(`Cannot load module from: "${this.serverPath}${item.path}.js", exiting!`, 'warning');
+				this.log(`Cannot load module from: "${this.serverPath}${item.path}.js", exiting!`, 'warning');
 				setTimeout(this.exitProcess, 50);
 				return false;
 			}
 		}
 
 		// All the modules exist, load them
-		this.log('Module paths confirmed, including ' + this.config.include.length + ' module(s)...');
+		this.log(`Module paths confirmed, including ${this.config.include.length} module(s)...`);
 		for (i = 0; i < arrCount; i++) {
 			item = arr[i];
 
 			itemModule = require(this._gamePath + item.path);
-			eval(item.name + ' = itemModule;');
-			this.log('Module "' + item.name + '" loaded from: "' + this._gamePath + item.path + '.js"');
+			eval(`${item.name} = itemModule;`);
+			this.log(`Module "${item.name}" loaded from: "${this._gamePath}${item.path}.js"`);
 
-			/*if (itemModule.prototype) {
+			/* if (itemModule.prototype) {
 				console.warn('CLASS ID is defined: ' + itemModule.prototype._classId);
 			}
 			if (itemModule.prototype && itemModule.prototype._classId) {
@@ -153,7 +151,7 @@ var IgeNode = IgeClass.extend({
 				//console.warn(itemModule.prototype._classId);
 				console.warn('Cannot load class / file from "' + this._gamePath + item.path + '" because the class does not have a classId property and no name property was assigned to it\'s include code!');
 				//process.exit();
-			}*/
+			} */
 		}
 
 		// Create a new Game instance and pass the config details to it
@@ -161,24 +159,24 @@ var IgeNode = IgeClass.extend({
 	},
 
 	generateDeploy: function (args) {
-		var self = this,
-			gamePath = args['-deploy'],
-			toPath = args['-to'] || gamePath + '/deploy',
-			deployOptions;
+		var self = this;
+		var gamePath = args['-deploy'];
+		var toPath = args['-to'] || `${gamePath}/deploy`;
+		var deployOptions;
 
 		console.log('Starting deployment process...');
-		console.log('Deployment will be created in: ' + toPath);
+		console.log(`Deployment will be created in: ${toPath}`);
 
-		if (this.fs.existsSync(this._gamePath + '/deploy.js')) {
+		if (this.fs.existsSync(`${this._gamePath}/deploy.js`)) {
 			// Load the deploy options
-			deployOptions = require(this._gamePath + '/deploy.js');
+			deployOptions = require(`${this._gamePath}/deploy.js`);
 		} else {
 			deployOptions = {};
 		}
 
 		deployOptions.fixPaths = args['-fixPaths'];
 		deployOptions.index = args['-index'];
-		deployOptions.obfuscate = args['-clear'] ? false : true;
+		deployOptions.obfuscate = !args['-clear'];
 		deployOptions.proto = args['-proto'];
 		deployOptions.clearClasses = args['-clearClasses'];
 		deployOptions.debug = args['-debug'];
@@ -191,17 +189,17 @@ var IgeNode = IgeClass.extend({
 	},
 
 	_generateStage1: function (gamePath, toPath, deployOptions) {
-		var clientCode = '', coreCode = '', finalFileData,
-			clientCodeReturn, coreCodeReturn,
-			fs = this.fs,
-			igeCoreConfig = require('../engine/CoreConfig.js'),
-			arr = igeCoreConfig.include,
-			arrCount = arr.length,
-			arrIndex,
-			arrItem,
-			className,
-			nameToNew = [],
-			reg, indexData;
+		var clientCode = ''; var coreCode = ''; var finalFileData;
+		var clientCodeReturn; var coreCodeReturn;
+		var fs = this.fs;
+		var igeCoreConfig = require('../engine/CoreConfig.js');
+		var arr = igeCoreConfig.include;
+		var arrCount = arr.length;
+		var arrIndex;
+		var arrItem;
+		var className;
+		var nameToNew = [];
+		var reg; var indexData;
 
 		// Generate the engine core
 		if (!deployOptions.proto) {
@@ -233,8 +231,8 @@ var IgeNode = IgeClass.extend({
 
 			if (deployOptions.index) {
 				console.log('Adding index.html...');
-				indexData = fs.readFileSync(process.cwd() + '/server/deploy/index.html', 'utf8');
-				fs.writeFileSync(toPath + '/index.html', indexData);
+				indexData = fs.readFileSync(`${process.cwd()}/server/deploy/index.html`, 'utf8');
+				fs.writeFileSync(`${toPath}/index.html`, indexData);
 			}
 
 			if (deployOptions.obfuscate) {
@@ -250,24 +248,24 @@ var IgeNode = IgeClass.extend({
 						arrItem = arr[arrIndex];
 
 						className = arrItem[1];
-						nameToNew[className] = '$i_' + arrIndex;
+						nameToNew[className] = `$i_${arrIndex}`;
 
 						// Replace any occurrences in the code
 						reg = new RegExp(className, 'g');
-						finalFileData = finalFileData.replace(reg, '$i_' + arrIndex);
+						finalFileData = finalFileData.replace(reg, `$i_${arrIndex}`);
 					}
 				}
 			} else {
-				finalFileData = coreCode + ';' + clientCode;
+				finalFileData = `${coreCode};${clientCode}`;
 			}
 
 			if (!deployOptions.proto) {
 				var filename = (process.env.TEST == 'true' && '/game-test.js') || '/game.js';
 				fs.writeFileSync(toPath + filename, finalFileData);
-				console.log('Complete, deployment available at: ' + toPath + filename);
+				console.log(`Complete, deployment available at: ${toPath}${filename}`);
 			} else {
-				fs.writeFileSync(toPath + '/ige.js', finalFileData);
-				console.log('Complete, deployment available at: ' + toPath + '/ige.js');
+				fs.writeFileSync(`${toPath}/ige.js`, finalFileData);
+				console.log(`Complete, deployment available at: ${toPath}/ige.js`);
 			}
 		}
 
@@ -298,23 +296,23 @@ var IgeNode = IgeClass.extend({
 		console.log('-------------------------');
 
 		// Load the CoreConfig.js file
-		var fs = this.fs,
-			igeCoreConfig = require('../engine/CoreConfig.js'),
-			arr = igeCoreConfig.include,
-			arrCount = arr.length,
-			arrIndex,
-			arrItem,
-			itemJs,
-			///////////////////////////
-			finalEngineCoreCode = '',
-			fileArr = [],
-			optionalArr = [],
-			finalArr = [],
-			fileIndex,
-			file,
-			data = '',
-			fullCodeEval = clientCode,
-			rerun;
+		var fs = this.fs;
+		var igeCoreConfig = require('../engine/CoreConfig.js');
+		var arr = igeCoreConfig.include;
+		var arrCount = arr.length;
+		var arrIndex;
+		var arrItem;
+		var itemJs;
+		/// ////////////////////////
+		var finalEngineCoreCode = '';
+		var fileArr = [];
+		var optionalArr = [];
+		var finalArr = [];
+		var fileIndex;
+		var file;
+		var data = '';
+		var fullCodeEval = clientCode;
+		var rerun;
 
 		console.log('Scanning client code for class usage...');
 
@@ -322,15 +320,15 @@ var IgeNode = IgeClass.extend({
 		while (rerun) {
 			for (fileIndex = 0; fileIndex < arr.length; fileIndex++) {
 				file = arr[fileIndex];
-				//console.log('Checking for usage of: ' + file[1]);
+				// console.log('Checking for usage of: ' + file[1]);
 
 				if ((
 					// If we are deploying prototype and file has "p" flag
-					(deployOptions.proto && file[0].indexOf('p') > -1)
-					|| (
+					(deployOptions.proto && file[0].indexOf('p') > -1) ||
+					(
 						// The class the file declares exists in the client-side source code
-						fullCodeEval.indexOf(file[1]) > -1
-						|| (
+						fullCodeEval.indexOf(file[1]) > -1 ||
+						(
 							// The file has a flag of "c" AND DOES NOT have a flag of "a"
 							file[0].indexOf('c') > -1 && file[0].indexOf('a') === -1
 						)
@@ -339,12 +337,12 @@ var IgeNode = IgeClass.extend({
 				) && finalArr.indexOf(file[2]) === -1
 				) {
 					// The client code is using this class
-					console.log('Class "' + file[1] + '" used in project, keeping file: engine/' + file[2]);
+					console.log(`Class "${file[1]}" used in project, keeping file: engine/${file[2]}`);
 					finalArr.push(file[2]);
 
 					// Add the new file to the fullCodeEval so that any dependencies it has
 					// will also be picked up
-					fullCodeEval += fs.readFileSync('engine/' + file[2], 'utf8');
+					fullCodeEval += fs.readFileSync(`engine/${file[2]}`, 'utf8');
 
 					rerun = true;
 					break;
@@ -363,14 +361,14 @@ var IgeNode = IgeClass.extend({
 			// use the final array as the loop because the files in the
 			// final array are not in compile safe order
 			if (finalArr.indexOf(arrItem[2]) > -1) {
-				fileArr.push('engine/' + arrItem[2]);
+				fileArr.push(`engine/${arrItem[2]}`);
 			}
 		}
 
 		for (fileIndex = 0; fileIndex < fileArr.length; fileIndex++) {
 			file = fileArr[fileIndex];
 
-			console.log('Compiling: ' + process.cwd() + '/' + file);
+			console.log(`Compiling: ${process.cwd()}/${file}`);
 
 			// Read the file data
 			data = fs.readFileSync(file, 'utf8');
@@ -378,11 +376,11 @@ var IgeNode = IgeClass.extend({
 			// Remove client-exclude marked code
 			data = data.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
 
-			finalEngineCoreCode += data + ';';
+			finalEngineCoreCode += `${data};`;
 		}
 
 		// Write the engine core's file data
-		//fs.writeFileSync(toPath + '/core.js', finalEngineCoreCode);
+		// fs.writeFileSync(toPath + '/core.js', finalEngineCoreCode);
 
 		return finalEngineCoreCode;
 	},
@@ -393,25 +391,25 @@ var IgeNode = IgeClass.extend({
 		console.log('-----------------------');
 
 		// Load the configuration file and load any modules
-		var fs = this.fs,
-			arr = require(process.cwd() + '/' + gamePath + '/ClientConfig.js').include,
-			arrCount = arr.length,
-			i, item, itemModule,
-			/////////////////////////
-			finalFileData = '',
-			fileArr = [],
-			fileIndex,
-			file,
-			data = '';
+		var fs = this.fs;
+		var arr = require(`${process.cwd()}/${gamePath}/ClientConfig.js`).include;
+		var arrCount = arr.length;
+		var i; var item; var itemModule;
+		/// //////////////////////
+		var finalFileData = '';
+		var fileArr = [];
+		var fileIndex;
+		var file;
+		var data = '';
 
 		// Loop the module items and check they exist first
-		console.log('Checking module paths declared in: ' + gamePath + '/ClientConfig.js');
+		console.log(`Checking module paths declared in: ${gamePath}/ClientConfig.js`);
 		for (i = 0; i < arrCount; i++) {
 			item = arr[i];
 
-			if (!this.fs.existsSync(gamePath + '/' + item)) {
+			if (!this.fs.existsSync(`${gamePath}/${item}`)) {
 				// The module file is missing, throw an error!
-				this.log('Cannot load module from: "' + gamePath + '/' + item + '", exiting!', 'warning');
+				this.log(`Cannot load module from: "${gamePath}/${item}", exiting!`, 'warning');
 				setTimeout(this.exitProcess, 50);
 				return false;
 			} else {
@@ -421,52 +419,52 @@ var IgeNode = IgeClass.extend({
 
 		// Loop the script file paths and load each file in turn
 		// reading it's content and adding it to the final js data
-		console.log('Module paths confirmed, including ' + arr.length + ' module(s)...');
+		console.log(`Module paths confirmed, including ${arr.length} module(s)...`);
 		for (fileIndex = 0; fileIndex < fileArr.length; fileIndex++) {
 			file = fileArr[fileIndex];
 
-			console.log('Compiling: ' + process.cwd() + '/' + gamePath + '/' + file);
+			console.log(`Compiling: ${process.cwd()}/${gamePath}/${file}`);
 
 			// Read the file data
-			data = fs.readFileSync(process.cwd() + '/' + gamePath + '/' + file, 'utf8');
+			data = fs.readFileSync(`${process.cwd()}/${gamePath}/${file}`, 'utf8');
 
 			// Remove client-exclude marked code
 			data = data.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
-			finalFileData += data + ';';
+			finalFileData += `${data};`;
 		}
 
 		// Write the engine core's file data
-		//fs.writeFileSync(toPath + '/game.js', finalFileData);
+		// fs.writeFileSync(toPath + '/game.js', finalFileData);
 
 		return finalFileData;
 	},
 
 	obfuscate: function (source, seed, opts, deployOptions) {
-		var jsp = this.parser,
-			UglifyJS = require('uglify-js2'),
-			compressor = UglifyJS.Compressor(
-				{
-					warnings: true,
-					drop_debugger: !deployOptions.debug
-				}
-			),
-			options,
-			orig_code,
-			ast,
-			compressed_ast,
-			finCode;
+		var jsp = this.parser;
+		var UglifyJS = require('uglify-js2');
+		var compressor = UglifyJS.Compressor(
+			{
+				warnings: true,
+				drop_debugger: !deployOptions.debug
+			}
+		);
+		var options;
+		var orig_code;
+		var ast;
+		var compressed_ast;
+		var finCode;
 
-		var babel = require("@babel/core");
+		var babel = require('@babel/core');
 		// Remove client-exclude marked code
 		source = source.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
 
 		// Pass to the uglify-js module
-		/*orig_code = source;
+		/* orig_code = source;
 		ast = jsp.parse(orig_code); // parse code and get the initial AST
 		ast = pro.ast_mangle(ast); // get a new AST with mangled names
 		ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
 
-		finCode = pro.gen_code(ast); // compressed code here*/
+		finCode = pro.gen_code(ast); // compressed code here */
 		// ast = babel.transform(source, {ast:true,compact:true,minified:true}).ast;
 		// //ast = UglifyJS.parse(source, options);
 		// //ast.figure_out_scope();
@@ -481,8 +479,8 @@ var IgeNode = IgeClass.extend({
 	},
 
 	ask: function (question, callback) {
-		var readline = require('readline'),
-			input = readline.createInterface(process.stdin, process.stdout, null);
+		var readline = require('readline');
+		var input = readline.createInterface(process.stdin, process.stdout, null);
 
 		input.question(question, function (answer) {
 			input.close();

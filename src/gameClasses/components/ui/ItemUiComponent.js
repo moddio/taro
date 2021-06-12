@@ -3,23 +3,23 @@ var ItemUiComponent = IgeEntity.extend({
 	componentId: 'itemUi',
 
 	init: function () {
-		$('#backpack-items-div').on("mouseenter", ".inventory-item-button.inventory-slot>.item-div.draggable-item", function () {
+		$('#backpack-items-div').on('mouseenter', '.inventory-item-button.inventory-slot>.item-div.draggable-item', function () {
 			$('.popover').popover('hide');
 			$(this).popover('show');
 		});
-		$('#trade-div').on("mouseenter", ".inventory-item-button.inventory-slot>.item-div.draggable-item", function () {
+		$('#trade-div').on('mouseenter', '.inventory-item-button.inventory-slot>.item-div.draggable-item', function () {
 			$('.popover').popover('hide');
 			$(this).popover('show');
 		});
-		$('#trade-div').on("mouseenter", ".trade-offer-slot>.item-div.draggable-item", function () {
+		$('#trade-div').on('mouseenter', '.trade-offer-slot>.item-div.draggable-item', function () {
 			$('.popover').popover('hide');
 			$(this).popover('show');
 		});
-		$('#inventory-slots').on("mouseenter", ".inventory-item-button.inventory-slot>.item-div.draggable-item", function () {
+		$('#inventory-slots').on('mouseenter', '.inventory-item-button.inventory-slot>.item-div.draggable-item', function () {
 			$('.popover').popover('hide');
 			$(this).popover('show');
 		});
-		$('canvas').on("mouseenter", function () {
+		$('canvas').on('mouseenter', function () {
 			$('.popover').popover('hide');
 		});
 		jQuery.fn.swap = function (b) {
@@ -27,8 +27,8 @@ var ItemUiComponent = IgeEntity.extend({
 			b = jQuery(b)[0];
 			var tempId = b.parentElement.id.replace('item-', '');
 			var a = this[0];
-			b.id = 'slotindex-' + a.parentElement.id.replace('item-', '').id;
-			a.id = 'slotindex-' + tempId;
+			b.id = `slotindex-${a.parentElement.id.replace('item-', '').id}`;
+			a.id = `slotindex-${tempId}`;
 			var t = a.parentNode.insertBefore(document.createTextNode(''), a);
 			b.parentNode.insertBefore(a, b);
 			t.parentNode.insertBefore(b, t);
@@ -38,26 +38,25 @@ var ItemUiComponent = IgeEntity.extend({
 	},
 
 	showReloadingText: function () {
-		$("#reloading-message").show();
+		$('#reloading-message').show();
 	},
 
 	hideReloadingText: function () {
-		$("#reloading-message").hide();
+		$('#reloading-message').hide();
 	},
 
 	updateItemInfo: function (item) {
 		if (item && item._stats) {
-			$("#item-name").html(item._stats.name)
+			$('#item-name').html(item._stats.name);
 
 			var ammoStr = '';
 			if (item._stats.ammo != undefined)
-				ammoStr = item._stats.ammo + " / " + item._stats.ammoTotal;
+				ammoStr = `${item._stats.ammo} / ${item._stats.ammoTotal}`;
 
 			// $("#item-ammo").html(ammoStr)
-		}
-		else {
-			$("#item-name").html("")
-			$("#item-ammo").html("")
+		} else {
+			$('#item-name').html('');
+			$('#item-ammo').html('');
 		}
 	},
 
@@ -65,23 +64,23 @@ var ItemUiComponent = IgeEntity.extend({
 		var self = this;
 		var owner = item && item.getOwnerUnit();
 		var equipmentAllowed = (owner && owner._stats.equipmentAllowed);
-		//update item info on bottom-right corner if it's currently selected item
-		$("#item-" + slotIndex).html(
+		// update item info on bottom-right corner if it's currently selected item
+		$(`#item-${slotIndex}`).html(
 			self.getItemDiv(item, {
-				popover: "top",
+				popover: 'top',
 				isDraggable: true,
 				isPurchasable: false
 			}, slotIndex)
-		)
-		
+		);
+
 		// if (equipmentAllowed && slotIndex != undefined && slotIndex <= equipmentAllowed) {
-			$("#item-key-stroke-" + slotIndex).html(
-				"<p class='m-0'><small style='font-weight:900;color: white;padding: 0px 5px;'>" + (slotIndex + 1) + "</small></p>"
-			)
+		$(`#item-key-stroke-${slotIndex}`).html(
+			`<p class='m-0'><small style='font-weight:900;color: white;padding: 0px 5px;'>${slotIndex + 1}</small></p>`
+		);
 		// }
 	},
 	updateItemQuantity: function (item) {
-		var itemSlot = $('#slotindex-' + item._stats.slotIndex);
+		var itemSlot = $(`#slotindex-${item._stats.slotIndex}`);
 		quantitySpan = itemSlot.find('small');
 		if (quantitySpan) {
 			var qty = item._stats.quantity;
@@ -97,36 +96,36 @@ var ItemUiComponent = IgeEntity.extend({
 			if (indexOfItem > -1) {
 				owner._stats.itemIds.splice(indexOfItem, 1);
 			}
-			owner.inventory.update()
+			owner.inventory.update();
 		}
 	},
 	getItemSlotDiv: function (itemStats, options) {
 		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
 		if (itemStats) {
-			var itemSlot = $("<div/>", {
+			var itemSlot = $('<div/>', {
 				id: itemStats.id,
-				class: "btn btn-secondary " + mobileClass,
-			}).append(this.getItemDiv(itemStats, options))
+				class: `btn btn-secondary ${mobileClass}`
+			}).append(this.getItemDiv(itemStats, options));
 
 			if (options.isPurchasable) {
-				itemSlot.on("click", function () {
+				itemSlot.on('click', function () {
 					// ige.shopkeeper.confirmPurchase($(this).attr("id"))
-				})
+				});
 			}
 
-			return itemSlot
+			return itemSlot;
 		}
 	},
 
 	getItemDiv: function (item, options, slotIndex) {
 		var self = this;
 		if (item) {
-			var itemStats = item._stats
+			var itemStats = item._stats;
 			if (itemStats) {
-				var itemDetail = $("<div/>", {
-					style: "font-size: 16px; width: 250px;",
+				var itemDetail = $('<div/>', {
+					style: 'font-size: 16px; width: 250px;',
 					html: this.getItemHtml(itemStats)
-				})
+				});
 
 				var itemQuantity = item._stats.quantity !== undefined ? item._stats.quantity : '';
 				// || item._stats.maxQuantity === null
@@ -138,47 +137,47 @@ var ItemUiComponent = IgeEntity.extend({
 				var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'height:17px;max-width:20px;object-fit:contain' : 'height:30px;max-width:27px;object-fit:contain';
 				var isTrading = options.isTrading;
 				if (img) {
-					var itemDiv = $("<div/>", {
-						id: 'slotindex-' + slotIndex,
+					var itemDiv = $('<div/>', {
+						id: `slotindex-${slotIndex}`,
 						class: 'item-div draggable-item',
-						style: "height:100%",
-						role: "button",
-						html: "<div class='" + (!isTrading ? "absolute-center" : "") + "'><img src='" + img + "' style='" + mobileClass + "'/></div><small class='quantity'>" + (!isNaN(parseFloat(itemQuantity)) && parseFloat(itemQuantity) || itemQuantity) + "</small>",
-						'data-container': "body",
-						'data-toggle': "popover",
-						'data-placement': options.popover || "left",
+						style: 'height:100%',
+						role: 'button',
+						html: `<div class='${!isTrading ? 'absolute-center' : ''}'><img src='${img}' style='${mobileClass}'/></div><small class='quantity'>${!isNaN(parseFloat(itemQuantity)) && parseFloat(itemQuantity) || itemQuantity}</small>`,
+						'data-container': 'body',
+						'data-toggle': 'popover',
+						'data-placement': options.popover || 'left',
 						'data-content': itemDetail.prop('outerHTML')
 					})
 						.popover({
 							html: true,
 							animation: false,
-							trigger: 'manual',
-						})
+							trigger: 'manual'
+						});
 				}
 			}
 		} else {
-			var itemDiv = $("<div/>", {
-				id: 'slotindex-' + slotIndex,
+			var itemDiv = $('<div/>', {
+				id: `slotindex-${slotIndex}`,
 				class: 'item-div draggable-item',
-				style: "height:100%",
-				role: "button",
+				style: 'height:100%',
+				role: 'button'
 			});
 		}
 		if (options.isDraggable && itemDiv) {
 			itemDiv.draggable({
-				revert: "invalid",
-				cursor: "move",
+				revert: 'invalid',
+				cursor: 'move',
 				// helper: "clone",
 				zIndex: 10000,
 				containment: 'window',
-				appendTo: "body",
+				appendTo: 'body',
 				start: function (event, ui) { // when being dragged, disable popover. it doesn't need to be enabled later, because updateInventory overwrites popover div
 					$('.popover').popover('disable');
-				},
+				}
 			}).droppable({
 				drop: function (event, ui) {
-					var draggable = ui.draggable, droppable = $(this),
-						dragPos = draggable.position(), dropPos = droppable.position();
+					var draggable = ui.draggable; var droppable = $(this);
+					var dragPos = draggable.position(); var dropPos = droppable.position();
 					var fromIndex = parseFloat(ui.draggable[0].parentElement.id.replace('item-', ''));
 					// var isTradingItemDragged = ui.draggable[0].parentElement.name.include('trade');
 					var toIndex = parseFloat(droppable[0].parentElement.id.replace('item-', ''));
@@ -194,10 +193,10 @@ var ItemUiComponent = IgeEntity.extend({
 						// top: dragPos.top + 'px'
 						left: 0, top: 0
 					});
-					
+
 					var selectedUnit = ige.client.myPlayer.getSelectedUnit();
 					var items = selectedUnit._stats.itemIds;
-					
+
 					var fromItem = ige.$(items[fromIndex]);
 					var toItem = ige.$(items[toIndex]);
 					if (fromItem) {
@@ -207,14 +206,13 @@ var ItemUiComponent = IgeEntity.extend({
 					if (toItem) {
 						toItem.stopUsing();
 					}
-					
+
 					ige.network.send('swapInventory', { from: fromIndex, to: toIndex });
 
 					var tempItem = items[fromIndex];
 					items[fromIndex] = items[toIndex];
 					items[toIndex] = tempItem;
-					
-					
+
 					var totalInventorySlot = selectedUnit._stats.inventorySize;
 					if (ige.client.myPlayer.isTrading && (fromIndex >= totalInventorySlot || toIndex >= totalInventorySlot)) {
 						ige.tradeUi.sendOfferingItems();
@@ -224,9 +222,9 @@ var ItemUiComponent = IgeEntity.extend({
 		}
 		return itemDiv;
 
-		return $("<div/>", {
-			style: "font-size: 16px; width: 250px;",
-			html: ""
+		return $('<div/>', {
+			style: 'font-size: 16px; width: 250px;',
+			html: ''
 		});
 	},
 
@@ -235,13 +233,13 @@ var ItemUiComponent = IgeEntity.extend({
 
 		// var buffs = self.getBuffList(itemStats);
 
-		var itemTitle = $("<h4/>", {
+		var itemTitle = $('<h4/>', {
 			html: itemStats.name
-		})
+		});
 
-		var itemDiv = $("<div/>", {
+		var itemDiv = $('<div/>', {
 			class: 'caption '
-		})
+		});
 
 		// console.log(itemStats)
 
@@ -263,29 +261,29 @@ var ItemUiComponent = IgeEntity.extend({
 			// 	})
 			// )
 			.append(itemTitle)
-			.append($("<hr/>"))
+			.append($('<hr/>'))
 			.append(itemHtml)
-			.append($("<hr/>"))
+			.append($('<hr/>'));
 		// .append($("<h6/>", {html: "Buffs"}))
 		// .append(buffs.html)
 
-		return itemDiv
+		return itemDiv;
 	},
 	updateItemDescription: function (item) {
 		var inventorySlotIfPresent = item._stats.slotIndex;
 		if (item && item._stats && (inventorySlotIfPresent === 0 || inventorySlotIfPresent)) {
-			var popoverContent = $("<div/>", {
-				style: "font-size: 16px; width: 250px;",
+			var popoverContent = $('<div/>', {
+				style: 'font-size: 16px; width: 250px;',
 				html: this.getItemHtml(item._stats)
 			});
 
-			$('#slotindex-' + inventorySlotIfPresent).attr('data-content', popoverContent[0].outerHTML);
+			$(`#slotindex-${inventorySlotIfPresent}`).attr('data-content', popoverContent[0].outerHTML);
 		}
 	},
 	getItemPopOverContent: function (stats) {
 		var info = '<div>';
 		if (stats.description) {
-			info += '<p class="mb-1"><b>Description: </b><span class="item-description">' + stats.description + ' </span></p>';
+			info += `<p class="mb-1"><b>Description: </b><span class="item-description">${stats.description} </span></p>`;
 		}
 		if (stats && stats.bonus) {
 			if (stats.bonus.consume && Object.keys(stats.bonus.consume).length > 0) {
@@ -293,12 +291,12 @@ var ItemUiComponent = IgeEntity.extend({
 
 				for (var i in stats.bonus.consume.playerAttribute) {
 					var attrName = ige.game.data.attributeTypes[i] ? ige.game.data.attributeTypes[i].name : i;
-					consumeBonus += '<p class="mb-2 ml-2">' + attrName + ': ' + stats.bonus.consume.playerAttribute[i] + '</p>';
+					consumeBonus += `<p class="mb-2 ml-2">${attrName}: ${stats.bonus.consume.playerAttribute[i]}</p>`;
 				}
 
 				for (var i in stats.bonus.consume.unitAttribute) {
 					var attrName = ige.game.data.attributeTypes[i] ? ige.game.data.attributeTypes[i].name : i;
-					consumeBonus += '<p class="mb-2 ml-2">' + attrName + ': ' + stats.bonus.consume.unitAttribute[i] + '</p>';
+					consumeBonus += `<p class="mb-2 ml-2">${attrName}: ${stats.bonus.consume.unitAttribute[i]}</p>`;
 				}
 
 				if (consumeBonus) {
@@ -310,28 +308,26 @@ var ItemUiComponent = IgeEntity.extend({
 				var passiveBonus = '';
 				for (var i in stats.bonus.passive.playerAttribute) {
 					var attrName = ige.game.data.attributeTypes[i] ? ige.game.data.attributeTypes[i].name : i;
-					var value = stats.bonus.passive.playerAttribute[i] && stats.bonus.passive.playerAttribute[i].value || 0
+					var value = stats.bonus.passive.playerAttribute[i] && stats.bonus.passive.playerAttribute[i].value || 0;
 					var type = stats.bonus.passive.playerAttribute[i] && stats.bonus.passive.playerAttribute[i].type || '';
 					if (type == 'percentage') {
 						type = '%';
-					}
-					else {
+					} else {
 						type = '';
 					}
-					passiveBonus += '<p class="mb-2 ml-2">' + attrName + ': ' + value + type + '</p>';
+					passiveBonus += `<p class="mb-2 ml-2">${attrName}: ${value}${type}</p>`;
 				}
 
 				for (var i in stats.bonus.passive.unitAttribute) {
 					var attrName = ige.game.data.attributeTypes[i] ? ige.game.data.attributeTypes[i].name : i;
-					var value = stats.bonus.passive.unitAttribute[i] && stats.bonus.passive.unitAttribute[i].value || 0
+					var value = stats.bonus.passive.unitAttribute[i] && stats.bonus.passive.unitAttribute[i].value || 0;
 					var type = stats.bonus.passive.unitAttribute[i] && stats.bonus.passive.unitAttribute[i].type || '';
 					if (type == 'percentage') {
 						type = '%';
-					}
-					else {
+					} else {
 						type = '';
 					}
-					passiveBonus += '<p class="mb-2 ml-2">' + attrName + ': ' + value + type + '</p>';
+					passiveBonus += `<p class="mb-2 ml-2">${attrName}: ${value}${type}</p>`;
 				}
 
 				if (passiveBonus) {
@@ -339,7 +335,6 @@ var ItemUiComponent = IgeEntity.extend({
 					info += passiveBonus;
 				}
 			}
-
 		}
 		for (var atributeId in stats.attributes) {
 			var attribute = stats.attributes[atributeId];
@@ -349,12 +344,11 @@ var ItemUiComponent = IgeEntity.extend({
 				var value = null;
 				if (attribute.dataType === 'time') {
 					value = ige.game.secondsToHms(attribute.value);
-				}
-				else {
+				} else {
 					var decimalPlace = parseInt(attribute.decimalPlaces) || 0;
 					value = parseFloat(attribute.value).toFixed(decimalPlace);
 				}
-				info += '<b>' + attribute.name + ': </b>' + (value || 0);
+				info += `<b>${attribute.name}: </b>${value || 0}`;
 				info += '</p>';
 			}
 		}
@@ -363,11 +357,11 @@ var ItemUiComponent = IgeEntity.extend({
 			var costHtml = '';
 			for (var key in stats.cost.unitAttributes) {
 				var attrName = ige.game.data.attributeTypes[key] ? ige.game.data.attributeTypes[key].name : key;
-				costHtml += '<span>' + attrName + ': ' + stats.cost.unitAttributes[key] + '</span>,';
+				costHtml += `<span>${attrName}: ${stats.cost.unitAttributes[key]}</span>,`;
 			}
 			for (var key in stats.cost.playerAttributes) {
 				var attrName = ige.game.data.attributeTypes[key] ? ige.game.data.attributeTypes[key].name : key;
-				costHtml += '<span>' + attrName + ': ' + stats.cost.playerAttributes[key] + '</span>,';
+				costHtml += `<span>${attrName}: ${stats.cost.playerAttributes[key]}</span>,`;
 			}
 
 			if (costHtml) {
@@ -391,27 +385,26 @@ var ItemUiComponent = IgeEntity.extend({
 				// case 'isGun': attrStr = "<strong>Weapon type:</strong> "+((value == true)? "Range":"Melee"); break;
 				case 'price':
 					if (typeof itemValue !== 'object' || itemValue === {}) {
-						attrStr = "<strong>Price:</strong> free";
+						attrStr = '<strong>Price:</strong> free';
 					} else {
 						attrStr = '';
 						for (var attrKey in itemValue) {
-							attrStr += "<strong>Price:</strong> " + itemValue[attrKey];
+							attrStr += `<strong>Price:</strong> ${itemValue[attrKey]}`;
 						}
 					}
 					break;
-				case 'ammoSize': attrStr = "<strong>Magazine size:</strong> " + itemValue; break;
-				case 'ammoTotal': attrStr = "<strong>Ammo total:</strong> " + itemValue; break;
-				case 'fireRate': attrStr = "<strong>Fire rate:</strong> " + parseFloat(1000 / itemValue).toFixed(2) + " round/s"; break;
-				case 'reloadRate': attrStr = "<strong>Reload time:</strong> " + parseFloat(itemValue / 1000).toFixed(2) + " s"; break;
-				case 'bulletForce': attrStr = "<strong>Knock-back Force:</strong> " + parseFloat(itemValue).toFixed(0); break;
-				case 'bulletDistance': attrStr = "<strong>Range:</strong> " + (parseFloat(itemValue).toFixed(0)); break;
-				case 'recoilForce': attrStr = "<strong>Recoil:</strong> " + (parseFloat(itemValue).toFixed(0)); break;
-				case 'movementSpeed': attrStr = "<strong>Speed bonus:</strong> " + parseFloat(itemValue.toFixed(1)); break;
-				case 'immunity': attrStr = "<strong>Immunity bonus:</strong> " + parseFloat(itemValue * 100).toFixed(0) + "%"; break;
-				case 'maxStamina': attrStr = "<strong>Stamina bonus:</strong> " + parseFloat(itemValue.toFixed(0)); break;
-				case 'stunChance': attrStr = "<strong>Slow target chance:</strong> " + parseFloat(itemValue * 100).toFixed(0) + "%"; break;
-				case 'slowChance': attrStr = "<strong>Stun target chance:</strong> " + parseFloat(itemValue * 100).toFixed(0) + "%"; break;
-
+				case 'ammoSize': attrStr = `<strong>Magazine size:</strong> ${itemValue}`; break;
+				case 'ammoTotal': attrStr = `<strong>Ammo total:</strong> ${itemValue}`; break;
+				case 'fireRate': attrStr = `<strong>Fire rate:</strong> ${parseFloat(1000 / itemValue).toFixed(2)} round/s`; break;
+				case 'reloadRate': attrStr = `<strong>Reload time:</strong> ${parseFloat(itemValue / 1000).toFixed(2)} s`; break;
+				case 'bulletForce': attrStr = `<strong>Knock-back Force:</strong> ${parseFloat(itemValue).toFixed(0)}`; break;
+				case 'bulletDistance': attrStr = `<strong>Range:</strong> ${parseFloat(itemValue).toFixed(0)}`; break;
+				case 'recoilForce': attrStr = `<strong>Recoil:</strong> ${parseFloat(itemValue).toFixed(0)}`; break;
+				case 'movementSpeed': attrStr = `<strong>Speed bonus:</strong> ${parseFloat(itemValue.toFixed(1))}`; break;
+				case 'immunity': attrStr = `<strong>Immunity bonus:</strong> ${parseFloat(itemValue * 100).toFixed(0)}%`; break;
+				case 'maxStamina': attrStr = `<strong>Stamina bonus:</strong> ${parseFloat(itemValue.toFixed(0))}`; break;
+				case 'stunChance': attrStr = `<strong>Slow target chance:</strong> ${parseFloat(itemValue * 100).toFixed(0)}%`; break;
+				case 'slowChance': attrStr = `<strong>Stun target chance:</strong> ${parseFloat(itemValue * 100).toFixed(0)}%`; break;
 			}
 
 			return attrStr;
@@ -421,101 +414,93 @@ var ItemUiComponent = IgeEntity.extend({
 	// get buff list
 	getBuffList: function (itemStats) {
 		// console.log("getBuffList", itemStats)
-		var buffCount = 0
-		var buffListHtml = $("<ul/>", {
-			class: "list-group"
+		var buffCount = 0;
+		var buffListHtml = $('<ul/>', {
+			class: 'list-group'
 		});
 
 		if (itemStats && itemStats.buffTypes) {
 			for (var i = 0; i < itemStats.buffTypes.length; i++) {
-				var buffTypeName = itemStats.buffTypes[i]
-				var itemValue = itemStats[buffTypeName]
-				var itemType = ige.game.getAsset("itemTypes", itemStats.itemTypeId)
+				var buffTypeName = itemStats.buffTypes[i];
+				var itemValue = itemStats[buffTypeName];
+				var itemType = ige.game.getAsset('itemTypes', itemStats.itemTypeId);
 
-				var defaultValue = 0
+				var defaultValue = 0;
 
 				if (itemType) {
-					var defaultValue = itemType[buffTypeName] || 0
+					var defaultValue = itemType[buffTypeName] || 0;
 				}
 
-				var buffType = ige.game.getAsset("buffTypes", buffTypeName)
+				var buffType = ige.game.getAsset('buffTypes', buffTypeName);
 
 				if (buffType) {
-					var isPercentageBased = buffType.unit == 'percentage'
+					var isPercentageBased = buffType.unit == 'percentage';
 				}
 
 				if (itemValue != defaultValue && itemValue != 0 && itemValue != undefined && defaultValue != undefined) {
 					switch (buffTypeName) {
-						case 'height': buffTypeName = "<strong>Height bonus:</strong> "; break;
-						case 'ammoSize': buffTypeName = "<strong>Magazine size:</strong> "; break;
-						case 'ammoTotal': buffTypeName = "<strong>Ammo total:</strong> "; break;
-						case 'fireRate': buffTypeName = "<strong>Fire rate:</strong> "; break;
-						case 'reloadRate': buffTypeName = "<strong>Reload time:</strong> "; break;
-						case 'bulletForce': buffTypeName = "<strong>Knock-back force:</strong> "; break;
-						case 'bulletDistance': buffTypeName = "<strong>Range:</strong> "; break;
-						case 'recoilForce': buffTypeName = "<strong>Recoil:</strong> "; break;
-						case 'movementSpeed': buffTypeName = "<strong>Speed bonus:</strong> "; break;
-						case 'immunity': buffTypeName = "<strong>Immunity bonus:</strong> "; break;
-						case 'maxStamina': buffTypeName = "<strong>Stamina bonus:</strong> "; break;
-						case 'stunChance': buffTypeName = "<strong>Slow target chance:</strong> "; break;
-						case 'slowChance': buffTypeName = "<strong>Stun target chance:</strong> "; break;
+						case 'height': buffTypeName = '<strong>Height bonus:</strong> '; break;
+						case 'ammoSize': buffTypeName = '<strong>Magazine size:</strong> '; break;
+						case 'ammoTotal': buffTypeName = '<strong>Ammo total:</strong> '; break;
+						case 'fireRate': buffTypeName = '<strong>Fire rate:</strong> '; break;
+						case 'reloadRate': buffTypeName = '<strong>Reload time:</strong> '; break;
+						case 'bulletForce': buffTypeName = '<strong>Knock-back force:</strong> '; break;
+						case 'bulletDistance': buffTypeName = '<strong>Range:</strong> '; break;
+						case 'recoilForce': buffTypeName = '<strong>Recoil:</strong> '; break;
+						case 'movementSpeed': buffTypeName = '<strong>Speed bonus:</strong> '; break;
+						case 'immunity': buffTypeName = '<strong>Immunity bonus:</strong> '; break;
+						case 'maxStamina': buffTypeName = '<strong>Stamina bonus:</strong> '; break;
+						case 'stunChance': buffTypeName = '<strong>Slow target chance:</strong> '; break;
+						case 'slowChance': buffTypeName = '<strong>Stun target chance:</strong> '; break;
 					}
 
 					if (isPercentageBased) {
 						if (defaultValue == 0) {
-							var itemValueHtml = (itemValue * 100).toFixed(0) + "%"
+							var itemValueHtml = `${(itemValue * 100).toFixed(0)}%`;
+						} else {
+							var itemValueHtml = `${((itemValue - defaultValue) / defaultValue * 100).toFixed(0)}%`;
 						}
-						else {
-							var itemValueHtml = ((itemValue - defaultValue) / defaultValue * 100).toFixed(0) + "%"
-						}
-
-					}
-					else {
-						var itemValueHtml = (itemValue - defaultValue).toFixed(1)
+					} else {
+						var itemValueHtml = (itemValue - defaultValue).toFixed(1);
 					}
 					buffListHtml.append(
-						$("<li/>", {
-							class: "list-group-item",
-							html: buffTypeName + " <span class='badge badge-default' style='margin-left:4px'>" + itemValueHtml + "</span>"
+						$('<li/>', {
+							class: 'list-group-item',
+							html: `${buffTypeName} <span class='badge badge-default' style='margin-left:4px'>${itemValueHtml}</span>`
 						})
-					)
+					);
 					// console.log("itemStats",itemStats)
 					buffCount++;
 				}
-
 			}
 		}
-
 
 		var data = {
 			name: 'Normal',
 			css: 'badge badge-pill badge-default'
-		}
+		};
 
 		if (buffCount > 4) {
 			data = {
 				name: 'Legendary',
 				css: 'badge badge-pill badge-danger'
-			}
-		}
-		else if (buffCount > 2) {
+			};
+		} else if (buffCount > 2) {
 			data = {
 				name: 'Rare',
 				css: 'badge badge-pill badge-warning'
-			}
-		}
-		else if (buffCount > 0) {
+			};
+		} else if (buffCount > 0) {
 			data = {
 				name: 'Special',
 				css: 'badge badge-pill badge-primary'
-			}
+			};
 		}
 
 		// data.html = buffListHtml
 
-		return ''
+		return '';
 	}
 });
-
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ItemUiComponent; }

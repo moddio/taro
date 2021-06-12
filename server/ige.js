@@ -13,34 +13,34 @@ const cluster = require('cluster');
 
 console.log('########################################################');
 console.log('########################################################\n');
-console.log('Executing IGE Under Node.js Version ' + process.version);
+console.log(`Executing IGE Under Node.js Version ${process.version}`);
 
 // Set a global variable for the location of
 // the node_modules folder
 modulePath = '../server/node_modules/';
-function generateId() {
+function generateId () {
 	let text = '';
 	let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  
+
 	for (var i = 0; i < 24; i++) {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
-  
+
 	return text;
 }
 
 // Load the CoreConfig.js file
 igeCoreConfig = require('../engine/CoreConfig.js');
 
-var arr = igeCoreConfig.include,
-	arrCount = arr.length,
-	arrIndex,
-	arrItem,
-	itemJs;
+var arr = igeCoreConfig.include;
+var arrCount = arr.length;
+var arrIndex;
+var arrItem;
+var itemJs;
 
 // Check if we are deploying, if so don't include core modules
-var argParse = require("node-arguments").process,
-	args = argParse(process.argv, {separator:'-'});
+var argParse = require('node-arguments').process;
+var args = argParse(process.argv, { separator: '-' });
 
 if (!args['-deploy']) {
 	// Loop the igeCoreConfig object's include array
@@ -48,11 +48,11 @@ if (!args['-deploy']) {
 	for (arrIndex = 0; arrIndex < arrCount; arrIndex++) {
 		arrItem = arr[arrIndex];
 		if (arrItem[0].indexOf('s') > -1) {
-			itemJs = arrItem[1] + ' = ' + 'require("../engine/' + arrItem[2] + '")';
+			itemJs = `${arrItem[1]} = ` + `require("../engine/${arrItem[2]}")`;
 			// Check if there is a specific object we want to use from the
 			// module we are loading
 			if (arrItem[3]) {
-				itemJs += '.' + arrItem[3] + ';';
+				itemJs += `.${arrItem[3]};`;
 			} else {
 				itemJs += ';';
 			}
@@ -65,17 +65,14 @@ if (!args['-deploy']) {
 	IgeClass = require('../engine/core/IgeClass');
 }
 
-if (process.env.ENV == 'dev')
-{
+if (process.env.ENV == 'dev') {
 	// Include the control class
-	IgeNode = require('./IgeNode');	
+	IgeNode = require('./IgeNode');
 	var igeNode = new IgeNode(); // master IgeNode
-}
-else
-{
+} else {
 	var self = this;
 	// Start the app
-	IgeNode = require('./IgeNode');	
+	IgeNode = require('./IgeNode');
 	var igeNode = new IgeNode();
 
 	if (cluster.isMaster) // master cluster!
@@ -83,10 +80,9 @@ else
 		// Fork workers.
 		var debug = process.execArgv.indexOf('--debug') !== -1;
 		cluster.setupMaster({
-			execArgv: process.execArgv.filter(function(s) { return s !== '--debug' })
+			execArgv: process.execArgv.filter(function (s) { return s !== '--debug'; })
 		});
-	} 
-	else // slave workers! ;-;
+	} else // slave workers! ;-;
 	{
 		// Workers can share any TCP connection
 		// In this case it is an HTTP server

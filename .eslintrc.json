@@ -82,9 +82,7 @@
         "brace-style": 1,
 
         // Indents should be four spaces.
-        "indent": [1, 4, {
-            "SwitchCase": 1
-        }],
+        "indent": [1, "tab", { "SwitchCase": 1 }],
 
         // Semicolons and singlequotes should always be used.
         "semi": [2, "always"],

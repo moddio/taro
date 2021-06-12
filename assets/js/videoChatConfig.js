@@ -1,4 +1,4 @@
 const videoChatConfig = {
-    peerJSConfig: false,
-    socketIOConfig: false
-}
+	peerJSConfig: false,
+	socketIOConfig: false
+};

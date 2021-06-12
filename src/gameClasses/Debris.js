@@ -2,7 +2,6 @@ var Debris = IgeEntityBox2d.extend({
 	classId: 'Debris',
 
 	init: function (data, entityIdFromServer) {
-
 		var self = this;
 
 		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
@@ -11,7 +10,7 @@ var Debris = IgeEntityBox2d.extend({
 		}
 		this.id(entityIdFromServer);
 
-		this.category('debris')
+		this.category('debris');
 
 		if (ige.isServer) {
 			this.mount(ige.$('baseScene'));
@@ -20,10 +19,8 @@ var Debris = IgeEntityBox2d.extend({
 		self._stats = data;
 
 		if (ige.isServer) {
-			this.streamMode(1)
-
-		}
-		else if (ige.isClient) {
+			this.streamMode(1);
+		} else if (ige.isClient) {
 			var cellSheet = self._stats.cellSheet;
 			// var cell = new IgePixiTexture(cellSheet[0], cellSheet[1], cellSheet[2], this);
 
@@ -38,7 +35,7 @@ var Debris = IgeEntityBox2d.extend({
 				url: cellSheet[0],
 				columnCount: cellSheet[1],
 				rowCount: cellSheet[2]
-			}
+			};
 			this.entityId = entityIdFromServer;
 			this.createPixiTexture(self._stats.gid - cellSheet[3]);
 			this.mount(ige.pixi.world);
@@ -57,12 +54,11 @@ var Debris = IgeEntityBox2d.extend({
 			// so that the entity's width and height now match that
 			// of the cell being used
 			// .texture(texture)
-
 		}
 
 		// if debris has custom fixture setup
 		var body = {
-			type: self._stats.type ? self._stats.type : "dynamic",
+			type: self._stats.type ? self._stats.type : 'dynamic',
 			width: self._stats.width,
 			height: self._stats.height,
 			linearDamping: 5,
@@ -85,7 +81,7 @@ var Debris = IgeEntityBox2d.extend({
 
 		self._stats.currentBody = body;
 
-		this.updateBody(data.defaultData)
+		this.updateBody(data.defaultData);
 
 		this.addBehaviour('debrisBehaviour', this._behaviour);
 	},
@@ -106,8 +102,8 @@ var Debris = IgeEntityBox2d.extend({
 		if (this._stats.x == undefined || this._stats.y == undefined || this._stats.rotation == undefined)
 			return;
 
-		this.translateTo(this._stats.x, this._stats.y, 0)
-		this.rotateTo(0, 0, Math.radians(this._stats.rotation))
+		this.translateTo(this._stats.x, this._stats.y, 0);
+		this.rotateTo(0, 0, Math.radians(this._stats.rotation));
 
 		// this.targetTransform = [ige.currentTime(), [this._stats.x, this._stats.y, this._stats.rotation]];
 	},
@@ -120,14 +116,12 @@ var Debris = IgeEntityBox2d.extend({
 				if (!this._stats[property]) {
 					$('#visible-false').addClass('active');
 					$('#visible-true').removeClass('active');
-				}
-				else {
+				} else {
 					$('#visible-false').removeClass('active');
 					$('#visible-true').addClass('active');
 				}
-			}
-			else {
-				$('#debris-' + property).val(this._stats[property] || 0);
+			} else {
+				$(`#debris-${property}`).val(this._stats[property] || 0);
 			}
 		}
 		$('#debris-modal').modal();

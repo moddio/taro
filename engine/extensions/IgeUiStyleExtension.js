@@ -14,7 +14,7 @@ var IgeUiStyleExtension = {
 
 		return this._color;
 	},
-	
+
 	/**
 	 * Sets the current background texture and the repeatType
 	 * to determine in which axis the image should be repeated.
@@ -47,9 +47,9 @@ var IgeUiStyleExtension = {
 			if (this._cell > 1) {
 				// We are using a cell sheet, render the cell to a
 				// temporary canvas and set that as the pattern image
-				var canvas = document.createElement('canvas'),
-					ctx = canvas.getContext('2d'),
-					cellData = texture._cells[this._cell];
+				var canvas = document.createElement('canvas');
+				var ctx = canvas.getContext('2d');
+				var cellData = texture._cells[this._cell];
 
 				canvas.width = cellData[2];
 				canvas.height = cellData[3];
@@ -83,14 +83,13 @@ var IgeUiStyleExtension = {
 
 	backgroundSize: function (x, y) {
 		if (x !== undefined && y !== undefined) {
-
-			if (typeof(x) === 'string' && x !== 'auto') {
+			if (typeof (x) === 'string' && x !== 'auto') {
 				// Work out the actual size in pixels
 				// from the percentage
 				x = this._bounds2d.x / 100 * parseInt(x, 10);
 			}
 
-			if (typeof(y) === 'string' && y !== 'auto') {
+			if (typeof (y) === 'string' && y !== 'auto') {
 				// Work out the actual size in pixels
 				// from the percentage
 				y = this._bounds2d.y / 100 * parseInt(y, 10);
@@ -99,15 +98,15 @@ var IgeUiStyleExtension = {
 			if (x === 'auto' && y === 'auto') {
 				this.log('Cannot set background x and y both to auto!', 'error');
 				return this;
-			} else if(x === 'auto') {
-				if(this._patternTexture && this._patternTexture.image) {
+			} else if (x === 'auto') {
+				if (this._patternTexture && this._patternTexture.image) {
 					// find out y change and apply it to the x
 					x = this._patternTexture.image.width * (y / this._patternTexture.image.height);
 				} else {
 					x = this._bounds2d.x * (y / this._bounds2d.y);
 				}
-			} else if(y === 'auto') {
-				if(this._patternTexture && this._patternTexture.image) {
+			} else if (y === 'auto') {
+				if (this._patternTexture && this._patternTexture.image) {
 					// find out x change and apply it to the y
 					y = this._patternTexture.image.height * (x / this._patternTexture.image.width);
 				} else {
@@ -116,8 +115,8 @@ var IgeUiStyleExtension = {
 			}
 
 			if (x !== 0 && y !== 0) {
-				this._backgroundSize = {x: x, y: y};
-	
+				this._backgroundSize = { x: x, y: y };
+
 				// Reset the background image
 				if (this._patternTexture && this._patternRepeat) {
 					this.backgroundImage(this._patternTexture, this._patternRepeat);
@@ -156,7 +155,7 @@ var IgeUiStyleExtension = {
 	 */
 	backgroundPosition: function (x, y) {
 		if (x !== undefined && y !== undefined) {
-			this._backgroundPosition = {x: x, y: y};
+			this._backgroundPosition = { x: x, y: y };
 			this.cacheDirty(true);
 			return this;
 		}
@@ -344,4 +343,4 @@ var IgeUiStyleExtension = {
 	}
 };
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeUiStyleExtension; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeUiStyleExtension; }

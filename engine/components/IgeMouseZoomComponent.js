@@ -82,11 +82,11 @@ var IgeMouseZoomComponent = IgeEventingClass.extend({
 		if (this._enabled) {
 			// Zoom the camera if the mouse is down
 			if (this._zoomStartMouse) {
-				var curMousePos = ige._mousePos,
-					zoomCords = {
-						x: -(this._zoomStartMouse.x - curMousePos.x) / 100,
-						y: -(this._zoomStartMouse.y - curMousePos.y) / 100
-					};
+				var curMousePos = ige._mousePos;
+				var zoomCords = {
+					x: -(this._zoomStartMouse.x - curMousePos.x) / 100,
+					y: -(this._zoomStartMouse.y - curMousePos.y) / 100
+				};
 
 				this._entity.camera.scaleTo(
 					zoomCords.x + this._zoomStartCamera.x > 0.02 ? zoomCords.x + this._zoomStartCamera.x : 0.02,
@@ -107,11 +107,11 @@ var IgeMouseZoomComponent = IgeEventingClass.extend({
 		if (this._enabled) {
 			// End the zoom
 			if (this._zoomStartMouse) {
-				var curMousePos = ige._mousePos,
-					zoomCords = {
-						x: -(this._zoomStartMouse.x - curMousePos.x) / 100,
-						y: -(this._zoomStartMouse.y - curMousePos.y) / 100
-					};
+				var curMousePos = ige._mousePos;
+				var zoomCords = {
+					x: -(this._zoomStartMouse.x - curMousePos.x) / 100,
+					y: -(this._zoomStartMouse.y - curMousePos.y) / 100
+				};
 
 				this._entity.camera.scaleTo(
 					zoomCords.x + this._zoomStartCamera.x > 0.02 ? zoomCords.x + this._zoomStartCamera.x : 0.02,

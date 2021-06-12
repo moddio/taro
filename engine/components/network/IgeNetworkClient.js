@@ -2,7 +2,7 @@ var IgeNetworkClient = IgeClass.extend({
 	classId: 'IgeNetworkClient',
 
 	init: function (socket) {
-		console.log("new client");
+		console.log('new client');
 		this._socket = socket;
 		this._id = socket.id;
 

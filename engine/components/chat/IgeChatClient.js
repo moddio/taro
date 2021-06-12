@@ -32,13 +32,12 @@ var IgeChatClient = {
 			ige.client.myPlayer._stats &&
 			ige.client.myPlayer._stats.mutedUsers &&
 			ige.client.myPlayer._stats.mutedUsers.indexOf(player._stats.userId) > -1;
-		
+
 		if (!player || isPlayerMuted) {
 			return;
 		}
 
 		var isChatHidden = $('#chat-box').hasClass('d-none');
-
 
 		// Emit the event and if it wasn't cancelled (by returning true) then
 		// process this ourselves
@@ -48,7 +47,6 @@ var IgeChatClient = {
 				var selectedUnit = player.getSelectedUnit();
 
 				if (selectedUnit && selectedUnit.gluedEntities) {
-
 					// destroy existing chat bubble if it exists
 					for (var i = 0; i < selectedUnit.gluedEntities.length; i++) {
 						var gluedEntity = selectedUnit.gluedEntities[i];
@@ -74,7 +72,7 @@ var IgeChatClient = {
 					openChatBubble[selectedUnit.id()] = new IgePixiChatBubble(data.text, {
 						parentUnit: selectedUnit.id()
 					})
-					.fade(3000);
+						.fade(3000);
 				}
 				// console.log("chatMsg from " + player._stats.name + ': ', data.text);
 			}
@@ -88,9 +86,9 @@ var IgeChatClient = {
 		// process this ourselves
 		if (!self.emit('joinedRoom', [data])) {
 			if (data.joined === true) {
-				//console.log('Server says we have joined room:', data.roomId);
+				// console.log('Server says we have joined room:', data.roomId);
 			} else {
-				//console.log('Server says we failed to join room:', data.roomId);
+				// console.log('Server says we failed to join room:', data.roomId);
 			}
 		}
 	},

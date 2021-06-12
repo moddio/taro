@@ -6,12 +6,12 @@ var ControlComponent = IgeEntity.extend({
 		// Store the entity that this component has been added to
 		this._entity = entity;
 
-		this.lastInputSent = 0
+		this.lastInputSent = 0;
 
 		// Store any options that were passed to us
 		this._options = options;
-		this.lastActionAt = undefined
-		this.lastMousePosition = [undefined, undefined]
+		this.lastActionAt = undefined;
+		this.lastMousePosition = [undefined, undefined];
 		this.mouseLocked = false;
 
 		// this.lastCommandSentAt = undefined;
@@ -30,42 +30,42 @@ var ControlComponent = IgeEntity.extend({
 				down: false,
 
 				'`': false,
-				'1': false,
-				'2': false,
-				'3': false,
-				'4': false,
-				'5': false,
-				'6': false,
-				'7': false,
-				'8': false,
-				'9': false,
+				1: false,
+				2: false,
+				3: false,
+				4: false,
+				5: false,
+				6: false,
+				7: false,
+				8: false,
+				9: false,
 
-				'a': false,
-				'b': false,
-				'c': false,
-				'd': false,
-				'e': false,
-				'f': false,
-				'g': false,
-				'h': false,
-				'i': false,
-				'j': false,
-				'k': false,
-				'l': false,
-				'm': false,
-				'n': false,
-				'o': false,
-				'p': false,
-				'q': false,
-				'r': false,
-				's': false,
-				't': false,
-				'u': false,
-				'v': false,
-				'w': false,
-				'x': false,
-				'y': false,
-				'z': false,
+				a: false,
+				b: false,
+				c: false,
+				d: false,
+				e: false,
+				f: false,
+				g: false,
+				h: false,
+				i: false,
+				j: false,
+				k: false,
+				l: false,
+				m: false,
+				n: false,
+				o: false,
+				p: false,
+				q: false,
+				r: false,
+				s: false,
+				t: false,
+				u: false,
+				v: false,
+				w: false,
+				x: false,
+				y: false,
+				z: false,
 
 				enter: false,
 				space: false,
@@ -76,7 +76,7 @@ var ControlComponent = IgeEntity.extend({
 
 		for (device in this.input) {
 			for (key in this.input[device]) {
-				ige.input.mapAction(key, ige.input[device][key])
+				ige.input.mapAction(key, ige.input[device][key]);
 			}
 		}
 	},
@@ -84,7 +84,7 @@ var ControlComponent = IgeEntity.extend({
 	keyDown: function (device, key) {
 		// check for input modal is open
 		if (ige.isClient) {
-			this.isChatOpen = ($("#message").is(":focus") && !$("#player-input-field").is(":focus")) ||
+			this.isChatOpen = ($('#message').is(':focus') && !$('#player-input-field').is(':focus')) ||
 				$('#modd-dialogue-modal').hasClass('show') ||
 				$('#player-input-modal').hasClass('show') ||
 				$('#modd-item-shop-modal').hasClass('show') ||
@@ -103,12 +103,12 @@ var ControlComponent = IgeEntity.extend({
 		if (!player) {
 			return;
 		}
-			
+
 		var unit = player.getSelectedUnit();
 		if (unit && unit._category == 'unit') {
 			if (ige.isServer || (ige.isClient && !this.isChatOpen)) {
 				var unitAbility = null;
-				if(unit._stats.isStunned == undefined || unit._stats.isStunned != true){
+				if (unit._stats.isStunned == undefined || unit._stats.isStunned != true) {
 					if (unit._stats.controls) {
 						if (unit._stats.controls.movementControlScheme == 'ad') {
 							switch (key) {
@@ -170,7 +170,7 @@ var ControlComponent = IgeEntity.extend({
 				}
 
 				if (!unitAbility && unit._stats.controls && unit._stats.controls.abilities) {
-					unitAbility = unit._stats.controls.abilities[key]
+					unitAbility = unit._stats.controls.abilities[key];
 				}
 
 				if (unitAbility && unitAbility.keyDown && unit.ability) {
@@ -182,8 +182,7 @@ var ControlComponent = IgeEntity.extend({
 						// console.log(key, Date.now());
 						unit.ability.cast(unitAbility.keyDown);
 					}
-				}
-				else if (
+				} else if (
 					key == '1' || key == '2' || key == '3' || key == '4' ||
 					key == '5' || key == '6' || key == '7' || key == '8' || key == '9'
 				) {
@@ -197,7 +196,6 @@ var ControlComponent = IgeEntity.extend({
 		// }
 
 		if (ige.isClient) {
-
 			if (!this.isChatOpen) {
 				ige.network.send('playerKeyDown', { device: device, key: key });
 
@@ -212,13 +210,10 @@ var ControlComponent = IgeEntity.extend({
 					}
 				}
 			}
-
 		}
-
 	},
 
 	keyUp: function (device, key) {
-
 		this.lastActionAt = Date.now();
 
 		var player = ige.game.getPlayerByClientId(this._entity._stats.clientId);
@@ -256,7 +251,7 @@ var ControlComponent = IgeEntity.extend({
 				case 'button1':
 					if (unit.ability != undefined) {
 						unit.ability.stopUsingItem();
-					}					
+					}
 					break;
 			}
 
@@ -269,7 +264,7 @@ var ControlComponent = IgeEntity.extend({
 				// }
 
 				if (!unitAbility && unit._stats.controls && unit._stats.controls.abilities) {
-					unitAbility = unit._stats.controls.abilities[key]
+					unitAbility = unit._stats.controls.abilities[key];
 				}
 
 				if (unitAbility && unitAbility.keyUp && unit.ability) {
@@ -289,14 +284,13 @@ var ControlComponent = IgeEntity.extend({
 				ige.network.send('playerKeyUp', { device: device, key: key });
 			}
 		}
-		
-		if (this.input[device])
-			this.input[device][key] = false
 
+		if (this.input[device])
+			this.input[device][key] = false;
 	},
 
 	mouseMove: function () {
-		var player = ige.client.myPlayer
+		var player = ige.client.myPlayer;
 		if (player) {
 			if (ige.pixi && ige.pixi.viewport) {
 				var vpTransform = [
@@ -311,12 +305,10 @@ var ControlComponent = IgeEntity.extend({
 					vpTransform[1] + mouseY / ige.pixi.viewport.scale.y
 				];
 				this.newMousePosition = currentMouseTransform;
-			}
-			else {
+			} else {
 				this.newMousePosition = [0, 0];
 			}
 		}
-
 	},
 	/**
 	 * Called every frame by the engine when this entity is mounted to the
@@ -334,7 +326,7 @@ var ControlComponent = IgeEntity.extend({
 							if (ige.mobileControls.isMobile && device == 'mouse') {
 								// block
 							} else {
-								self.keyDown(device, key)
+								self.keyDown(device, key);
 							}
 						}
 					} else {
@@ -342,19 +334,19 @@ var ControlComponent = IgeEntity.extend({
 							if (ige.mobileControls.isMobile && device == 'mouse') {
 								// block
 							} else {
-								self.keyUp(device, key)
+								self.keyUp(device, key);
 							}
 						}
 					}
 				}
 			}
-			
+
 			// mouse move
-			self.mouseMove()
+			self.mouseMove();
 
 			// check if sending player input is due (every 100ms)
 			if (ige._currentTime - self.lastInputSent > 100) {
-				self.sendPlayerInput = true
+				self.sendPlayerInput = true;
 				self.lastInputSent = ige._currentTime;
 			}
 
@@ -385,25 +377,25 @@ var ControlComponent = IgeEntity.extend({
 						ige.client.myPlayer.control.input.mouse.y = self.newMousePosition[1];
 					}
 					if (self.sendPlayerInput)
-						ige.network.send("playerMouseMoved", self.newMousePosition);
+						ige.network.send('playerMouseMoved', self.newMousePosition);
 				}
 				self.lastMousePosition = self.newMousePosition;
 			}
 
 			// unit move
 			var unit = ige.client.selectedUnit;
-			if (ige.physics && ige.game.cspEnabled  && unit) {
-				var x = unit._translate.x.toFixed(0)
-				var y = unit._translate.y.toFixed(0)
+			if (ige.physics && ige.game.cspEnabled && unit) {
+				var x = unit._translate.x.toFixed(0);
+				var y = unit._translate.y.toFixed(0);
 				if (self.sendPlayerInput || self.lastPositionSent == undefined || self.lastPositionSent[0] != x || self.lastPositionSent[1] != y) {
 					var pos = [x, y];
-					ige.network.send("playerUnitMoved", pos);
+					ige.network.send('playerUnitMoved', pos);
 					// console.log(x, y)
-					self.lastPositionSent = pos
+					self.lastPositionSent = pos;
 				}
 			}
 
-			self.sendPlayerInput = false
+			self.sendPlayerInput = false;
 		}
 	}
 

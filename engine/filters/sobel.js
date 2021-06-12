@@ -1,6 +1,6 @@
 IgeFilters.sobel = function (canvas, ctx, originalImage, texture, data) {
-	var strength = 1,
-		loop;
+	var strength = 1;
+	var loop;
 
 	if (data && data.value) {
 		strength = data.value;
@@ -17,9 +17,9 @@ IgeFilters.sobel = function (canvas, ctx, originalImage, texture, data) {
 					canvas.height
 				),
 				[
-					-1, -1,  1,
-					-2,  0, 2,
-					-1, 1,  1
+					-1, -1, 1,
+					-2, 0, 2,
+					-1, 1, 1
 				],
 				true
 			),
@@ -28,7 +28,7 @@ IgeFilters.sobel = function (canvas, ctx, originalImage, texture, data) {
 		);
 	}
 
-	//IgeFilters._invert(canvas, ctx);
+	// IgeFilters._invert(canvas, ctx);
 };
 
 IgeFilters._invert = function (canvas, ctx) {
@@ -38,10 +38,10 @@ IgeFilters._invert = function (canvas, ctx) {
 
 	canvasData = ctx.getImageData(0, 0, w, h);
 
-	for (i = 0; i < w * h * 4; i += 4)  {
+	for (i = 0; i < w * h * 4; i += 4) {
 		canvasData.data[i] = 255 - canvasData.data[i];
-		canvasData.data[i+1] = 255 - canvasData.data[i+1];
-		canvasData.data[i+2] = 255 - canvasData.data[i+2];
+		canvasData.data[i + 1] = 255 - canvasData.data[i + 1];
+		canvasData.data[i + 2] = 255 - canvasData.data[i + 2];
 	}
 
 	ctx.putImageData(canvasData, 0, 0);

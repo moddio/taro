@@ -6,36 +6,36 @@ IgeFilters.edgeDetect = function (canvas, ctx, originalImage, texture, data) {
 	}
 
 	var newData = IgeFilters._convolute(
-			ctx.getImageData(
-				0,
-				0,
-				canvas.width,
-				canvas.height
-			),
-			[
-				-1,	-1,	-1,	-1,	-1,
-				-1,	2,	2,	2,	-1,
-				-1,	2,	0,	2,	-1,
-				-1,	2,	2,	2,	-1,
-				-1,	-1,	-1,	-1,	-1
-			],
-			true
+		ctx.getImageData(
+			0,
+			0,
+			canvas.width,
+			canvas.height
 		),
-		arr = newData.data,
-		arrCount = arr.length,
-		i, r, g, b, v;
+		[
+			-1,	-1,	-1,	-1,	-1,
+			-1,	2,	2,	2,	-1,
+			-1,	2,	0,	2,	-1,
+			-1,	2,	2,	2,	-1,
+			-1,	-1,	-1,	-1,	-1
+		],
+		true
+	);
+	var arr = newData.data;
+	var arrCount = arr.length;
+	var i; var r; var g; var b; var v;
 
 	for (i = 0; i < arrCount; i += 4) {
 		r = arr[i];
-		g = arr[i+1];
-		b = arr[i+2];
+		g = arr[i + 1];
+		b = arr[i + 2];
 
 		v = (r + g + b) / 3;
 		v *= 1.1;
 
 		v = v >= data.value ? 255 : 0;
 
-		arr[i] = arr[i+1] = arr[i+2] = v;
+		arr[i] = arr[i + 1] = arr[i + 2] = v;
 	}
 
 	// Apply the filter and then put the new pixel data

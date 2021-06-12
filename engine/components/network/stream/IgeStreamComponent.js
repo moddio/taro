@@ -37,13 +37,12 @@ var IgeStreamComponent = IgeEventingClass.extend({
 		/* CEXCLUDE */
 
 		if (ige.isClient) {
-
 			// Define the network stream command
 			this._entity.define('_igeStreamCreate', function () { self._onStreamCreate.apply(self, arguments); });
 			this._entity.define('_igeStreamDestroy', function () { self._onStreamDestroy.apply(self, arguments); });
 			this._entity.define('_igeStreamData', function () { self._onStreamData.apply(self, arguments); });
 			this._entity.define('_igeStreamTime', function () { self._onStreamTime.apply(self, arguments); });
-			this._entity.define('_igeStreamCreateSnapshot', function () { self._onStreamCreateSnapshot.apply(self, arguments); })
+			this._entity.define('_igeStreamCreateSnapshot', function () { self._onStreamCreateSnapshot.apply(self, arguments); });
 		}
 	},
 
@@ -80,8 +79,8 @@ var IgeStreamComponent = IgeEventingClass.extend({
 	 */
 	sendInterval: function (ms) {
 		if (ms !== undefined) {
-			console.log("stream interval set to ", ms)
-			IgeStreamComponent.prototype.log('Setting delta stream interval to ' + (ms / ige._timeScale) + 'ms');
+			console.log('stream interval set to ', ms);
+			IgeStreamComponent.prototype.log(`Setting delta stream interval to ${ms / ige._timeScale}ms`);
 			this._streamInterval = ms / ige._timeScale;
 			return this._entity;
 		}
@@ -101,7 +100,6 @@ var IgeStreamComponent = IgeEventingClass.extend({
 	 * update entity-attributes (unit, debris, player, and projectiles)
 	 */
 	updateEntityAttributes: function () {
-
 		var data = {};
 		var entities = ige.$('baseScene')._children;
 
@@ -126,8 +124,8 @@ var IgeStreamComponent = IgeEventingClass.extend({
 			ige.network.send('updateAllEntities', data);
 		}
 
-		data = null
-		entity = null
+		data = null;
+		entity = null;
 		entities = null;
 	},
 
@@ -135,7 +133,7 @@ var IgeStreamComponent = IgeEventingClass.extend({
 	 * Stops the stream of world updates to connected clients.
 	 */
 	stop: function () {
-		//this._stopTimeSync(); // was this removed ???
+		// this._stopTimeSync(); // was this removed ???
 
 		IgeStreamComponent.prototype.log('Stopping delta stream...');
 		clearInterval(this._streamTimer);
@@ -163,7 +161,7 @@ var IgeStreamComponent = IgeEventingClass.extend({
 		// }
 		return this._entity;
 	},
-	createQueue: function (commandName, data,clientId) {
+	createQueue: function (commandName, data, clientId) {
 		// dont overwrite data if data.length is more than 10bytes
 		// not this is temporary fix for case when entity teleports to some location
 		// during that we have to make sure that client receives queued data for teleportation and
@@ -185,8 +183,8 @@ var IgeStreamComponent = IgeEventingClass.extend({
 	_sendQueue: function (timeStamp) {
 		// console.log(serverTime)
 		// Send the stream data
-		this._entity.flush(timeStamp)
-		//}
+		this._entity.flush(timeStamp);
+		// }
 	},
 	/* CEXCLUDE */
 
@@ -202,16 +200,15 @@ var IgeStreamComponent = IgeEventingClass.extend({
 		console.log(data);
 	},
 	_onStreamCreate: function (data) {
-		var classId = data[0],
-			entityId = data[1],
-			parentId = data[2],
-			transformData = data[3],
-			createData = data[4],
-			parent = ige.$(parentId),
-			classConstructor,
-			ntransdata,
-			entity;
-
+		var classId = data[0];
+		var entityId = data[1];
+		var parentId = data[2];
+		var transformData = data[3];
+		var createData = data[4];
+		var parent = ige.$(parentId);
+		var classConstructor;
+		var ntransdata;
+		var entity;
 
 		// ige.devLog("onStreamCreate", entityId, classId, createData);
 		if (transformData) {
@@ -229,25 +226,23 @@ var IgeStreamComponent = IgeEventingClass.extend({
 				classConstructor = igeClassStore[classId];
 
 				if (classConstructor) {
-
 					createData.defaultData = {
 						translate: {
-							x:ntransdata[0],
-							y:ntransdata[1]
+							x: ntransdata[0],
+							y: ntransdata[1]
 						},
 						rotate: ntransdata[2]
 					};
 
-					entity = new classConstructor(createData, entityId)
-					
+					entity = new classConstructor(createData, entityId);
+
 					// don't send 'create' stream for spriteonly/weldjoint items
 					var body = entity._stats.currentBody;
-					if (entity._category != 'item' || (body && body.jointType != 'weldJoint'))
-					{
+					if (entity._category != 'item' || (body && body.jointType != 'weldJoint')) {
 						entity.bypassSmoothing = true;
 						entity.streamSectionData('transform', ntransdata);
 					}
-					
+
 					// Set the just created flag which will stop the renderer
 					// from handling this entity until after the first stream
 					// data has been received for it
@@ -260,37 +255,37 @@ var IgeStreamComponent = IgeEventingClass.extend({
 					// data, inform any interested listeners
 					this.emit('entityCreated', entity);
 
-					delete entity.bypassSmoothing
+					delete entity.bypassSmoothing;
 				} else {
 					ige.network.stop();
 					ige.stop();
 
-					IgeStreamComponent.prototype.log('Network stream cannot create entity with class ' + classId + ' because the class has not been defined! The engine will now stop.', 'error');
+					IgeStreamComponent.prototype.log(`Network stream cannot create entity with class ${classId} because the class has not been defined! The engine will now stop.`, 'error');
 				}
 			}
 		} else {
-			IgeStreamComponent.prototype.log('Cannot properly handle network streamed entity with id ' + entityId + ' because it\'s parent with id ' + parentId + ' does not exist on the scenegraph!', 'warning');
+			IgeStreamComponent.prototype.log(`Cannot properly handle network streamed entity with id ${entityId} because it's parent with id ${parentId} does not exist on the scenegraph!`, 'warning');
 		}
 	},
 
 	_onStreamDestroy: function (data) {
-		var entity = ige.$(data[1]),
-			self = this;
+		var entity = ige.$(data[1]);
+		var self = this;
 
 		if (entity) {
 			// Calculate how much time we have left before the entity
 			// should be removed from the simulation given the render
 			// latency setting and the current time
-			entity.destroy()
+			entity.destroy();
 			self.emit('entityDestroyed', entity);
 		}
 	}
 });
 
-function arr2hex(byteArray) {
+function arr2hex (byteArray) {
 	return Array.from(byteArray, function (byte) {
-		return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-	}).join('')
+		return (`0${(byte & 0xFF).toString(16)}`).slice(-2);
+	}).join('');
 }
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeStreamComponent; }

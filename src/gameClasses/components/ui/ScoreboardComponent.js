@@ -3,10 +3,10 @@ var ScoreboardComponent = IgeEntity.extend({
 	componentId: 'scoreboard',
 
 	init: function () {
-		var self = this
+		var self = this;
 		// self.scoreAttributeId = ige.game.data.settings.scoreBoard
 		// console.log("ige.game.data.settings", ige.game.data.settings)
-		self.scoreAttributeId = ige.game.data.settings.scoreAttributeId
+		self.scoreAttributeId = ige.game.data.settings.scoreAttributeId;
 		self._hidden = false;
 
 		self.setUI();
@@ -16,15 +16,13 @@ var ScoreboardComponent = IgeEntity.extend({
 		if (ige.mobileControls.isMobile) {
 			$('#scoreboard-header').addClass('small');
 			$('#scoreboard').addClass('small');
-		}
-		else {
+		} else {
 			$('#scoreboard-header').addClass('h5');
 			$('#scoreboard').addClass('h6');
 			$('#leaderboard')
 				.addClass('h3')
 				.removeClass('d-none');
 		}
-
 
 		$(function () {
 			$.contextMenu({
@@ -54,51 +52,51 @@ var ScoreboardComponent = IgeEntity.extend({
 								case 'unmute': {
 									mutedUsers.splice(index, 1);
 									$.ajax({
-										url: "/api/user/toggle-mute/" + ige.scoreboard.selectedUser.userId,
+										url: `/api/user/toggle-mute/${ige.scoreboard.selectedUser.userId}`,
 										type: 'POST',
 										success: function (data) {
 											console.log(data);											// alert('request sent');
 										}
-									})
+									});
 									break;
 								}
 								case 'mute': {
 									mutedUsers.push(ige.scoreboard.selectedUser.userId);
 									$.ajax({
-										url: "/api/user/toggle-mute/" + ige.scoreboard.selectedUser.userId,
+										url: `/api/user/toggle-mute/${ige.scoreboard.selectedUser.userId}`,
 										type: 'POST',
 										success: function (data) {
-											console.log(data);											// alert('request sent');											
+											console.log(data);											// alert('request sent');
 										}
-									})
+									});
 									break;
 								}
 								case 'addFriend': {
 									$.ajax({
-										url: "/api/user/request/" + ige.scoreboard.selectedUser.userId,
+										url: `/api/user/request/${ige.scoreboard.selectedUser.userId}`,
 										type: 'POST',
 										success: function (data) {
 											alert('request sent');
 										}
-									})
+									});
 									break;
 								}
 							}
 						},
 						items: {
 							addFriend: {
-								name: "Add Friend"
+								name: 'Add Friend'
 							},
-							separator: { "type": "cm_separator" },
+							separator: { type: 'cm_separator' },
 							unmute: {
-								name: "Unmute " + ige.scoreboard.selectedUser.userName,
+								name: `Unmute ${ige.scoreboard.selectedUser.userName}`,
 								visible: index > -1
 							},
 							mute: {
-								name: "Mute " + ige.scoreboard.selectedUser.userName,
+								name: `Mute ${ige.scoreboard.selectedUser.userName}`,
 								visible: index === -1,
 								className: 'context-menu-item context-menu-hover context-menu-danger'
-							},
+							}
 						}
 					};
 				}
@@ -111,66 +109,63 @@ var ScoreboardComponent = IgeEntity.extend({
 			// Nine Zeroes for Billions
 			return Math.abs(Number(labelValue)) >= 1.0e+9
 
-				? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + "B"
-				// Six Zeroes for Millions 
+				? `${(Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2)}B`
+				// Six Zeroes for Millions
 				: Math.abs(Number(labelValue)) >= 1.0e+6
 
-					? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
+					? `${(Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2)}M`
 					// Three Zeroes for Thousands
 					: Math.abs(Number(labelValue)) >= 1.0e+3
 
-						? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
+						? `${(Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2)}K`
 
 						: Math.abs(Number(labelValue));
+		} else {
+			return labelValue;
 		}
-		else {
-			return labelValue
-		}
-
-
 	},
 	update: function () {
-		var self = this
-		var DEFAULT_COLOR = "white";
+		var self = this;
+		var DEFAULT_COLOR = 'white';
 
 		if (ige.isClient) {
-			var scoreboard = "";
+			var scoreboard = '';
 			var sortedScores = [];
-			var players = ige.$$('player')
+			var players = ige.$$('player');
 			var topPlayersToShow = ige.mobileControls.isMobile ? 3 : 10;
 
 			players.forEach(function (player) {
 				if (player._stats && player._stats.clientId) // only display human players on scoreboard
 				{
-					var clientId = player._stats.clientId
-					var score = 0
+					var clientId = player._stats.clientId;
+					var score = 0;
 					if (self.scoreAttributeId && player._stats.attributes && player._stats.attributes[self.scoreAttributeId]) {
-						var playerAttribute = player._stats.attributes[self.scoreAttributeId]
-						score = playerAttribute.value
+						var playerAttribute = player._stats.attributes[self.scoreAttributeId];
+						score = playerAttribute.value;
 					}
 
 					sortedScores.push({
-						'key': clientId,
-						'value': parseInt(score)
+						key: clientId,
+						value: parseInt(score)
 					});
 				}
-			})
+			});
 
 			sortedScores.sort(function (a, b) {
-				return a.value - b.value
+				return a.value - b.value;
 			});
 
 			for (var i = sortedScores.length - 1; i >= 0; i--) {
-				var clientId = sortedScores[i].key
+				var clientId = sortedScores[i].key;
 				var player = ige.game.getPlayerByClientId(clientId);
 				var defaultFontWeight = 500;
 				if (player) {
 					var color = null; // color to indicate human, animal, or my player on scoreboard
 
-					var playerType = ige.game.getAsset('playerTypes', player._stats.playerTypeId)
+					var playerType = ige.game.getAsset('playerTypes', player._stats.playerTypeId);
 
 					if (playerType && playerType.color) {
-						color = playerType.color
+						color = playerType.color;
 					}
 					if (player._stats.clientId == ige.network.id()) {
 						defaultFontWeight = 800;
@@ -183,23 +178,22 @@ var ScoreboardComponent = IgeEntity.extend({
 					readableName = readableName.replace(/>/g, '&gt;');
 
 					color = color || DEFAULT_COLOR;
-					scoreboard += "<div data-user-name='" + player._stats.name + "' data-user-id='" + player._stats.userId + "' class='cursor-pointer scoreboard-user-entry' style='color: " + color + ";font-weight:" + defaultFontWeight + "'>" + readableName + " <small><span>" + self.convertNumbersToKMB(sortedScores[i].value) + "</span></small></div>";
+					scoreboard += `<div data-user-name='${player._stats.name}' data-user-id='${player._stats.userId}' class='cursor-pointer scoreboard-user-entry' style='color: ${color};font-weight:${defaultFontWeight}'>${readableName} <small><span>${self.convertNumbersToKMB(sortedScores[i].value)}</span></small></div>`;
 				}
 			}
 
 			ige.client.clientCount = sortedScores.length;
 
-			$("#player-count").html(players.length);
+			$('#player-count').html(players.length);
 
 			if (self._hidden) {
-				$("#scoreboard").html('');
-				$("#leaderboard-toggle").html('&nbsp;<i class="far fa-caret-square-down" aria-hidden="true" onclick="ige.scoreboard.toggleScores()" style="cursor:pointer;"></i>');
+				$('#scoreboard').html('');
+				$('#leaderboard-toggle').html('&nbsp;<i class="far fa-caret-square-down" aria-hidden="true" onclick="ige.scoreboard.toggleScores()" style="cursor:pointer;"></i>');
 			} else {
-				$("#scoreboard").html(scoreboard);
-				$("#leaderboard-toggle").html('&nbsp;<i class="far fa-caret-square-up" aria-hidden="true" onclick="ige.scoreboard.toggleScores()" style="cursor:pointer;"></i>');
+				$('#scoreboard').html(scoreboard);
+				$('#leaderboard-toggle').html('&nbsp;<i class="far fa-caret-square-up" aria-hidden="true" onclick="ige.scoreboard.toggleScores()" style="cursor:pointer;"></i>');
 			}
 		}
-
 	},
 
 	hideScores: function () {
@@ -214,6 +208,6 @@ var ScoreboardComponent = IgeEntity.extend({
 		this._hidden = !this._hidden;
 	}
 
-})
+});
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ScoreboardComponent; }

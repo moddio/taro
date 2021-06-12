@@ -25,14 +25,14 @@ var IgeUiTooltip = IgeUiElement.extend({
 			.mount(this);
 		this.titleBox.borderBottomColor('#ffffff');
 		this.titleBox.borderBottomWidth(1);
-		
+
 		this.textBox = new IgeUiElement()
 			.left(0)
 			.top(30)
 			.width(width)
 			.height(height - 30)
 			.mount(this);
-		
+
 		this.fontEntityTitle = new IgeFontEntity()
 			.left(5)
 			.top(-4)
@@ -41,7 +41,7 @@ var IgeUiTooltip = IgeUiElement.extend({
 			.nativeFont('10pt Arial')
 			.textLineSpacing(-5)
 			.mount(this.titleBox);
-			
+
 		this.fontEntityText = new IgeFontEntity()
 			.left(5)
 			.top(0)
@@ -50,7 +50,7 @@ var IgeUiTooltip = IgeUiElement.extend({
 			.nativeFont('10pt Arial')
 			.textLineSpacing(-5)
 			.mount(this.textBox);
-			
+
 		this.setContent(content);
 		this.hide();
 		this._mountEntity = mountEntity;
@@ -60,14 +60,14 @@ var IgeUiTooltip = IgeUiElement.extend({
 		this.translateTo(parent._translate.x, parent._translate.y, parent._translate.z);
 		this.width(width);
 		this.height(height);
-		
+
 		parent._tooltip = this;
 
 		// Listen for keyboard events to capture text input
 		parent._mouseEventsActive = true;
 		parent.on('mouseMove', self._mousemove);
 		parent.on('mouseOut', self._mouseout);
-		
+
 		return this;
 	},
 
@@ -126,27 +126,25 @@ var IgeUiTooltip = IgeUiElement.extend({
 		if (val !== undefined) {
 			this.titleBox.unMount();
 			this.textBox.unMount();
-			this._children.forEach(function(child) {
+			this._children.forEach(function (child) {
 				child.unMount();
 				child.destroy();
 			});
-			if (typeof(val) == 'string') {
+			if (typeof (val) == 'string') {
 				this.textBox.mount(this);
 				this.textBox.height(this._bounds2d.y);
 				this.textBox.top(0);
 				// Set the text of the font entity to the value
 				this.fontEntityText.text(this._value);
-			}
-			else if (typeof(val) == 'object' && typeof(val[0] == 'string') && typeof(val[1] == 'string')) {
+			} else if (typeof (val) == 'object' && typeof (val[0] == 'string') && typeof (val[1] == 'string')) {
 				this.titleBox.mount(this);
 				this.textBox.mount(this);
 				this.textBox.height(this._bounds2d.y - this.titleBox._bounds2d.y);
 				this.textBox.top(this.titleBox._bounds2d.y);
-				//title + text
+				// title + text
 				this.fontEntityTitle.text(val[0]);
 				this.fontEntityText.text(val[1]);
-			}
-			else if (typeof(val) == 'object') {
+			} else if (typeof (val) == 'object') {
 				val.mount(this);
 			}
 			this.updateUiChildren();

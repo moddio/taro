@@ -13,7 +13,7 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 		this._currentDelta = 0;
 		this._started = false;
 		this._particles = [];
-		this.texture = new IgeTexture(assetsProvider + "/assets/particles/Rectangle.js");
+		this.texture = new IgeTexture(`${assetsProvider}/assets/particles/Rectangle.js`);
 
 		this.applyDepthToParticles(true);
 		this.applyLayerToParticles(true);
@@ -64,12 +64,12 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 	},
 
 	size: function (width, height) {
-		this.size = { width: width, height: height }
+		this.size = { width: width, height: height };
 		return this;
 	},
 
 	color: function (color) {
-		this.color = color
+		this.color = color;
 		return this;
 	},
 
@@ -338,8 +338,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 		this._started = false;
 
 		// Loop the particles array and destroy all the particles
-		var arr = this._particles,
-			arrCount = arr.length;
+		var arr = this._particles;
+		var arrCount = arr.length;
 
 		while (arrCount--) {
 			arr[arrCount].destroy();
@@ -357,8 +357,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 		once the quantity required of particles are emitted, stop emitting
 	*/
 	emitOnce: function () {
-		this.start()
-		this._emitOnce = true
+		this.start();
+		this._emitOnce = true;
 	},
 	/**
 	 * Takes a base value and a variance range and returns a random
@@ -387,10 +387,10 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 
 	vectorFromBaseMinMax: function (vectorData) {
 		if (vectorData.min && vectorData.max) {
-			var base = vectorData.base,
-				min = vectorData.min,
-				max = vectorData.max,
-				newVector = {};
+			var base = vectorData.base;
+			var min = vectorData.min;
+			var max = vectorData.max;
+			var newVector = {};
 
 			newVector.x = base.x + (min.x + Math.random() * (max.x - min.x));
 			newVector.y = base.y + (min.y + Math.random() * (max.y - min.y));
@@ -419,8 +419,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 					translateX,
 					translateY,
 					translateZ,
-					//vectorAngle,
-					//vectorPower,
+					// vectorAngle,
+					// vectorPower,
 					velocityVector,
 					newVecX, newVecY,
 					rotX, rotY,
@@ -431,8 +431,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 					rotate,
 					opacity,
 					life,
-					//linearForceAngle,
-					//linearForcePower,
+					// linearForceAngle,
+					// linearForcePower,
 					linearForceVector,
 					deathScaleX,
 					deathScaleY,
@@ -477,8 +477,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 							translateY = this.baseAndVarianceValue(this._translateBaseY, this._translateVarianceY, true);
 							translateZ = this.baseAndVarianceValue(this._translateBaseZ, this._translateVarianceZ, true);
 
-							//translateX += this._worldMatrix.matrix[2];
-							//translateY += this._worldMatrix.matrix[5];
+							// translateX += this._worldMatrix.matrix[2];
+							// translateY += this._worldMatrix.matrix[5];
 
 							if (this._velocityVector) {
 								// Generate the particle's initial vector angle and power
@@ -487,8 +487,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 								// Rotate the vector's point to match the current emitter rotation
 								rotX = velocityVector.x;
 								rotY = velocityVector.y;
-								cosRot = this._worldMatrix.matrix[0]; //Math.cos(this._rotate.z);
-								sinRot = this._worldMatrix.matrix[3]; //Math.sin(this._rotate.z);
+								cosRot = this._worldMatrix.matrix[0]; // Math.cos(this._rotate.z);
+								sinRot = this._worldMatrix.matrix[3]; // Math.sin(this._rotate.z);
 								newVecX = rotX * cosRot - rotY * sinRot;
 								newVecY = rotY * cosRot + rotX * sinRot;
 
@@ -497,8 +497,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 								velocityVector.y = newVecY;
 							}
 
-							//vectorAngle = this.baseAndVarianceValue(this._vectorAngleBase, this._vectorAngleVariance, true);
-							//vectorPower = this.baseAndVarianceValue(this._vectorPowerBase, this._vectorPowerVariance, false);
+							// vectorAngle = this.baseAndVarianceValue(this._vectorAngleBase, this._vectorAngleVariance, true);
+							// vectorPower = this.baseAndVarianceValue(this._vectorPowerBase, this._vectorPowerVariance, false);
 
 							// Generate the particle's initial scale
 							scaleX = this.baseAndVarianceValue(this._scaleBaseX, this._scaleVarianceX, false);
@@ -524,8 +524,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 								// Rotate the vector's point to match the current emitter rotation
 								rotX = linearForceVector.x;
 								rotY = linearForceVector.y;
-								cosRot = this._worldMatrix.matrix[0]; //Math.cos(this._rotate.z);
-								sinRot = this._worldMatrix.matrix[3]; //Math.sin(this._rotate.z);
+								cosRot = this._worldMatrix.matrix[0]; // Math.cos(this._rotate.z);
+								sinRot = this._worldMatrix.matrix[3]; // Math.sin(this._rotate.z);
 								newVecX = rotX * cosRot - rotY * sinRot;
 								newVecY = rotY * cosRot + rotX * sinRot;
 
@@ -534,8 +534,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 								linearForceVector.y = newVecY;
 							}
 
-							//linearForceAngle = this.baseAndVarianceValue(this._linearForceAngleBase, this._linearForceAngleVariance);
-							//linearForcePower = this.baseAndVarianceValue(this._linearForcePowerBase, this._linearForcePowerVariance, false);
+							// linearForceAngle = this.baseAndVarianceValue(this._linearForceAngleBase, this._linearForceAngleVariance);
+							// linearForcePower = this.baseAndVarianceValue(this._linearForcePowerBase, this._linearForcePowerVariance, false);
 
 							// Generate the particle's death scale
 							if (typeof (this._deathScaleBaseX) !== 'undefined') {
@@ -677,9 +677,9 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 
 			if (this._emitOnce) // if quality has been fulfilled, and we're suppose to emit only once
 			{
-				//ige.devLog("stopping!!")
-				this.stop()
-				this._emitOnce = false
+				// ige.devLog("stopping!!")
+				this.stop();
+				this._emitOnce = false;
 			}
 		}
 
@@ -705,7 +705,7 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 	 */
 	_stringify: function () {
 		// Get the properties for all the super-classes
-		var str = IgeUiEntity.prototype._stringify.call(this), i;
+		var str = IgeUiEntity.prototype._stringify.call(this); var i;
 		return str;
 
 		// TODO: WRITE THIS FOR THIS CLASS - EPIC AMOUNT OF WORK HERE
@@ -714,7 +714,7 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 			if (this.hasOwnProperty(i) && this[i] !== undefined) {
 				switch (i) {
 					case '':
-						str += ".text(" + this.text() + ")";
+						str += `.text(${this.text()})`;
 						break;
 				}
 			}

@@ -30,7 +30,7 @@ IgeFilters._greyScale = function (imageData) {
 
 		// CIE luminance for the RGB
 		// The human eye is bad at seeing red and blue, so we de-emphasize them.
-		v = 0.2126*r + 0.7152*g + 0.0722*b;
+		v = 0.2126 * r + 0.7152 * g + 0.0722 * b;
 
 		// Set the new pixel colour value
 		arr[i] = arr[i + 1] = arr[i + 2] = v;

@@ -25,17 +25,17 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalDisplacement = 0;
 		this.totalTimeElapsed = 0;
 		this.exponent = 2;
-		this.divisor = 80;		
+		this.divisor = 80;
 
 		if (ige.isServer) {
 			this.engine = dists.defaultEngine;
 
 			if (ige.game && ige.game.data && ige.game.data.defaultData) {
-				this.engine = ige.game.data.defaultData.physicsEngine
+				this.engine = ige.game.data.defaultData.physicsEngine;
 			}
 		} else if (ige.isClient) {
 			if (ige.game && ige.game.data && ige.game.data.defaultData) {
-				this.engine = ige.game.data.defaultData.clientPhysicsEngine
+				this.engine = ige.game.data.defaultData.clientPhysicsEngine;
 			}
 		}
 		this.engine = this.engine.toUpperCase();
@@ -45,8 +45,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 		if (this.engine) {
 			dists[this.engine].init(this);
-		}
-		else {
+		} else {
 			if (ige.isClient) {
 				alert('no physics engine selected');
 			}
@@ -56,7 +55,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 	gravity: function (x, y) {
 		dists[this.engine].gravity(x, y);
 	},
-
 
 	useWorker: function (val) {
 		if (typeof (Worker) !== 'undefined') {
@@ -141,8 +139,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	createFixture: function (params) {
-		var tempDef = new this.b2FixtureDef(),
-			param;
+		var tempDef = new this.b2FixtureDef();
+		var param;
 
 		for (param in params) {
 			if (params.hasOwnProperty(param)) {
@@ -164,41 +162,39 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 */
 	createBody: function (entity, body, isLossTolerant) {
 		this.totalBodiesCreated++;
-		
-		return dists[this.engine].createBody(this, entity, body, isLossTolerant);
 
+		return dists[this.engine].createBody(this, entity, body, isLossTolerant);
 	},
 
 	destroyBody: function (entity, body) {
 		// immediately destroy body if entity already has box2dBody
 		if (body || (entity && entity.body)) {
-			body = body || entity.body
+			body = body || entity.body;
 			destroyBody = this._world.destroyBody;
 			var isBodyDestroyed = destroyBody.apply(this._world, [body]);
 
 			// clear references to prevent memory leak
 			if (this.engine == 'BOX2DWEB') {
-				this._world.m_contactSolver.m_constraints = []
-				this._world.m_island.m_bodies = []
-				this._world.m_island.m_contacts = []
-				this._world.m_island.m_joints = []
-				this._world.m_contactManager.m_broadPhase.m_pairBuffer = [] // clear Dynamic Tree
-				this._world.m_contactManager.m_broadPhase.m_tree.m_freeList = null // clear Dynamic Tree
+				this._world.m_contactSolver.m_constraints = [];
+				this._world.m_island.m_bodies = [];
+				this._world.m_island.m_contacts = [];
+				this._world.m_island.m_joints = [];
+				this._world.m_contactManager.m_broadPhase.m_pairBuffer = []; // clear Dynamic Tree
+				this._world.m_contactManager.m_broadPhase.m_tree.m_freeList = null; // clear Dynamic Tree
 
 				for (var i = 0; i < box2dweb.Dynamics.b2World.s_queue.length; i++) {
 					if (box2dweb.Dynamics.b2World.s_queue[i]._entity._id == entity._id) {
 						// box2dweb.Dynamics.b2World.s_queue[i].m_prev.m_next = box2dweb.Dynamics.b2World.s_queue[i].m_next
 						// box2dweb.Dynamics.b2World.s_queue[i].m_next.m_prev = box2dweb.Dynamics.b2World.s_queue[i].m_prev
-						box2dweb.Dynamics.b2World.s_queue.splice(i, 1)
+						box2dweb.Dynamics.b2World.s_queue.splice(i, 1);
 					}
 				}
 
 				for (var i = 0; i < this._world.m_contactManager.m_contactFactory.m_registers.length; i++) {
 					for (var j = 0; j < this._world.m_contactManager.m_contactFactory.m_registers[i].length; j++) {
-						delete this._world.m_contactManager.m_contactFactory.m_registers[i][j].pool
+						delete this._world.m_contactManager.m_contactFactory.m_registers[i][j].pool;
 					}
 				}
-
 			}
 
 			if (isBodyDestroyed) {
@@ -206,9 +202,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 				entity._box2dOurContactFixture = null;
 				entity._box2dTheirContactFixture = null;
 			}
-		}
-		else {
-			PhysicsComponent.prototype.log("failed to destroy body - body doesn't exist.")
+		} else {
+			PhysicsComponent.prototype.log('failed to destroy body - body doesn\'t exist.');
 		}
 	},
 
@@ -220,26 +215,25 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	destroyJoint: function (entityA, entityB) {
 		if (entityA && entityA.body && entityB && entityB.body) {
-			var joint = entityA.jointsAttached[entityB.id()]
+			var joint = entityA.jointsAttached[entityB.id()];
 			if (joint) {
-				this._world.destroyJoint(joint)
+				this._world.destroyJoint(joint);
 				// console.log("joint destroyed")
 				delete entityA.jointsAttached[entityB.id()];
 				delete entityB.jointsAttached[entityA.id()];
 			}
-		}
-		else {
-			PhysicsComponent.prototype.log("joint cannot be destroyed: one or more bodies missing")
+		} else {
+			PhysicsComponent.prototype.log('joint cannot be destroyed: one or more bodies missing');
 		}
 	},
 
 	// get entities within a region
 	getBodiesInRegion: function (region) {
-		var self = this
+		var self = this;
 
 		if (ige.physics.engine == 'crash') {
-			var collider = new self.crash.Box(new self.crash.Vector(region.x + (region.width/2), region.y + (region.height/2)), region.width, region.height);
-			return ige.physics.crash.search(collider)
+			var collider = new self.crash.Box(new self.crash.Vector(region.x + (region.width / 2), region.y + (region.height / 2)), region.width, region.height);
+			return ige.physics.crash.search(collider);
 		} else {
 			var aabb = new self.b2AABB();
 
@@ -248,26 +242,23 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 			var entities = [];
 			// Query the world for overlapping shapes.
-			function getBodyCallback(fixture) {
-
+			function getBodyCallback (fixture) {
 				if (fixture && fixture.m_body && fixture.m_body.m_fixtureList) {
-					entityId = fixture.m_body.m_fixtureList.igeId
-					var entity = ige.$(entityId)
+					entityId = fixture.m_body.m_fixtureList.igeId;
+					var entity = ige.$(entityId);
 					if (entity) {
 						// ige.devLog("found", entity._category, entity._translate.x, entity._translate.y)
 						var entity = ige.$(entityId);
-						entities.push(ige.$(entityId))
+						entities.push(ige.$(entityId));
 					}
 				}
 				return true;
 			}
 
-
 			dists[this.engine].queryAABB(self, aabb, getBodyCallback);
-			
+
 			return entities;
 		}
-		
 	},
 
 	/**
@@ -283,14 +274,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 */
 	staticsFromMap: function (mapLayer, callback) {
 		if (mapLayer == undefined) {
-			ige.server.unpublish('PhysicsComponent#51')
+			ige.server.unpublish('PhysicsComponent#51');
 		}
 
 		if (mapLayer.map) {
-			var tileWidth = ige.scaleMapDetails.tileWidth || mapLayer.tileWidth(),
-				tileHeight = ige.scaleMapDetails.tileHeight || mapLayer.tileHeight(),
-				posX, posY,
-				rectArray, rectCount, rect;
+			var tileWidth = ige.scaleMapDetails.tileWidth || mapLayer.tileWidth();
+			var tileHeight = ige.scaleMapDetails.tileHeight || mapLayer.tileHeight();
+			var posX; var posY;
+			var rectArray; var rectCount; var rect;
 
 			// Get the array of rectangle bounds based on
 			// the map's data
@@ -302,32 +293,29 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 				posX = (tileWidth * (rect.width / 2));
 				posY = (tileHeight * (rect.height / 2));
-				
+
 				if (this.engine == 'CRASH') {
 					var defaultData = {
 						translate: {
 							x: rect.x * tileWidth,
 							y: rect.y * tileHeight
 						}
-					}
-		
+					};
 				} else {
 					var defaultData = {
 						translate: {
 							x: rect.x * tileWidth + posX,
 							y: rect.y * tileHeight + posY
 						}
-					}
-	
+					};
 				}
-				
-				
+
 				var wall = new IgeEntityBox2d(defaultData)
 					.width(rect.width * tileWidth)
 					.height(rect.height * tileHeight)
 					.drawBounds(false)
 					.drawBoundsData(false)
-					.category('wall')
+					.category('wall');
 
 				// walls must be created immediately, because there isn't actionQueue for walls
 				ige.physics.createBody(wall, {
@@ -347,7 +335,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 						},
 						igeId: wall.id()
 					}]
-				})
+				});
 				if (ige.isServer) {
 					ige.server.totalWallsCreated++;
 				}
@@ -426,12 +414,12 @@ var PhysicsComponent = IgeEventingClass.extend({
 			debugDraw.SetFillAlpha(0.3);
 			debugDraw.SetLineThickness(1.0);
 			debugDraw.SetFlags(
-				this.b2DebugDraw.e_controllerBit
-				| this.b2DebugDraw.e_jointBit
-				| this.b2DebugDraw.e_pairBit
-				| this.b2DebugDraw.e_shapeBit
-				//| this.b2DebugDraw.e_aabbBit
-				//| this.b2DebugDraw.e_centerOfMassBit
+				this.b2DebugDraw.e_controllerBit |
+				this.b2DebugDraw.e_jointBit |
+				this.b2DebugDraw.e_pairBit |
+				this.b2DebugDraw.e_shapeBit
+				// | this.b2DebugDraw.e_aabbBit
+				// | this.b2DebugDraw.e_centerOfMassBit
 			);
 
 			// Set the debug draw for the world
@@ -473,7 +461,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	start: function () {
-		var self = this
+		var self = this;
 
 		if (!this._active) {
 			this._active = true;
@@ -485,7 +473,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 					this._entity.addBehaviour('box2dStep', this._behaviour);
 				} else {
 					// this._intervalTimer = setInterval(this._behaviour, 1000 / 60);
-					console.log("b2d start")
+					console.log('b2d start');
 					// this._intervalTimer = setInterval(this._behaviour, ige._tickDelta);
 				}
 			}
@@ -514,38 +502,36 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	update: function (timeElapsedSinceLastStep) {
-		var self = this,
-			tempBod,
-			entity;
-			
-		if (self && self._active && self._world) {
+		var self = this;
+		var tempBod;
+		var entity;
 
+		if (self && self._active && self._world) {
 			var queueSize = 0;
 			if (!self._world.isLocked()) {
-
 				while (self._actionQueue.length > 0) {
-					var action = self._actionQueue.shift()
+					var action = self._actionQueue.shift();
 					queueSize++;
 					if (queueSize > 1000) {
-						ige.devLog("PhysicsComponent.js _behaviour queue looped over 1000 times. Currently processing action: " + action.type)
+						ige.devLog(`PhysicsComponent.js _behaviour queue looped over 1000 times. Currently processing action: ${action.type}`);
 					}
 
 					// console.log(action.type, "entity:", action.entity != null, (action.entity != null)?action.entity._category + " " + action.entity._stats.name:"null", " entityA:",  action.entityA != null, (action.entityA != null)?action.entityA._category + " " +action.entityA._stats.name:"null", " entityB:",  action.entityB != null, (action.entityB != null)?action.entityB._category + " " +action.entityB._stats.name:"null")
 					switch (action.type) {
 						case 'createBody':
-							self.createBody(action.entity, action.def)
+							self.createBody(action.entity, action.def);
 							break;
 
 						case 'destroyBody':
-							self.destroyBody(action.entity)
+							self.destroyBody(action.entity);
 							break;
 
 						case 'createJoint':
-							self.createJoint(action.entityA, action.entityB, action.anchorA, action.anchorB)
+							self.createJoint(action.entityA, action.entityB, action.anchorA, action.anchorB);
 							break;
 
 						case 'destroyJoint':
-							self.destroyJoint(action.entityA, action.entityB)
+							self.destroyJoint(action.entityA, action.entityB);
 							break;
 					}
 				}
@@ -558,32 +544,32 @@ var PhysicsComponent = IgeEventingClass.extend({
 				self._world.step(timeElapsedSinceLastStep);
 			} else {
 				self._world.step(timeElapsedSinceLastStep / 1000, 8, 3); // Call the world step; frame-rate, velocity iterations, position iterations
-				
+
 				var tempBod = self._world.getBodyList();
 
 				// iterate through every physics body
 				while (tempBod && typeof tempBod.getNext == 'function') {
-					// Check if the body is awake && not static						
+					// Check if the body is awake && not static
 					if (tempBod.m_type !== 'static' && tempBod.isAwake()) {
-						entity = tempBod._entity
-						
-						if (entity) {						
+						entity = tempBod._entity;
+
+						if (entity) {
 							var mxfp = dists[ige.physics.engine].getmxfp(tempBod);
 							var x = mxfp.x * ige.physics._scaleRatio;
 							var y = mxfp.y * ige.physics._scaleRatio;
-							
+
 							// make projectile auto-rotate toward its path. ideal for arrows or rockets that should point toward its direction
-							if (entity._category == 'projectile' && 
+							if (entity._category == 'projectile' &&
 								entity._stats.currentBody && !entity._stats.currentBody.fixedRotation &&
 								tempBod.m_linearVelocity.y != 0 && tempBod.m_linearVelocity.x != 0
 							) {
-								var angle = Math.atan2(tempBod.m_linearVelocity.y, tempBod.m_linearVelocity.x) + Math.PI/2
+								var angle = Math.atan2(tempBod.m_linearVelocity.y, tempBod.m_linearVelocity.x) + Math.PI / 2;
 							} else {
 								var angle = tempBod.getAngle();
 							}
 
-							var tileWidth = ige.scaleMapDetails.tileWidth,
-								tileHeight = ige.scaleMapDetails.tileHeight;
+							var tileWidth = ige.scaleMapDetails.tileWidth;
+							var tileHeight = ige.scaleMapDetails.tileHeight;
 
 							var skipBoundaryCheck = entity._stats && entity._stats.confinedWithinMapBoundaries === false;
 							var padding = tileWidth / 2;
@@ -601,13 +587,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 								if (!entity.isOutOfBounds) {
 									if (entity._category == 'unit') {
 										// console.log("unitTouchesWall", entity.id());
-										ige.trigger.fire("unitTouchesWall", { unitId: entity.id() })
-									}
-									else if (entity._category == 'item') {
-										ige.trigger.fire("itemTouchesWall", { itemId: entity.id() })
-									}
-									else if (entity._category == 'projectile') {
-										ige.trigger.fire("projectileTouchesWall", { projectileId: entity.id() })
+										ige.trigger.fire('unitTouchesWall', { unitId: entity.id() });
+									} else if (entity._category == 'item') {
+										ige.trigger.fire('itemTouchesWall', { itemId: entity.id() });
+									} else if (entity._category == 'projectile') {
+										ige.trigger.fire('projectileTouchesWall', { projectileId: entity.id() });
 									}
 
 									entity.isOutOfBounds = true;
@@ -615,21 +599,19 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 								x = Math.max(Math.min(x, (ige.map.data.width * tileWidth) - padding), padding);
 								y = Math.max(Math.min(y, (ige.map.data.height * tileHeight) - padding), padding);
-							}
-							else {
+							} else {
 								if (entity.isOutOfBounds) {
-									entity.isOutOfBounds = false
+									entity.isOutOfBounds = false;
 								}
 							}
 
 							if (ige.isServer) {
-
 								/* server-side reconciliation */
-								// hard-correct client entity's position (teleport) if the distance between server & client is greater than 100px 
+								// hard-correct client entity's position (teleport) if the distance between server & client is greater than 100px
 								// continuously for 10 frames in a row
 								if (ige.game.cspEnabled && entity.clientStreamedPosition) {
-									var targetX = entity.clientStreamedPosition[0]
-									var targetY = entity.clientStreamedPosition[1]
+									var targetX = entity.clientStreamedPosition[0];
+									var targetY = entity.clientStreamedPosition[1];
 									var xDiff = targetX - x;
 									var yDiff = targetY - y;
 									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -639,46 +621,43 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// console.log(entity.id(), velocity.x.toFixed(0), xDiff.toFixed(0), velocity.y.toFixed(0), yDiff.toFixed(0))
 
 									if (distance > 100) {
-										entity.discrepancyCount++
+										entity.discrepancyCount++;
 										// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
 										if (entity.discrepancyCount > 15) {
 											// force client to teleport to server's position
-											entity.teleportTo(x, y);									
+											entity.teleportTo(x, y);
 										}
 									} else {
-										entity.discrepancyCount = 0
-										
+										entity.discrepancyCount = 0;
+
 										// reconciliate to client's streamed data iff server's position is BEHIND the client's position
 										if (
 											(velocity.x < 0 && x > targetX) ||
 											(velocity.x > 0 && x < targetX) ||
-											(-0.1 < velocity.x && velocity.x < 0.1)
+											(velocity.x > -0.1 && velocity.x < 0.1)
 										) {
 											x += xDiff;
 										}
-											
 
 										if (
 											(velocity.y < 0 && y > targetY) ||
 											(velocity.y > 0 && y < targetY) ||
-											(-0.1 < velocity.y && velocity.y < 0.1)
+											(velocity.y > -0.1 && velocity.y < 0.1)
 										) {
 											y += yDiff;
 										}
 									}
 
-									entity.clientStreamedPosition = undefined
+									entity.clientStreamedPosition = undefined;
 								}
 
 								// if (entity._stats.name && entity._stats.name.includes('user'))
-								// 	console.log(entity.clientStreamedPosition, x, y)									
+								// 	console.log(entity.clientStreamedPosition, x, y)
 
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
-							}
-							else if (ige.isClient) {
-								
-								if (ige.physics && ige.game.cspEnabled  && ige.client.selectedUnit == entity) {
+							} else if (ige.isClient) {
+								if (ige.physics && ige.game.cspEnabled && ige.client.selectedUnit == entity) {
 									// var xDiff = entity.lastServerStreamedPosition[0] - x;
 									// var yDiff = entity.lastServerStreamedPosition[1] - y;
 									// var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -689,73 +668,70 @@ var PhysicsComponent = IgeEventingClass.extend({
 									// 				entity.prevPhysicsFrame = undefined
 									// 				console.log(ige._currentTime, "reconciling to server");
 									// 			}
-									
+
 									/* client-side reconciliation */
 									// skip through all movementHistories that are too old
 									while (entity.movementHistory.length > 0 && entity.movementHistory[0][0] < ige._currentTime - ige.network.bestLatency - 50) {
 										var history = entity.movementHistory.shift()[1];
 									}
-								
-									// if movementHistory still has elements after shifting, 
+
+									// if movementHistory still has elements after shifting,
 									// this means we found a matching time between movementHistory & lastServerStreamedPosition's time.
 									if (history && entity.movementHistory.length > 0 && entity.lastServerStreamedPosition) {
 										// do not reconciliate if unit has teleported less than 500ms ago.
-									
-										var xDiff = (entity.lastServerStreamedPosition[0] - history[0])
-										var yDiff = (entity.lastServerStreamedPosition[1] - history[1])
-										
+
+										var xDiff = (entity.lastServerStreamedPosition[0] - history[0]);
+										var yDiff = (entity.lastServerStreamedPosition[1] - history[1]);
+
 										var distance = Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
 										// console.log(
-										// 		entity.discrepancyCount, 
-										// 		xDiff.toFixed(0), 
+										// 		entity.discrepancyCount,
+										// 		xDiff.toFixed(0),
 										// 		yDiff.toFixed(0)
 										// 	);
 
-										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount										
+										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
 										if (distance > 100) {
-											entity.discrepancyCount++
+											entity.discrepancyCount++;
 											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
 											if (entity.discrepancyCount > 15) {
 												x = entity.lastServerStreamedPosition[0];
 												y = entity.lastServerStreamedPosition[1];
-												entity.teleportTo(x, y)												
+												entity.teleportTo(x, y);
 											}
 											entity.lastServerStreamedPosition = undefined;
-											entity.lastReconciledAt = ige.prevSnapshot[0]; // prevent unit from reconciling multiple times												
+											entity.lastReconciledAt = ige.prevSnapshot[0]; // prevent unit from reconciling multiple times
 											// console.log("setting entity.lastReconciledAt", entity.lastReconciledAt)
 										} else {
-											entity.discrepancyCount = 0
+											entity.discrepancyCount = 0;
 										}
-										
 									}
 
 									if (entity.isOutOfBounds) {
-										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
+										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });
 										entity.body.setAngle(angle);
 									}
 
 									if (entity.nextPhysicsFrame == undefined || ige._currentTime > entity.nextPhysicsFrame[0]) {
-										entity.prevPhysicsFrame = entity.nextPhysicsFrame
+										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
 										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 									}
-									
 
 									// console.log(x, y)
 									// if unit has moved
-									entity.movementHistory.push([ige._currentTime, [x, y, angle]])
-									
+									entity.movementHistory.push([ige._currentTime, [x, y, angle]]);
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									if (entity._streamMode == 0) {
-										entity.prevPhysicsFrame = entity.nextPhysicsFrame
-										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];								
-									}									
+										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
+										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+									}
 								} else {
 									// all streamed entities are rigidly positioned
-									x = entity._translate.x
-									y = entity._translate.y
-									angle = entity._rotate.z
+									x = entity._translate.x;
+									y = entity._translate.y;
+									angle = entity._rotate.z;
 									entity.nextPhysicsFrame = undefined;
-									entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });															
+									entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });
 									entity.body.setAngle(angle);
 								}
 							}
@@ -765,9 +741,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 								tempBod.asleep = false;
 								ige.physics.emit('afterAwake', entity);
 							}
-
 						} else {
-
 							if (!tempBod.asleep) {
 								// The tempBod was awake last frame, fire an asleep event
 								tempBod.asleep = true;
@@ -780,22 +754,22 @@ var PhysicsComponent = IgeEventingClass.extend({
 				}
 
 				ige._physicsFrames++;
-				
+
 				// Clear forces because we have ended our physics simulation frame
 				self._world.clearForces();
 
 				// get stats for dev panel
-				var timeEnd = Date.now()
-				self.physicsTickDuration += timeEnd - timeStart
+				var timeEnd = Date.now();
+				self.physicsTickDuration += timeEnd - timeStart;
 				if (timeEnd - self.lastSecondAt > 1000) {
 					self.lastSecondAt = timeEnd;
-					self.avgPhysicsTickDuration = self.physicsTickDuration / ige._fpsRate
+					self.avgPhysicsTickDuration = self.physicsTickDuration / ige._fpsRate;
 					self.totalDisplacement = 0;
 					self.totalTimeElapsed = 0;
-					self.physicsTickDuration = 0
+					self.physicsTickDuration = 0;
 				}
 			}
-			
+
 			if (typeof (self._updateCallback) === 'function') {
 				self._updateCallback();
 			}
@@ -809,7 +783,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 			clearInterval(this._intervalTimer);
 		}
 		// Destroy all box2d world bodies
-
 	}
 });
 

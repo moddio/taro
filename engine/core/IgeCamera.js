@@ -94,15 +94,15 @@ var IgeCamera = IgeEntity.extend({
 		if (entity !== undefined) {
 			// if (entity._stats)
 			// 	console.log("trackTranslating entity defined:", entity._stats.name)
-			
+
 			if (rounding !== undefined) {
 				this._trackTranslateRounding = rounding;
 			}
-			
+
 			if (smoothing !== undefined) {
-				this._trackTranslateSmoothing = smoothing >= 1  ? smoothing : 0;
+				this._trackTranslateSmoothing = smoothing >= 1 ? smoothing : 0;
 			}
-			
+
 			this._trackTranslateTarget = entity;
 			return this._entity;
 		}
@@ -162,7 +162,7 @@ var IgeCamera = IgeEntity.extend({
 	 */
 	trackRotate: function (entity, smoothing) {
 		if (entity !== undefined) {
-			this.log('Camera on viewport ' + this._entity.id() + ' is now tracking rotation of target ' + entity.id());
+			this.log(`Camera on viewport ${this._entity.id()} is now tracking rotation of target ${entity.id()}`);
 			this._trackRotateSmoothing = smoothing >= 1 ? smoothing : 0;
 			this._trackRotateTarget = entity;
 			return this._entity;
@@ -228,18 +228,18 @@ var IgeCamera = IgeEntity.extend({
 
 		return this;
 	},
-	
+
 	update: function (ctx) {
 		// Process any behaviours assigned to the camera
 		this._processUpdateBehaviours(ctx);
-					
+
 		// Check if we are tracking the translate value of a target
 		if (this._trackTranslateTarget) {
-			var targetEntity = this._trackTranslateTarget,
-				targetMatrix = targetEntity._worldMatrix.matrix,
-				targetX = targetMatrix[2],
-				targetY = targetMatrix[5],
-				sourceX, sourceY, distX, distY, destinationX, destinationY;
+			var targetEntity = this._trackTranslateTarget;
+			var targetMatrix = targetEntity._worldMatrix.matrix;
+			var targetX = targetMatrix[2];
+			var targetY = targetMatrix[5];
+			var sourceX; var sourceY; var distX; var distY; var destinationX; var destinationY;
 
 			if (!this._trackTranslateSmoothing) {
 				// Copy the target's world matrix translate data
@@ -261,8 +261,7 @@ var IgeCamera = IgeEntity.extend({
 				}
 
 				// Check camera Limits
-				if ( this._limit){
-	
+				if (this._limit) {
 					if (destinationX < this._limit.x) {
 						destinationX = this._limit.x;
 					}
@@ -275,20 +274,18 @@ var IgeCamera = IgeEntity.extend({
 					if (destinationY > this._limit.y + this._limit.height) {
 						destinationY = this._limit.y + this._limit.height;
 					}
-						
 				}
 
 				this._translate.x = destinationX;
 				this._translate.y = destinationY;
-
-			 } 
+			 }
 		}
 
 		// Check if we are tracking the rotation values of a target
 		if (this._trackRotateTarget) {
-			var targetParentRZ = this._trackRotateTarget._parent !== undefined ? this._trackRotateTarget._parent._rotate.z : 0,
-				targetZ = -(targetParentRZ + this._trackRotateTarget._rotate.z),
-				sourceZ, distZ;
+			var targetParentRZ = this._trackRotateTarget._parent !== undefined ? this._trackRotateTarget._parent._rotate.z : 0;
+			var targetZ = -(targetParentRZ + this._trackRotateTarget._rotate.z);
+			var sourceZ; var distZ;
 
 			if (!this._trackRotateSmoothing) {
 				// Copy the target's rotate data
@@ -310,11 +307,11 @@ var IgeCamera = IgeEntity.extend({
 	 * @param {CanvasRenderingContext2D} ctx
 	 */
 	tick: function (ctx) {
-        if (ige.isClient && !ige.client.cameraEnabled) return;
-        
+		if (ige.isClient && !ige.client.cameraEnabled) return;
+
 		// Process any behaviours assigned to the camera
 		this._processTickBehaviours(ctx); // commented out because of redundancy. it's already declared in IgeEntity.js (jaeyun apr 2017)
-		
+
 		// Updated local transform matrix and then transform the context
 		this._localMatrix.transformRenderingContext(ctx);
 	},
@@ -326,7 +323,7 @@ var IgeCamera = IgeEntity.extend({
 	 * method is specifically designed for cameras!
 	 */
 	updateTransform: function () {
-		if(ige.isServer)return;
+		if (ige.isServer) return;
 		this._localMatrix.identity();
 
 		// On cameras we do the rotation and scaling FIRST
@@ -355,17 +352,17 @@ var IgeCamera = IgeEntity.extend({
 	 */
 	_stringify: function () {
 		// Get the properties for all the super-classes
-		var str = IgeEntity.prototype._stringify.call(this), i;
+		var str = IgeEntity.prototype._stringify.call(this); var i;
 
 		// Loop properties and add property assignment code to string
 		for (i in this) {
 			if (this.hasOwnProperty(i) && this[i] !== undefined) {
 				switch (i) {
 					case '_trackTranslateTarget':
-						str += ".trackTranslate(ige.$('" + this._trackTranslateTarget.id() + "'), " + this.trackTranslateSmoothing() + ")";
+						str += `.trackTranslate(ige.$('${this._trackTranslateTarget.id()}'), ${this.trackTranslateSmoothing()})`;
 						break;
 					case '_trackRotateTarget':
-						str += ".trackRotate(ige.$('" + this._trackRotateTarget.id() + "'), " + this.trackRotateSmoothing() + ")";
+						str += `.trackRotate(ige.$('${this._trackRotateTarget.id()}'), ${this.trackRotateSmoothing()})`;
 						break;
 				}
 			}
@@ -375,4 +372,4 @@ var IgeCamera = IgeEntity.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeCamera; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeCamera; }

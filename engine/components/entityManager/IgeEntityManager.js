@@ -34,16 +34,16 @@ var IgeEntityManager = IgeEventingClass.extend({
 		// if (true || ige.client.removeOutsideEntities) {
 		// var rect = ige.client.vp1.viewArea();
 
-		/*new IgeEntity()
+		/* new IgeEntity()
 			.id('visArea')
 			.texture(this.gameTexture.simpleBox)
 			.opacity(0.5)
-			.mount(ige.$('objectScene'));*/
+			.mount(ige.$('objectScene')); */
 
-		/*ige.$('visArea')
+		/* ige.$('visArea')
 			.translateTo(rect.x + (rect.width / 2), rect.y + (rect.height / 2), 0)
 			.height(rect.height)
-			.width(rect.width);*/
+			.width(rect.width); */
 		var currentTime = Date.now();
 		if (currentTime - self.lastExecutionTime >= 150) {
 			self.lastExecutionTime = currentTime;
@@ -57,8 +57,6 @@ var IgeEntityManager = IgeEventingClass.extend({
 			self._processMountQueue();
 			self._processUnMountQueue();
 		}
-
-
 	},
 
 	/**
@@ -68,14 +66,14 @@ var IgeEntityManager = IgeEventingClass.extend({
 	 * @private
 	 */
 	_updateOrphans: function () {
-		var arr = this._entity._children,
-			arrCount = arr.length,
-			viewportArr = ige._children,
-			vpCount = viewportArr.length,
-			item,
-			itemAabb,
-			vpIndex,
-			inVisibleArea;
+		var arr = this._entity._children;
+		var arrCount = arr.length;
+		var viewportArr = ige._children;
+		var vpCount = viewportArr.length;
+		var item;
+		var itemAabb;
+		var vpIndex;
+		var inVisibleArea;
 		ige.entityManagerUpdateorphan++;
 
 		while (arrCount--) {
@@ -101,7 +99,6 @@ var IgeEntityManager = IgeEventingClass.extend({
 						// break;
 					}
 					// }
-
 
 					if (!inVisibleArea) {
 						// Check for managed mode 1 (static entities that can be unmounted)
@@ -135,7 +132,6 @@ var IgeEntityManager = IgeEventingClass.extend({
 			parentAABB = item.getOwnerUnit().aabb();
 		}
 
-
 		var checkTranslateInView = function () {
 			var translate = {
 				x: item._translate.x,
@@ -145,15 +141,13 @@ var IgeEntityManager = IgeEventingClass.extend({
 			};
 
 			return viewArea.intersects(translate);
-		}
+		};
 
 		var checkItemIsBeingUsed = function () {
 			if (item._category === 'item') {
 				// console.log(item.id(), item.isBeingUsed)
 				return item.isBeingUsed; // if item is being used mount it on scene
-			}
-			else if (item._category === 'unit' && item._stats.itemIds && item._stats.itemIds.length > 0) {
-
+			} else if (item._category === 'unit' && item._stats.itemIds && item._stats.itemIds.length > 0) {
 				// if item is being used mount its owner too on scene
 				var itemIsBeingUsed = item._stats.itemIds.find(function (itemId) {
 					if (itemId) {
@@ -169,17 +163,17 @@ var IgeEntityManager = IgeEventingClass.extend({
 					return true;
 				}
 			}
-		}
+		};
 
 		if (item._alive) {
 			return (
 				this.allowedIds.includes(item._category) || // exceptional categories that should always be streaming eg. player
 				(ige.client.myplayer && ige.client.myplayer._stats.selectedUnitId == item.id()) ||// always stream my player
-				(item._category === 'unit' && item.minimapUnit) || // if unit has minimap 
+				(item._category === 'unit' && item.minimapUnit) || // if unit has minimap
 				checkTranslateInView() ||
 				item._category === 'item' && item._parent && item._parent.id() != 'baseScene' && viewArea.intersects(parentAABB) || // always stream spriteOnly items which are mouned over unit
 				checkItemIsBeingUsed()
-			)
+			);
 		}
 		return false;
 	},
@@ -189,13 +183,13 @@ var IgeEntityManager = IgeEventingClass.extend({
 	 * @private
 	 */
 	_updateChildren: function () {
-		var orphans = this._entity._orphans,
-			viewportArr = ige._children,
-			vpCount = viewportArr.length,
-			item,
-			itemAabb,
-			vpIndex,
-			inVisibleArea;
+		var orphans = this._entity._orphans;
+		var viewportArr = ige._children;
+		var vpCount = viewportArr.length;
+		var item;
+		var itemAabb;
+		var vpIndex;
+		var inVisibleArea;
 		ige.entityManagerUpdateChildren++;
 
 		for (var itemKey in orphans) {
@@ -248,15 +242,14 @@ var IgeEntityManager = IgeEventingClass.extend({
 	 * @private
 	 */
 	_processMountQueue: function () {
-		var arr = this._mountQueue,
-			arrCount = arr.length,
-			item;
+		var arr = this._mountQueue;
+		var arrCount = arr.length;
+		var item;
 
 		while (arrCount--) {
 			item = arr[arrCount];
 			if (item._category) {
 				if (item._alive) {
-
 					// mount entity on owner if item is spriteOnly or jointType is weld joint
 					if (item._category && item._category === 'item' &&
 						item.getOwnerUnit() && item._stats.currentBody &&
@@ -266,17 +259,14 @@ var IgeEntityManager = IgeEventingClass.extend({
 						if (owner && owner._stats.currentItemIndex === item._stats.slotIndex) {
 							item.mount(owner);
 						}
-					}
-					else {
+					} else {
 						item.mount(this._entity);
 					}
-				}
-				else {
+				} else {
 					item.destroy();
 					delete this._entity._orphans[item._id];
 				}
-			}
-			else {
+			} else {
 				// this._entity._orphans.pull(item);
 				item.mount(this._entity);
 			}
@@ -290,9 +280,9 @@ var IgeEntityManager = IgeEventingClass.extend({
 	 * @private
 	 */
 	_processUnMountQueue: function () {
-		var arr = this._unMountQueue,
-			arrCount = arr.length,
-			item;
+		var arr = this._unMountQueue;
+		var arrCount = arr.length;
+		var item;
 
 		while (arrCount--) {
 			item = arr[arrCount];

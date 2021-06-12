@@ -16,7 +16,7 @@ IgeFilters.edgeEnhance = function (canvas, ctx, originalImage, texture, data) {
 			),
 			[
 				0, 0, 0,
-				-1,  1, 0,
+				-1, 1, 0,
 				0, 0, 0
 			],
 			true

@@ -14,9 +14,9 @@ var IgePathNode = IgePoint3d.extend({
 	 * @param {Object} parent
 	 * @param {String} direction
 	 */
-	init: function(x, y, g, moveCost, h, parent, direction) {
+	init: function (x, y, g, moveCost, h, parent, direction) {
 		this.z = 0; // Compat with IgePoint3d
-		
+
 		this.x = x;
 		this.y = y;
 		this.g = g + moveCost; // Cost of moving from the start point along the path to this node (parentNode.g + moveCost)
@@ -24,7 +24,7 @@ var IgePathNode = IgePoint3d.extend({
 		this.moveCost = moveCost;
 		this.f = g + h; // Result of g + h
 		this.link = parent;
-		this.hash = x + ',' + y;
+		this.hash = `${x},${y}`;
 		this.listType = 0;
 		this.direction = direction;
 		this.mode = 0;
@@ -41,9 +41,9 @@ var IgePathNode = IgePoint3d.extend({
 			this.mode = val;
 			return this;
 		}
-		
+
 		return this.mode;
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgePathNode; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePathNode; }

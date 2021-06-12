@@ -1,14 +1,14 @@
 var IgeGamePadComponent = IgeEventingClass.extend({
 	classId: 'IgeGamePadComponent',
 	componentId: 'gamePad',
-	
+
 	init: function (entity, options) {
 		var self = this;
-		
+
 		this._entity = entity;
 		this._options = options;
 		this.gamepadAvailable = null;
-			
+
 		// A number of typical buttons recognized by Gamepad API and mapped to
 		// standard controls. Any extraneous buttons will have larger indexes.
 		this.TYPICAL_BUTTON_COUNT = 16;
@@ -33,15 +33,15 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 		// analyzing the polled data if nothing changed (timestamp is the same
 		// as last time).
 		this.prevTimestamps = [];
-		
+
 		if (ige.isClient) {
 			// As of writing, it seems impossible to detect Gamepad API support
-			// in Firefox, hence we need to hardcode it in the third clause. 
+			// in Firefox, hence we need to hardcode it in the third clause.
 			// (The preceding two clauses are for Chrome.)
 			this.gamepadAvailable = !!navigator.webkitGetGamepads ||
 				!!navigator.webkitGamepads ||
 				(navigator.userAgent.indexOf('Firefox/') != -1);
-	
+
 			if (!this.gamepadAvailable) {
 				// It doesn't seem Gamepad API is available – show a message telling
 				// the visitor about it.
@@ -51,19 +51,19 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 				// handlers to those.
 				window.addEventListener('MozGamepadConnected', function () { self.onGamepadConnect.apply(self, arguments); }, false);
 				window.addEventListener('MozGamepadDisconnected', function () { self.onGamepadDisconnect.apply(self, arguments); }, false);
-	
+
 				// Since Chrome only supports polling, we initiate polling loop straight
 				// away. For Firefox, we will only do it if we get a connect event.
 				if (!!navigator.webkitGamepads || !!navigator.webkitGetGamepads) {
 					this.startPolling();
 				}
 			}
-			
+
 			entity.addBehaviour('gamePadComponent', this._behaviour);
 		}
 	},
 
-	onGamepadConnect: function(event) {
+	onGamepadConnect: function (event) {
 		// Add the new gamepad on the list of gamepads to look after.
 		this.gamepads.push(event.gamepad);
 
@@ -77,7 +77,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	/**
 	 * React to the gamepad being disconnected.
 	 */
-	onGamepadDisconnect: function(event) {
+	onGamepadDisconnect: function (event) {
 		// Remove the gamepad from the list of gamepads to monitor.
 		for (var i in this.gamepads) {
 			if (this.gamepads[i].index == event.gamepad.index) {
@@ -98,7 +98,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	/**
 	 * Starts a polling loop to check for gamepad state.
 	 */
-	startPolling: function() {
+	startPolling: function () {
 		this.ticking = true;
 	},
 
@@ -106,7 +106,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	 * Stops a polling loop by setting a flag which will prevent the next
 	 * requestAnimationFrame() from being scheduled.
 	 */
-	stopPolling: function() {
+	stopPolling: function () {
 		this.ticking = false;
 	},
 
@@ -114,7 +114,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	 * A function called with each requestAnimationFrame(). Polls the gamepad
 	 * status and schedules another poll.
 	 */
-	_behaviour: function() {
+	_behaviour: function () {
 		this.gamePad.pollStatus();
 	},
 
@@ -125,7 +125,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	 * to update the display accordingly. Should run as close to 60 frames per
 	 * second as possible.
 	 */
-	pollStatus: function() {
+	pollStatus: function () {
 		// Poll to see if gamepads are connected or disconnected. Necessary
 		// only on Chrome.
 		this.pollGamepads();
@@ -148,7 +148,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	// This function is called only on Chrome, which does not yet support
 	// connection/disconnection events, but requires you to monitor
 	// an array for changes.
-	pollGamepads: function() {
+	pollGamepads: function () {
 		// Get the array of gamepads – the first method (getGamepads)
 		// is the most modern one and is supported by Firefox 28+ and
 		// Chrome 35+. The second one (webkitGetGamepads) is a deprecated method
@@ -188,4 +188,4 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeGamePadComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeGamePadComponent; }

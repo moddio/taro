@@ -8,13 +8,13 @@ var IgePoint2d = IgeClass.extend({
 		// Set values to the passed parameters or
 		// zero if they are undefined
 		// Commented for increase performance over stability checks
-		/*if (x === undefined) { debugger; }
-		if (y === undefined) { debugger; }*/
+		/* if (x === undefined) { debugger; }
+		if (y === undefined) { debugger; } */
 		this.x = x = x !== undefined ? x : 0;
 		this.y = y = y !== undefined ? y : 0;
-		
+
 		this._floor = floor !== undefined;
-		
+
 		if (this._floor) {
 			this.x2 = Math.floor(x / 2);
 			this.y2 = Math.floor(y / 2);
@@ -61,7 +61,7 @@ var IgePoint2d = IgeClass.extend({
 		this.x = point.x;
 		this.y = point.y;
 		this.z = point.z;
-		
+
 		return this;
 	},
 
@@ -71,10 +71,10 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {Object}
 	 */
 	toIso: function () {
-		var sx = this.x - this.y,
-			sy = (this.x + this.y) * 0.5;
+		var sx = this.x - this.y;
+		var sy = (this.x + this.y) * 0.5;
 
-		return {x: sx, y: sy};
+		return { x: sx, y: sy };
 	},
 
 	/**
@@ -96,10 +96,10 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {Object}
 	 */
 	to2d: function () {
-		var sx = this.y + this.x / 2,
-			sy = this.y - this.x / 2;
+		var sx = this.y + this.x / 2;
+		var sy = this.y - this.x / 2;
 
-		return {x: sx, y: sy};
+		return { x: sx, y: sy };
 	},
 
 	/**
@@ -207,7 +207,7 @@ var IgePoint2d = IgeClass.extend({
 	divide: function (x, y) {
 		return new IgePoint2d(this.x / x, this.y / y);
 	},
-	
+
 	/**
 	 * Divides this point's data by the point specified
 	 * and returns a new IgePoint2d whose values are the result.
@@ -215,12 +215,12 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {*}
 	 */
 	dividePoint: function (point) {
-		var newX = this.x,
-			newY = this.y;
-		
+		var newX = this.x;
+		var newY = this.y;
+
 		if (point.x) { newX = this.x / point.x; }
 		if (point.y) { newY = this.y / point.y; }
-		
+
 		return new IgePoint2d(newX, newY);
 	},
 
@@ -257,11 +257,11 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {*}
 	 */
 	interpolate: function (endPoint, startTime, currentTime, endTime) {
-		var totalX = endPoint.x - this.x,
-			totalY = endPoint.y - this.y,
-			totalTime = endTime - startTime,
-			deltaTime = totalTime - (currentTime - startTime),
-			timeRatio = deltaTime / totalTime;
+		var totalX = endPoint.x - this.x;
+		var totalY = endPoint.y - this.y;
+		var totalTime = endTime - startTime;
+		var deltaTime = totalTime - (currentTime - startTime);
+		var timeRatio = deltaTime / totalTime;
 
 		return new IgePoint2d(endPoint.x - (totalX * timeRatio), endPoint.y - (totalY * timeRatio));
 	},
@@ -272,14 +272,14 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {IgePoint2d} A new point with the rotated x, y.
 	 */
 	rotate: function (radians) {
-		var s = Math.sin(radians),
-			c = Math.cos(radians),
-			x = c * this.x - s * this.y,
-			y = s * this.x - c * this.y;
-		
+		var s = Math.sin(radians);
+		var c = Math.cos(radians);
+		var x = c * this.x - s * this.y;
+		var y = s * this.x - c * this.y;
+
 		return new IgePoint2d(x, y);
 	},
-	
+
 	/**
 	 * Rotates the point by the given radians and updates this point
 	 * to the new x, y values.
@@ -287,14 +287,14 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {IgePoint2d} This point.
 	 */
 	thisRotate: function (radians) {
-		var s = Math.sin(radians),
-			c = Math.cos(radians),
-			x = this.x,
-			y = this.y;
-		
+		var s = Math.sin(radians);
+		var c = Math.cos(radians);
+		var x = this.x;
+		var y = this.y;
+
 		this.x = c * x - s * y;
 		this.y = s * x - c * y;
-		
+
 		return this;
 	},
 
@@ -307,18 +307,16 @@ var IgePoint2d = IgeClass.extend({
 	 * @return {String}
 	 */
 	toString: function (precision) {
-		if (precision === undefined) 
-		{ 
-			precision = 2; 
+		if (precision === undefined) {
+			precision = 2;
 		}
 
-		if (this.x == undefined || this.y  == undefined)
-		{
-			return "0,0";
+		if (this.x == undefined || this.y == undefined) {
+			return '0,0';
 		}
 
-		return parseFloat(this.x).toFixed(precision) + ',' + parseFloat(this.y).toFixed(precision);
+		return `${parseFloat(this.x).toFixed(precision)},${parseFloat(this.y).toFixed(precision)}`;
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgePoint2d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePoint2d; }

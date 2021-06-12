@@ -40,6 +40,5 @@ var ClientScore = IgeFontEntity.extend({
 					.start();
 			})
 			.start();
-
 	}
 });

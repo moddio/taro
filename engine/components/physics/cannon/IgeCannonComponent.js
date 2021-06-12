@@ -16,10 +16,10 @@ var IgeCannonComponent = IgeEventingClass.extend({
 		this._removeWhenReady = [];
 
 		// Materials
-		this._normalMaterial = new CANNON.Material("normalMaterial");
+		this._normalMaterial = new CANNON.Material('normalMaterial');
 
 		// Create a slippery material (friction coefficient = 0.0)
-		this._slipperyMaterial = new CANNON.Material("slipperyMaterial");
+		this._slipperyMaterial = new CANNON.Material('slipperyMaterial');
 
 		// The ContactMaterial defines what happens when two materials meet.
 		// In this case we want friction coefficient = 0.0 when the slippery material touches ground.
@@ -27,7 +27,7 @@ var IgeCannonComponent = IgeEventingClass.extend({
 			this._normalMaterial,
 			this._slipperyMaterial,
 			0.0, // friction coefficient
-			0.3  // restitution
+			0.3 // restitution
 		);
 
 		// Add the cannon behaviour to the ige
@@ -101,8 +101,8 @@ var IgeCannonComponent = IgeEventingClass.extend({
 	},
 
 	createFloor: function (normalX, normalY, normalZ) {
-		var groundShape = new CANNON.Plane(new CANNON.Vec3(normalX, normalY, normalZ)),
-			groundBody = new CANNON.RigidBody(0, groundShape, this._slipperyMaterial);
+		var groundShape = new CANNON.Plane(new CANNON.Vec3(normalX, normalY, normalZ));
+		var groundBody = new CANNON.RigidBody(0, groundShape, this._slipperyMaterial);
 
 		this._world.add(groundBody);
 	},
@@ -175,7 +175,7 @@ var IgeCannonComponent = IgeEventingClass.extend({
 		if (body.linearDamping !== undefined) { tempBod.linearDamping = body.linearDamping; }
 
 		// Set the position
-		tempBod.position.set(entity._translate.x / this._scaleRatio, entity._translate.y / this._scaleRatio, (entity._translate.z + entity._bounds3d.z2)  / this._scaleRatio);
+		tempBod.position.set(entity._translate.x / this._scaleRatio, entity._translate.y / this._scaleRatio, (entity._translate.z + entity._bounds3d.z2) / this._scaleRatio);
 
 		// Store the entity that is linked to this body
 		tempBod._igeEntity = entity;
@@ -198,12 +198,12 @@ var IgeCannonComponent = IgeEventingClass.extend({
 		debugDraw.SetFillAlpha(0.3);
 		debugDraw.SetLineThickness(1.0);
 		debugDraw.SetFlags(
-			this.b2DebugDraw.e_controllerBit
-			| this.b2DebugDraw.e_jointBit
-			| this.b2DebugDraw.e_pairBit
-			| this.b2DebugDraw.e_shapeBit
-			//| this.b2DebugDraw.e_aabbBit
-			//| this.b2DebugDraw.e_centerOfMassBit
+			this.b2DebugDraw.e_controllerBit |
+			this.b2DebugDraw.e_jointBit |
+			this.b2DebugDraw.e_pairBit |
+			this.b2DebugDraw.e_shapeBit
+			// | this.b2DebugDraw.e_aabbBit
+			// | this.b2DebugDraw.e_centerOfMassBit
 		);
 
 		// Set the debug draw for the world
@@ -214,10 +214,10 @@ var IgeCannonComponent = IgeEventingClass.extend({
 	 category:"method",
 	 } **/
 	_behaviour: function (ctx) {
-		var self = ige.cannon,
-			bodiesArr = self._world.bodies,
-			bodyCount = bodiesArr.length,
-			tempBod, entity;
+		var self = ige.cannon;
+		var bodiesArr = self._world.bodies;
+		var bodyCount = bodiesArr.length;
+		var tempBod; var entity;
 
 		if (self._active) {
 			// Call the world step
@@ -234,13 +234,13 @@ var IgeCannonComponent = IgeEventingClass.extend({
 						// Update the entity data to match the body data
 						tempBod._igeUpdating = true;
 						entity.translateTo(Math.ceil(tempBod.position.x * self._scaleRatio), Math.ceil(tempBod.position.y * self._scaleRatio), Math.ceil((tempBod.position.z * self._scaleRatio) - entity._bounds3d.z2));
-						//entity.rotateTo(entity._rotate.x, entity._rotate.y, tempBod.GetAngle());
+						// entity.rotateTo(entity._rotate.x, entity._rotate.y, tempBod.GetAngle());
 						tempBod._igeUpdating = false;
 					}
 				}
 			}
 
-			/*// Remove any bodies that were queued for removal
+			/* // Remove any bodies that were queued for removal
 			removeWhenReady = self._removeWhenReady;
 			count = removeWhenReady.length;
 
@@ -305,13 +305,13 @@ var IgeCannonComponent = IgeEventingClass.extend({
 			self._world.ClearForces();
 
 			tempBod = null;
-			entity = null;*/
+			entity = null; */
 
-			if (typeof(self._updateCallback) === 'function') {
+			if (typeof (self._updateCallback) === 'function') {
 				self._updateCallback();
 			}
 		}
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeCannonComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeCannonComponent; }

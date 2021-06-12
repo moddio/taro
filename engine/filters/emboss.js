@@ -10,7 +10,7 @@ IgeFilters.emboss = function (canvas, ctx, originalImage, texture, data) {
 			),
 			[
 				-2, -1, 0,
-				-1,  1, 1,
+				-1, 1, 1,
 				0, 1, 2
 			]
 		),

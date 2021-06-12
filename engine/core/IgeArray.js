@@ -5,16 +5,16 @@ IgeArray.prototype = [];
 for (var methodName in IgeEntity.prototype) {
 	if (IgeEntity.prototype.hasOwnProperty(methodName)) {
 		if (methodName !== 'init') {
-			IgeArray.prototype[methodName] = function (methodName) {
+			IgeArray.prototype[methodName] = (function (methodName) {
 				return function () {
 					var c = this.length;
 					for (var i = 0; i < c; i++) {
 						this[i][methodName].apply(this[i], arguments);
 					}
-				}
-			}(methodName);
+				};
+			}(methodName));
 		}
 	}
 }
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeArray; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeArray; }

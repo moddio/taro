@@ -105,61 +105,61 @@ var IgeInputComponent = IgeEventingClass.extend({
 		// and general console.log efforts :)
 		this.key = {
 			// Virtual codes
-			'shift': -3,
-			'ctrl': -2,
-			'alt': -1,
+			shift: -3,
+			ctrl: -2,
+			alt: -1,
 			// Read codes
-			'backspace': 8,
-			'tab': 9,
-			'enter': 13,
-			'escape': 27,
-			'space': 32,
-			'pageUp': 33,
-			'pageDown': 34,
-			'end': 35,
-			'home': 36,
-			'left': 37,
-			'up': 38,
-			'right': 39,
-			'down': 40,
-			'insert': 45,
-			'del': 46,
-			'0': 48,
-			'1': 49,
-			'2': 50,
-			'3': 51,
-			'4': 52,
-			'5': 53,
-			'6': 54,
-			'7': 55,
-			'8': 56,
-			'9': 57,
-			'a': 65,
-			'b': 66,
-			'c': 67,
-			'd': 68,
-			'e': 69,
-			'f': 70,
-			'g': 71,
-			'h': 72,
-			'i': 73,
-			'j': 74,
-			'k': 75,
-			'l': 76,
-			'm': 77,
-			'n': 78,
-			'o': 79,
-			'p': 80,
-			'q': 81,
-			'r': 82,
-			's': 83,
-			't': 84,
-			'u': 85,
-			'v': 86,
-			'w': 87,
-			'x': 88,
-			'y': 89,
-			'z': 90
+			backspace: 8,
+			tab: 9,
+			enter: 13,
+			escape: 27,
+			space: 32,
+			pageUp: 33,
+			pageDown: 34,
+			end: 35,
+			home: 36,
+			left: 37,
+			up: 38,
+			right: 39,
+			down: 40,
+			insert: 45,
+			del: 46,
+			0: 48,
+			1: 49,
+			2: 50,
+			3: 51,
+			4: 52,
+			5: 53,
+			6: 54,
+			7: 55,
+			8: 56,
+			9: 57,
+			a: 65,
+			b: 66,
+			c: 67,
+			d: 68,
+			e: 69,
+			f: 70,
+			g: 71,
+			h: 72,
+			i: 73,
+			j: 74,
+			k: 75,
+			l: 76,
+			m: 77,
+			n: 78,
+			o: 79,
+			p: 80,
+			q: 81,
+			r: 82,
+			s: 83,
+			t: 84,
+			u: 85,
+			v: 86,
+			w: 87,
+			x: 88,
+			y: 89,
+			z: 90
 		};
 
 		this._controlMap = [];
@@ -209,19 +209,19 @@ var IgeInputComponent = IgeEventingClass.extend({
 
 		// Define event functions and keep references for later removal
 		this._evRef = {
-			'mousedown': function (event) { event.igeType = 'mouse'; self._rationalise(event, undefined, true); self._mouseDown(event); },
-			'mouseup': function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseUp(event); },
-			'mousemove': function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseMove(event); },
-			'mousewheel': function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseWheel(event); },
+			mousedown: function (event) { event.igeType = 'mouse'; self._rationalise(event, undefined, true); self._mouseDown(event); },
+			mouseup: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseUp(event); },
+			mousemove: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseMove(event); },
+			mousewheel: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseWheel(event); },
 
-			'touchmove': function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseMove(event); },
-			'touchstart': function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseDown(event); },
-			'touchend': function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseUp(event); },
+			touchmove: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseMove(event); },
+			touchstart: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseDown(event); },
+			touchend: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseUp(event); },
 
-			'contextmenu': function (event) { event.preventDefault(); event.igeType = 'mouse'; self._rationalise(event); self._contextMenu(event); },
+			contextmenu: function (event) { event.preventDefault(); event.igeType = 'mouse'; self._rationalise(event); self._contextMenu(event); },
 
-			'keydown': function (event) { event.igeType = 'key'; self._rationalise(event); self._keyDown(event); },
-			'keyup': function (event) { event.igeType = 'key'; self._rationalise(event); self._keyUp(event); }
+			keydown: function (event) { event.igeType = 'key'; self._rationalise(event); self._keyDown(event); },
+			keyup: function (event) { event.igeType = 'key'; self._rationalise(event); self._keyUp(event); }
 		};
 
 		// Listen for mouse events
@@ -283,7 +283,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 			if (this._evRef[eventName]) {
 				this._evRef[eventName](eventObj);
 			} else {
-				this.log('Cannot fire manual event "' + eventName + '" because no listener exists in the engine for this event type!', 'warning');
+				this.log(`Cannot fire manual event "${eventName}" because no listener exists in the engine for this event type!`, 'warning');
 			}
 		} else {
 			this.log('Cannot fire manual event because both eventName and eventObj params are required.', 'warning');
@@ -339,7 +339,6 @@ var IgeInputComponent = IgeEventingClass.extend({
 		this.emit('inputEvent', event);
 	},
 
-
 	/**
 	 * Emits the "mouseDown" event.
 	 * @param event
@@ -352,11 +351,11 @@ var IgeInputComponent = IgeEventingClass.extend({
 		// Update the mouse position within the viewports
 		this._updateMouseData(event);
 		if ($('#chat-message-input').css('display') === 'block') {
-			$('#chat-message-input').css('display', 'none')
+			$('#chat-message-input').css('display', 'none');
 		}
-		var mx = event.igeX - ige._bounds2d.x2,
-			my = event.igeY - ige._bounds2d.y2,
-			self = this;
+		var mx = event.igeX - ige._bounds2d.x2;
+		var my = event.igeY - ige._bounds2d.y2;
+		var self = this;
 
 		if (event.button === 0) {
 			this._state[this.mouse.button1] = true;
@@ -391,9 +390,9 @@ var IgeInputComponent = IgeEventingClass.extend({
 		// Update the mouse position within the viewports
 		this._updateMouseData(event);
 
-		var mx = event.igeX - ige._bounds2d.x2,
-			my = event.igeY - ige._bounds2d.y2,
-			self = this;
+		var mx = event.igeX - ige._bounds2d.x2;
+		var my = event.igeY - ige._bounds2d.y2;
+		var self = this;
 
 		if (event.button === 0) {
 			this._state[this.mouse.button1] = false;
@@ -423,9 +422,9 @@ var IgeInputComponent = IgeEventingClass.extend({
 		// Update the mouse position within the viewports
 		this._updateMouseData(event);
 
-		var mx = event.igeX - ige._bounds2d.x2,
-			my = event.igeY - ige._bounds2d.y2,
-			self = this;
+		var mx = event.igeX - ige._bounds2d.x2;
+		var my = event.igeY - ige._bounds2d.y2;
+		var self = this;
 
 		if (event.button === 0) {
 			this._state[this.mouse.button1] = false;
@@ -435,7 +434,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 			this._state[this.mouse.button2] = false;
 		}
 
-		// sure we're hiding the context menu when right-click is clicked, but why the hell are we setting button pressed as false again?!	
+		// sure we're hiding the context menu when right-click is clicked, but why the hell are we setting button pressed as false again?!
 		// if (event.button === 2) {
 		// 	this._state[this.mouse.button3] = false;
 		// }
@@ -484,9 +483,9 @@ var IgeInputComponent = IgeEventingClass.extend({
 		// Update the mouse position within the viewports
 		this._updateMouseData(event);
 
-		var mx = event.igeX - ige._bounds2d.x2,
-			my = event.igeY - ige._bounds2d.y2,
-			self = this;
+		var mx = event.igeX - ige._bounds2d.x2;
+		var my = event.igeY - ige._bounds2d.y2;
+		var self = this;
 
 		this._state[this.mouse.wheel] = event.wheelDelta;
 
@@ -518,12 +517,11 @@ var IgeInputComponent = IgeEventingClass.extend({
 		if (this._state[event.keyCode] == false) {
 			// reset streamed target position & existing force when key is pressed
 			if (ige.game.data.defaultData && ige.client.selectedUnit) {
-				this.lastMovedAt = ige.currentTime()
+				this.lastMovedAt = ige.currentTime();
 			}
 		}
 
 		this._state[event.keyCode] = true;
-
 
 		if (this._debug) {
 			console.log('Key Down', event);
@@ -538,18 +536,17 @@ var IgeInputComponent = IgeEventingClass.extend({
 	_chatHandler: function (e) {
 		var isChatInputHidden = $('#chat-message-input').css('display') === 'none';
 		if (e.keyCode === 13) {
-
 			// ignore enter click if modal is open because it was pressed to skip text
 			var isModalOpen = $('.modal').hasClass('show');
 
 			// ignore enter if menu is visible
-			var isMenuVisible = $("#menu-wrapper").is(":visible");
+			var isMenuVisible = $('#menu-wrapper').is(':visible');
 
 			if (isChatInputHidden && !isModalOpen && !isMenuVisible) {
 				// if (ige.client.myPlayer && ige.client.myPlayer._stats.email) {
 				$('#chat-message-input').show();
 				setTimeout(function () {
-					$("#message").focus();
+					$('#message').focus();
 				}, 0);
 				// }
 				// else {
@@ -558,17 +555,14 @@ var IgeInputComponent = IgeEventingClass.extend({
 				// 		keyboard: true
 				// 	});
 				// }
-			}
-			else if (!isChatInputHidden && !isModalOpen) {
-				if ($("#message").is(":focus")) {
+			} else if (!isChatInputHidden && !isModalOpen) {
+				if ($('#message').is(':focus')) {
 					ige.chat.sendChatMessage();
 				}
-			}
-			else if ($('#player-input-field').is(":focus")) {
+			} else if ($('#player-input-field').is(':focus')) {
 				$('button#player-input-submit').click();
 			}
-		}
-		else if (e.keyCode === 27 && !isChatInputHidden) {
+		} else if (e.keyCode === 27 && !isChatInputHidden) {
 			$('#chat-message-input').hide();
 		}
 	},
@@ -585,7 +579,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 		if (this._state[event.keyCode] == true) {
 			// reset streamed target position & existing force when key is pressed
 			if (ige.game.data.defaultData && ige.client.selectedUnit) {
-				this.lastMovedAt = ige.currentTime()
+				this.lastMovedAt = ige.currentTime();
 			}
 		}
 
@@ -626,11 +620,11 @@ var IgeInputComponent = IgeEventingClass.extend({
 			resolvedCoordinate.y = this.lastMousePosition.y;
 		}
 
-		var arr = ige._children,
-			arrCount = arr.length,
-			vp, vpUpdated;
+		var arr = ige._children;
+		var arrCount = arr.length;
+		var vp; var vpUpdated;
 
-		//low resolution has half bound as compared to high quality bounds so multiply bound by 2
+		// low resolution has half bound as compared to high quality bounds so multiply bound by 2
 		if (ige.client.resolutionQuality == 'low') {
 			var mx = resolvedCoordinate.x - (ige._bounds2d.x2 * 2) - ige._translate.x;
 			var my = resolvedCoordinate.y - (ige._bounds2d.y2 * 2) - ige._translate.y;
@@ -756,9 +750,9 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 */
 	tick: function () {
 		// If we have an event queue, process it
-		var arr = this._eventQueue,
-			arrCount = arr.length,
-			evc = this._eventControl;
+		var arr = this._eventQueue;
+		var arrCount = arr.length;
+		var evc = this._eventControl;
 
 		while (arrCount--) {
 			arr[arrCount][1].apply(arr[arrCount][0], [evc, arr[arrCount][2]]);
@@ -790,12 +784,11 @@ var IgeInputComponent = IgeEventingClass.extend({
 		if (this._eventListeners) {
 			// Check if the event has any listeners
 			if (this._eventListeners[eventName]) {
-
 				// Fire the listeners for this event
-				var eventCount = this._eventListeners[eventName].length,
-					eventCount2 = this._eventListeners[eventName].length - 1,
-					evc = this._eventControl,
-					finalArgs, i, cancelFlag, eventIndex, tempEvt, retVal;
+				var eventCount = this._eventListeners[eventName].length;
+				var eventCount2 = this._eventListeners[eventName].length - 1;
+				var evc = this._eventControl;
+				var finalArgs; var i; var cancelFlag; var eventIndex; var tempEvt; var retVal;
 
 				// If there are some events, ensure that the args is ready to be used
 				if (eventCount) {
@@ -849,9 +842,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 					if (cancelFlag) {
 						return 1;
 					}
-
 				}
-
 			}
 		}
 	}

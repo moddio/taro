@@ -2,7 +2,7 @@ var igeCoreConfig = {
 	/* Includes for the main IGE loader. Flags are indicated as:
 	 * c = client
 	 * s = server
-	 * a = 
+	 * a =
 	 * p = prototype
 	 */
 	include: [

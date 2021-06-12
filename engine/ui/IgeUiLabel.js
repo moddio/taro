@@ -20,7 +20,7 @@ var IgeUiLabel = IgeUiElement.extend({
 			.textAlignX(0)
 			.textAlignY(0)
 			.mount(this);
-		
+
 		// Set defaults
 		this.font('10px Verdana');
 		this.paddingLeft(5);
@@ -80,7 +80,7 @@ var IgeUiLabel = IgeUiElement.extend({
 		if (val !== undefined) {
 			if (this._value !== val) {
 				this._value = val;
-	
+
 				if (!val && this._placeHolder) {
 					// Assign placeholder text and color
 					this._fontEntity.text(this._placeHolder);
@@ -92,11 +92,11 @@ var IgeUiLabel = IgeUiElement.extend({
 						this._fontEntity.text(this._value);
 					} else {
 						// Assign a mask value instead
-						this._fontEntity.text(new Array(this._value.length + 1).join(this._mask))
+						this._fontEntity.text(new Array(this._value.length + 1).join(this._mask));
 					}
 					this._fontEntity.color(this._color);
 				}
-				
+
 				this.emit('change', this._value);
 			}
 			return this;
@@ -104,7 +104,7 @@ var IgeUiLabel = IgeUiElement.extend({
 
 		return this._value;
 	},
-	
+
 	/**
 	 * Gets / sets the font sheet (texture) that the text box will
 	 * use when rendering text inside the box.
@@ -122,10 +122,10 @@ var IgeUiLabel = IgeUiElement.extend({
 
 		return this._fontSheet;
 	},
-	
+
 	font: function (val) {
 		if (val !== undefined) {
-			if (typeof(val) === 'string') {
+			if (typeof (val) === 'string') {
 				// Native font name
 				return this.nativeFont(val);
 			} else {
@@ -133,7 +133,7 @@ var IgeUiLabel = IgeUiElement.extend({
 				return this.fontSheet(val);
 			}
 		}
-		
+
 		if (this._fontEntity._nativeMode) {
 			// Return native font
 			return this.nativeFont();
@@ -142,38 +142,38 @@ var IgeUiLabel = IgeUiElement.extend({
 			return this.fontSheet();
 		}
 	},
-	
+
 	nativeFont: function (val) {
 		if (val !== undefined) {
 			this._fontEntity.nativeFont(val);
 			return this;
 		}
-		
+
 		return this._fontEntity.nativeFont();
 	},
-	
+
 	nativeStroke: function (val) {
 		if (val !== undefined) {
 			this._fontEntity.nativeStroke(val);
 			return this;
 		}
-		
+
 		return this._fontEntity.nativeStroke();
 	},
-	
+
 	nativeStrokeColor: function (val) {
 		if (val !== undefined) {
 			this._fontEntity.nativeStrokeColor(val);
 			return this;
 		}
-		
+
 		return this._fontEntity.nativeStrokeColor();
 	},
-	
+
 	color: function (val) {
 		if (val !== undefined) {
 			this._color = val;
-			
+
 			if (!this._value && this._placeHolder && this._placeHolderColor) {
 				this._fontEntity.color(this._placeHolderColor);
 			} else {
@@ -181,10 +181,10 @@ var IgeUiLabel = IgeUiElement.extend({
 			}
 			return this;
 		}
-		
+
 		return this._color;
 	},
-	
+
 	_mounted: function () {
 		// Check if we have a text value
 		if (!this._value && this._placeHolder) {
@@ -192,7 +192,7 @@ var IgeUiLabel = IgeUiElement.extend({
 			this._fontEntity.text(this._placeHolder);
 			this._fontEntity.color(this._placeHolderColor);
 		}
-		
+
 		IgeUiElement.prototype._mounted.call(this);
 	}
 });

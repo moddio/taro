@@ -1,12 +1,12 @@
 var IgeAudio = IgeEventingClass.extend({
 	classId: 'IgeAudio',
-	
+
 	init: function (url) {
 		if (url) {
 			this.load(url);
 		}
 	},
-	
+
 	/**
 	 * Gets / sets the current object id. If no id is currently assigned and no
 	 * id is passed to the method, it will automatically generate and assign a
@@ -22,9 +22,9 @@ var IgeAudio = IgeEventingClass.extend({
 					// We are already registered as this id
 					return this;
 				}
-				
+
 				// Already an object with this ID!
-				this.log('Cannot set ID of object to "' + id + '" because that ID is already in use by another object!', 'error');
+				this.log(`Cannot set ID of object to "${id}" because that ID is already in use by another object!`, 'error');
 			} else {
 				// Check if we already have an id assigned
 				if (this._id && ige._register[this._id]) {
@@ -65,37 +65,37 @@ var IgeAudio = IgeEventingClass.extend({
 	 * file has loaded or on error.
 	 */
 	load: function (url, callback) {
-		var self = this,
-			request = new XMLHttpRequest();
-		
+		var self = this;
+		var request = new XMLHttpRequest();
+
 		request.open('GET', url, true);
 		request.responseType = 'arraybuffer';
-		
+
 		// Decode asynchronously
-		request.onload = function() {
+		request.onload = function () {
 			self._data = request.response;
 			self._url = url;
 			self._loaded(callback);
 		};
-		
+
 		request.onerror = function (err) {
 			callback.apply(self, [err]);
 		};
-		
+
 		request.send();
 	},
-	
+
 	_loaded: function (callback) {
 		var self = this;
-		
-		ige.audio.decode(self._data, function(err, buffer) {
+
+		ige.audio.decode(self._data, function (err, buffer) {
 			if (!err) {
 				self._buffer = buffer;
-				ige.audio.log('Audio file (' + self._url + ') loaded successfully');
-				
+				ige.audio.log(`Audio file (${self._url}) loaded successfully`);
+
 				if (callback) { callback.apply(self, [false]); }
 			} else {
-				self.log('Failed to decode audio data from: ' + self._url, 'warning');
+				self.log(`Failed to decode audio data from: ${self._url}`, 'warning');
 				if (callback) { callback.apply(self, [err]); }
 			}
 		});
@@ -105,9 +105,9 @@ var IgeAudio = IgeEventingClass.extend({
 	 * Plays the audio.
 	 */
 	play: function () {
-		var self = this,
-			bufferSource;
-		
+		var self = this;
+		var bufferSource;
+
 		if (self._buffer) {
 			bufferSource = ige.audio._ctx.createBufferSource();
 			bufferSource.buffer = self._buffer;

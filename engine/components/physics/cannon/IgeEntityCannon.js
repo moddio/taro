@@ -30,8 +30,8 @@ var IgeEntityCannon = IgeEntity.extend({
 	},
 
 	_translateTo: function (x, y, z) {
-		var entCannon = this._cannonBody,
-			scaleRatio = ige.cannon._scaleRatio;
+		var entCannon = this._cannonBody;
+		var scaleRatio = ige.cannon._scaleRatio;
 
 		// Check if the entity has a cannon body attached
 		// and if so, is it updating or not
@@ -57,4 +57,4 @@ var IgeEntityCannon = IgeEntity.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeEntityCannon; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEntityCannon; }

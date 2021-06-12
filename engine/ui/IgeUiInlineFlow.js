@@ -7,9 +7,9 @@ var IgeUiInlineFlow = IgeUiElement.extend({
 
 	tick: function (ctx) {
 		// Loop children and re-position them
-		var arr = this._children,
-			arrCount = arr.length, i,
-			item, itemY, currentX = 0;
+		var arr = this._children;
+		var arrCount = arr.length; var i;
+		var item; var itemY; var currentX = 0;
 
 		for (i = 0; i < arrCount; i++) {
 			item = arr[i];

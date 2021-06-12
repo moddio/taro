@@ -1,18 +1,17 @@
 var PixiAttributeBar = IgeEntity.extend({
 	classId: 'PixiAttributeBar',
 
-
 	init: function (parentEntityId, attributeData, config) {
 		var self = this;
 
 		IgeEntity.prototype.init.call(self);
 		self.id();
-		self.category('pixiBar')
+		self.category('pixiBar');
 
 		config = config || {};
 
 		self._stats = {
-			parentId: parentEntityId,
+			parentId: parentEntityId
 		};
 
 		if (typeof attributeData.index !== 'number') {
@@ -25,7 +24,7 @@ var PixiAttributeBar = IgeEntity.extend({
 		var container = new PIXI.Container();
 		var entity = ige.$(self._stats.parentId);
 		self.index = attributeData.index;
-		self.borderThickness = 2
+		self.borderThickness = 2;
 
 		self.pixiBarBorder = new PIXI.Graphics();
 		self.pixiBarMask = new PIXI.Graphics();
@@ -60,12 +59,12 @@ var PixiAttributeBar = IgeEntity.extend({
 
 	showValueAndFadeOut: function (fadeOutDuration) {
 		var self = this;
-		
+
 		if (self.showBarTimeout) {
 			self._pixiContainer.alpha = 1;
 			clearTimeout(self.showBarTimeout);
 			clearTimeout(self.destroyTimeout);
-			clearInterval(self.updateOpacityInterval)
+			clearInterval(self.updateOpacityInterval);
 		}
 
 		self.showBarTimeout = setTimeout(function () {
@@ -74,36 +73,36 @@ var PixiAttributeBar = IgeEntity.extend({
 	},
 
 	fadeOut: function (duration) {
-        duration = duration || 2000;
-		
-		var self = this;
-        var step = duration / 60;
-        var opacityStep = 1 / (step * 5);
-        
-        self.updateOpacityInterval = setInterval(function () {
-			self._pixiContainer.alpha -= opacityStep;
-        }, 1000 / 60);
+		duration = duration || 2000;
 
-        self.destroyTimeout = setTimeout(function () {
-            clearInterval(self.updateOpacityInterval)
-			
+		var self = this;
+		var step = duration / 60;
+		var opacityStep = 1 / (step * 5);
+
+		self.updateOpacityInterval = setInterval(function () {
+			self._pixiContainer.alpha -= opacityStep;
+		}, 1000 / 60);
+
+		self.destroyTimeout = setTimeout(function () {
+			clearInterval(self.updateOpacityInterval);
+
 			var parentEntity = self.getOwner();
 
 			if (parentEntity) {
-                parentEntity.attributeBars = parentEntity.attributeBars.filter(function (bar) {
+				parentEntity.attributeBars = parentEntity.attributeBars.filter(function (bar) {
 					return bar.id !== self.id();
 				});
 			}
-			
-            self.destroy();
-        }, duration);
 
-        return this;
-    },
+			self.destroy();
+		}, duration);
+
+		return this;
+	},
 
 	/**
 	 * @return {number} height of attribute bar
-	 * 
+	 *
 	 * returns valid height of attribute bar based on current zoom level
 	 */
 	barHeight: function () {
@@ -121,10 +120,10 @@ var PixiAttributeBar = IgeEntity.extend({
 
 	getTextStyle: function () {
 		return {
-			fontFamily: "Arial",
-			fill: "#000000",
+			fontFamily: 'Arial',
+			fill: '#000000',
 			fontSize: 11,
-			fontWeight: "bold"
+			fontWeight: 'bold'
 		};
 	},
 
@@ -137,12 +136,11 @@ var PixiAttributeBar = IgeEntity.extend({
 			1 / ige.pixi.viewport.scale.x,
 			1 / ige.pixi.viewport.scale.y,
 			1 / ige.pixi.viewport.scale.z
-		)
+		);
 	},
 
 	updatePosition: function () {
-		this._pixiContainer.y = 3 + (this.getOwner().height() / 2) + (12 * this.index / ige.pixi.viewport.scale.y)
-
+		this._pixiContainer.y = 3 + (this.getOwner().height() / 2) + (12 * this.index / ige.pixi.viewport.scale.y);
 	},
 
 	renderPixiBar: function (attributeData) {
@@ -161,11 +159,11 @@ var PixiAttributeBar = IgeEntity.extend({
 		self.pixiBarBorder.clear();
 		self.pixiBarBorder.lineStyle(2, 0x000000, 1);
 		self.pixiBarBorder.drawRoundedRect(
-			-width/2,
+			-width / 2,
 			0,
 			width,
 			height,
-			borderRadius,
+			borderRadius
 		);
 
 		self.pixiBar.clear();
@@ -175,7 +173,7 @@ var PixiAttributeBar = IgeEntity.extend({
 			0,
 			width * progressValueInPercent,
 			height,
-			borderRadius,
+			borderRadius
 		);
 		self.pixiBar.endFill();
 
@@ -183,11 +181,11 @@ var PixiAttributeBar = IgeEntity.extend({
 		self.pixiBarMask.clear();
 		self.pixiBarMask.beginFill(0x000000); // this color does not matter
 		self.pixiBarMask.drawRoundedRect(
-			-width/2,
+			-width / 2,
 			0,
 			width,
 			height,
-			borderRadius,
+			borderRadius
 		);
 		self.pixiBarMask.endFill();
 
@@ -201,7 +199,7 @@ var PixiAttributeBar = IgeEntity.extend({
 
 	/**
 	 * @param {object} attributeData
-	 * 
+	 *
 	 * sets width of value bar based on provided {attributeData} data and
 	 * updates text of value label if it exists
 	 */
@@ -234,7 +232,7 @@ var PixiAttributeBar = IgeEntity.extend({
 			self.pixiBarText.text = self.lastValue.value;
 		}
 
-		var showOnlyWhenValueChanged = attributeData.showWhen instanceof Array && attributeData.showWhen.indexOf("valueChanges") > -1;
+		var showOnlyWhenValueChanged = attributeData.showWhen instanceof Array && attributeData.showWhen.indexOf('valueChanges') > -1;
 		if (showOnlyWhenValueChanged) {
 			self.showValueAndFadeOut();
 		}

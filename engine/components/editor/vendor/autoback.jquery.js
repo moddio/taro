@@ -1,8 +1,8 @@
 (function ($) {
 	$.fn.autoback = function () {
-		this.each(function(index, elem) {
+		this.each(function (index, elem) {
 			elem = $(elem);
-			
+
 			$('<div class="backLayer editorElem toggleHide"></div>')
 				.css('left', elem.css('left'))
 				.css('top', elem.css('top'))

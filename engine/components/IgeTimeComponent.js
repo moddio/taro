@@ -1,7 +1,7 @@
 var IgeTimeComponent = IgeEventingClass.extend({
 	classId: 'IgeTimeComponent',
 	componentId: 'time',
-	
+
 	/**
 	 * @constructor
 	 * @param {Object} entity The parent object that this component is being added to.
@@ -16,7 +16,7 @@ var IgeTimeComponent = IgeEventingClass.extend({
 		// Add the animation behaviour to the entity
 		entity.addBehaviour('time', this._update);
 	},
-	
+
 	addTimer: function (timer) {
 		if (timer) {
 			if (!this._updating) {
@@ -25,10 +25,10 @@ var IgeTimeComponent = IgeEventingClass.extend({
 				this._additions.push(timer);
 			}
 		}
-		
+
 		return this;
 	},
-	
+
 	removeTimer: function (timer) {
 		if (timer) {
 			if (!this._updating) {
@@ -37,61 +37,61 @@ var IgeTimeComponent = IgeEventingClass.extend({
 				this._removals.push(timer);
 			}
 		}
-		
+
 		return this;
 	},
-	
+
 	_update: function () {
 		// Get the ige tick delta and tell our timers / intervals that an update has occurred
-		var self = ige.time,
-			delta = ige._tickDelta,
-			arr = self._timers,
-			arrCount = arr.length;
-		
+		var self = ige.time;
+		var delta = ige._tickDelta;
+		var arr = self._timers;
+		var arrCount = arr.length;
+
 		while (arrCount--) {
 			arr[arrCount]
 				.addTime(delta)
 				.update();
 		}
-		
+
 		// Process removing any timers that were scheduled for removal
 		self._processRemovals();
-		
+
 		// Now process any additions to the timers that were scheduled to be added
 		self._processAdditions();
-		
+
 		return self;
 	},
-	
+
 	_processAdditions: function () {
-		var arr = this._additions,
-			arrCount = arr.length;
-		
+		var arr = this._additions;
+		var arrCount = arr.length;
+
 		if (arrCount) {
 			while (arrCount--) {
 				this._timers.push(arr[arrCount]);
 			}
-			
+
 			this._additions = [];
 		}
-		
+
 		return this;
 	},
-	
+
 	_processRemovals: function () {
-		var arr = this._removals,
-			arrCount = arr.length;
-		
+		var arr = this._removals;
+		var arrCount = arr.length;
+
 		if (arrCount) {
 			while (arrCount--) {
 				this._timers.pull(arr[arrCount]);
 			}
-			
+
 			this._removals = [];
 		}
-		
+
 		return this;
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeTimeComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeTimeComponent; }

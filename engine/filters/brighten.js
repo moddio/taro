@@ -17,9 +17,9 @@ IgeFilters.brighten = function (canvas, ctx, originalImage, texture, data) {
 };
 
 IgeFilters._brighten = function (imageData, texture, data) {
-	var arr,
-		arrCount,
-		i, adjustment = texture.data('IgeFilters.brighten.value') || data.value;
+	var arr;
+	var arrCount;
+	var i; var adjustment = texture.data('IgeFilters.brighten.value') || data.value;
 
 	arr = imageData.data;
 	arrCount = arr.length;

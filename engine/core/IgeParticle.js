@@ -1,6 +1,6 @@
 var IgeParticle = IgeEntity.extend({
 	classId: 'IgeParticle',
-	
+
 	init: function (emitter) {
 		this._emitter = emitter;
 		IgeEntity.prototype.init.call(this);

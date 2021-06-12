@@ -56,7 +56,7 @@ var IgeUiProgressBar = IgeUiElement.extend({
 
 		return this._barText;
 	},
-	
+
 	min: function (val) {
 		if (val !== undefined) {
 			this._min = val;
@@ -115,11 +115,11 @@ var IgeUiProgressBar = IgeUiElement.extend({
 			}
 		}
 
-		var min = this._min,
-			max = this._max,
-			progress = this._progress,
-			interval = this._bounds2d.x / (max - min),
-			barWidth = (progress - min) * interval;
+		var min = this._min;
+		var max = this._max;
+		var progress = this._progress;
+		var interval = this._bounds2d.x / (max - min);
+		var barWidth = (progress - min) * interval;
 
 		// Check the value is not out of range
 		if (progress > max) {

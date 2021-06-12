@@ -9,12 +9,12 @@ var IgePathComponent = IgeEventingClass.extend({
 		this._entity = entity;
 		this._points = [];
 		this._speed = 1 / 1000;
-		
+
 		this._previousPointFrom = 0;
 		this._currentPointFrom = 0;
 		this._previousPointTo = 0;
 		this._currentPointTo = 0;
-		
+
 		// Add the path behaviour to the entity
 		entity.addBehaviour('path', this._updateBehaviour, false);
 	},
@@ -29,10 +29,10 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._tileMap = val;
 			return this;
 		}
-		
+
 		return this._tileMap;
 	},
-	
+
 	/**
 	 * Gets / sets the path finder class instance used to generate paths.
 	 * @param {IgePathFinder} val The pathfinder class instance to use to generate paths.
@@ -43,7 +43,7 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._finder = val;
 			return this;
 		}
-		
+
 		return this._finder;
 	},
 
@@ -54,7 +54,7 @@ var IgePathComponent = IgeEventingClass.extend({
 	 * the path has changed (the tiles along the path have now been marked as
 	 * cannot path on). If any tile along the path up to the look-ahead value
 	 * has been blocked, the path will auto re-calculate to avoid the new block.
-	 * 
+	 *
 	 * For dynamic mode to work you need to supply a path-finder instance by
 	 * calling .finder(), a tile checker method by calling .tileChecker() and
 	 * the number of look-ahead steps by calling .lookAheadSteps(). See the
@@ -67,7 +67,7 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._dynamic = enable;
 			return this;
 		}
-		
+
 		return this._dynamic;
 	},
 
@@ -80,20 +80,20 @@ var IgePathComponent = IgeEventingClass.extend({
 	tileChecker: function (val) {
 		if (val !== undefined) {
 			var self = this;
-			
+
 			this._tileChecker = function () { return val.apply(self._entity, arguments); };
 			return this;
 		}
-		
+
 		return this._tileChecker;
 	},
-	
+
 	lookAheadSteps: function (val) {
 		if (val !== undefined) {
 			this._lookAheadSteps = val;
 			return this;
 		}
-		
+
 		return this._lookAheadSteps;
 	},
 
@@ -107,10 +107,10 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._allowSquare = val;
 			return this;
 		}
-		
+
 		return this._allowSquare;
 	},
-	
+
 	/**
 	 * Gets / sets the flag determining if a path can use NW, SW, NE and SE movement.
 	 * @param {Boolean=} val Set to true to allow, false to disallow.
@@ -121,7 +121,7 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._allowDiagonal = val;
 			return this;
 		}
-		
+
 		return this._allowDiagonal;
 	},
 
@@ -142,7 +142,7 @@ var IgePathComponent = IgeEventingClass.extend({
 	set: function (fromX, fromY, fromZ, toX, toY, toZ, findNearest) {
 		// Clear existing path
 		this.clear();
-		
+
 		// Create a new path
 		var path = this._finder.generate(
 			this._tileMap,
@@ -153,23 +153,23 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._allowDiagonal,
 			findNearest
 		);
-		
+
 		this.addPoints(path);
-		
+
 		return this;
 	},
-	
+
 	add: function (x, y, z, findNearest) {
 		// Get the endPoint of the current path
-		var endPoint = this.getEndPoint(),
-			shift = true;
-		
+		var endPoint = this.getEndPoint();
+		var shift = true;
+
 		if (!endPoint) {
 			// There is no existing path, detect current tile position
 			endPoint = this._entity._parent.pointToTile(this._entity._translate);
 			shift = false;
 		}
-		
+
 		// Create a new path
 		var path = this._finder.generate(
 			this._tileMap,
@@ -180,14 +180,14 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._allowDiagonal,
 			findNearest
 		);
-		
+
 		if (shift) {
 			// Remove the first tile, it's the last one on the list already
 			path.shift();
 		}
-		
+
 		this.addPoints(path);
-		
+
 		return this;
 	},
 
@@ -232,7 +232,7 @@ var IgePathComponent = IgeEventingClass.extend({
 	 *     // Create an entity and add the path component
 	 *     var entity = new IgeEntity()
 	 *         .addComponent(IgePathComponent);
-	 *     
+	 *
 	 *     // Create a path and add it to the entity
 	 *     // ...
 	 *     // Now get the current direction
@@ -242,43 +242,43 @@ var IgePathComponent = IgeEventingClass.extend({
 	 */
 	getDirection: function () {
 		if (!this._finished) {
-			var cell = this.getToPoint(),
-				dir = '';
-			
+			var cell = this.getToPoint();
+			var dir = '';
+
 			if (cell) {
 				dir = cell.direction;
-				
+
 				if (this._entity._mode === 1) {
 					// Convert direction for isometric
 					switch (dir) {
 						case 'E':
 							dir = 'SE';
 							break;
-						
+
 						case 'S':
 							dir = 'SW';
 							break;
-						
+
 						case 'W':
 							dir = 'NW';
 							break;
-						
+
 						case 'N':
 							dir = 'NE';
 							break;
-						
+
 						case 'NE':
 							dir = 'E';
 							break;
-						
+
 						case 'SW':
 							dir = 'W';
 							break;
-						
+
 						case 'NW':
 							dir = 'N';
 							break;
-						
+
 						case 'SE':
 							dir = 'S';
 							break;
@@ -332,7 +332,7 @@ var IgePathComponent = IgeEventingClass.extend({
 	speed: function (val) {
 		if (val !== undefined) {
 			this._speed = val / 1000;
-			
+
 			if (this._active) {
 				this.stop();
 				this.start(this._startTime);
@@ -355,12 +355,12 @@ var IgePathComponent = IgeEventingClass.extend({
 			this._active = true;
 			this._finished = false;
 			this._startTime = startTime || ige._currentTime;
-			
+
 			this._calculatePathData();
 		} else {
 			this._finished = false;
 		}
-		
+
 		return this;
 	},
 
@@ -380,7 +380,7 @@ var IgePathComponent = IgeEventingClass.extend({
 		this._active = false;
 		this._paused = true;
 		this._pauseTime = ige._currentTime;
-		
+
 		this.emit('paused', this._entity);
 		return this;
 	},
@@ -393,28 +393,28 @@ var IgePathComponent = IgeEventingClass.extend({
 		if (this._active) {
 			this.stop();
 		}
-		
+
 		this._previousPointFrom = 0;
 		this._currentPointFrom = 0;
 		this._previousPointTo = 0;
 		this._currentPointTo = 0;
 		this._points = [];
-		
+
 		this.emit('cleared', this._entity);
 		return this;
 	},
-	
+
 	/**
 	 * Stops path traversal but does not clear the path
 	 * queue or any path data.
 	 * @return {*}
 	 */
 	stop: function () {
-		//this.log('Setting pathing as inactive...');
+		// this.log('Setting pathing as inactive...');
 		this._active = false;
 		this._finished = true;
 		this.emit('stopped', this._entity);
-		
+
 		return this;
 	},
 
@@ -428,13 +428,13 @@ var IgePathComponent = IgeEventingClass.extend({
 	drawPath: function (val) {
 		if (val !== undefined) {
 			this._drawPath = val;
-			
+
 			if (val) {
 				this._entity.addBehaviour('path', this._tickBehaviour, true);
 			} else {
 				this._entity.removeBehaviour('path', true);
 			}
-			
+
 			return this;
 		}
 
@@ -471,7 +471,7 @@ var IgePathComponent = IgeEventingClass.extend({
 
 		return this._drawPathText;
 	},
-	
+
 	multiplyPoint: function (point) {
 		return point.multiply(
 			this._entity._parent._tileWidth,
@@ -487,7 +487,7 @@ var IgePathComponent = IgeEventingClass.extend({
 			1
 		);
 	},
-	
+
 	transformPoint: function (point) {
 		return new IgePoint3d(
 			point.x + this._entity._parent._tileWidth / 2,
@@ -511,26 +511,26 @@ var IgePathComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_updateBehaviour: function (ctx) {
-		var path = this.path,
-			currentTime = ige._currentTime,
-			progressTime = currentTime - path._startTime;
-		
+		var path = this.path;
+		var currentTime = ige._currentTime;
+		var progressTime = currentTime - path._startTime;
+
 		// Check if we should be processing paths
 		if (path._active && path._totalDistance !== 0 && currentTime >= path._startTime && (progressTime <= path._totalTime || !path._finished)) {
-			var distanceTravelled = (path._speed) * progressTime,
-				totalDistance = 0,
-				pointArr = path._points,
-				pointCount = pointArr.length,
-				pointIndex,
-				pointFrom,
-				pointTo,
-				newPoint,
-				dynamicResult;
-			
+			var distanceTravelled = (path._speed) * progressTime;
+			var totalDistance = 0;
+			var pointArr = path._points;
+			var pointCount = pointArr.length;
+			var pointIndex;
+			var pointFrom;
+			var pointTo;
+			var newPoint;
+			var dynamicResult;
+
 			// Loop points along the path and determine which points we are traversing between
 			for (pointIndex = 0; pointIndex < pointCount; pointIndex++) {
 				totalDistance += pointArr[pointIndex]._distanceToNext;
-				
+
 				if (totalDistance > distanceTravelled) {
 					// Found points we are traversing
 					path._finished = false;
@@ -541,14 +541,14 @@ var IgePathComponent = IgeEventingClass.extend({
 					break;
 				}
 			}
-			
+
 			// Check if we have points to traverse between
 			if (pointFrom && pointTo) {
 				if (path._currentPointFrom !== path._previousPointFrom) {
 					// Emit point complete
 					path.emit('pointComplete', [this, pointArr[path._previousPointFrom].x, pointArr[path._previousPointFrom].y, pointArr[path._currentPointFrom].x, pointArr[path._currentPointFrom].y]);
 				}
-				
+
 				// Check if we are in dynamic mode and if so, ensure our path is still valid
 				if (path._dynamic) {
 					dynamicResult = path._processDynamic(pointFrom, pointTo, pointArr[pointCount - 1]);
@@ -557,16 +557,16 @@ var IgePathComponent = IgeEventingClass.extend({
 						// spliced into our points array
 						pointFrom = pointArr[path._currentPointFrom];
 						pointTo = pointArr[path._currentPointTo];
-						
+
 						path.emit('pathRecalculated', [this, pointArr[path._previousPointFrom].x, pointArr[path._previousPointFrom].y, pointArr[path._currentPointFrom].x, pointArr[path._currentPointFrom].y]);
 					}
-					
+
 					if (dynamicResult === -1) {
 						// Failed to find a new dynamic path
 						path._finished = true;
 					}
 				}
-				
+
 				// Calculate position along vector between the two points
 				newPoint = path._positionAlongVector(
 					pointFrom,
@@ -574,47 +574,47 @@ var IgePathComponent = IgeEventingClass.extend({
 					path._speed,
 					pointFrom._deltaTimeToNext - (pointFrom._absoluteTimeToNext - progressTime)
 				);
-				
+
 				newPoint = path.multiplyPoint(newPoint);
 				newPoint = path.transformPoint(newPoint);
-				
+
 				// Translate the entity to the new path point
 				this.translateToPoint(newPoint);
-				
+
 				path._previousPointFrom = path._currentPointFrom;
 				path._previousPointTo = path._currentPointTo;
 			} else {
 				pointTo = pointArr[pointCount - 1];
-				
+
 				newPoint = path.multiplyPoint(pointTo);
 				newPoint = path.transformPoint(newPoint);
-				
+
 				path._previousPointFrom = pointCount - 1;
 				path._previousPointTo = pointCount - 1;
 				path._currentPointFrom = pointCount - 1;
 				path._currentPointTo = pointCount - 1;
-				
+
 				this.translateToPoint(newPoint);
-				
+
 				path._finished = true;
 				path.emit('pathComplete', [this, pointArr[path._previousPointFrom].x, pointArr[path._previousPointFrom].y]);
 			}
-		} else if(path._active && path._totalDistance == 0 && !path._finished) {
+		} else if (path._active && path._totalDistance == 0 && !path._finished) {
 			path._finished = true;
 		}
 	},
-	
+
 	_processDynamic: function (pointFrom, pointTo, destinationPoint) {
-		var self = this,
-			tileMapData,
-			tileCheckData,
-			newPathPoints;
-		
+		var self = this;
+		var tileMapData;
+		var tileCheckData;
+		var newPathPoints;
+
 		// We are in dynamic mode, check steps ahead to see if they
 		// have been blocked or not
 		tileMapData = self._tileMap.map._mapData;
 		tileCheckData = tileMapData[pointTo.y] && tileMapData[pointTo.y][pointTo.x] ? tileMapData[pointTo.y][pointTo.x] : null;
-		
+
 		if (!self._tileChecker(tileCheckData, pointTo.x, pointTo.y, null, null, null, true)) {
 			// The new destination tile is blocked, recalculate path
 			newPathPoints = self._finder.generate(
@@ -626,7 +626,7 @@ var IgePathComponent = IgeEventingClass.extend({
 				self._allowDiagonal,
 				false
 			);
-			
+
 			if (newPathPoints.length) {
 				self.replacePoints(self._currentPointFrom, self._points.length - self._currentPointFrom, newPathPoints);
 				return true;
@@ -634,23 +634,22 @@ var IgePathComponent = IgeEventingClass.extend({
 				// Cannot generate valid path, delete this path
 				self.emit('dynamicFail', [this, new IgePoint3d(pointFrom.x, pointFrom.y, pointFrom.z), new IgePoint3d(destinationPoint.x, destinationPoint.y, destinationPoint.z)]);
 				self.clear();
-				
+
 				return -1;
 			}
 		}
-		
+
 		return false;
 	},
-	
+
 	_calculatePathData: function () {
-		var totalDistance = 0,
-			startPoint,
-			pointFrom,
-			pointTo,
-			i;
+		var totalDistance = 0;
+		var startPoint;
+		var pointFrom;
+		var pointTo;
+		var i;
 
-
-		if(this._currentPointFrom === 0) {
+		if (this._currentPointFrom === 0) {
 			// always set the first point to be the current position
 			startPoint = this._entity._translate.clone();
 			startPoint = this.unTransformPoint(startPoint);
@@ -663,16 +662,16 @@ var IgePathComponent = IgeEventingClass.extend({
 			pointFrom = this._points[i - 1];
 			pointTo = this._points[i];
 			pointFrom._distanceToNext = Math.distance(pointFrom.x, pointFrom.y, pointTo.x, pointTo.y);
-			
+
 			totalDistance += Math.abs(pointFrom._distanceToNext);
-			
+
 			pointFrom._deltaTimeToNext = pointFrom._distanceToNext / this._speed;
 			pointFrom._absoluteTimeToNext = totalDistance / this._speed;
 		}
-		
+
 		this._totalDistance = totalDistance;
 		this._totalTime = totalDistance / this._speed;
-		
+
 		return this;
 	},
 
@@ -687,57 +686,57 @@ var IgePathComponent = IgeEventingClass.extend({
 		this._points.splice.apply(this._points, args);
 		this._calculatePathData();
 	},
-	
+
 	_tickBehaviour: function (ctx) {
 		if (ige.isClient) {
-			var self = this.path,
-				entity = this,
-				currentPath = self._points,
-				oldTracePathPoint,
-				tracePathPoint,
-				pathPointIndex,
-				tempPathText;
-			
+			var self = this.path;
+			var entity = this;
+			var currentPath = self._points;
+			var oldTracePathPoint;
+			var tracePathPoint;
+			var pathPointIndex;
+			var tempPathText;
+
 			if (currentPath.length) {
 				if (currentPath && self._drawPath) {
 					// Draw the current path
 					ctx.save();
-	
+
 					oldTracePathPoint = undefined;
-	
+
 					for (pathPointIndex = 0; pathPointIndex < currentPath.length; pathPointIndex++) {
 						ctx.strokeStyle = '#0096ff';
 						ctx.fillStyle = '#0096ff';
-						
+
 						tracePathPoint = new IgePoint3d(
 							currentPath[pathPointIndex].x,
 							currentPath[pathPointIndex].y,
 							currentPath[pathPointIndex].z
 						);
-						
+
 						tracePathPoint = self.multiplyPoint(tracePathPoint);
 						tracePathPoint = self.transformPoint(tracePathPoint);
-						
+
 						if (entity._parent._mountMode === 1) {
 							tracePathPoint = tracePathPoint.toIso();
 						}
-	
+
 						if (!oldTracePathPoint) {
 							// The starting point of the path
 							ctx.beginPath();
-							ctx.arc(tracePathPoint.x, tracePathPoint.y, 5, 0, Math.PI*2, true);
+							ctx.arc(tracePathPoint.x, tracePathPoint.y, 5, 0, Math.PI * 2, true);
 							ctx.closePath();
 							ctx.fill();
 						} else {
 							// Not the starting point
 							if (self._drawPathGlow) {
 								ctx.globalAlpha = 0.1;
-								for (var k = 3; k >= 0 ; k--) {
+								for (var k = 3; k >= 0; k--) {
 									ctx.lineWidth = (k + 1) * 4 - 3.5;
 									ctx.beginPath();
 									ctx.moveTo(oldTracePathPoint.x, oldTracePathPoint.y);
 									ctx.lineTo(tracePathPoint.x, tracePathPoint.y);
-									
+
 									if (pathPointIndex < self._currentPointTo) {
 										ctx.strokeStyle = '#666666';
 										ctx.fillStyle = '#333333';
@@ -745,57 +744,57 @@ var IgePathComponent = IgeEventingClass.extend({
 									if (k === 0) {
 										ctx.globalAlpha = 1;
 									}
-	
+
 									ctx.stroke();
 								}
 							} else {
 								ctx.beginPath();
 								ctx.moveTo(oldTracePathPoint.x, oldTracePathPoint.y);
 								ctx.lineTo(tracePathPoint.x, tracePathPoint.y);
-								
+
 								if (pathPointIndex < self._currentPointTo) {
 									ctx.strokeStyle = '#666666';
 									ctx.fillStyle = '#333333';
 								}
-	
+
 								ctx.stroke();
 							}
-	
+
 							if (pathPointIndex === self._currentPointTo) {
 								ctx.save();
 								ctx.fillStyle = '#24b9ea';
 								ctx.fillRect(tracePathPoint.x - 5, tracePathPoint.y - 5, 10, 10);
-								
+
 								if (self._drawPathText) {
 									ctx.fillStyle = '#eade24';
-				
+
 									if (self._drawPathGlow) {
 										// Apply shadow to the text
 										ctx.shadowOffsetX = 1;
 										ctx.shadowOffsetY = 2;
-										ctx.shadowBlur    = 4;
-										ctx.shadowColor   = 'rgba(0, 0, 0, 1)';
+										ctx.shadowBlur = 4;
+										ctx.shadowColor = 'rgba(0, 0, 0, 1)';
 									}
-				
-									tempPathText = 'Entity: ' + entity.id();
+
+									tempPathText = `Entity: ${entity.id()}`;
 									ctx.fillText(tempPathText, tracePathPoint.x - Math.floor(ctx.measureText(tempPathText).width / 2), tracePathPoint.y + 16);
-				
-									tempPathText = 'Point (' + currentPath[pathPointIndex].x + ', ' + currentPath[pathPointIndex].y + ')';
+
+									tempPathText = `Point (${currentPath[pathPointIndex].x}, ${currentPath[pathPointIndex].y})`;
 									ctx.fillText(tempPathText, tracePathPoint.x - Math.floor(ctx.measureText(tempPathText).width / 2), tracePathPoint.y + 28);
-									
-									tempPathText = 'Abs (' + Math.floor(entity._translate.x) + ', ' + Math.floor(entity._translate.y) + ')';
+
+									tempPathText = `Abs (${Math.floor(entity._translate.x)}, ${Math.floor(entity._translate.y)})`;
 									ctx.fillText(tempPathText, tracePathPoint.x - Math.floor(ctx.measureText(tempPathText).width / 2), tracePathPoint.y + 40);
 								}
-								
+
 								ctx.restore();
 							} else {
 								ctx.fillRect(tracePathPoint.x - 2.5, tracePathPoint.y - 2.5, 5, 5);
 							}
 						}
-	
+
 						oldTracePathPoint = tracePathPoint;
 					}
-					
+
 					ctx.restore();
 				}
 			}
@@ -805,7 +804,7 @@ var IgePathComponent = IgeEventingClass.extend({
 	getPreviousPoint: function (val) {
 		return this._points[this._currentPointFrom - val];
 	},
-	
+
 	getNextPoint: function (val) {
 		return this._points[this._currentPointTo + val];
 	},
@@ -821,17 +820,17 @@ var IgePathComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_positionAlongVector: function (p1, p2, speed, deltaTime) {
-		var newPoint,
-			p1X = p1.x,
-			p1Y = p1.y,
-			p2X = p2.x,
-			p2Y = p2.y,
-			deltaX = (p2X - p1X),
-			deltaY = (p2Y - p1Y),
-			magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-			normalisedX = deltaX / magnitude,
-			normalisedY = deltaY / magnitude;
-		
+		var newPoint;
+		var p1X = p1.x;
+		var p1Y = p1.y;
+		var p2X = p2.x;
+		var p2Y = p2.y;
+		var deltaX = (p2X - p1X);
+		var deltaY = (p2Y - p1Y);
+		var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+		var normalisedX = deltaX / magnitude;
+		var normalisedY = deltaY / magnitude;
+
 		if (deltaX !== 0 || deltaY !== 0) {
 			newPoint = new IgePoint3d(
 				p1X + (normalisedX * (speed * deltaTime)),
@@ -846,4 +845,4 @@ var IgePathComponent = IgeEventingClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgePathComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePathComponent; }

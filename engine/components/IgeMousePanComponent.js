@@ -67,7 +67,7 @@ var IgeMousePanComponent = IgeEventingClass.extend({
 			// Reset pan values.
 			// This prevents problems if mouse pan is disabled mid-pan.
 			this._panPreStart = false;
-			this._panStarted  = false;
+			this._panStarted = false;
 
 			if (this._enabled) {
 				// Listen for the mouse events we need to operate a mouse pan
@@ -118,13 +118,13 @@ var IgeMousePanComponent = IgeEventingClass.extend({
 		if (this._enabled) {
 			// Pan the camera if the mouse is down
 			if (this._panStartMouse) {
-				var curMousePos = ige._mousePos,
-					panCords = {
-						x: this._panStartMouse.x - curMousePos.x,
-						y: this._panStartMouse.y - curMousePos.y
-					}, distX = Math.abs(panCords.x), distY = Math.abs(panCords.y),
-					panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x,
-					panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
+				var curMousePos = ige._mousePos;
+				var panCords = {
+					x: this._panStartMouse.x - curMousePos.x,
+					y: this._panStartMouse.y - curMousePos.y
+				}; var distX = Math.abs(panCords.x); var distY = Math.abs(panCords.y);
+				var panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x;
+				var panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
 
 				// Check if we have a limiter on the rectangle area
 				// that we should allow panning inside.
@@ -187,13 +187,13 @@ var IgeMousePanComponent = IgeEventingClass.extend({
 			// End the pan
 			if (this._panStarted) {
 				if (this._panStartMouse) {
-					var curMousePos = ige._mousePos,
-						panCords = {
-							x: this._panStartMouse.x - curMousePos.x,
-							y: this._panStartMouse.y - curMousePos.y
-						},
-						panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x,
-						panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
+					var curMousePos = ige._mousePos;
+					var panCords = {
+						x: this._panStartMouse.x - curMousePos.x,
+						y: this._panStartMouse.y - curMousePos.y
+					};
+					var panFinalX = (panCords.x / this._entity.camera._scale.x) + this._panStartCamera.x;
+					var panFinalY = (panCords.y / this._entity.camera._scale.y) + this._panStartCamera.y;
 
 					// Check if we have a limiter on the rectangle area
 					// that we should allow panning inside.

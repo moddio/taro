@@ -66,7 +66,7 @@ var IgeTexture = IgeEventingClass.extend({
 				}
 
 				// Already an object with this ID!
-				this.log('Cannot set ID of object to "' + id + '" because that ID is already in use by another object!', 'error');
+				this.log(`Cannot set ID of object to "${id}" because that ID is already in use by another object!`, 'error');
 			} else {
 				// Check if we already have an id assigned
 				if (this._id && ige._register[this._id]) {
@@ -131,8 +131,8 @@ var IgeTexture = IgeEventingClass.extend({
 	 * @private
 	 */
 	_loadImage: function (imageUrl) {
-		var image,
-			self = this;
+		var image;
+		var self = this;
 
 		if (ige.isClient) {
 			// Increment the texture load count
@@ -152,20 +152,20 @@ var IgeTexture = IgeEventingClass.extend({
 					image._loaded = true;
 
 					// Log success
-					ige.devLog('Texture image (' + imageUrl + ') loaded successfully');
+					ige.devLog(`Texture image (${imageUrl}) loaded successfully`);
 
-					/*if (image.width % 2) {
+					/* if (image.width % 2) {
 						self.log('The texture ' + imageUrl + ' width (' + image.width + ') is not divisible by 2 to a whole number! This can cause rendering artifacts. It can also cause performance issues on some GPUs. Please make sure your texture width is divisible by 2!', 'warning');
 					}
 
 					if (image.height % 2) {
 						self.log('The texture ' + imageUrl + ' height (' + image.height + ') is not divisible by 2 to a whole number! This can cause rendering artifacts. It can also cause performance issues on some GPUs. Please make sure your texture height is divisible by 2!', 'warning');
-					}*/
+					} */
 
 					// Loop textures that are using this image
-					var arr = image._igeTextures,
-						arrCount = arr.length, i,
-						item;
+					var arr = image._igeTextures;
+					var arrCount = arr.length; var i;
+					var item;
 
 					for (i = 0; i < arrCount; i++) {
 						item = arr[i];
@@ -186,7 +186,7 @@ var IgeTexture = IgeEventingClass.extend({
 					if (self.callback) {
 						self.callback(true);
 					}
-				}
+				};
 
 				// Start the image loading by setting the source url
 				image.src = imageUrl;
@@ -206,11 +206,11 @@ var IgeTexture = IgeEventingClass.extend({
 					self.sizeY(image.height);
 
 					if (image.width % 2) {
-						this.log('This texture\'s width is not divisible by 2 which will cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ' + this._url, 'warning');
+						this.log(`This texture's width is not divisible by 2 which will cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ${this._url}`, 'warning');
 					}
 
 					if (image.height % 2) {
-						this.log('This texture\'s height is not divisible by 2 which will cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ' + this._url, 'warning');
+						this.log(`This texture's height is not divisible by 2 which will cause the texture to use sub-pixel rendering resulting in a blurred image. This may also slow down the renderer on some browsers. Image file: ${this._url}`, 'warning');
 					}
 
 					self._cells[1] = [0, 0, self._sizeX, self._sizeY];
@@ -248,17 +248,17 @@ var IgeTexture = IgeEventingClass.extend({
 	 * @private
 	 */
 	_loadScript: function (scriptUrl) {
-		var textures = ige.textures,
-			rs_sandboxContext,
-			self = this,
-			scriptElem;
+		var textures = ige.textures;
+		var rs_sandboxContext;
+		var self = this;
+		var scriptElem;
 
 		ige.textureLoadStart(scriptUrl, this);
 
 		if (ige.isClient) {
 			scriptElem = document.createElement('script');
 			scriptElem.onload = function (data) {
-				self.log('Texture script "' + scriptUrl + '" loaded successfully');
+				self.log(`Texture script "${scriptUrl}" loaded successfully`);
 				// Parse the JS with evil eval and store the result in the asset
 				eval(data);
 
@@ -273,8 +273,8 @@ var IgeTexture = IgeEventingClass.extend({
 					image.init.apply(image, [self]);
 				}
 
-				//self.sizeX(image.width);
-				//self.sizeY(image.height);
+				// self.sizeX(image.width);
+				// self.sizeY(image.height);
 
 				self._loaded = true;
 				self.emit('loaded');
@@ -282,7 +282,7 @@ var IgeTexture = IgeEventingClass.extend({
 			};
 
 			scriptElem.addEventListener('error', function () {
-				self.log('Error loading smart texture script file: ' + scriptUrl, 'error');
+				self.log(`Error loading smart texture script file: ${scriptUrl}`, 'error');
 			}, true);
 
 			scriptElem.src = scriptUrl;
@@ -296,14 +296,14 @@ var IgeTexture = IgeEventingClass.extend({
 	 * @private
 	 */
 	assignSmartTextureImage: function (scriptObj) {
-		var textures = ige.textures,
-			rs_sandboxContext,
-			self = this,
-			scriptElem;
+		var textures = ige.textures;
+		var rs_sandboxContext;
+		var self = this;
+		var scriptElem;
 
 		// Check the object has a render method
 		if (typeof (scriptObj.render) === 'function') {
-			//ige.textureLoadStart(scriptUrl, this);
+			// ige.textureLoadStart(scriptUrl, this);
 
 			// Store the script data
 			self._mode = 1;
@@ -314,12 +314,12 @@ var IgeTexture = IgeEventingClass.extend({
 				scriptObj.init.apply(scriptObj, [self]);
 			}
 
-			//self.sizeX(image.width);
-			//self.sizeY(image.height);
+			// self.sizeX(image.width);
+			// self.sizeY(image.height);
 
 			self._loaded = true;
 			self.emit('loaded');
-			//ige.textureLoadEnd(scriptUrl, self);
+			// ige.textureLoadEnd(scriptUrl, self);
 		} else {
 			this.log('Cannot assign smart texture because it doesn\'t have a render() method!', 'error');
 		}
@@ -335,8 +335,8 @@ var IgeTexture = IgeEventingClass.extend({
 	 * @private
 	 */
 	_setImage: function (imageElement) {
-		var image,
-			self = this;
+		var image;
+		var self = this;
 
 		if (ige.isClient) {
 			// Create the image object
@@ -362,8 +362,8 @@ var IgeTexture = IgeEventingClass.extend({
 	 * @return {*}
 	 */
 	textureFromCell: function (indexOrId) {
-		var tex = new IgeTexture(),
-			self = this;
+		var tex = new IgeTexture();
+		var self = this;
 
 		if (this._loaded) {
 			this._textureFromCell(tex, indexOrId);
@@ -372,7 +372,7 @@ var IgeTexture = IgeEventingClass.extend({
 			// when this texture has loaded so we can assign the texture's image properly
 			this.on('loaded', function () {
 				self._textureFromCell(tex, indexOrId);
-			})
+			});
 		}
 
 		return tex;
@@ -410,11 +410,11 @@ var IgeTexture = IgeEventingClass.extend({
 			// TODO: track of the value and evaluate first before changing?
 			if (!this._smoothing) {
 				ctx.imageSmoothingEnabled = false;
-				//ctx.webkitImageSmoothingEnabled = false;
+				// ctx.webkitImageSmoothingEnabled = false;
 				ctx.mozImageSmoothingEnabled = false;
 			} else {
 				ctx.imageSmoothingEnabled = true;
-				//ctx.webkitImageSmoothingEnabled = true;
+				// ctx.webkitImageSmoothingEnabled = true;
 				ctx.mozImageSmoothingEnabled = true;
 			}
 
@@ -443,7 +443,7 @@ var IgeTexture = IgeEventingClass.extend({
 				tex.emit('loaded');
 			}, 1);
 		} else {
-			this.log('Unable to create new texture from passed cell index (' + indexOrId + ') because the cell does not exist!', 'warning');
+			this.log(`Unable to create new texture from passed cell index (${indexOrId}) because the cell does not exist!`, 'warning');
 		}
 	},
 
@@ -516,7 +516,7 @@ var IgeTexture = IgeEventingClass.extend({
 				// Swap the current image for this new canvas
 				this.image = this._textureCanvas;
 			} else {
-				this.log('Cannot resize texture because the texture image (' + this._url + ') has not loaded into memory yet!', 'error');
+				this.log(`Cannot resize texture because the texture image (${this._url}) has not loaded into memory yet!`, 'error');
 			}
 		}
 	},
@@ -578,7 +578,7 @@ var IgeTexture = IgeEventingClass.extend({
 				// Swap the current image for this new canvas
 				this.image = this._textureCanvas;
 			} else {
-				this.log('Cannot resize texture because the texture image (' + this._url + ') has not loaded into memory yet!', 'error');
+				this.log(`Cannot resize texture because the texture image (${this._url}) has not loaded into memory yet!`, 'error');
 			}
 		}
 	},
@@ -621,19 +621,19 @@ var IgeTexture = IgeEventingClass.extend({
 			// TODO: track of the value and evaluate first before changing?
 			if (!this._smoothing) {
 				ige._ctx.imageSmoothingEnabled = false;
-				//ige._ctx.webkitImageSmoothingEnabled = false;
+				// ige._ctx.webkitImageSmoothingEnabled = false;
 				ige._ctx.mozImageSmoothingEnabled = false;
 			} else {
 				ige._ctx.imageSmoothingEnabled = true;
-				//ige._ctx.webkitImageSmoothingEnabled = true;
+				// ige._ctx.webkitImageSmoothingEnabled = true;
 				ige._ctx.mozImageSmoothingEnabled = true;
 			}
 
 			if (this._mode === 0) {
 				// This texture is image-based
-				var cell = this._cells[entity._cell],
-					geom = entity._bounds2d,
-					poly = entity._renderPos; // Render pos is calculated in the IgeEntity.aabb() method
+				var cell = this._cells[entity._cell];
+				var geom = entity._bounds2d;
+				var poly = entity._renderPos; // Render pos is calculated in the IgeEntity.aabb() method
 
 				if (cell) {
 					if (this._preFilters.length > 0 && this._textureCtx) {
@@ -669,7 +669,7 @@ var IgeTexture = IgeEventingClass.extend({
 
 					ige._drawCount++;
 				} else {
-					this.log('Cannot render texture using cell ' + entity._cell + ' because the cell does not exist in the assigned texture!', 'error');
+					this.log(`Cannot render texture using cell ${entity._cell} because the cell does not exist in the assigned texture!`, 'error');
 				}
 			}
 
@@ -686,7 +686,7 @@ var IgeTexture = IgeEventingClass.extend({
 
 	/**
 	 * Removes a certain filter from the texture
-	 * Useful if you want to keep resizings, etc. 
+	 * Useful if you want to keep resizings, etc.
 	 */
 	removeFilter: function (method) {
 		var i;
@@ -708,7 +708,7 @@ var IgeTexture = IgeEventingClass.extend({
 
 	/**
 	 * Removes all filters on the texture
-	 * Useful if you want to keep resizings, etc. 
+	 * Useful if you want to keep resizings, etc.
 	 */
 	removeFilters: function () {
 		this._applyFilters = [];
@@ -906,13 +906,13 @@ var IgeTexture = IgeEventingClass.extend({
 	 * @return {String}
 	 */
 	stringify: function () {
-		var str = "new " + this.classId() + "('" + this._url + "')";
+		var str = `new ${this.classId()}('${this._url}')`;
 
 		// Every object has an ID, assign that first
 		// We've commented this because ids for textures are actually generated
 		// from their asset so will ALWAYS produce the same ID as long as the asset
 		// is the same path.
-		//str += ".id('" + this.id() + "')";
+		// str += ".id('" + this.id() + "')";
 
 		// Now get all other properties
 		str += this._stringify();

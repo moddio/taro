@@ -7,10 +7,10 @@ var IgeUiTimeStream = IgeUiElement.extend({
 
 	tick: function (ctx) {
 		// Draw timeline
-		var i, text, xAdjust,
-			arr, arrCount, arrItem,
-			renderTime = ige._tickStart - ige._renderLatency,
-			deltaTime;
+		var i; var text; var xAdjust;
+		var arr; var arrCount; var arrItem;
+		var renderTime = ige._tickStart - ige._renderLatency;
+		var deltaTime;
 
 		IgeUiElement.prototype.tick.call(this, ctx);
 
@@ -34,7 +34,7 @@ var IgeUiTimeStream = IgeUiElement.extend({
 			ctx.lineTo(-200.5 + (i * 50), 30);
 			ctx.stroke();
 
-			text = -ige.network.stream._renderLatency + ((i - 2) * 10) + 'ms';
+			text = `${-ige.network.stream._renderLatency + ((i - 2) * 10)}ms`;
 			xAdjust = ctx.measureText(text);
 			ctx.strokeText(text, -200 + (i * 50) - (xAdjust.width / 2), -38);
 
@@ -68,4 +68,4 @@ var IgeUiTimeStream = IgeUiElement.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeUiTimeStream; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeUiTimeStream; }

@@ -11,8 +11,8 @@ var InventoryComponent = IgeEntity.extend({
 	},
 
 	createInventorySlots: function () {
-		//update inventory size and inventoy ids on client and server side
-		//render inventory slots on client end
+		// update inventory size and inventoy ids on client and server side
+		// render inventory slots on client end
 		var entity = this._entity;
 		var ownerPlayer = entity.getOwner();
 		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
@@ -20,21 +20,21 @@ var InventoryComponent = IgeEntity.extend({
 			$('#inventory-slots').html('');
 			$('#inventory-slots-key-stroke').html('');
 			for (var i = 0; i < this._entity._stats.inventorySize; i++) {
-				$('#inventory-slots').append($("<div/>", {
-					id: 'item-' + i,
+				$('#inventory-slots').append($('<div/>', {
+					id: `item-${i}`,
 					name: i,
-					class: 'btn inventory-item-button p-0 ' + mobileClass,
+					class: `btn inventory-item-button p-0 ${mobileClass}`,
 					role: 'button'
 				}).on('click', function () {
 					var slotIndex = parseInt($(this).attr('name')) + 1;
 					if (ige.client.myPlayer) {
-						ige.client.myPlayer.control.keyDown("key", slotIndex);
+						ige.client.myPlayer.control.keyDown('key', slotIndex);
 					}
 				}));
 
-				$('#inventory-slots-key-stroke').append($("<div/>", {
-					id: 'item-key-stroke-' + i,
-					name: 'key-' + i,
+				$('#inventory-slots-key-stroke').append($('<div/>', {
+					id: `item-key-stroke-${i}`,
+					name: `key-${i}`,
 					class: 'item-key-stroke'
 				}));
 
@@ -50,7 +50,7 @@ var InventoryComponent = IgeEntity.extend({
 		this.update();
 	},
 
-	createBackpack() {
+	createBackpack () {
 		var entity = this._entity;
 		var backpackSize = entity._stats.backpackSize;
 		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
@@ -59,27 +59,26 @@ var InventoryComponent = IgeEntity.extend({
 			this.updateBackpackButton(true);
 
 			$('#backpack-items-div').html('');
-			var inventorySize = this._entity._stats.inventorySize
+			var inventorySize = this._entity._stats.inventorySize;
 			for (var i = inventorySize; i < backpackSize + inventorySize; i++) {
 				$('#backpack-items-div').append(
 					$('<div/>', {
-						class: "col-sm-4 margin-top-4"
+						class: 'col-sm-4 margin-top-4'
 					}).append($('<div/>', {
-						id: "item-" + i,
+						id: `item-${i}`,
 						name: i,
-						class: "btn inventory-item-button p-0 " + mobileClass,
+						class: `btn inventory-item-button p-0 ${mobileClass}`,
 						role: 'button'
 					}))
-				)
+				);
 
 				var item = this.getItemBySlotNumber(i + 1);
 				if (item) {
 					this.insertItem(item, i);
 				}
 			}
-		}
-		else {
-			this.updateBackpackButton(false)
+		} else {
+			this.updateBackpackButton(false);
 		}
 	},
 	createTradingSlots: function () {
@@ -88,20 +87,20 @@ var InventoryComponent = IgeEntity.extend({
 			var totalInventorySize = this.getTotalInventorySize();
 			// total 5 trading slots
 			var tradingSlots = $('#user-trading-slots');
-			tradingSlots.html("");
-			var html = "";
+			tradingSlots.html('');
+			var html = '';
 			for (var i = totalInventorySize; i < totalInventorySize + 5; i++) {
 				this._entity._stats.itemIds[i] = undefined;
 				tradingSlots.append(
 					$('<div/>', {
-						id: "item-" + i,
+						id: `item-${i}`,
 						name: i,
-						class: "btn btn-light inventory-item-button " + mobileClass,
+						class: `btn btn-light inventory-item-button ${mobileClass}`,
 						role: 'button'
 					})
 				);
 
-				ige.itemUi.updateItemSlot(undefined, i)
+				ige.itemUi.updateItemSlot(undefined, i);
 			}
 		}
 	},
@@ -109,17 +108,15 @@ var InventoryComponent = IgeEntity.extend({
 		var inventoryBtn = $('#open-inventory-button');
 		if (show) {
 			inventoryBtn.show();
-			setTimeout(function(){
+			setTimeout(function () {
 				$('#backpack-wrapper').css({
 					bottom: $('#my-score-div').height() + 40
-				})
-			},1000);
-		}
-		else {
+				});
+			}, 1000);
+		} else {
 			inventoryBtn.hide();
 		}
 	},
-
 
 	getSameItemsFromInventory: function (itemTypeId) {
 		var items = this._entity._stats.itemIds;
@@ -133,8 +130,7 @@ var InventoryComponent = IgeEntity.extend({
 
 	hasItem: function (itemTypeId) {
 		var sameItemTypesInInventory = this._entity.inventory.getSameItemsFromInventory(itemTypeId);
-		return sameItemTypesInInventory.length > 0
-
+		return sameItemTypesInInventory.length > 0;
 	},
 
 	/*
@@ -151,11 +147,9 @@ var InventoryComponent = IgeEntity.extend({
 					var item = ige.$(id);
 					if (!isNaN(parseFloat(item._stats.quantity))) {
 						quantity += item._stats.quantity;
-					}
-					else {
+					} else {
 						quantity = undefined;
 					}
-
 				}
 			}
 		}
@@ -175,9 +169,8 @@ var InventoryComponent = IgeEntity.extend({
 	 * @return {int} returns first available slot number (starting from 1). undefined if there's no slot available
 	 */
 	getFirstAvailableSlotForItem: function (itemData) {
-		var self = this
-		var itemTypeId = itemData.itemTypeId
-
+		var self = this;
+		var itemTypeId = itemData.itemTypeId;
 
 		// check if we can assign itemData to its assigned designatedSlot.
 		var mappedSlots = (itemData.controls && Array.isArray(itemData.controls.permittedInventorySlots)) ? itemData.controls.permittedInventorySlots : undefined;
@@ -210,16 +203,16 @@ var InventoryComponent = IgeEntity.extend({
 
 		// check if this item can be merged with an existing item in the inventory
 		var totalInventorySize = this.getTotalInventorySize();
-		if(itemData.controls == undefined || (itemData.controls.canMerge  || itemData.controls.canMerge == undefined || itemData.controls.canMerge)){ //Check if the item can merge
+		if (itemData.controls == undefined || (itemData.controls.canMerge || itemData.controls.canMerge == undefined || itemData.controls.canMerge)) { // Check if the item can merge
 			var quantity = itemData.quantity;
 			for (var i = 0; i < totalInventorySize; i++) {
-				var itemId = self._entity._stats.itemIds[i]
+				var itemId = self._entity._stats.itemIds[i];
 				if (itemId) {
-					var item = ige.$(itemId)
+					var item = ige.$(itemId);
 					// matching item found in inventory
 					if (item && item._stats.itemTypeId == itemTypeId) {
 						// matching item has infinite quantity. merge items unless item also has infinite quantity
-						if (item._stats.quantity == undefined && quantity!= undefined) {
+						if (item._stats.quantity == undefined && quantity != undefined) {
 							return i + 1;
 						}
 
@@ -227,36 +220,34 @@ var InventoryComponent = IgeEntity.extend({
 						if (item._stats.maxQuantity - item._stats.quantity > quantity) {
 							return i + 1;
 						} else {
-							if(item._stats.quantity != undefined){
+							if (item._stats.quantity != undefined) {
 								// new item's quantity isn't enough to fill the existing item's. Deduct new item's quantity. and move on. This isn't done for undefined items
-								quantity -= (item._stats.maxQuantity - item._stats.quantity)
+								quantity -= (item._stats.maxQuantity - item._stats.quantity);
 							}
 						}
 					}
 				}
 			}
 		}
-		
-
 
 		// get first available empty slot including from backpack
 		for (var i = 0; i < totalInventorySize; i++) {
 			// if item was mapped to a specific slot, then check if there's available slot in the backpack
 			// if item didn't have mapping, then return the first available slot including both inventory + backpack
 			if (
-				mappedSlot == undefined || 
+				mappedSlot == undefined ||
 				(
-					i >= this._entity._stats.inventorySize && 
+					i >= this._entity._stats.inventorySize &&
 					(
-						itemData.controls == undefined || 
+						itemData.controls == undefined ||
 						(
-							itemData.controls.backpackAllowed == true || 
+							itemData.controls.backpackAllowed == true ||
 							itemData.controls.backpackAllowed == undefined
 						)
 					)
 				)
 			) {
-				var itemId = self._entity._stats.itemIds[i]
+				var itemId = self._entity._stats.itemIds[i];
 				if (!(itemId && ige.$(itemId))) {
 					return i + 1; // empty slot found
 				}
@@ -264,46 +255,44 @@ var InventoryComponent = IgeEntity.extend({
 		}
 
 		if (mappedSlot && mappedSlots.length == 1) { // give slot-specific message when item had ONE mapped slot. (e.g. glock in slot 2. Not slot 2 AND 3)
-			self._entity.reasonForFailingToPickUpItem = "slot " + mappedSlot + " is occupied";
+			self._entity.reasonForFailingToPickUpItem = `slot ${mappedSlot} is occupied`;
 		}
 		return undefined;
 	},
 
 	// insert item into first available slot
 	insertItem: function (item, slotIndex) {
-		var self = this,
-			unit = this._entity;
+		var self = this;
+		var unit = this._entity;
 
 		if (slotIndex == undefined)
-			slotIndex = self.getFirstAvailableSlotForItem()
+			slotIndex = self.getFirstAvailableSlotForItem();
 
 		if (slotIndex != undefined && item && unit.canCarryItem(item._stats)) {
-
 			if (ige.isServer) {
 				// console.log("inserting item at slot", slotIndex)
-				self._entity._stats.itemIds[slotIndex] = item.id()
+				self._entity._stats.itemIds[slotIndex] = item.id();
 				if (slotIndex != self._entity.currentItemIndex) {
 					item._stats.slotIndex = slotIndex;
 					item.hide();
 				}
-			}
-			else if (ige.isClient && self._entity._stats.clientId === ige.network.id()) {
-				var ownerPlayer = self._entity.getOwner()
+			} else if (ige.isClient && self._entity._stats.clientId === ige.network.id()) {
+				var ownerPlayer = self._entity.getOwner();
 				if (ownerPlayer) {
 					if (ownerPlayer._stats.selectedUnitId == self._entity.id()) {
 						item._stats.slotIndex = slotIndex;
-						ige.itemUi.updateItemSlot(item, slotIndex)
+						ige.itemUi.updateItemSlot(item, slotIndex);
 					}
 				}
 			}
 
-			ige.trigger && ige.trigger.fire("unitPickedAnItem", {
+			ige.trigger && ige.trigger.fire('unitPickedAnItem', {
 				unitId: unit.id(),
 				itemId: item.id()
-			})
+			});
 		}
 
-		return slotIndex
+		return slotIndex;
 	},
 	getItemFromInventory: function (itemTypeId) {
 		var self = this;
@@ -331,9 +320,9 @@ var InventoryComponent = IgeEntity.extend({
 		return null;
 	},
 	removeItem: function (slotIndex, id) {
-		//first remove itemid on server and send itemids to client for removing.
+		// first remove itemid on server and send itemids to client for removing.
 		let itemExistInItemIds = false;
-		let unit = this._entity
+		let unit = this._entity;
 		if (unit._stats.itemIds[slotIndex] == id) {
 			unit._stats.itemIds[slotIndex] = null;
 			itemExistInItemIds = true;
@@ -343,8 +332,8 @@ var InventoryComponent = IgeEntity.extend({
 			unit.streamUpdateData([{ itemIds: unit._stats.itemIds }]);
 		} else if (ige.isClient) {
 			if (ige.client.myPlayer && ige.client.myPlayer._stats.selectedUnitId == unit.id() && itemExistInItemIds) {
-				$("#item-" + slotIndex).html("")
-				ige.itemUi.updateItemSlot(item, slotIndex)
+				$(`#item-${slotIndex}`).html('');
+				ige.itemUi.updateItemSlot(item, slotIndex);
 			}
 		}
 	},
@@ -353,8 +342,8 @@ var InventoryComponent = IgeEntity.extend({
 		var totalInventorySize = this.getTotalInventorySize();
 		for (var slotIndex = 0; slotIndex < totalInventorySize; slotIndex++) {
 			if (this._entity._stats.itemIds[slotIndex] == itemId) {
-				this._entity._stats.itemIds[slotIndex] = null
-				this.removeItem(slotIndex, itemId)
+				this._entity._stats.itemIds[slotIndex] = null;
+				this.removeItem(slotIndex, itemId);
 			}
 		}
 	},
@@ -365,11 +354,11 @@ var InventoryComponent = IgeEntity.extend({
 			return null;
 
 		if (this._entity._stats.itemIds) {
-			var itemId = this._entity._stats.itemIds[slotNumber - 1]
+			var itemId = this._entity._stats.itemIds[slotNumber - 1];
 			if (itemId) {
-				var item = ige.$(itemId)
+				var item = ige.$(itemId);
 				// make sure item is owned by the unit calling this function
-				return item
+				return item;
 			}
 		}
 	},
@@ -379,14 +368,14 @@ var InventoryComponent = IgeEntity.extend({
 	// 2. if inventory slot is occupied by item, then show item in the inventory slot. otherwise, empty inventory slot
 	update: function () {
 		if (ige.isClient && this._entity._stats.clientId === ige.network.id()) {
-			var ownerPlayer = this._entity.getOwner()
+			var ownerPlayer = this._entity.getOwner();
 			if (ownerPlayer && ownerPlayer._stats.selectedUnitId == this._entity.id()) {
 				$('.popover').popover('hide');
 
 				// highlight currently selected item slots
 				// 5 for trading items
 
-				var totalInventorySize = this.getTotalInventorySize()
+				var totalInventorySize = this.getTotalInventorySize();
 				for (var slotIndex = 0; slotIndex < totalInventorySize + 5; slotIndex++) {
 					var itemId = this._entity._stats.itemIds[slotIndex];
 					var item = ige.$(itemId);
@@ -398,14 +387,13 @@ var InventoryComponent = IgeEntity.extend({
 					// 		item.setState('unselected');
 					// 	}
 					// }
-					ige.itemUi.updateItemSlot(item, slotIndex)
+					ige.itemUi.updateItemSlot(item, slotIndex);
 
 					// highlight currently selected inventory item (using currentItemIndex)
 					if (this._entity._stats.currentItemIndex != undefined && this._entity._stats.currentItemIndex == slotIndex) {
-						$("#item-" + slotIndex).addClass("active")
-					}
-					else {
-						$("#item-" + slotIndex).removeClass("active")
+						$(`#item-${slotIndex}`).addClass('active');
+					} else {
+						$(`#item-${slotIndex}`).removeClass('active');
 					}
 				}
 
@@ -419,10 +407,9 @@ var InventoryComponent = IgeEntity.extend({
 		for (var i = 0; i < this._entity._stats.inventorySize; i++) {
 			// highlight currently selected inventory item (using currentItemIndex)
 			if (slotIndex > 0 && slotIndex - 1 == i) {
-				$("#item-" + i).addClass("active")
-			}
-			else {
-				$("#item-" + i).removeClass("active")
+				$(`#item-${i}`).addClass('active');
+			} else {
+				$(`#item-${i}`).removeClass('active');
 			}
 		}
 	},
@@ -433,6 +420,5 @@ var InventoryComponent = IgeEntity.extend({
 	}
 
 });
-
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = InventoryComponent; }

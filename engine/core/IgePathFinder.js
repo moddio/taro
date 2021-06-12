@@ -4,7 +4,7 @@
 var IgePathFinder = IgeEventingClass.extend({
 	classId: 'IgePathFinder',
 
-	init: function() {
+	init: function () {
 		this._neighbourLimit = 1000;
 		this._squareCost = 10;
 		this._diagonalCost = 10;
@@ -57,7 +57,7 @@ var IgePathFinder = IgeEventingClass.extend({
 
 		return this._neighbourLimit;
 	},
-	
+
 	aStar: function () {
 		this.log('The "IgePathFinder.aStar" method has been renamed to "generate". Please update your code.', 'error');
 	},
@@ -74,22 +74,22 @@ var IgePathFinder = IgeEventingClass.extend({
 	 * @return {Array} An array of objects each containing an x, y co-ordinate that describes the path from the starting point to the end point in order.
 	 */
 	generate: function (tileMap, startPoint, endPoint, comparisonCallback, allowSquare, allowDiagonal, allowInvalidDestination) {
-		var openList = [],
-			closedList = [],
-			listHash = {},
-			startNode,
-			lowestFScoringIndex,
-			openCount,
-			currentNode,
-			pathPoint,
-			finalPath,
-			neighbourList,
-			neighbourCount,
-			neighbourNode,
-			endPointCheckTile,
-			tileMapData,
-			existingNode,
-			lowestHNode;
+		var openList = [];
+		var closedList = [];
+		var listHash = {};
+		var startNode;
+		var lowestFScoringIndex;
+		var openCount;
+		var currentNode;
+		var pathPoint;
+		var finalPath;
+		var neighbourList;
+		var neighbourCount;
+		var neighbourNode;
+		var endPointCheckTile;
+		var tileMapData;
+		var existingNode;
+		var lowestHNode;
 
 		// Set some defaults
 		if (allowSquare === undefined) { allowSquare = true; }
@@ -102,7 +102,7 @@ var IgePathFinder = IgeEventingClass.extend({
 			// There is no path to the end point because the end point
 			// is not allowed to be pathed to!
 			this.emit('noPathFound');
-			//this.log('Cannot path to destination because the destination tile is not pathable!');
+			// this.log('Cannot path to destination because the destination tile is not pathable!');
 			return [];
 		}
 
@@ -119,7 +119,7 @@ var IgePathFinder = IgeEventingClass.extend({
 		while (openList.length) {
 			// Check for some major error
 			if (openList.length > this._neighbourLimit) {
-				//this.log('Path finder error, open list nodes exceeded ' + this._neighbourLimit + '!', 'warning');
+				// this.log('Path finder error, open list nodes exceeded ' + this._neighbourLimit + '!', 'warning');
 				this.emit('exceededLimit');
 				break;
 			}
@@ -130,7 +130,7 @@ var IgePathFinder = IgeEventingClass.extend({
 			openCount = openList.length;
 
 			while (openCount--) {
-				if(openList[openCount].f < openList[lowestFScoringIndex].f) { lowestFScoringIndex = openCount; }
+				if (openList[openCount].f < openList[lowestFScoringIndex].f) { lowestFScoringIndex = openCount; }
 			}
 
 			currentNode = openList[lowestFScoringIndex];
@@ -141,7 +141,7 @@ var IgePathFinder = IgeEventingClass.extend({
 				pathPoint = currentNode;
 				finalPath = [];
 
-				while(pathPoint.link) {
+				while (pathPoint.link) {
 					finalPath.push(pathPoint);
 					pathPoint = pathPoint.link;
 				}
@@ -196,12 +196,11 @@ var IgePathFinder = IgeEventingClass.extend({
 					}
 				}
 			}
-
 		}
 
 		if (!allowInvalidDestination || (allowInvalidDestination && !lowestHNode)) {
 			// Could not find a path, return an empty array!
-			//this.log('Could not find a path to destination!');
+			// this.log('Could not find a path to destination!');
 			this.emit('noPathFound');
 			return [];
 		} else {
@@ -210,7 +209,7 @@ var IgePathFinder = IgeEventingClass.extend({
 			pathPoint = lowestHNode;
 			finalPath = [];
 
-			while(pathPoint.link) {
+			while (pathPoint.link) {
 				finalPath.push(pathPoint);
 				pathPoint = pathPoint.link;
 			}
@@ -236,15 +235,15 @@ var IgePathFinder = IgeEventingClass.extend({
 	 * @private
 	 */
 	_getNeighbours: function (currentNode, endPoint, tileMap, comparisonCallback, allowSquare, allowDiagonal) {
-		var list = [],
-			x = currentNode.x,
-			y = currentNode.y,
-			newX = 0,
-			newY = 0,
-			newNode,
-			mapData = tileMap.map._mapData,
-			currentNodeData = mapData[y] && mapData[y][x] ? mapData[y][x] : undefined,
-			tileData;
+		var list = [];
+		var x = currentNode.x;
+		var y = currentNode.y;
+		var newX = 0;
+		var newY = 0;
+		var newNode;
+		var mapData = tileMap.map._mapData;
+		var currentNodeData = mapData[y] && mapData[y][x] ? mapData[y][x] : undefined;
+		var tileData;
 
 		if (allowSquare) {
 			newX = x - 1; newY = y;
@@ -274,7 +273,6 @@ var IgePathFinder = IgeEventingClass.extend({
 				newNode = new IgePathNode(newX, newY, currentNode.g, this._squareCost, this._heuristic(newX, newY, endPoint.x, endPoint.y, this._squareCost), currentNode, 'S');
 				list.push(newNode);
 			}
-
 		}
 
 		if (allowDiagonal) {
@@ -326,13 +324,11 @@ var IgePathFinder = IgeEventingClass.extend({
 	},
 
 	as: function (map, fromNode, toNode) {
-		var openList = [],
-			closedList = [];
+		var openList = [];
+		var closedList = [];
 
 		// Add start point to open list
 		openList.push(fromNode);
-
-
 	},
 
 	_as: function (openList, closedList, currentNode, toNode) {
@@ -340,4 +336,4 @@ var IgePathFinder = IgeEventingClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgePathFinder; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePathFinder; }

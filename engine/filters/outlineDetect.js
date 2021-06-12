@@ -10,7 +10,7 @@ IgeFilters.outlineDetect = function (canvas, ctx, originalImage, texture, data) 
 			),
 			[
 				0, 1, 0,
-				1,  -4, 1,
+				1, -4, 1,
 				0, 1, 0
 			]
 		),

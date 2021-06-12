@@ -13,26 +13,26 @@ var MapComponent = IgeEntity.extend({
 			floor2: 1,
 			walls: 3,
 			trees: 4
-		}
+		};
 		if (ige.isClient) {
-			//Declared events for debris modal
+			// Declared events for debris modal
 			if (mode === 'sandbox') {
-				$('#debris-form').on("submit", function (e) {
+				$('#debris-form').on('submit', function (e) {
 					e.preventDefault();
 					self.onSubmit();
 				});
 
-				$('#debris-form').on("keypress", function (e) {
+				$('#debris-form').on('keypress', function (e) {
 					if (e.charCode === 13) {
 						e.preventDefault();
 						self.onSubmit();
 					}
 				});
 
-				$('#debris-delete').on("click", function (e) {
+				$('#debris-delete').on('click', function (e) {
 					e.preventDefault();
 					var updatedDebris = {
-						deleteId: $('#debris-id').val(),
+						deleteId: $('#debris-id').val()
 					};
 					self.updateDebrisToDb(updatedDebris);
 				});
@@ -67,29 +67,28 @@ var MapComponent = IgeEntity.extend({
 					self.minimapLayers = _.cloneDeep(layerArray);
 
 					if (ige.isServer || (ige.isClient && ige.physics)) {
-						console.log("load staticsFromMap")
+						console.log('load staticsFromMap');
 						ige.physics.staticsFromMap(layersById.walls);
 					}
 					var mapArray = layersById.floor.map._gameData;
 
 					// create debris
-					if (layersById.debris != undefined && (ige.isServer || mode === "sandbox")) {
-						self.debrisLayer = layersById.debris.objects
-						self.createDebris(layersById.debris.objects)
+					if (layersById.debris != undefined && (ige.isServer || mode === 'sandbox')) {
+						self.debrisLayer = layersById.debris.objects;
+						self.createDebris(layersById.debris.objects);
 					}
-					if (ige.isServer || mode === "sandbox") {
+					if (ige.isServer || mode === 'sandbox') {
 						self.createRegions();
 					}
 
-					//}
+					// }
 
 					if (ige.isClient) {
-
 						$.when(ige.client.igeEngineStarted).done(function () {
 							// We can add all our layers to our main scene by looping the
 							// array or we can pick a particular layer via the layersById
 							// object. Let's give an example:
-							if (mode === "sandbox") {
+							if (mode === 'sandbox') {
 								var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
 								var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
 								var region = new RegionUi({ height: mapHeight, width: mapWidth });
@@ -105,7 +104,7 @@ var MapComponent = IgeEntity.extend({
 							}
 
 							if (layerArray[i].name !== 'debris') {
-								ige.devLog("layer " + i)
+								ige.devLog(`layer ${i}`);
 								layerArray[i]
 									.layer(self.layersZIndex[layerArray[i].name])
 									.autoSection(20)
@@ -121,9 +120,8 @@ var MapComponent = IgeEntity.extend({
 							ige.client.mapLoaded.resolve();
 						});
 					}
-				})
-		}
-		else if (ige.isClient) {
+				});
+		} else if (ige.isClient) {
 			ige.addComponent(IgeTiledComponent)
 				.tiled.loadJson(self.data, function (IgeLayerArray, IgeLayersById) {
 					ige.addComponent(IgePixiMap)
@@ -137,7 +135,7 @@ var MapComponent = IgeEntity.extend({
 							// We can add all our layers to our main scene by looping the
 							// array or we can pick a particular layer via the layersById
 							// object. Let's give an example:
-							if (mode === "sandbox") {
+							if (mode === 'sandbox') {
 								var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
 								var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
 								var region = new RegionUi({ height: mapHeight, width: mapWidth });
@@ -160,7 +158,7 @@ var MapComponent = IgeEntity.extend({
 		var regions = {};
 		for (var i in ige.game.data.variables) {
 			var variable = ige.game.data.variables[i];
-			if (variable.dataType == 'region') regions[i] = variable
+			if (variable.dataType == 'region') regions[i] = variable;
 		}
 		ige.$$('region').forEach((region) => {
 			region.deleteRegion();
@@ -176,32 +174,32 @@ var MapComponent = IgeEntity.extend({
 		}
 	},
 	createDebris: function (debrisLayer) {
-		var self = this
+		var self = this;
 
-		//if debrisLayer not present return;
+		// if debrisLayer not present return;
 		if (!debrisLayer) return;
 
 		// debris cell sheets
 		var cellSheets = [];
 		for (var i = 0; i < self.data.tilesets.length; i++) {
 			var tileset = self.data.tilesets[i];
-			var imageUrl = tileset.image
+			var imageUrl = tileset.image;
 
 			cellSheets.push([
 				imageUrl, // temporary until images locations are converted to URL
 				tileset.imagewidth / tileset.tilewidth,
 				tileset.imageheight / tileset.tileheight,
 				tileset.firstgid
-			])
+			]);
 		}
 
 		for (var i = 0; i < debrisLayer.length; i++) {
 			var gid = debrisLayer[i].gid;
 
-			//dont display debris which has visible as false
+			// dont display debris which has visible as false
 			// if(!debrisLayer[i].visible) return;
 			// find texture
-			var cellSheet = cellSheets[cellSheets.length - 1]
+			var cellSheet = cellSheets[cellSheets.length - 1];
 			for (var j = 0; j < cellSheets.length - 1; j++) {
 				var currentCellSheet = cellSheets[j];
 				var nextCellSheet = cellSheets[j + 1];
@@ -210,15 +208,15 @@ var MapComponent = IgeEntity.extend({
 				}
 			}
 
-			var original = JSON.parse(JSON.stringify(debrisLayer[i]))
-			original["cellSheet"] = cellSheet
+			var original = JSON.parse(JSON.stringify(debrisLayer[i]));
+			original.cellSheet = cellSheet;
 			original.defaultData = {
 				translate: { x: original.x, y: original.y },
 				rotate: Math.radians(original.rotation)
-			}
+			};
 			var debris = new Debris(original);
 
-			debrisLayer[i].igeId = debris.id() // for future reference for script's conditional checks (e.g. if debrisVariable == triggeringDebris)
+			debrisLayer[i].igeId = debris.id(); // for future reference for script's conditional checks (e.g. if debrisVariable == triggeringDebris)
 
 			if (ige.isClient && typeof mode === 'string' && mode === 'sandbox') {
 				debris
@@ -247,9 +245,8 @@ var MapComponent = IgeEntity.extend({
 			var value = '';
 			if (ige.map.debrisProperty[i] === 'visible') {
 				value = $('#visible-true').hasClass('active');
-			}
-			else {
-				value = $('#debris-' + ige.map.debrisProperty[i]).val();
+			} else {
+				value = $(`#debris-${ige.map.debrisProperty[i]}`).val();
 			}
 
 			if (Number(value)) {
@@ -267,10 +264,10 @@ var MapComponent = IgeEntity.extend({
 		var self = this;
 		if (!updatedDebris || Object.keys(updatedDebris).length <= 0) return;
 		$.ajax({
-			url: "/api/game-client/" + gameId + "/updatedebris/" + ige.game.data.releaseId,
-			dataType: "html",
+			url: `/api/game-client/${gameId}/updatedebris/${ige.game.data.releaseId}`,
+			dataType: 'html',
 			type: 'POST',
-			dataType: "json",
+			dataType: 'json',
 			data: { data: JSON.stringify(updatedDebris) },
 			success: function (data) {
 				if (data.status === 'success') {
@@ -278,8 +275,7 @@ var MapComponent = IgeEntity.extend({
 					if (updatedDebris.deleteId) {
 						var debris = self.getDebrisData(updatedDebris.deleteId);
 						debris.destroy();
-					}
-					else {
+					} else {
 						var debris = self.getDebrisData(updatedDebris.id);
 						if (debris && debris._stats) {
 							for (var i = 0; i < ige.map.debrisProperty.length; i++) {
@@ -295,24 +291,24 @@ var MapComponent = IgeEntity.extend({
 					self.updateDebrisToMapObject(updatedDebris);
 				}
 			}
-		})
+		});
 	},
 	// Note. We're using ID of debris given by map editor. Not igeId
 	getDebrisData: function (id) {
 		return ige.$$('debris').find(function (debris) {
-			return debris._stats && debris._stats.id == id
+			return debris._stats && debris._stats.id == id;
 		});
 	},
 
 	updateDebrisToMapObject: function (updatedDebris) {
 		var layers = ige.map.data.layers;
 		var debris = layers.find(function (layer) {
-			if (layer.name == "debris") return true;
+			if (layer.name == 'debris') return true;
 		});
 		if (debris) {
 			if (updatedDebris.deleteId) {
 				var index = debris.objects.findIndex(function (debri) {
-					return debri.id == updatedDebris.deleteId
+					return debri.id == updatedDebris.deleteId;
 				});
 				debris.objects.splice(index, 1);
 			} else {
@@ -332,9 +328,8 @@ var MapComponent = IgeEntity.extend({
 	getDimensions: function () {
 		return {
 
-		}
+		};
 	}
 });
-
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = MapComponent; }

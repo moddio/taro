@@ -27,9 +27,9 @@ var IgePoly2d = IgeClass.extend({
 	 */
 	multiply: function (factor) {
 		if (factor !== undefined) {
-			var polyPoints = this._poly,
-				pointCount = polyPoints.length,
-				pointIndex;
+			var polyPoints = this._poly;
+			var pointCount = polyPoints.length;
+			var pointIndex;
 
 			for (pointIndex = 0; pointIndex < pointCount; pointIndex++) {
 				polyPoints[pointIndex].x *= factor;
@@ -47,9 +47,9 @@ var IgePoly2d = IgeClass.extend({
 	 */
 	divide: function (value) {
 		if (value !== undefined) {
-			var polyPoints = this._poly,
-				pointCount = polyPoints.length,
-				pointIndex;
+			var polyPoints = this._poly;
+			var pointCount = polyPoints.length;
+			var pointIndex;
 
 			for (pointIndex = 0; pointIndex < pointCount; pointIndex++) {
 				polyPoints[pointIndex].x /= value;
@@ -84,11 +84,11 @@ var IgePoly2d = IgeClass.extend({
 	 * @return {Boolean}
 	 */
 	pointInPoly: function (point) {
-		var polyPoints = this._poly,
-			pointCount = polyPoints.length,
-			pointIndex,
-			oldPointIndex = pointCount - 1,
-			c = 0;
+		var polyPoints = this._poly;
+		var pointCount = polyPoints.length;
+		var pointIndex;
+		var oldPointIndex = pointCount - 1;
+		var c = 0;
 
 		for (pointIndex = 0; pointIndex < pointCount; oldPointIndex = pointIndex++) {
 			if (((polyPoints[pointIndex].y > point.y) !== (polyPoints[oldPointIndex].y > point.y)) &&
@@ -101,7 +101,7 @@ var IgePoly2d = IgeClass.extend({
 
 		return Boolean(c);
 	},
-	
+
 	/**
 	 * Check if the passed x and y are inside this polygon.
 	 * @param {Number} x
@@ -109,11 +109,11 @@ var IgePoly2d = IgeClass.extend({
 	 * @return {Boolean}
 	 */
 	xyInside: function (x, y) {
-		var polyPoints = this._poly,
-			pointCount = polyPoints.length,
-			pointIndex,
-			oldPointIndex = pointCount - 1,
-			c = 0;
+		var polyPoints = this._poly;
+		var pointCount = polyPoints.length;
+		var pointIndex;
+		var oldPointIndex = pointCount - 1;
+		var c = 0;
 
 		for (pointIndex = 0; pointIndex < pointCount; oldPointIndex = pointIndex++) {
 			if (((polyPoints[pointIndex].y > y) !== (polyPoints[oldPointIndex].y > y)) &&
@@ -126,29 +126,29 @@ var IgePoly2d = IgeClass.extend({
 
 		return Boolean(c);
 	},
-	
+
 	aabb: function () {
-		var minX,
-			minY,
-			maxX,
-			maxY,
-			xArr = [],
-			yArr = [],
-			arr = this._poly,
-			arrIndex,
-			arrCount = arr.length;
-		
+		var minX;
+		var minY;
+		var maxX;
+		var maxY;
+		var xArr = [];
+		var yArr = [];
+		var arr = this._poly;
+		var arrIndex;
+		var arrCount = arr.length;
+
 		for (arrIndex = 0; arrIndex < arrCount; arrIndex++) {
 			xArr.push(arr[arrIndex].x);
 			yArr.push(arr[arrIndex].y);
 		}
-		
+
 		// Get the extents of the newly transformed poly
 		minX = Math.min.apply(Math, xArr);
 		minY = Math.min.apply(Math, yArr);
 		maxX = Math.max.apply(Math, xArr);
 		maxY = Math.max.apply(Math, yArr);
-	
+
 		return new IgeRect(minX, minY, maxX - minX, maxY - minY);
 	},
 
@@ -158,10 +158,10 @@ var IgePoly2d = IgeClass.extend({
 	 * @return {IgePoly2d}
 	 */
 	clone: function () {
-		var newPoly = new IgePoly2d(),
-			arr = this._poly,
-			arrCount = arr.length,
-			i;
+		var newPoly = new IgePoly2d();
+		var arr = this._poly;
+		var arrCount = arr.length;
+		var i;
 
 		for (i = 0; i < arrCount; i++) {
 			newPoly.addPoint(arr[i].x, arr[i].y);
@@ -179,9 +179,9 @@ var IgePoly2d = IgeClass.extend({
 	 */
 	clockWiseTriangle: function () {
 		// Loop the polygon points and determine if they are counter-clockwise
-		var arr = this._poly,
-			val,
-			p1, p2, p3;
+		var arr = this._poly;
+		var val;
+		var p1; var p2; var p3;
 
 		p1 = arr[0];
 		p2 = arr[1];
@@ -195,9 +195,9 @@ var IgePoly2d = IgeClass.extend({
 	makeClockWiseTriangle: function () {
 		// If our data is already clockwise exit
 		if (!this.clockWiseTriangle()) {
-			var p0 = this._poly[0],
-				p1 = this._poly[1],
-				p2 = this._poly[2];
+			var p0 = this._poly[0];
+			var p1 = this._poly[1];
+			var p2 = this._poly[2];
 
 			this._poly[2] = p1;
 			this._poly[1] = p2;
@@ -206,14 +206,14 @@ var IgePoly2d = IgeClass.extend({
 
 	triangulate: function () {
 		// Get the indices of each new triangle
-		var poly = this._poly,
-			triangles = [],
-			indices = this.triangulationIndices(),
-			i,
-			point1,
-			point2,
-			point3,
-			newPoly;
+		var poly = this._poly;
+		var triangles = [];
+		var indices = this.triangulationIndices();
+		var i;
+		var point1;
+		var point2;
+		var point3;
+		var newPoly;
 
 		// Generate new polygons from the index data
 		for (i = 0; i < indices.length; i += 3) {
@@ -235,21 +235,21 @@ var IgePoly2d = IgeClass.extend({
 	},
 
 	triangulationIndices: function () {
-		var indices = [],
-			n = this._poly.length,
-			v = [],
-			V = [],
-			nv,
-			count,
-			m,
-			u,
-			w,
-			a,
-			b,
-			c,
-			s,
-			t;
-		
+		var indices = [];
+		var n = this._poly.length;
+		var v = [];
+		var V = [];
+		var nv;
+		var count;
+		var m;
+		var u;
+		var w;
+		var a;
+		var b;
+		var c;
+		var s;
+		var t;
+
 		if (n < 3) { return indices; }
 
 		if (this._area() > 0) {
@@ -266,7 +266,7 @@ var IgePoly2d = IgeClass.extend({
 		count = 2 * nv;
 		m = 0;
 
-		for (v = nv - 1; nv > 2; ) {
+		for (v = nv - 1; nv > 2;) {
 			if ((count--) <= 0) {
 				return indices;
 			}
@@ -313,12 +313,12 @@ var IgePoly2d = IgeClass.extend({
 	},
 
 	_area: function () {
-		var n = this._poly.length,
-			a = 0.0,
-			q = 0,
-			p,
-			pval,
-			qval;
+		var n = this._poly.length;
+		var a = 0.0;
+		var q = 0;
+		var p;
+		var pval;
+		var qval;
 
 		for (p = n - 1; q < n; p = q++) {
 			pval = this._poly[p];
@@ -330,14 +330,14 @@ var IgePoly2d = IgeClass.extend({
 	},
 
 	_snip: function (u, v, w, n, V) {
-		var p,
-			A = this._poly[V[u]],
-			B = this._poly[V[v]],
-			C = this._poly[V[w]],
-			P;
+		var p;
+		var A = this._poly[V[u]];
+		var B = this._poly[V[v]];
+		var C = this._poly[V[w]];
+		var P;
 
 		// Replaced Math.Epsilon with 0.00001
-		if (0.00001 > (((B.x - A.x) * (C.y - A.y)) - ((B.y - A.y) * (C.x - A.x)))) {
+		if ((((B.x - A.x) * (C.y - A.y)) - ((B.y - A.y) * (C.x - A.x))) < 0.00001) {
 			return false;
 		}
 
@@ -391,11 +391,11 @@ var IgePoly2d = IgeClass.extend({
 	 * @param {CanvasRenderingContext2D} ctx
 	 */
 	render: function (ctx, fill) {
-		var polyPoints = this._poly,
-			pointCount = polyPoints.length,
-			scaleX = this._scale.x,
-			scaleY = this._scale.y,
-			i;
+		var polyPoints = this._poly;
+		var pointCount = polyPoints.length;
+		var scaleX = this._scale.x;
+		var scaleY = this._scale.y;
+		var i;
 
 		ctx.beginPath();
 		ctx.moveTo(polyPoints[0].x * scaleX, polyPoints[0].y * scaleY);
@@ -410,4 +410,4 @@ var IgePoly2d = IgeClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgePoly2d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePoly2d; }

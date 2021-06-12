@@ -16,10 +16,10 @@ var IgeCellSheet = IgeTexture.extend({
 		var callbackIfNotLoaded = function (err) {
 			if (err && entity) {
 				var entityType = entity._category === 'item' ? entity._stats.itemTypeId : entity._stats.type;
-				var defaultUrl = ige.game.getAsset(entity._category + 'Types', entityType).cellSheet.url;
+				var defaultUrl = ige.game.getAsset(`${entity._category}Types`, entityType).cellSheet.url;
 				IgeTexture.prototype.init.call(self, defaultUrl);
 			}
-		}
+		};
 		IgeTexture.prototype.init.call(this, url, spriteCellSheet && entity ? callbackIfNotLoaded : undefined);
 	},
 
@@ -103,11 +103,11 @@ var IgeCellSheet = IgeTexture.extend({
 
 				// Check if the cell width and height are non-floating-point
 				if (cellWidth !== parseInt(cellWidth, 10)) {
-					this.log('Cell width is a floating-point number! (Image Width ' + imgWidth + ' / Number of Columns ' + columns + ' = ' + cellWidth + ') in file: ' + this._url, 'warning');
+					this.log(`Cell width is a floating-point number! (Image Width ${imgWidth} / Number of Columns ${columns} = ${cellWidth}) in file: ${this._url}`, 'warning');
 				}
 
 				if (cellHeight !== parseInt(cellHeight, 10)) {
-					this.log('Cell height is a floating-point number! (Image Height ' + imgHeight + ' / Number of Rows ' + rows + ' = ' + cellHeight + ')  in file: ' + this._url, 'warning');
+					this.log(`Cell height is a floating-point number! (Image Height ${imgHeight} / Number of Rows ${rows} = ${cellHeight})  in file: ${this._url}`, 'warning');
 				}
 
 				// Check if we need to calculate individual cell data
@@ -133,11 +133,11 @@ var IgeCellSheet = IgeTexture.extend({
 	 * @return {String}
 	 */
 	stringify: function () {
-		var str = "new " + this.classId() + "('" + this.url() + "', " + this.horizontalCells() + ", " + this.verticalCells() + ")";
+		var str = `new ${this.classId()}('${this.url()}', ${this.horizontalCells()}, ${this.verticalCells()})`;
 
 		// Every object has an ID, assign that first
 		// IDs are automatically generated from texture urls
-		//str += ".id('" + this.id() + "');";
+		// str += ".id('" + this.id() + "');";
 
 		return str;
 	}

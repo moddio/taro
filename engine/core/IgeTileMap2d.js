@@ -223,8 +223,6 @@ var IgeTileMap2d = IgeEntity.extend({
 					this.map.clearData(x + xi, y + yi);
 				}
 			}
-
-
 		}
 		return this;
 	},
@@ -258,14 +256,14 @@ var IgeTileMap2d = IgeEntity.extend({
 	pointToTile: function (point) {
 		// TODO: Could this do with some caching to check if the input values have changed and if not,
 		// TODO: supply the same pre-calculated data if it already exists?
-		var mx = point.x,
-			my = point.y,
-			dx, dy, tilePos;
+		var mx = point.x;
+		var my = point.y;
+		var dx; var dy; var tilePos;
 
 		if (this._mountMode === 0) {
 			// 2d
-			dx = mx; //+ this._tileWidth / 2;
-			dy = my; //+ this._tileHeight / 2;
+			dx = mx; // + this._tileWidth / 2;
+			dy = my; // + this._tileHeight / 2;
 
 			tilePos = new IgePoint3d(
 				Math.floor(dx / this._tileWidth),
@@ -351,9 +349,9 @@ var IgeTileMap2d = IgeEntity.extend({
 	 * @return {Array}
 	 */
 	scanRects: function (callback) {
-		var x, y,
-			rectArray = [],
-			mapData = this.map._mapData.clone();
+		var x; var y;
+		var rectArray = [];
+		var mapData = this.map._mapData.clone();
 
 		// Loop the map data and scan for blocks that can
 		// be converted into static box2d rectangle areas
@@ -378,9 +376,9 @@ var IgeTileMap2d = IgeEntity.extend({
 			y: y,
 			width: 1,
 			height: 1
-		},
-			nx = x + 1,
-			ny = y + 1;
+		};
+		var nx = x + 1;
+		var ny = y + 1;
 
 		// Clear the current x, y cell mapData
 		mapData[y][x] = 0;
@@ -464,10 +462,10 @@ var IgeTileMap2d = IgeEntity.extend({
 	 */
 	saveMap: function (layer) {
 		// in URL format
-		var textures = [], i,
-			x, y,
-			dataX = 0, dataY = 0,
-			mapData = layer.map._mapData;
+		var textures = []; var i;
+		var x; var y;
+		var dataX = 0; var dataY = 0;
+		var mapData = layer.map._mapData;
 
 		// Get the lowest x, y
 		for (y in mapData) {
@@ -514,8 +512,8 @@ var IgeTileMap2d = IgeEntity.extend({
 		}
 
 		if (this._mountMode === 1) {
-			var aabb = this.aabb(),
-				poly = new IgePoly2d();
+			var aabb = this.aabb();
+			var poly = new IgePoly2d();
 
 			poly.addPoint(aabb.x + aabb.width / 2, aabb.y);
 			poly.addPoint(aabb.x + aabb.width, aabb.y + aabb.height / 2);

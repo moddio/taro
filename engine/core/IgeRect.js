@@ -17,7 +17,7 @@ var IgeRect = IgeClass.extend({
 
 		return this;
 	},
-	
+
 	/**
 	 * Combines the extents of the passed IgeRect with this rect
 	 * to create a new rect whose bounds encapsulate both rects.
@@ -25,15 +25,15 @@ var IgeRect = IgeClass.extend({
 	 * @return {IgeRect} The new rect encapsulating both rects.
 	 */
 	combineRect: function (rect) {
-		var thisRectMaxX = this.x + this.width,
-			thisRectMaxY = this.y + this.height,
-			thatRectMaxX = rect.x + rect.width,
-			thatRectMaxY = rect.y + rect.height,
+		var thisRectMaxX = this.x + this.width;
+		var thisRectMaxY = this.y + this.height;
+		var thatRectMaxX = rect.x + rect.width;
+		var thatRectMaxY = rect.y + rect.height;
 
-			x = Math.min(this.x, rect.x),
-			y = Math.min(this.y, rect.y),
-			width = Math.max(thisRectMaxX - this.x, thatRectMaxX - this.x),
-			height = Math.max(thisRectMaxY - this.y, thatRectMaxY - this.y);
+		var x = Math.min(this.x, rect.x);
+		var y = Math.min(this.y, rect.y);
+		var width = Math.max(thisRectMaxX - this.x, thatRectMaxX - this.x);
+		var height = Math.max(thisRectMaxY - this.y, thatRectMaxY - this.y);
 
 		return new IgeRect(x, y, width, height);
 	},
@@ -45,10 +45,10 @@ var IgeRect = IgeClass.extend({
 	 * @param {IgeRect} rect The rect to combine with this one.
 	 */
 	thisCombineRect: function (rect) {
-		var thisRectMaxX = this.x + this.width,
-			thisRectMaxY = this.y + this.height,
-			thatRectMaxX = rect.x + rect.width,
-			thatRectMaxY = rect.y + rect.height;
+		var thisRectMaxX = this.x + this.width;
+		var thisRectMaxY = this.y + this.height;
+		var thatRectMaxX = rect.x + rect.width;
+		var thatRectMaxY = rect.y + rect.height;
 
 		this.x = Math.min(this.x, rect.x);
 		this.y = Math.min(this.y, rect.y);
@@ -56,7 +56,7 @@ var IgeRect = IgeClass.extend({
 		this.width = Math.max(thisRectMaxX - this.x, thatRectMaxX - this.x);
 		this.height = Math.max(thisRectMaxY - this.y, thatRectMaxY - this.y);
 	},
-	
+
 	minusPoint: function (point) {
 		return new IgeRect(this.x - point.x, this.y - point.y, this.width, this.height);
 	},
@@ -111,20 +111,20 @@ var IgeRect = IgeClass.extend({
 	 */
 	intersects: function (rect) {
 		if (rect) {
-			var sX1 = this.x,
-				sY1 = this.y,
-				sW = this.width,
-				sH = this.height,
+			var sX1 = this.x;
+			var sY1 = this.y;
+			var sW = this.width;
+			var sH = this.height;
 
-				dX1 = rect.x,
-				dY1 = rect.y,
-				dW = rect.width,
-				dH = rect.height,
+			var dX1 = rect.x;
+			var dY1 = rect.y;
+			var dW = rect.width;
+			var dH = rect.height;
 
-				sX2 = sX1 + sW,
-				sY2 = sY1 + sH,
-				dX2 = dX1 + dW,
-				dY2 = dY1 + dH;
+			var sX2 = sX1 + sW;
+			var sY2 = sY1 + sH;
+			var dX2 = dX1 + dW;
+			var dY2 = dY1 + dH;
 
 			if (sX1 < dX2 && sX2 > dX1 && sY1 < dY2 && sY2 > dY1) {
 				return true;
@@ -133,7 +133,7 @@ var IgeRect = IgeClass.extend({
 
 		return false;
 	},
-	
+
 	/**
 	 * Multiplies this rect's data by the values specified
 	 * and returns a new IgeRect whose values are the result.
@@ -146,7 +146,7 @@ var IgeRect = IgeClass.extend({
 	multiply: function (x1, y1, x2, y2) {
 		return new IgeRect(this.x * x1, this.y * y1, this.width * x2, this.height * y2);
 	},
-	
+
 	/**
 	 * Multiplies this rects's data by the values specified and
 	 * overwrites the previous values with the result.
@@ -184,9 +184,9 @@ var IgeRect = IgeClass.extend({
 	 */
 	toString: function (precision) {
 		if (precision === undefined) { precision = 2; }
-		return this.x.toFixed(precision) + ',' + this.y.toFixed(precision) + ',' + this.width.toFixed(precision) + ',' + this.height.toFixed(precision);
+		return `${this.x.toFixed(precision)},${this.y.toFixed(precision)},${this.width.toFixed(precision)},${this.height.toFixed(precision)}`;
 	},
-	
+
 	/**
 	 * Draws the polygon bounding lines to the passed context.
 	 * @param {CanvasRenderingContext2D} ctx
@@ -200,4 +200,4 @@ var IgeRect = IgeClass.extend({
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeRect; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeRect; }

@@ -1,4 +1,4 @@
-var CrashColliders = require("crash-colliders");
+var CrashColliders = require('crash-colliders');
 
 var cc = new CrashColliders({});
 

@@ -1,9 +1,9 @@
 
 var pathArray = window.location.href.split('/');
-var igeRoot = "http://" + pathArray[2] + "/engine/";
-var igeClientRoot = "http://" + pathArray[2] + '/src/'
+var igeRoot = `http://${pathArray[2]}/engine/`;
+var igeClientRoot = `http://${pathArray[2]}/src/`;
 
-console.log("igeRoot", igeRoot)
+console.log('igeRoot', igeRoot);
 
 window.igeLoader = (function () {
 	// Load the engine stylesheet
@@ -16,19 +16,19 @@ window.igeLoader = (function () {
 	// document.getElementsByTagName('head')[0].appendChild(css);
 
 	var IgeLoader = function () {
-		var self = this,
-			ccScript;
+		var self = this;
+		var ccScript;
 
 		this._loadingCount = 0;
 
 		// Load the clientConfig.js file into browser memory
 		ccScript = document.createElement('script');
-		ccScript.src = igeRoot + 'CoreConfig.js';
+		ccScript.src = `${igeRoot}CoreConfig.js`;
 		ccScript.onload = function () {
 			self.coreConfigReady();
 		};
 		ccScript.addEventListener('error', function () {
-			throw ('ERROR LOADING ' + igeRoot + 'CoreConfig.js' + ' - does it exist?');
+			throw (`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
 		}, true);
 
 		document.getElementsByTagName('head')[0].appendChild(ccScript);
@@ -40,7 +40,7 @@ window.igeLoader = (function () {
 		if (typeof (igeCoreConfig) !== 'undefined') {
 			// Load the client config
 			ccScript = document.createElement('script');
-			ccScript.src = igeClientRoot + 'ClientConfig.js';
+			ccScript.src = `${igeClientRoot}ClientConfig.js`;
 			ccScript.onload = function () {
 				self.clientConfigReady();
 			};
@@ -75,9 +75,9 @@ window.igeLoader = (function () {
 	};
 
 	IgeLoader.prototype.loadNext = function () {
-		var url = this._fileList.shift(),
-			script = document.createElement('script'),
-			self = this;
+		var url = this._fileList.shift();
+		var script = document.createElement('script');
+		var self = this;
 
 		if (url !== undefined) {
 			script.src = url;
@@ -86,7 +86,7 @@ window.igeLoader = (function () {
 			};
 
 			script.addEventListener('error', function () {
-				throw ('ERROR LOADING ' + url + ' - does it exist?');
+				throw (`ERROR LOADING ${url} - does it exist?`);
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(script);

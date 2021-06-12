@@ -3,7 +3,7 @@ var IgeCocoonJsComponent = IgeEventingClass.extend({
 	componentId: 'cocoonJs',
 
 	init: function () {
-		this.detected = typeof(ext) !== 'undefined' && typeof(ext.IDTK_APP) !== 'undefined';
+		this.detected = typeof (ext) !== 'undefined' && typeof (ext.IDTK_APP) !== 'undefined';
 
 		if (this.detected) {
 			this.log('CocoonJS support enabled!');
@@ -11,7 +11,7 @@ var IgeCocoonJsComponent = IgeEventingClass.extend({
 	},
 
 	// TODO: Finish keyboard implementation
-	showInputDialog: function(title, message, initialValue, type, cancelText, okText) {
+	showInputDialog: function (title, message, initialValue, type, cancelText, okText) {
 		if (this.detected) {
 			title = title || '';
 			message = message || '';
@@ -41,8 +41,8 @@ var IgeCocoonJsComponent = IgeEventingClass.extend({
 	showWebView: function (url) {
 		if (this.detected) {
 			// Forward a JS call to the webview IDTK API
-			ext.IDTK_APP.makeCall("forward", "ext.IDTK_APP.makeCall('loadPath', '" + url + "')");
-			ext.IDTK_APP.makeCall("forward", "ext.IDTK_APP.makeCall('show');");
+			ext.IDTK_APP.makeCall('forward', `ext.IDTK_APP.makeCall('loadPath', '${url}')`);
+			ext.IDTK_APP.makeCall('forward', 'ext.IDTK_APP.makeCall(\'show\');');
 		}
 	},
 
@@ -52,7 +52,7 @@ var IgeCocoonJsComponent = IgeEventingClass.extend({
 	hideWebView: function () {
 		if (this.detected) {
 			// Forward a JS call to the webview IDTK API
-			ext.IDTK_APP.makeCall("forward", "ext.IDTK_APP.makeCall('hide');");
+			ext.IDTK_APP.makeCall('forward', 'ext.IDTK_APP.makeCall(\'hide\');');
 		}
 	}
 });

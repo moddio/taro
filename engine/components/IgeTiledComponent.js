@@ -23,8 +23,8 @@ var IgeTiledComponent = IgeClass.extend({
 	 * @param callback
 	 */
 	loadJson: function (url, callback) {
-		var self = this,
-			scriptElem;
+		var self = this;
+		var scriptElem;
 
 		if (typeof (url) === 'string') {
 			if (ige.isClient) {
@@ -44,42 +44,40 @@ var IgeTiledComponent = IgeClass.extend({
 	},
 
 	_processData: function (data, callback) {
-
 		if (ige.isServer && (data == undefined || data.layers == undefined)) {
-			IgeTiledComponent.prototype.log("layer doesn't exist. unpublishing...")
-			ige.server.unpublish('IgeTiledComponent#51')
+			IgeTiledComponent.prototype.log('layer doesn\'t exist. unpublishing...');
+			ige.server.unpublish('IgeTiledComponent#51');
 		}
 
-		var mapClass = ige.isServer === true ? IgeTileMap2d : IgeTextureMap,
-			mapWidth = data.width,
-			mapHeight = data.height,
-			layerArray = data.layers,
-			layerCount = layerArray ? layerArray.length : 0,
-			layer,
-			layerType,
-			layerData,
-			layerDataCount,
-			maps = [],
-			layersById = {},
-			tileSetArray = data.tilesets,
-			tileSetCount = tileSetArray ? tileSetArray.length : 0,
-			tileSetItem,
-			tileSetsTotal = tileSetCount,
-			tileSetsLoaded = 0,
-			textureCellLookup = [],
-			currentTexture,
-			currentCell,
-			onLoadFunc,
-			image,
-			textures = [],
-			allTexturesLoadedFunc,
-			i, k, x, y, z,
-			ent;
+		var mapClass = ige.isServer === true ? IgeTileMap2d : IgeTextureMap;
+		var mapWidth = data.width;
+		var mapHeight = data.height;
+		var layerArray = data.layers;
+		var layerCount = layerArray ? layerArray.length : 0;
+		var layer;
+		var layerType;
+		var layerData;
+		var layerDataCount;
+		var maps = [];
+		var layersById = {};
+		var tileSetArray = data.tilesets;
+		var tileSetCount = tileSetArray ? tileSetArray.length : 0;
+		var tileSetItem;
+		var tileSetsTotal = tileSetCount;
+		var tileSetsLoaded = 0;
+		var textureCellLookup = [];
+		var currentTexture;
+		var currentCell;
+		var onLoadFunc;
+		var image;
+		var textures = [];
+		var allTexturesLoadedFunc;
+		var i; var k; var x; var y; var z;
+		var ent;
 
 		if (ige.isClient) {
 			ige.layersById = layersById;
 		}
-
 
 		// Define the function to call when all textures have finished loading
 		allTexturesLoadedFunc = function () {
@@ -92,7 +90,7 @@ var IgeTiledComponent = IgeClass.extend({
 				if (layerType === 'tilelayer') {
 					layerData = layer.data;
 
-					IgeTiledComponent.prototype.log("setting " + layer.name + " to depth " + i)
+					IgeTiledComponent.prototype.log(`setting ${layer.name} to depth ${i}`);
 
 					maps[i] = new mapClass(data.tilewidth, data.tileheight);
 
@@ -100,10 +98,9 @@ var IgeTiledComponent = IgeClass.extend({
 						maps[i].tileWidth(data.tilewidth)
 							.tileHeight(data.tilewidth)
 							.depth(i);
-					}
-					else {
-						IgeTiledComponent.prototype.log("ERROR while loading map. Chris might have fixed this")
-						ige.server.unpublish('IgeTiledComponent#109')
+					} else {
+						IgeTiledComponent.prototype.log('ERROR while loading map. Chris might have fixed this');
+						ige.server.unpublish('IgeTiledComponent#109');
 						return;
 					}
 
@@ -150,7 +147,7 @@ var IgeTiledComponent = IgeClass.extend({
 		if (ige.isClient) {
 			onLoadFunc = function (textures, tileSetCount, tileSetItem) {
 				return function () {
-					var i, cc
+					var i, cc;
 
 					var imageUrl = tileSetItem.image;
 					var scaleFactor = ige.scaleMapDetails.scaleFactor;
@@ -164,7 +161,7 @@ var IgeTiledComponent = IgeClass.extend({
 						.id(tileSetItem.name)
 						.on('loaded', function () {
 							if (ige.scaleMapDetails.shouldScaleTilesheet && (imageUrl.includes('tilesheet') || tileSetCount === 0)) {
-								this.resize(this._sizeX * scaleFactor.x, this._sizeY * scaleFactor.y)
+								this.resize(this._sizeX * scaleFactor.x, this._sizeY * scaleFactor.y);
 							}
 							cc = this.cellCount();
 
@@ -191,12 +188,10 @@ var IgeTiledComponent = IgeClass.extend({
 				// Load the image into memory first so we can read the total width and height
 				image = new Image();
 
-				
 				tileSetItem = tileSetArray[tileSetCount];
 				image.onload = onLoadFunc(textures, tileSetCount, tileSetItem);
 
 				image.src = tileSetItem.image;
-
 			}
 		} else {
 			// We're on the server so no textures are actually loaded

@@ -3,335 +3,335 @@
  * all related entity actions / methods.
  */
 var IgeEntity = IgeObject.extend({
-    classId: 'IgeEntity',
+	classId: 'IgeEntity',
 
-    init: function (defaultData = {}) {
-        IgeObject.prototype.init.call(this);
+	init: function (defaultData = {}) {
+		IgeObject.prototype.init.call(this);
 
-        // Register the IgeEntity special properties handler for
-        // serialise and de-serialise support
-        var translateX = defaultData.translate && defaultData.translate.x ? defaultData.translate.x : 0;
-        var translateY = defaultData.translate && defaultData.translate.y ? defaultData.translate.y : 0;
-        var rotate = defaultData.rotate || 0;
+		// Register the IgeEntity special properties handler for
+		// serialise and de-serialise support
+		var translateX = defaultData.translate && defaultData.translate.x ? defaultData.translate.x : 0;
+		var translateY = defaultData.translate && defaultData.translate.y ? defaultData.translate.y : 0;
+		var rotate = defaultData.rotate || 0;
 
-        this._specialProp.push('_texture');
-        this._specialProp.push('_eventListeners');
-        this._specialProp.push('_aabb');
+		this._specialProp.push('_texture');
+		this._specialProp.push('_eventListeners');
+		this._specialProp.push('_aabb');
 
-        this._anchor = new IgePoint2d(0, 0);
-        this._renderPos = { x: 0, y: 0 };
+		this._anchor = new IgePoint2d(0, 0);
+		this._renderPos = { x: 0, y: 0 };
 
-        this._computedOpacity = 1;
-        this._opacity = 1;
-        this._cell = 1;
+		this._computedOpacity = 1;
+		this._opacity = 1;
+		this._cell = 1;
 
-        this._flip = 0; // texture flip code 1=horiz 2=vert 3=both
+		this._flip = 0; // texture flip code 1=horiz 2=vert 3=both
 
-        this._deathTime = undefined;
-        this._bornTime = ige._currentTime;
+		this._deathTime = undefined;
+		this._bornTime = ige._currentTime;
 
-        this._translate = new IgePoint3d(translateX, translateY, rotate);
-        this._oldTranform = [];
-        this._hasMoved = true;
+		this._translate = new IgePoint3d(translateX, translateY, rotate);
+		this._oldTranform = [];
+		this._hasMoved = true;
 
-        this._rotate = new IgePoint3d(0, 0, rotate);
+		this._rotate = new IgePoint3d(0, 0, rotate);
 
-        this._scale = new IgePoint3d(1, 1, 1);
-        this._origin = new IgePoint3d(0.5, 0.5, 0.5);
+		this._scale = new IgePoint3d(1, 1, 1);
+		this._origin = new IgePoint3d(0.5, 0.5, 0.5);
 
-        this._bounds2d = new IgePoint2d(40, 40);
-        this._bounds3d = new IgePoint3d(0, 0, 0);
+		this._bounds2d = new IgePoint2d(40, 40);
+		this._bounds3d = new IgePoint3d(0, 0, 0);
 
-        this._oldBounds2d = new IgePoint2d(40, 40);
-        this._oldBounds3d = new IgePoint3d(0, 0, 0);
+		this._oldBounds2d = new IgePoint2d(40, 40);
+		this._oldBounds3d = new IgePoint3d(0, 0, 0);
 
-        this._highlight = false;
-        this._mouseEventsActive = false;
+		this._highlight = false;
+		this._mouseEventsActive = false;
 
-        this._velocity = new IgePoint3d(0, 0, 0);
+		this._velocity = new IgePoint3d(0, 0, 0);
 
-        this._localMatrix = new IgeMatrix2d();
-        this._worldMatrix = new IgeMatrix2d();
-        this._oldWorldMatrix = new IgeMatrix2d();
+		this._localMatrix = new IgeMatrix2d();
+		this._worldMatrix = new IgeMatrix2d();
+		this._oldWorldMatrix = new IgeMatrix2d();
 
-        this._lastSeenBy = {};
+		this._lastSeenBy = {};
 
-        this._inView = true;
-        this._hidden = false;
+		this._inView = true;
+		this._hidden = false;
 
-        this._stats = {};
-        this._streamDataQueued = [];
-        this._isBeingRemoved = false;
-        // this ensures entity is spawning at a correct position initially. particularily useful for projectiles
+		this._stats = {};
+		this._streamDataQueued = [];
+		this._isBeingRemoved = false;
+		// this ensures entity is spawning at a correct position initially. particularily useful for projectiles
 
-        this._keyFrames = [];
-        this.movementHistory = [];
-        this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]];
-        this._lastTransformAt = null;
-        this.nextPhysicsFrame = null;
-        this.lastServerStreamedPosition = null;
-        this.lastTeleportedAt = 0
+		this._keyFrames = [];
+		this.movementHistory = [];
+		this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]];
+		this._lastTransformAt = null;
+		this.nextPhysicsFrame = null;
+		this.lastServerStreamedPosition = null;
+		this.lastTeleportedAt = 0;
 
-        if (ige.isClient) {
-            this.anchorOffset = { x: 0, y: 0, rotate: 0 };
-            this.addComponent(TweenComponent);
-        }
+		if (ige.isClient) {
+			this.anchorOffset = { x: 0, y: 0, rotate: 0 };
+			this.addComponent(TweenComponent);
+		}
 
-        // this.compositeCache(true);
+		// this.compositeCache(true);
 
-        /* CEXCLUDE */
-        if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-            // Set the stream floating point precision to 2 as default
-            this.streamFloatPrecision(0);
-        }
-        /* CEXCLUDE */
+		/* CEXCLUDE */
+		if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+			// Set the stream floating point precision to 2 as default
+			this.streamFloatPrecision(0);
+		}
+		/* CEXCLUDE */
 
-        // Set the default stream sections as just the transform data
-        this.streamSections(['transform']);
-    },
+		// Set the default stream sections as just the transform data
+		this.streamSections(['transform']);
+	},
 
-    /**
+	/**
      * Sets the entity as visible and able to be interacted with.
      * @example #Show a hidden entity
      *     entity.show();
      * @return {*} The object this method was called from to allow
      * method chaining.
      */
-    show: function () {
-        var self = this;
+	show: function () {
+		var self = this;
 
-        if (ige.isServer) {
-            // self._hidden = false; // never hide it, because it'll stop processing stream queue
-            this.streamUpdateData([{ isHidden: false }]);
-        } else if (ige.isClient) {
-            // this.disableInterpolation(false)
+		if (ige.isServer) {
+			// self._hidden = false; // never hide it, because it'll stop processing stream queue
+			this.streamUpdateData([{ isHidden: false }]);
+		} else if (ige.isClient) {
+			// this.disableInterpolation(false)
 
-            // add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-            self._hidden = false;
-            var pixiEntity = self._pixiText || self._pixiTexture;
-            if (pixiEntity) {
-                pixiEntity.visible = true;
-            }
-        }
+			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
+			self._hidden = false;
+			var pixiEntity = self._pixiText || self._pixiTexture;
+			if (pixiEntity) {
+				pixiEntity.visible = true;
+			}
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    // update item's body & texture based on stateId given
-    setState: function (stateId, defaultData) {
-        var self = this;
-        
-        // if invalid stateId is given, set state to default state
-        if (stateId == undefined || self._stats.states == undefined || self._stats.states[stateId] == undefined) {
-            stateId = this.getDefaultStateId();
-        }
-        
-        var newState = (self._stats.states && self._stats.states[stateId]) || {};
-        if (newState && newState.body) {
-            self._stats.currentBody = self._stats.bodies[newState.body];
-        }
+	// update item's body & texture based on stateId given
+	setState: function (stateId, defaultData) {
+		var self = this;
 
-        // console.log("setState", stateId, "new body", (newState)?newState.body:"null")
-        if (ige.isServer) {
-            self.streamUpdateData([{ stateId: stateId }]);
-        } else if (ige.isClient) {
-            self._stats.stateId = stateId;
-            if(newState.sound) {
-                for(var soundId in newState.sound) {
-                    var sound = newState.sound[soundId]
-                    ige.sound.playSound(sound, this._translate, soundId);
-                }
-            }
-        }
+		// if invalid stateId is given, set state to default state
+		if (stateId == undefined || self._stats.states == undefined || self._stats.states[stateId] == undefined) {
+			stateId = this.getDefaultStateId();
+		}
 
-        self.previousState = newState;
-        self.updateBody(defaultData);
-    },
+		var newState = (self._stats.states && self._stats.states[stateId]) || {};
+		if (newState && newState.body) {
+			self._stats.currentBody = self._stats.bodies[newState.body];
+		}
 
-    /**
+		// console.log("setState", stateId, "new body", (newState)?newState.body:"null")
+		if (ige.isServer) {
+			self.streamUpdateData([{ stateId: stateId }]);
+		} else if (ige.isClient) {
+			self._stats.stateId = stateId;
+			if (newState.sound) {
+				for (var soundId in newState.sound) {
+					var sound = newState.sound[soundId];
+					ige.sound.playSound(sound, this._translate, soundId);
+				}
+			}
+		}
+
+		self.previousState = newState;
+		self.updateBody(defaultData);
+	},
+
+	/**
      * Sets the entity as hidden and cannot be interacted with.
      * @example #Hide a visible entity
      *     entity.hide();
      * @return {*} The object this method was called from to allow
      * method chaining.
      */
-    hide: function () {
-        var self = this;
+	hide: function () {
+		var self = this;
 
-        if (ige.isServer) {
-            // self._hidden = true; // never hide it, because it'll stop processing stream queue
-            this.streamUpdateData([{ isHidden: true }]);
-        } else if (ige.isClient) {
-            // this.disableInterpolation(true)
-            // add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-            // self.opacity(0)
-            self._hidden = true;
-            var pixiEntity = self._pixiText || self._pixiTexture;
-            if (pixiEntity) {
-                pixiEntity.visible = false;
-            }
-            self.texture('');
-        }
-        return this;
-    },
+		if (ige.isServer) {
+			// self._hidden = true; // never hide it, because it'll stop processing stream queue
+			this.streamUpdateData([{ isHidden: true }]);
+		} else if (ige.isClient) {
+			// this.disableInterpolation(true)
+			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
+			// self.opacity(0)
+			self._hidden = true;
+			var pixiEntity = self._pixiText || self._pixiTexture;
+			if (pixiEntity) {
+				pixiEntity.visible = false;
+			}
+			self.texture('');
+		}
+		return this;
+	},
 
-    /**
+	/**
      * Checks if the entity is hidden.
      * @returns {boolean} True if the entity is hidden.
      */
-    isHidden: function () {
-        return this._hidden === true;
-    },
+	isHidden: function () {
+		return this._hidden === true;
+	},
 
-    /* Checks if entity should be invisible depending on diplomacy status of the owner player of this entity */
-    shouldBeInvisible: function (playerA, playerB) {
-        return playerA && playerB && ((playerA.isHostileTo(playerB) && this._stats.isInvisible == true) || (playerA.isFriendlyTo(playerB) && this._stats.isInvisibleToFriendly == true) || (playerA.isNeutralTo(playerB) && this._stats.isInvisibleToNeutral == true));
-    },
+	/* Checks if entity should be invisible depending on diplomacy status of the owner player of this entity */
+	shouldBeInvisible: function (playerA, playerB) {
+		return playerA && playerB && ((playerA.isHostileTo(playerB) && this._stats.isInvisible == true) || (playerA.isFriendlyTo(playerB) && this._stats.isInvisibleToFriendly == true) || (playerA.isNeutralTo(playerB) && this._stats.isInvisibleToNeutral == true));
+	},
 
-    imageUrlToHash: function (url) {
-        var hash = 0;
-        if (url.length == 0) {
-            return hash;
-        }
-        for (var i = 0; i < url.length; i++) {
-            var char = url.charCodeAt(i);
-            hash = (hash << 5) - hash + char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return hash;
-    },
+	imageUrlToHash: function (url) {
+		var hash = 0;
+		if (url.length == 0) {
+			return hash;
+		}
+		for (var i = 0; i < url.length; i++) {
+			var char = url.charCodeAt(i);
+			hash = (hash << 5) - hash + char;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
+	},
 
-    updateLayer: function () {
-        var self = this;
-        var defaultLayer = {
-            depth: 0,
-            layer: 0,
-        };
-        // parseFloat(Math.random().toFixed(4))
-        if (self._category == 'unit') {
-            defaultLayer.layer = 3;
-            defaultLayer.depth = 3;
-        } else if (self._category == 'item') {
-            if (self.getOwnerUnit()) {
-                defaultLayer.layer = 3;
-                defaultLayer.depth = 3;
-            } else {
-                // doesn't have owner. show it above floor2
-                defaultLayer.layer = 2;
-                defaultLayer.depth = 5;
-            }
-        } else if (self._category == 'projectile') {
-            defaultLayer.layer = 3;
-            defaultLayer.depth = 3;
-        }
+	updateLayer: function () {
+		var self = this;
+		var defaultLayer = {
+			depth: 0,
+			layer: 0
+		};
+		// parseFloat(Math.random().toFixed(4))
+		if (self._category == 'unit') {
+			defaultLayer.layer = 3;
+			defaultLayer.depth = 3;
+		} else if (self._category == 'item') {
+			if (self.getOwnerUnit()) {
+				defaultLayer.layer = 3;
+				defaultLayer.depth = 3;
+			} else {
+				// doesn't have owner. show it above floor2
+				defaultLayer.layer = 2;
+				defaultLayer.depth = 5;
+			}
+		} else if (self._category == 'projectile') {
+			defaultLayer.layer = 3;
+			defaultLayer.depth = 3;
+		}
 
-        var body = self._stats.currentBody;
+		var body = self._stats.currentBody;
 
-        if (body && !body['z-index']) {
-            body['z-index'] = defaultLayer;
-        }
+		if (body && !body['z-index']) {
+			body['z-index'] = defaultLayer;
+		}
 
-        if (isNaN(body['z-index'].depth)) {
-            body['z-index'].depth = defaultLayer.depth;
-        }
-        if (isNaN(body['z-index'].layer)) {
-            body['z-index'].layer = defaultLayer.layer;
-        }
-        self.layer(body['z-index'].layer) // above "floor 2 layer", but under "trees layer"
-            .depth(body['z-index'].depth);
-    },
+		if (isNaN(body['z-index'].depth)) {
+			body['z-index'].depth = defaultLayer.depth;
+		}
+		if (isNaN(body['z-index'].layer)) {
+			body['z-index'].layer = defaultLayer.layer;
+		}
+		self.layer(body['z-index'].layer) // above "floor 2 layer", but under "trees layer"
+			.depth(body['z-index'].depth);
+	},
 
-    applyAnimationById: function (animationId) {
-        var self = this;
-        var animation = null;
+	applyAnimationById: function (animationId) {
+		var self = this;
+		var animation = null;
 
-        if (self._stats.stateId && self._stats.states && self._stats.states[self._stats.stateId] && self._stats.animations[animationId]) {
-            animation = self._stats.animations[animationId];
-        }
-        var cellSheet = null;
+		if (self._stats.stateId && self._stats.states && self._stats.states[self._stats.stateId] && self._stats.animations[animationId]) {
+			animation = self._stats.animations[animationId];
+		}
+		var cellSheet = null;
 
-        cellSheet = self._stats.cellSheet;
-        if (animation && cellSheet) {
-            // cell sheet animation id will be concatenation of unit type and animation id
-            var cellSheetAnimId;
-            var url = cellSheet.url;
-            var rows = cellSheet.rowCount;
-            var columns = cellSheet.columnCount;
-            cellSheetAnimId = self._stats.cellSheet.url;
-            ige.client.cellSheets[cellSheetAnimId] = this.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
-            var fps = animation.framesPerSecond || 15;
-            var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
+		cellSheet = self._stats.cellSheet;
+		if (animation && cellSheet) {
+			// cell sheet animation id will be concatenation of unit type and animation id
+			var cellSheetAnimId;
+			var url = cellSheet.url;
+			var rows = cellSheet.rowCount;
+			var columns = cellSheet.columnCount;
+			cellSheetAnimId = self._stats.cellSheet.url;
+			ige.client.cellSheets[cellSheetAnimId] = this.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
+			var fps = animation.framesPerSecond || 15;
+			var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
 
-            // default loop to undefined;
-            this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
-        }
-    },
+			// default loop to undefined;
+			this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+		}
+	},
 
-    applyAnimationForState: function (stateId) {
-        var self = this;
+	applyAnimationForState: function (stateId) {
+		var self = this;
 
-        // players can purchase unit skins
-        // these custom cellsheets override the default unit cellsheet
-        // they should also therefore be geometrically compatible
-        var state = ige.game.data.states[stateId];
+		// players can purchase unit skins
+		// these custom cellsheets override the default unit cellsheet
+		// they should also therefore be geometrically compatible
+		var state = ige.game.data.states[stateId];
 
-        // unit or item state config (overrides if present)
-        if (self._stats && self._stats.states && self._stats.states[stateId]) {
-            state = self._stats.states[stateId];
-        }
+		// unit or item state config (overrides if present)
+		if (self._stats && self._stats.states && self._stats.states[stateId]) {
+			state = self._stats.states[stateId];
+		}
 
-        if (state) {
-            var animationId = state.animation;
-            if (animationId) {
-                self.applyAnimationById(animationId);
-            }
-            // if (state.sound) {
-            // 	for (var soundKey in state.sound) {
-            // 		var sound = state.sound[soundKey];
-            // 		ige.sound.playSound(sound, self._translate, soundKey);
-            // 	}
-            // }
-        }
-    },
+		if (state) {
+			var animationId = state.animation;
+			if (animationId) {
+				self.applyAnimationById(animationId);
+			}
+			// if (state.sound) {
+			// 	for (var soundKey in state.sound) {
+			// 		var sound = state.sound[soundKey];
+			// 		ige.sound.playSound(sound, self._translate, soundKey);
+			// 	}
+			// }
+		}
+	},
 
-    updateTexture: function () {
-        var stateId = this._stats.stateId;
-        // if state not explicitly set, use default state
-        if (stateId == null) {
-            stateId = this.getDefaultStateId();
-        }
+	updateTexture: function () {
+		var stateId = this._stats.stateId;
+		// if state not explicitly set, use default state
+		if (stateId == null) {
+			stateId = this.getDefaultStateId();
+		}
 
-        if (stateId) {
-            this.applyAnimationForState(stateId);
-        }
+		if (stateId) {
+			this.applyAnimationForState(stateId);
+		}
 
-        ige.pixi.isUpdateLayersOrderQueued = true;
-    },
+		ige.pixi.isUpdateLayersOrderQueued = true;
+	},
 
-    getDefaultStateId: function () {
-        var defaultStateId = null;
+	getDefaultStateId: function () {
+		var defaultStateId = null;
 
-        var states = this._stats.states;
-        for (i in states) {
-            var state = states[i];
-            if (!state) {
-                continue;
-            }
-            if (this._category === 'item') {
-                if (state.name == 'dropped') {
-                    defaultStateId = i;
-                }
-            } else {
-                if (state.name == 'default') {
-                    defaultStateId = i;
-                }
-            }
-        }
+		var states = this._stats.states;
+		for (i in states) {
+			var state = states[i];
+			if (!state) {
+				continue;
+			}
+			if (this._category === 'item') {
+				if (state.name == 'dropped') {
+					defaultStateId = i;
+				}
+			} else {
+				if (state.name == 'default') {
+					defaultStateId = i;
+				}
+			}
+		}
 
-        return defaultStateId;
-    },
+		return defaultStateId;
+	},
 
-    /**
+	/**
      * Gets / sets the cache flag that determines if the entity's
      * texture rendering output should be stored on an off-screen
      * canvas instead of calling the texture.render() method each
@@ -349,67 +349,67 @@ var IgeEntity = IgeObject.extend({
      *     var val = entity.cache();
      * @return {*}
      */
-    cache: function (val) {
-        if (val !== undefined) {
-            this._cache = val;
+	cache: function (val) {
+		if (val !== undefined) {
+			this._cache = val;
 
-            if (val) {
-                // Create the off-screen canvas
-                if (ige.isClient) {
-                    // Use a real canvas
-                    this._cacheCanvas = document.createElement('canvas');
-                } else {
-                    // Use dummy objects for canvas and context
-                    this._cacheCanvas = new IgeDummyCanvas();
-                }
+			if (val) {
+				// Create the off-screen canvas
+				if (ige.isClient) {
+					// Use a real canvas
+					this._cacheCanvas = document.createElement('canvas');
+				} else {
+					// Use dummy objects for canvas and context
+					this._cacheCanvas = new IgeDummyCanvas();
+				}
 
-                this._cacheCtx = this._cacheCanvas.getContext('2d');
-                this._cacheDirty = true;
+				this._cacheCtx = this._cacheCanvas.getContext('2d');
+				this._cacheDirty = true;
 
-                // Set smoothing mode
-                var smoothing = this._cacheSmoothing !== undefined ? this._cacheSmoothing : ige._globalSmoothing;
-                if (!smoothing) {
-                    this._cacheCtx.imageSmoothingEnabled = false;
-                    //this._cacheCtx.webkitImageSmoothingEnabled = false;
-                    this._cacheCtx.mozImageSmoothingEnabled = false;
-                } else {
-                    this._cacheCtx.imageSmoothingEnabled = true;
-                    //this._cacheCtx.webkitImageSmoothingEnabled = true;
-                    this._cacheCtx.mozImageSmoothingEnabled = true;
-                }
+				// Set smoothing mode
+				var smoothing = this._cacheSmoothing !== undefined ? this._cacheSmoothing : ige._globalSmoothing;
+				if (!smoothing) {
+					this._cacheCtx.imageSmoothingEnabled = false;
+					// this._cacheCtx.webkitImageSmoothingEnabled = false;
+					this._cacheCtx.mozImageSmoothingEnabled = false;
+				} else {
+					this._cacheCtx.imageSmoothingEnabled = true;
+					// this._cacheCtx.webkitImageSmoothingEnabled = true;
+					this._cacheCtx.mozImageSmoothingEnabled = true;
+				}
 
-                // Switch off composite caching
-                if (this.compositeCache()) {
-                    this.compositeCache(false);
-                }
-            } else {
-                // Remove the off-screen canvas
-                delete this._cacheCanvas;
-            }
+				// Switch off composite caching
+				if (this.compositeCache()) {
+					this.compositeCache(false);
+				}
+			} else {
+				// Remove the off-screen canvas
+				delete this._cacheCanvas;
+			}
 
-            return this;
-        }
+			return this;
+		}
 
-        return this._cache;
-    },
+		return this._cache;
+	},
 
-    /**
+	/**
      * When using the caching system, this boolean determines if the
      * cache canvas should have image smoothing enabled or not. If
      * not set, the ige global smoothing setting will be used instead.
      * @param {Boolean=} val True to enable smoothing, false to disable.
      * @returns {*}
      */
-    cacheSmoothing: function (val) {
-        if (val !== undefined) {
-            this._cacheSmoothing = val;
-            return this;
-        }
+	cacheSmoothing: function (val) {
+		if (val !== undefined) {
+			this._cacheSmoothing = val;
+			return this;
+		}
 
-        return this._cacheSmoothing;
-    },
+		return this._cacheSmoothing;
+	},
 
-    /**
+	/**
      * Gets / sets composite caching. Composite caching draws this entity
      * and all of it's children (and their children etc) to a single off
      * screen canvas so that the entity does not need to be redrawn with
@@ -426,51 +426,51 @@ var IgeEntity = IgeObject.extend({
      *     var val = entity.cache();
      * @return {*}
      */
-    compositeCache: function (val) {
-        if (ige.isClient) {
-            if (val !== undefined) {
-                if (val) {
-                    // Switch off normal caching
-                    this.cache(false);
+	compositeCache: function (val) {
+		if (ige.isClient) {
+			if (val !== undefined) {
+				if (val) {
+					// Switch off normal caching
+					this.cache(false);
 
-                    // Create the off-screen canvas
-                    this._cacheCanvas = document.createElement('canvas');
-                    this._cacheCtx = this._cacheCanvas.getContext('2d');
-                    this._cacheDirty = true;
+					// Create the off-screen canvas
+					this._cacheCanvas = document.createElement('canvas');
+					this._cacheCtx = this._cacheCanvas.getContext('2d');
+					this._cacheDirty = true;
 
-                    // Set smoothing mode
-                    var smoothing = this._cacheSmoothing !== undefined ? this._cacheSmoothing : ige._globalSmoothing;
-                    if (!smoothing) {
-                        this._cacheCtx.imageSmoothingEnabled = false;
-                        this._cacheCtx.webkitImageSmoothingEnabled = false;
-                        this._cacheCtx.mozImageSmoothingEnabled = false;
-                    } else {
-                        this._cacheCtx.imageSmoothingEnabled = true;
-                        this._cacheCtx.webkitImageSmoothingEnabled = true;
-                        this._cacheCtx.mozImageSmoothingEnabled = true;
-                    }
-                }
+					// Set smoothing mode
+					var smoothing = this._cacheSmoothing !== undefined ? this._cacheSmoothing : ige._globalSmoothing;
+					if (!smoothing) {
+						this._cacheCtx.imageSmoothingEnabled = false;
+						this._cacheCtx.webkitImageSmoothingEnabled = false;
+						this._cacheCtx.mozImageSmoothingEnabled = false;
+					} else {
+						this._cacheCtx.imageSmoothingEnabled = true;
+						this._cacheCtx.webkitImageSmoothingEnabled = true;
+						this._cacheCtx.mozImageSmoothingEnabled = true;
+					}
+				}
 
-                // Loop children and set _compositeParent to the correct value
-                this._children.each(function () {
-                    if (val) {
-                        this._compositeParent = true;
-                    } else {
-                        delete this._compositeParent;
-                    }
-                });
+				// Loop children and set _compositeParent to the correct value
+				this._children.each(function () {
+					if (val) {
+						this._compositeParent = true;
+					} else {
+						delete this._compositeParent;
+					}
+				});
 
-                this._compositeCache = val;
-                return this;
-            }
+				this._compositeCache = val;
+				return this;
+			}
 
-            return this._compositeCache;
-        } else {
-            return this;
-        }
-    },
+			return this._compositeCache;
+		} else {
+			return this;
+		}
+	},
 
-    /**
+	/**
      * Gets / sets the cache dirty flag. If set to true this will
      * instruct the entity to re-draw it's cached image from the
      * assigned texture. Once that occurs the flag will automatically
@@ -483,28 +483,28 @@ var IgeEntity = IgeObject.extend({
      *     entity.cacheDirty(true);
      * @return {*}
      */
-    cacheDirty: function (val) {
-        if (val !== undefined) {
-            this._cacheDirty = val;
+	cacheDirty: function (val) {
+		if (val !== undefined) {
+			this._cacheDirty = val;
 
-            // Check if the entity is a child of a composite or composite
-            // entity chain and propagate the dirty cache up the chain
-            if (val && this._compositeParent && this._parent) {
-                this._parent.cacheDirty(val);
+			// Check if the entity is a child of a composite or composite
+			// entity chain and propagate the dirty cache up the chain
+			if (val && this._compositeParent && this._parent) {
+				this._parent.cacheDirty(val);
 
-                if (!this._cache && !this._compositeCache) {
-                    // Set clean immediately as no caching is enabled on this child
-                    this._cacheDirty = false;
-                }
-            }
+				if (!this._cache && !this._compositeCache) {
+					// Set clean immediately as no caching is enabled on this child
+					this._cacheDirty = false;
+				}
+			}
 
-            return this;
-        }
+			return this;
+		}
 
-        return this._cacheDirty;
-    },
+		return this._cacheDirty;
+	},
 
-    /**
+	/**
      * Gets the position of the mouse relative to this entity's
      * center point.
      * @param {IgeViewport=} viewport The viewport to use as the
@@ -517,29 +517,29 @@ var IgeEntity = IgeObject.extend({
      * @return {IgePoint3d} The mouse point relative to the entity
      * center.
      */
-    mousePos: function (viewport) {
-        viewport = viewport || ige._currentViewport;
-        if (viewport) {
-            var mp = viewport._mousePos.clone(),
-                cam;
+	mousePos: function (viewport) {
+		viewport = viewport || ige._currentViewport;
+		if (viewport) {
+			var mp = viewport._mousePos.clone();
+			var cam;
 
-            if (this._ignoreCamera) {
-                /*cam = ige._currentCamera;
+			if (this._ignoreCamera) {
+				/* cam = ige._currentCamera;
 				mp.thisMultiply(1 / cam._scale.x, 1 / cam._scale.y, 1 / cam._scale.z);
 				//mp.thisRotate(-cam._rotate.z);
-				mp.thisAddPoint(cam._translate);*/
-            }
+				mp.thisAddPoint(cam._translate); */
+			}
 
-            mp.x += viewport._translate.x;
-            mp.y += viewport._translate.y;
-            this._transformPoint(mp);
-            return mp;
-        } else {
-            return new IgePoint3d(0, 0, 0);
-        }
-    },
+			mp.x += viewport._translate.x;
+			mp.y += viewport._translate.y;
+			this._transformPoint(mp);
+			return mp;
+		} else {
+			return new IgePoint3d(0, 0, 0);
+		}
+	},
 
-    /**
+	/**
      * Gets the position of the mouse relative to this entity not
      * taking into account viewport translation.
      * @param {IgeViewport=} viewport The viewport to use as the
@@ -551,18 +551,18 @@ var IgeEntity = IgeObject.extend({
      * @return {IgePoint3d} The mouse point relative to the entity
      * center.
      */
-    mousePosAbsolute: function (viewport) {
-        viewport = viewport || ige._currentViewport;
-        if (viewport) {
-            var mp = viewport._mousePos.clone();
-            this._transformPoint(mp);
-            return mp;
-        }
+	mousePosAbsolute: function (viewport) {
+		viewport = viewport || ige._currentViewport;
+		if (viewport) {
+			var mp = viewport._mousePos.clone();
+			this._transformPoint(mp);
+			return mp;
+		}
 
-        return new IgePoint3d(0, 0, 0);
-    },
+		return new IgePoint3d(0, 0, 0);
+	},
 
-    /**
+	/**
      * Gets the position of the mouse in world co-ordinates.
      * @param {IgeViewport=} viewport The viewport to use as the
      * base from which the mouse position is determined. If no
@@ -573,19 +573,19 @@ var IgeEntity = IgeObject.extend({
      * @return {IgePoint3d} The mouse point relative to the world
      * center.
      */
-    mousePosWorld: function (viewport) {
-        viewport = viewport || ige._currentViewport;
-        var mp = this.mousePos(viewport);
-        this.localToWorldPoint(mp, viewport);
+	mousePosWorld: function (viewport) {
+		viewport = viewport || ige._currentViewport;
+		var mp = this.mousePos(viewport);
+		this.localToWorldPoint(mp, viewport);
 
-        if (this._ignoreCamera) {
-            //viewport.camera._worldMatrix.getInverse().transform([mp]);
-        }
+		if (this._ignoreCamera) {
+			// viewport.camera._worldMatrix.getInverse().transform([mp]);
+		}
 
-        return mp;
-    },
+		return mp;
+	},
 
-    /**
+	/**
      * Rotates the entity to point at the target point around the z axis.
      * @param {IgePoint3d} point The point in world co-ordinates to
      * point the entity at.
@@ -597,19 +597,19 @@ var IgeEntity = IgeObject.extend({
      *     entity.rotateToPoint(new IgePoint3d(x, y, 0));
      * @return {*}
      */
-    rotateToPoint: function (point) {
-        var worldPos = this.worldPosition();
-        this.rotateTo(
-            this._rotate.x,
-            this._rotate.y,
-            this._rotate.z,
-            // (Math.atan2(worldPos.y - point.y, worldPos.x - point.x) - this._parent._rotate.z) + Math.radians(270)
-        );
+	rotateToPoint: function (point) {
+		var worldPos = this.worldPosition();
+		this.rotateTo(
+			this._rotate.x,
+			this._rotate.y,
+			this._rotate.z
+			// (Math.atan2(worldPos.y - point.y, worldPos.x - point.x) - this._parent._rotate.z) + Math.radians(270)
+		);
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Gets / sets the texture to use as the background
      * pattern for this entity.
      * @param {IgeTexture} texture The texture to use as
@@ -629,45 +629,45 @@ var IgeEntity = IgeObject.extend({
      *     entity.backgroundPattern(texture, 'repeat', true, true);
      * @return {*}
      */
-    backgroundPattern: function (texture, repeat, trackCamera, isoTile) {
-        if (texture !== undefined) {
-            this._backgroundPattern = texture;
-            this._backgroundPatternRepeat = repeat || 'repeat';
-            this._backgroundPatternTrackCamera = trackCamera;
-            this._backgroundPatternIsoTile = isoTile;
-            this._backgroundPatternFill = null;
-            return this;
-        }
+	backgroundPattern: function (texture, repeat, trackCamera, isoTile) {
+		if (texture !== undefined) {
+			this._backgroundPattern = texture;
+			this._backgroundPatternRepeat = repeat || 'repeat';
+			this._backgroundPatternTrackCamera = trackCamera;
+			this._backgroundPatternIsoTile = isoTile;
+			this._backgroundPatternFill = null;
+			return this;
+		}
 
-        return this._backgroundPattern;
-    },
-    createPixiTexture: function (defaultSprite = 0, defaultData) {
-        var texture = new IgePixiTexture(this._stats.cellSheet.url, this._stats.cellSheet.columnCount, this._stats.cellSheet.rowCount, this);
-        texture = texture.spriteFromCellSheet(defaultSprite);
-        if (!texture) {
-            return;
-        }
-        texture.width = (this._stats.currentBody && this._stats.currentBody.width) || this._stats.width;
-        texture.height = (this._stats.currentBody && this._stats.currentBody.height) || this._stats.height;
-        if (texture.anchor) {
-            texture.anchor.set(0.5);
-        }
-        this._pixiContainer.zIndex = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].layer) || 3;
-        this._pixiContainer.depth = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].depth) || 3;
-        this._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
-        this._pixiContainer.entityId = this.entityId;
-        this._pixiContainer._category = this._category;
-        this._pixiTexture = texture;
-        this._pixiContainer.addChild(texture);
-        if (defaultData) {
-            this._pixiContainer.x = defaultData.translate.x;
-            this._pixiContainer.y = defaultData.translate.y;
-            this._pixiTexture.rotation = defaultData.rotate;
-        }
-        ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
-    },
+		return this._backgroundPattern;
+	},
+	createPixiTexture: function (defaultSprite = 0, defaultData) {
+		var texture = new IgePixiTexture(this._stats.cellSheet.url, this._stats.cellSheet.columnCount, this._stats.cellSheet.rowCount, this);
+		texture = texture.spriteFromCellSheet(defaultSprite);
+		if (!texture) {
+			return;
+		}
+		texture.width = (this._stats.currentBody && this._stats.currentBody.width) || this._stats.width;
+		texture.height = (this._stats.currentBody && this._stats.currentBody.height) || this._stats.height;
+		if (texture.anchor) {
+			texture.anchor.set(0.5);
+		}
+		this._pixiContainer.zIndex = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].layer) || 3;
+		this._pixiContainer.depth = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].depth) || 3;
+		this._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
+		this._pixiContainer.entityId = this.entityId;
+		this._pixiContainer._category = this._category;
+		this._pixiTexture = texture;
+		this._pixiContainer.addChild(texture);
+		if (defaultData) {
+			this._pixiContainer.x = defaultData.translate.x;
+			this._pixiContainer.y = defaultData.translate.y;
+			this._pixiTexture.rotation = defaultData.rotate;
+		}
+		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+	},
 
-    /**
+	/**
      * Set the object's width to the number of tile width's specified.
      * @param {Number} val Number of tiles.
      * @param {Boolean=} lockAspect If true, sets the height according
@@ -681,30 +681,30 @@ var IgeEntity = IgeObject.extend({
      * @return {*} The object this method was called from to allow
      * method chaining.
      */
-    widthByTile: function (val, lockAspect) {
-        if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
-            var tileSize = this._mode === 0 ? this._parent._tileWidth : this._parent._tileWidth * 2,
-                ratio;
+	widthByTile: function (val, lockAspect) {
+		if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
+			var tileSize = this._mode === 0 ? this._parent._tileWidth : this._parent._tileWidth * 2;
+			var ratio;
 
-            this.width(val * tileSize);
+			this.width(val * tileSize);
 
-            if (lockAspect) {
-                if (this._texture) {
-                    // Calculate the height based on the new width
-                    ratio = this._texture._sizeX / this._bounds2d.x;
-                    this.height(this._texture._sizeY / ratio);
-                } else {
-                    IgeEntity.prototype.log('Cannot set height based on texture aspect ratio and new width because no texture is currently assigned to the entity!', 'error');
-                }
-            }
-        } else {
-            IgeEntity.prototype.log('Cannot set width by tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
-        }
+			if (lockAspect) {
+				if (this._texture) {
+					// Calculate the height based on the new width
+					ratio = this._texture._sizeX / this._bounds2d.x;
+					this.height(this._texture._sizeY / ratio);
+				} else {
+					IgeEntity.prototype.log('Cannot set height based on texture aspect ratio and new width because no texture is currently assigned to the entity!', 'error');
+				}
+			}
+		} else {
+			IgeEntity.prototype.log('Cannot set width by tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Set the object's height to the number of tile height's specified.
      * @param {Number} val Number of tiles.
      * @param {Boolean=} lockAspect If true, sets the width according
@@ -718,30 +718,30 @@ var IgeEntity = IgeObject.extend({
      * @return {*} The object this method was called from to allow
      * method chaining.
      */
-    heightByTile: function (val, lockAspect) {
-        if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
-            var tileSize = this._mode === 0 ? this._parent._tileHeight : this._parent._tileHeight * 2,
-                ratio;
+	heightByTile: function (val, lockAspect) {
+		if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
+			var tileSize = this._mode === 0 ? this._parent._tileHeight : this._parent._tileHeight * 2;
+			var ratio;
 
-            this.height(val * tileSize);
+			this.height(val * tileSize);
 
-            if (lockAspect) {
-                if (this._texture) {
-                    // Calculate the width based on the new height
-                    ratio = this._texture._sizeY / this._bounds2d.y;
-                    this.width(this._texture._sizeX / ratio);
-                } else {
-                    IgeEntity.prototype.log('Cannot set width based on texture aspect ratio and new height because no texture is currently assigned to the entity!', 'error');
-                }
-            }
-        } else {
-            IgeEntity.prototype.log('Cannot set height by tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
-        }
+			if (lockAspect) {
+				if (this._texture) {
+					// Calculate the width based on the new height
+					ratio = this._texture._sizeY / this._bounds2d.y;
+					this.width(this._texture._sizeX / ratio);
+				} else {
+					IgeEntity.prototype.log('Cannot set width based on texture aspect ratio and new height because no texture is currently assigned to the entity!', 'error');
+				}
+			}
+		} else {
+			IgeEntity.prototype.log('Cannot set height by tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Adds the object to the tile map at the passed tile co-ordinates. If
      * no tile co-ordinates are passed, will use the current tile position
      * and the tileWidth() and tileHeight() values.
@@ -750,27 +750,27 @@ var IgeEntity = IgeObject.extend({
      * @param {Number=} width Number of tiles along the x-axis to occupy.
      * @param {Number=} height Number of tiles along the y-axis to occupy.
      */
-    occupyTile: function (x, y, width, height) {
-        // Check that the entity is mounted to a tile map
-        if (this._parent && this._parent.IgeTileMap2d) {
-            if (x !== undefined && y !== undefined) {
-                this._parent.occupyTile(x, y, width, height, this);
-            } else {
-                // Occupy tiles based upon tile point and tile width/height
-                var trPoint = new IgePoint3d(this._translate.x - (this._tileWidth / 2 - 0.5) * this._parent._tileWidth, this._translate.y - (this._tileHeight / 2 - 0.5) * this._parent._tileHeight, 0),
-                    tilePoint = this._parent.pointToTile(trPoint);
+	occupyTile: function (x, y, width, height) {
+		// Check that the entity is mounted to a tile map
+		if (this._parent && this._parent.IgeTileMap2d) {
+			if (x !== undefined && y !== undefined) {
+				this._parent.occupyTile(x, y, width, height, this);
+			} else {
+				// Occupy tiles based upon tile point and tile width/height
+				var trPoint = new IgePoint3d(this._translate.x - (this._tileWidth / 2 - 0.5) * this._parent._tileWidth, this._translate.y - (this._tileHeight / 2 - 0.5) * this._parent._tileHeight, 0);
+				var tilePoint = this._parent.pointToTile(trPoint);
 
-                if (this._parent._mountMode === 1) {
-                    tilePoint.thisToIso();
-                }
+				if (this._parent._mountMode === 1) {
+					tilePoint.thisToIso();
+				}
 
-                this._parent.occupyTile(tilePoint.x, tilePoint.y, this._tileWidth, this._tileHeight, this);
-            }
-        }
-        return this;
-    },
+				this._parent.occupyTile(tilePoint.x, tilePoint.y, this._tileWidth, this._tileHeight, this);
+			}
+		}
+		return this;
+	},
 
-    /**
+	/**
      * Removes the object from the tile map at the passed tile co-ordinates.
      * If no tile co-ordinates are passed, will use the current tile position
      * and the tileWidth() and tileHeight() values.
@@ -780,54 +780,54 @@ var IgeEntity = IgeObject.extend({
      * @param {Number=} height Number of tiles along the y-axis to un-occupy.
      * @private
      */
-    unOccupyTile: function (x, y, width, height) {
-        // Check that the entity is mounted to a tile map
-        if (this._parent && this._parent.IgeTileMap2d) {
-            if (x !== undefined && y !== undefined) {
-                this._parent.unOccupyTile(x, y, width, height);
-            } else {
-                // Un-occupy tiles based upon tile point and tile width/height
-                var trPoint = new IgePoint3d(this._translate.x - (this._tileWidth / 2 - 0.5) * this._parent._tileWidth, this._translate.y - (this._tileHeight / 2 - 0.5) * this._parent._tileHeight, 0),
-                    tilePoint = this._parent.pointToTile(trPoint);
+	unOccupyTile: function (x, y, width, height) {
+		// Check that the entity is mounted to a tile map
+		if (this._parent && this._parent.IgeTileMap2d) {
+			if (x !== undefined && y !== undefined) {
+				this._parent.unOccupyTile(x, y, width, height);
+			} else {
+				// Un-occupy tiles based upon tile point and tile width/height
+				var trPoint = new IgePoint3d(this._translate.x - (this._tileWidth / 2 - 0.5) * this._parent._tileWidth, this._translate.y - (this._tileHeight / 2 - 0.5) * this._parent._tileHeight, 0);
+				var tilePoint = this._parent.pointToTile(trPoint);
 
-                if (this._parent._mountMode === 1) {
-                    tilePoint.thisToIso();
-                }
+				if (this._parent._mountMode === 1) {
+					tilePoint.thisToIso();
+				}
 
-                this._parent.unOccupyTile(tilePoint.x, tilePoint.y, this._tileWidth, this._tileHeight);
-            }
-        }
-        return this;
-    },
+				this._parent.unOccupyTile(tilePoint.x, tilePoint.y, this._tileWidth, this._tileHeight);
+			}
+		}
+		return this;
+	},
 
-    /**
+	/**
      * Returns an array of tile co-ordinates that the object is currently
      * over, calculated using the current world co-ordinates of the object
      * as well as it's 3d geometry.
      * @private
      * @return {Array} The array of tile co-ordinates as IgePoint3d instances.
      */
-    overTiles: function () {
-        // Check that the entity is mounted to a tile map
-        if (this._parent && this._parent.IgeTileMap2d) {
-            var x,
-                y,
-                tileWidth = this._tileWidth || 1,
-                tileHeight = this._tileHeight || 1,
-                tile = this._parent.pointToTile(this._translate),
-                tileArr = [];
+	overTiles: function () {
+		// Check that the entity is mounted to a tile map
+		if (this._parent && this._parent.IgeTileMap2d) {
+			var x;
+			var y;
+			var tileWidth = this._tileWidth || 1;
+			var tileHeight = this._tileHeight || 1;
+			var tile = this._parent.pointToTile(this._translate);
+			var tileArr = [];
 
-            for (x = 0; x < tileWidth; x++) {
-                for (y = 0; y < tileHeight; y++) {
-                    tileArr.push(new IgePoint3d(tile.x + x, tile.y + y, 0));
-                }
-            }
+			for (x = 0; x < tileWidth; x++) {
+				for (y = 0; y < tileHeight; y++) {
+					tileArr.push(new IgePoint3d(tile.x + x, tile.y + y, 0));
+				}
+			}
 
-            return tileArr;
-        }
-    },
+			return tileArr;
+		}
+	},
 
-    /**
+	/**
      * Gets / sets the anchor position that this entity's texture
      * will be adjusted by.
      * @param {Number=} x The x anchor value.
@@ -835,16 +835,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    anchor: function (x, y) {
-        if (x !== undefined && y !== undefined) {
-            this._anchor = new IgePoint2d(x, y);
-            return this;
-        }
+	anchor: function (x, y) {
+		if (x !== undefined && y !== undefined) {
+			this._anchor = new IgePoint2d(x, y);
+			return this;
+		}
 
-        return this._anchor;
-    },
+		return this._anchor;
+	},
 
-    /**
+	/**
      * Gets / sets the geometry x value.
      * @param {Number=} px The new x value in pixels.
      * @example #Set the width of the entity
@@ -852,37 +852,37 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    width: function (px, lockAspect) {
-        if (px !== undefined) {
-            if (lockAspect) {
-                // Calculate the height from the change in width
-                var ratio = px / this._bounds2d.x;
-                this.height(this._bounds2d.y * ratio);
-            }
+	width: function (px, lockAspect) {
+		if (px !== undefined) {
+			if (lockAspect) {
+				// Calculate the height from the change in width
+				var ratio = px / this._bounds2d.x;
+				this.height(this._bounds2d.y * ratio);
+			}
 
-            this._bounds2d.x = px;
-            this._bounds2d.x2 = px / 2;
-            if (this._pixiTexture && !this._pixiTexture._destroyed) {
-                this._pixiTexture.width = px;
-            } else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-                this._pixiContainer.width = px;
-            } else if (this._pixiText && !this._pixiText._destroyed) {
-                this._pixiText.width = px;
-            }
-            return this;
-        }
-        if (this._pixiTexture) {
-            return this._pixiTexture.width;
-        } else if (this._pixiContainer) {
-            return this._pixiContainer.width;
-        } else if (this._pixiText) {
-            return this._pixiText.width;
-        }
+			this._bounds2d.x = px;
+			this._bounds2d.x2 = px / 2;
+			if (this._pixiTexture && !this._pixiTexture._destroyed) {
+				this._pixiTexture.width = px;
+			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
+				this._pixiContainer.width = px;
+			} else if (this._pixiText && !this._pixiText._destroyed) {
+				this._pixiText.width = px;
+			}
+			return this;
+		}
+		if (this._pixiTexture) {
+			return this._pixiTexture.width;
+		} else if (this._pixiContainer) {
+			return this._pixiContainer.width;
+		} else if (this._pixiText) {
+			return this._pixiText.width;
+		}
 
-        return this._bounds2d.x;
-    },
+		return this._bounds2d.x;
+	},
 
-    /**
+	/**
      * Gets / sets the geometry y value.
      * @param {Number=} px The new y value in pixels.
      * @example #Set the height of the entity
@@ -890,37 +890,37 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    height: function (px, lockAspect) {
-        if (px !== undefined) {
-            if (lockAspect) {
-                // Calculate the width from the change in height
-                var ratio = px / this._bounds2d.y;
-                this.width(this._bounds2d.x * ratio);
-            }
+	height: function (px, lockAspect) {
+		if (px !== undefined) {
+			if (lockAspect) {
+				// Calculate the width from the change in height
+				var ratio = px / this._bounds2d.y;
+				this.width(this._bounds2d.x * ratio);
+			}
 
-            this._bounds2d.y = px;
-            this._bounds2d.y2 = px / 2;
-            if (this._pixiTexture && !this._pixiTexture._destroyed) {
-                this._pixiTexture.height = px;
-            } else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-                this._pixiContainer.height = px;
-            } else if (this._pixiText && !this._pixiText._destroyed) {
-                return (this._pixiText.height = px);
-            }
-            return this;
-        }
+			this._bounds2d.y = px;
+			this._bounds2d.y2 = px / 2;
+			if (this._pixiTexture && !this._pixiTexture._destroyed) {
+				this._pixiTexture.height = px;
+			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
+				this._pixiContainer.height = px;
+			} else if (this._pixiText && !this._pixiText._destroyed) {
+				return (this._pixiText.height = px);
+			}
+			return this;
+		}
 
-        if (this._pixiTexture) {
-            return this._pixiTexture.height;
-        } else if (this._pixiContainer) {
-            return this._pixiContainer.height;
-        } else if (this._pixiText) {
-            return this._pixiText.height;
-        }
-        return this._bounds2d.y;
-    },
+		if (this._pixiTexture) {
+			return this._pixiTexture.height;
+		} else if (this._pixiContainer) {
+			return this._pixiContainer.height;
+		} else if (this._pixiText) {
+			return this._pixiText.height;
+		}
+		return this._bounds2d.y;
+	},
 
-    /**
+	/**
      * Gets / sets the 2d geometry of the entity. The x and y values are
      * relative to the center of the entity. This geometry is used when
      * rendering textures for the entity and positioning in world space as
@@ -933,46 +933,46 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    bounds2d: function (x, y) {
-        if (x !== undefined && y !== undefined) {
-            this._bounds2d = new IgePoint2d(x, y, 0);
-            return this;
-        }
+	bounds2d: function (x, y) {
+		if (x !== undefined && y !== undefined) {
+			this._bounds2d = new IgePoint2d(x, y, 0);
+			return this;
+		}
 
-        if (x !== undefined && y === undefined) {
-            // x is considered an IgePoint2d instance
-            this._bounds2d = new IgePoint2d(x.x, x.y);
-        }
+		if (x !== undefined && y === undefined) {
+			// x is considered an IgePoint2d instance
+			this._bounds2d = new IgePoint2d(x.x, x.y);
+		}
 
-        return this._bounds2d;
-    },
+		return this._bounds2d;
+	},
 
-    getBounds: function () {
-        // for entities with bodies like unit/item/projectile/etc
-        var bounds = {
-            x: this._translate.x - this.width() / 2,
-            y: this._translate.y - this.height() / 2,
-            width: this.width(),
-            height: this.height(),
-        };
+	getBounds: function () {
+		// for entities with bodies like unit/item/projectile/etc
+		var bounds = {
+			x: this._translate.x - this.width() / 2,
+			y: this._translate.y - this.height() / 2,
+			width: this.width(),
+			height: this.height()
+		};
 
-        // get bounds of spriteOnly item carried by unit
-        if (this._category == 'item') {
-            var ownerUnit = this.getOwnerUnit();
-            if (ownerUnit && this._stats && this._stats.currentBody.type == 'spriteOnly' && !this.body) {
-                bounds = {
-                    x: ownerUnit._translate.x + this.anchorOffset.x - this._stats.currentBody.width / 2,
-                    y: ownerUnit._translate.y + this.anchorOffset.y - this._stats.currentBody.height / 2,
-                    width: this._stats.currentBody.width,
-                    height: this._stats.currentBody.height,
-                };
-            }
-        }
+		// get bounds of spriteOnly item carried by unit
+		if (this._category == 'item') {
+			var ownerUnit = this.getOwnerUnit();
+			if (ownerUnit && this._stats && this._stats.currentBody.type == 'spriteOnly' && !this.body) {
+				bounds = {
+					x: ownerUnit._translate.x + this.anchorOffset.x - this._stats.currentBody.width / 2,
+					y: ownerUnit._translate.y + this.anchorOffset.y - this._stats.currentBody.height / 2,
+					width: this._stats.currentBody.width,
+					height: this._stats.currentBody.height
+				};
+			}
+		}
 
-        return bounds;
-    },
+		return bounds;
+	},
 
-    /**
+	/**
      * Gets / sets the 3d geometry of the entity. The x and y values are
      * relative to the center of the entity and the z value is wholly
      * positive from the "floor". Used to define a 3d bounding cuboid for
@@ -985,26 +985,26 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    bounds3d: function (x, y, z) {
-        if (x !== undefined && y !== undefined && z !== undefined) {
-            this._bounds3d = new IgePoint3d(x, y, z);
-            return this;
-        }
+	bounds3d: function (x, y, z) {
+		if (x !== undefined && y !== undefined && z !== undefined) {
+			this._bounds3d = new IgePoint3d(x, y, z);
+			return this;
+		}
 
-        return this._bounds3d;
-    },
+		return this._bounds3d;
+	},
 
-    /**
+	/**
      * @deprecated Use bounds3d instead
      * @param x
      * @param y
      * @param z
      */
-    size3d: function (x, y, z) {
-        IgeEntity.prototype.log('size3d has been renamed to bounds3d but is exactly the same so please search/replace your code to update calls.', 'warning');
-    },
+	size3d: function (x, y, z) {
+		IgeEntity.prototype.log('size3d has been renamed to bounds3d but is exactly the same so please search/replace your code to update calls.', 'warning');
+	},
 
-    /**
+	/**
      * Gets / sets the life span of the object in milliseconds. The life
      * span is how long the object will exist for before being automatically
      * destroyed.
@@ -1017,16 +1017,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    lifeSpan: function (milliseconds, deathCallback) {
-        if (milliseconds !== undefined) {
-            this.deathTime(ige._currentTime + milliseconds, deathCallback);
-            return this;
-        }
+	lifeSpan: function (milliseconds, deathCallback) {
+		if (milliseconds !== undefined) {
+			this.deathTime(ige._currentTime + milliseconds, deathCallback);
+			return this;
+		}
 
-        return this.deathTime() - ige._currentTime;
-    },
+		return this.deathTime() - ige._currentTime;
+	},
 
-    /**
+	/**
      * Gets / sets the timestamp in milliseconds that denotes the time
      * that the entity will be destroyed. The object checks it's own death
      * time during each tick and if the current time is greater than the
@@ -1042,20 +1042,20 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    deathTime: function (val, deathCallback) {
-        this._deathTime = val;
+	deathTime: function (val, deathCallback) {
+		this._deathTime = val;
 
-        if (val !== undefined) {
-            if (deathCallback !== undefined) {
-                this._deathCallBack = deathCallback;
-            }
-            return this;
-        }
+		if (val !== undefined) {
+			if (deathCallback !== undefined) {
+				this._deathCallBack = deathCallback;
+			}
+			return this;
+		}
 
-        return this._deathTime;
-    },
+		return this._deathTime;
+	},
 
-    /**
+	/**
      * Gets / sets the entity opacity from 0.0 to 1.0.
      * @param {Number=} val The opacity value.
      * @example #Set the entity to half-visible
@@ -1065,16 +1065,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    opacity: function (val) {
-        if (val !== undefined) {
-            this._opacity = val;
-            return this;
-        }
+	opacity: function (val) {
+		if (val !== undefined) {
+			this._opacity = val;
+			return this;
+		}
 
-        return this._opacity;
-    },
+		return this._opacity;
+	},
 
-    /**
+	/**
      * Gets / sets the noAabb flag that determines if the entity's axis
      * aligned bounding box should be calculated every tick or not. If
      * you don't need the AABB data (for instance if you don't need to
@@ -1084,16 +1084,16 @@ var IgeEntity = IgeObject.extend({
      * @param {Boolean=} val If set to true will turn off AABB calculation.
      * @returns {*}
      */
-    noAabb: function (val) {
-        if (val !== undefined) {
-            this._noAabb = val;
-            return this;
-        }
+	noAabb: function (val) {
+		if (val !== undefined) {
+			this._noAabb = val;
+			return this;
+		}
 
-        return this._noAabb;
-    },
+		return this._noAabb;
+	},
 
-    /**
+	/**
      * Gets / sets the texture to use when rendering the entity.
      * @param {IgeTexture=} texture The texture object.
      * @example #Set the entity texture (image)
@@ -1102,16 +1102,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    texture: function (texture) {
-        if (texture !== undefined) {
-            this._texture = texture;
-            return this;
-        }
+	texture: function (texture) {
+		if (texture !== undefined) {
+			this._texture = texture;
+			return this;
+		}
 
-        return this._texture;
-    },
+		return this._texture;
+	},
 
-    /**
+	/**
      * Gets / sets the current texture cell used when rendering the game
      * object's texture. If the texture is not cell-based, this value is
      * ignored.
@@ -1123,16 +1123,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    cell: function (val) {
-        if (val > 0 || val === null) {
-            this._cell = val;
-            return this;
-        }
+	cell: function (val) {
+		if (val > 0 || val === null) {
+			this._cell = val;
+			return this;
+		}
 
-        return this._cell;
-    },
+		return this._cell;
+	},
 
-    /**
+	/**
      * Gets / sets the current texture cell used when rendering the game
      * object's texture. If the texture is not cell-based, this value is
      * ignored. This differs from cell() in that it accepts a string id
@@ -1152,34 +1152,34 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    cellById: function (val) {
-        if (val !== undefined) {
-            if (this._texture) {
-                // Find the cell index this id corresponds to
-                var i,
-                    tex = this._texture,
-                    cells = tex._cells;
+	cellById: function (val) {
+		if (val !== undefined) {
+			if (this._texture) {
+				// Find the cell index this id corresponds to
+				var i;
+				var tex = this._texture;
+				var cells = tex._cells;
 
-                for (i = 1; i < cells.length; i++) {
-                    if (cells[i][4] === val) {
-                        // Found the cell id so assign this cell index
-                        this.cell(i);
-                        return this;
-                    }
-                }
+				for (i = 1; i < cells.length; i++) {
+					if (cells[i][4] === val) {
+						// Found the cell id so assign this cell index
+						this.cell(i);
+						return this;
+					}
+				}
 
-                // We were unable to find the cell index from the cell
-                // id so produce an error
-                IgeEntity.prototype.log('Could not find the cell id "' + val + '" in the assigned entity texture ' + tex.id() + ', please check your sprite sheet (texture) cell definition to ensure the cell id "' + val + '" has been assigned to a cell!', 'error');
-            } else {
-                IgeEntity.prototype.log('Cannot assign cell index from cell ID until an IgeSpriteSheet has been set as the texture for this entity. Please set the texture before calling cellById().', 'error');
-            }
-        }
+				// We were unable to find the cell index from the cell
+				// id so produce an error
+				IgeEntity.prototype.log(`Could not find the cell id "${val}" in the assigned entity texture ${tex.id()}, please check your sprite sheet (texture) cell definition to ensure the cell id "${val}" has been assigned to a cell!`, 'error');
+			} else {
+				IgeEntity.prototype.log('Cannot assign cell index from cell ID until an IgeSpriteSheet has been set as the texture for this entity. Please set the texture before calling cellById().', 'error');
+			}
+		}
 
-        return this._cell;
-    },
+		return this._cell;
+	},
 
-    /**
+	/**
      * Sets the geometry of the entity to match the width and height
      * of the assigned texture.
      * @param {Number=} percent The percentage size to resize to.
@@ -1193,24 +1193,24 @@ var IgeEntity = IgeObject.extend({
      * @return {*} The object this method was called from to allow
      * method chaining.
      */
-    dimensionsFromTexture: function (percent) {
-        if (this._texture) {
-            if (percent === undefined) {
-                this.width(this._texture._sizeX);
-                this.height(this._texture._sizeY);
-            } else {
-                this.width(Math.floor((this._texture._sizeX / 100) * percent));
-                this.height(Math.floor((this._texture._sizeY / 100) * percent));
-            }
+	dimensionsFromTexture: function (percent) {
+		if (this._texture) {
+			if (percent === undefined) {
+				this.width(this._texture._sizeX);
+				this.height(this._texture._sizeY);
+			} else {
+				this.width(Math.floor((this._texture._sizeX / 100) * percent));
+				this.height(Math.floor((this._texture._sizeY / 100) * percent));
+			}
 
-            // Recalculate localAabb
-            this.localAabb(true);
-        }
+			// Recalculate localAabb
+			this.localAabb(true);
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Sets the geometry of the entity to match the width and height
      * of the assigned texture cell. If the texture is not cell-based
      * the entire texture width / height will be used.
@@ -1229,26 +1229,26 @@ var IgeEntity = IgeObject.extend({
      * @return {*} The object this method was called from to allow
      * method chaining
      */
-    dimensionsFromCell: function (percent) {
-        if (this._texture) {
-            if (this._texture._cells && this._texture._cells.length) {
-                if (percent === undefined) {
-                    this.width(this._texture._cells[this._cell][2]);
-                    this.height(this._texture._cells[this._cell][3]);
-                } else {
-                    this.width(Math.floor((this._texture._cells[this._cell][2] / 100) * percent));
-                    this.height(Math.floor((this._texture._cells[this._cell][3] / 100) * percent));
-                }
+	dimensionsFromCell: function (percent) {
+		if (this._texture) {
+			if (this._texture._cells && this._texture._cells.length) {
+				if (percent === undefined) {
+					this.width(this._texture._cells[this._cell][2]);
+					this.height(this._texture._cells[this._cell][3]);
+				} else {
+					this.width(Math.floor((this._texture._cells[this._cell][2] / 100) * percent));
+					this.height(Math.floor((this._texture._cells[this._cell][3] / 100) * percent));
+				}
 
-                // Recalculate localAabb
-                this.localAabb(true);
-            }
-        }
+				// Recalculate localAabb
+				this.localAabb(true);
+			}
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Gets / sets the highlight mode. True is on false is off.
      * @param {Boolean} val The highlight mode true or false.
      * @example #Set the entity to render highlighted
@@ -1258,16 +1258,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    highlight: function (val) {
-        if (val !== undefined) {
-            this._highlight = val;
-            return this;
-        }
+	highlight: function (val) {
+		if (val !== undefined) {
+			this._highlight = val;
+			return this;
+		}
 
-        return this._highlight;
-    },
+		return this._highlight;
+	},
 
-    /**
+	/**
      * Returns the absolute world position of the entity as an
      * IgePoint3d.
      * @example #Get the world position of the entity
@@ -1275,11 +1275,11 @@ var IgeEntity = IgeObject.extend({
      * @return {IgePoint3d} The absolute world position of the
      * entity.
      */
-    worldPosition: function () {
-        return new IgePoint3d(this._worldMatrix.matrix[2], this._worldMatrix.matrix[5], 0);
-    },
+	worldPosition: function () {
+		return new IgePoint3d(this._worldMatrix.matrix[2], this._worldMatrix.matrix[5], 0);
+	},
 
-    /**
+	/**
      * Returns the absolute world rotation z of the entity as a
      * value in radians.
      * @example #Get the world rotation of the entity's z axis
@@ -1287,48 +1287,48 @@ var IgeEntity = IgeObject.extend({
      * @return {Number} The absolute world rotation z of the
      * entity.
      */
-    worldRotationZ: function () {
-        return this._worldMatrix.rotationRadians();
-    },
+	worldRotationZ: function () {
+		return this._worldMatrix.rotationRadians();
+	},
 
-    /**
+	/**
      * Converts an array of points from local space to this entity's
      * world space using it's world transform matrix. This will alter
      * the points passed in the array directly.
      * @param {Array} points The array of IgePoints to convert.
      */
-    localToWorld: function (points, viewport, inverse) {
-        viewport = viewport || ige._currentViewport;
+	localToWorld: function (points, viewport, inverse) {
+		viewport = viewport || ige._currentViewport;
 
-        if (this._adjustmentMatrix) {
-            // Apply the optional adjustment matrix
-            this._worldMatrix.multiply(this._adjustmentMatrix);
-        }
+		if (this._adjustmentMatrix) {
+			// Apply the optional adjustment matrix
+			this._worldMatrix.multiply(this._adjustmentMatrix);
+		}
 
-        if (!inverse) {
-            this._worldMatrix.transform(points, this);
-        } else {
-            this._localMatrix.transform(points, this);
-            //this._worldMatrix.getInverse().transform(points, this);
-        }
+		if (!inverse) {
+			this._worldMatrix.transform(points, this);
+		} else {
+			this._localMatrix.transform(points, this);
+			// this._worldMatrix.getInverse().transform(points, this);
+		}
 
-        if (this._ignoreCamera) {
-            //viewport.camera._worldMatrix.transform(points, this);
-        }
-    },
+		if (this._ignoreCamera) {
+			// viewport.camera._worldMatrix.transform(points, this);
+		}
+	},
 
-    /**
+	/**
      * Converts a point from local space to this entity's world space
      * using it's world transform matrix. This will alter the point's
      * data directly.
      * @param {IgePoint3d} point The IgePoint3d to convert.
      */
-    localToWorldPoint: function (point, viewport) {
-        viewport = viewport || ige._currentViewport;
-        this._worldMatrix.transform([point], this);
-    },
+	localToWorldPoint: function (point, viewport) {
+		viewport = viewport || ige._currentViewport;
+		this._worldMatrix.transform([point], this);
+	},
 
-    /**
+	/**
      * Returns the screen position of the entity as an IgePoint3d where x is the
      * "left" and y is the "top", useful for positioning HTML elements at the
      * screen location of an IGE entity. This method assumes that the top-left
@@ -1338,68 +1338,68 @@ var IgeEntity = IgeObject.extend({
      *     var screenPos = entity.screenPosition();
      * @return {IgePoint3d} The screen position of the entity.
      */
-    screenPosition: function () {
-        return new IgePoint3d(Math.floor((this._worldMatrix.matrix[2] - ige._currentCamera._translate.x) * ige._currentCamera._scale.x + ige._bounds2d.x2), Math.floor((this._worldMatrix.matrix[5] - ige._currentCamera._translate.y) * ige._currentCamera._scale.y + ige._bounds2d.y2), 0);
-    },
+	screenPosition: function () {
+		return new IgePoint3d(Math.floor((this._worldMatrix.matrix[2] - ige._currentCamera._translate.x) * ige._currentCamera._scale.x + ige._bounds2d.x2), Math.floor((this._worldMatrix.matrix[5] - ige._currentCamera._translate.y) * ige._currentCamera._scale.y + ige._bounds2d.y2), 0);
+	},
 
-    /**
+	/**
      * @deprecated Use bounds3dPolygon instead
      */
-    localIsoBoundsPoly: function () {},
+	localIsoBoundsPoly: function () {},
 
-    localBounds3dPolygon: function (recalculate) {
-        if (this._bounds3dPolygonDirty || !this._localBounds3dPolygon || recalculate) {
-            var geom = this._bounds3d,
-                poly = new IgePoly2d(),
-                // Bottom face
-                bf2 = Math.toIso(+geom.x2, -geom.y2, -geom.z2),
-                bf3 = Math.toIso(+geom.x2, +geom.y2, -geom.z2),
-                bf4 = Math.toIso(-geom.x2, +geom.y2, -geom.z2),
-                // Top face
-                tf1 = Math.toIso(-geom.x2, -geom.y2, geom.z2),
-                tf2 = Math.toIso(+geom.x2, -geom.y2, geom.z2),
-                tf4 = Math.toIso(-geom.x2, +geom.y2, geom.z2);
+	localBounds3dPolygon: function (recalculate) {
+		if (this._bounds3dPolygonDirty || !this._localBounds3dPolygon || recalculate) {
+			var geom = this._bounds3d;
+			var poly = new IgePoly2d();
+			// Bottom face
+			var bf2 = Math.toIso(+geom.x2, -geom.y2, -geom.z2);
+			var bf3 = Math.toIso(+geom.x2, +geom.y2, -geom.z2);
+			var bf4 = Math.toIso(-geom.x2, +geom.y2, -geom.z2);
+			// Top face
+			var tf1 = Math.toIso(-geom.x2, -geom.y2, geom.z2);
+			var tf2 = Math.toIso(+geom.x2, -geom.y2, geom.z2);
+			var tf4 = Math.toIso(-geom.x2, +geom.y2, geom.z2);
 
-            poly.addPoint(tf1.x, tf1.y).addPoint(tf2.x, tf2.y).addPoint(bf2.x, bf2.y).addPoint(bf3.x, bf3.y).addPoint(bf4.x, bf4.y).addPoint(tf4.x, tf4.y).addPoint(tf1.x, tf1.y);
+			poly.addPoint(tf1.x, tf1.y).addPoint(tf2.x, tf2.y).addPoint(bf2.x, bf2.y).addPoint(bf3.x, bf3.y).addPoint(bf4.x, bf4.y).addPoint(tf4.x, tf4.y).addPoint(tf1.x, tf1.y);
 
-            this._localBounds3dPolygon = poly;
-            this._bounds3dPolygonDirty = false;
-        }
+			this._localBounds3dPolygon = poly;
+			this._bounds3dPolygonDirty = false;
+		}
 
-        return this._localBounds3dPolygon;
-    },
+		return this._localBounds3dPolygon;
+	},
 
-    /**
+	/**
      * @deprecated Use bounds3dPolygon instead
      */
-    isoBoundsPoly: function () {},
+	isoBoundsPoly: function () {},
 
-    bounds3dPolygon: function (recalculate) {
-        if (this._bounds3dPolygonDirty || !this._bounds3dPolygon || recalculate) {
-            var poly = this.localBounds3dPolygon(recalculate).clone();
+	bounds3dPolygon: function (recalculate) {
+		if (this._bounds3dPolygonDirty || !this._bounds3dPolygon || recalculate) {
+			var poly = this.localBounds3dPolygon(recalculate).clone();
 
-            // Convert local co-ordinates to world based on entities world matrix
-            this.localToWorld(poly._poly);
+			// Convert local co-ordinates to world based on entities world matrix
+			this.localToWorld(poly._poly);
 
-            this._bounds3dPolygon = poly;
-        }
+			this._bounds3dPolygon = poly;
+		}
 
-        return this._bounds3dPolygon;
-    },
+		return this._bounds3dPolygon;
+	},
 
-    /**
+	/**
      * @deprecated Use mouseInBounds3d instead
      */
-    mouseInIsoBounds: function () {},
+	mouseInIsoBounds: function () {},
 
-    mouseInBounds3d: function (recalculate) {
-        var poly = this.localBounds3dPolygon(recalculate),
-            mp = this.mousePos();
+	mouseInBounds3d: function (recalculate) {
+		var poly = this.localBounds3dPolygon(recalculate);
+		var mp = this.mousePos();
 
-        return poly.pointInside(mp);
-    },
+		return poly.pointInside(mp);
+	},
 
-    /**
+	/**
      * Calculates and returns the current axis-aligned bounding box in
      * world co-ordinates.
      * @param {Boolean=} recalculate If true this will force the
@@ -1421,60 +1421,60 @@ var IgeEntity = IgeObject.extend({
      *     IgeEntity.prototype.log(aabb.height);
      * @return {IgeRect} The axis-aligned bounding box in world co-ordinates.
      */
-    aabb: function (recalculate, inverse) {
-        if (this._aabbDirty || !this._aabb || recalculate) {
-            //  && this.newFrame()
-            var poly = new IgePoly2d(),
-                minX,
-                minY,
-                maxX,
-                maxY,
-                box,
-                anc = this._anchor,
-                ancX = anc.x,
-                ancY = anc.y,
-                geom,
-                geomX2,
-                geomY2,
-                x,
-                y;
+	aabb: function (recalculate, inverse) {
+		if (this._aabbDirty || !this._aabb || recalculate) {
+			//  && this.newFrame()
+			var poly = new IgePoly2d();
+			var minX;
+			var minY;
+			var maxX;
+			var maxY;
+			var box;
+			var anc = this._anchor;
+			var ancX = anc.x;
+			var ancY = anc.y;
+			var geom;
+			var geomX2;
+			var geomY2;
+			var x;
+			var y;
 
-            geom = this._bounds2d;
-            geomX2 = geom.x2;
-            geomY2 = geom.y2;
+			geom = this._bounds2d;
+			geomX2 = geom.x2;
+			geomY2 = geom.y2;
 
-            x = geomX2;
-            y = geomY2;
+			x = geomX2;
+			y = geomY2;
 
-            poly.addPoint(-x + ancX, -y + ancY);
-            poly.addPoint(x + ancX, -y + ancY);
-            poly.addPoint(x + ancX, y + ancY);
-            poly.addPoint(-x + ancX, y + ancY);
+			poly.addPoint(-x + ancX, -y + ancY);
+			poly.addPoint(x + ancX, -y + ancY);
+			poly.addPoint(x + ancX, y + ancY);
+			poly.addPoint(-x + ancX, y + ancY);
 
-            this._renderPos = { x: -x + ancX, y: -y + ancY };
+			this._renderPos = { x: -x + ancX, y: -y + ancY };
 
-            // Convert the poly's points from local space to world space
-            this.localToWorld(poly._poly, null, inverse);
+			// Convert the poly's points from local space to world space
+			this.localToWorld(poly._poly, null, inverse);
 
-            // Get the extents of the newly transformed poly
-            minX = Math.min(poly._poly[0].x, poly._poly[1].x, poly._poly[2].x, poly._poly[3].x);
+			// Get the extents of the newly transformed poly
+			minX = Math.min(poly._poly[0].x, poly._poly[1].x, poly._poly[2].x, poly._poly[3].x);
 
-            minY = Math.min(poly._poly[0].y, poly._poly[1].y, poly._poly[2].y, poly._poly[3].y);
+			minY = Math.min(poly._poly[0].y, poly._poly[1].y, poly._poly[2].y, poly._poly[3].y);
 
-            maxX = Math.max(poly._poly[0].x, poly._poly[1].x, poly._poly[2].x, poly._poly[3].x);
+			maxX = Math.max(poly._poly[0].x, poly._poly[1].x, poly._poly[2].x, poly._poly[3].x);
 
-            maxY = Math.max(poly._poly[0].y, poly._poly[1].y, poly._poly[2].y, poly._poly[3].y);
+			maxY = Math.max(poly._poly[0].y, poly._poly[1].y, poly._poly[2].y, poly._poly[3].y);
 
-            box = new IgeRect(minX, minY, maxX - minX, maxY - minY);
+			box = new IgeRect(minX, minY, maxX - minX, maxY - minY);
 
-            this._aabb = box;
-            this._aabbDirty = false;
-        }
+			this._aabb = box;
+			this._aabbDirty = false;
+		}
 
-        return this._aabb;
-    },
+		return this._aabb;
+	},
 
-    /**
+	/**
      * Calculates and returns the local axis-aligned bounding box
      * for the entity. This is the AABB relative to the entity's
      * center point.
@@ -1497,16 +1497,16 @@ var IgeEntity = IgeObject.extend({
      *     IgeEntity.prototype.log(aabb.height);
      * @return {IgeRect} The local AABB.
      */
-    localAabb: function (recalculate) {
-        if (!this._localAabb || recalculate) {
-            var aabb = this.aabb();
-            this._localAabb = new IgeRect(-Math.floor(aabb.width / 2), -Math.floor(aabb.height / 2), Math.floor(aabb.width), Math.floor(aabb.height));
-        }
+	localAabb: function (recalculate) {
+		if (!this._localAabb || recalculate) {
+			var aabb = this.aabb();
+			this._localAabb = new IgeRect(-Math.floor(aabb.width / 2), -Math.floor(aabb.height / 2), Math.floor(aabb.width), Math.floor(aabb.height));
+		}
 
-        return this._localAabb;
-    },
+		return this._localAabb;
+	},
 
-    /**
+	/**
      * Calculates the axis-aligned bounding box for this entity, including
      * all child entity bounding boxes and returns the final composite
      * bounds.
@@ -1515,37 +1515,37 @@ var IgeEntity = IgeObject.extend({
      *         aabb = entity.compositeAabb();
      * @return {IgeRect}
      */
-    compositeAabb: function (inverse) {
-        var arr = this._children,
-            arrCount,
-            rect;
+	compositeAabb: function (inverse) {
+		var arr = this._children;
+		var arrCount;
+		var rect;
 
-        if (inverse) {
-            rect = this.aabb(true, inverse).clone();
-        } else {
-            rect = this.aabb().clone();
-        }
+		if (inverse) {
+			rect = this.aabb(true, inverse).clone();
+		} else {
+			rect = this.aabb().clone();
+		}
 
-        // Now loop all children and get the aabb for each of them
-        // them add those bounds to the current rect
-        if (arr) {
-            arrCount = arr.length;
+		// Now loop all children and get the aabb for each of them
+		// them add those bounds to the current rect
+		if (arr) {
+			arrCount = arr.length;
 
-            var x = 0;
-            while (arrCount--) {
-                x++;
-                if (x > 10000) {
-                    IgeEntity.prototype.log('IgeEntity 1255');
-                    break;
-                } // for detecting infinite loops
-                rect.thisCombineRect(arr[arrCount].compositeAabb(inverse));
-            }
-        }
+			var x = 0;
+			while (arrCount--) {
+				x++;
+				if (x > 10000) {
+					IgeEntity.prototype.log('IgeEntity 1255');
+					break;
+				} // for detecting infinite loops
+				rect.thisCombineRect(arr[arrCount].compositeAabb(inverse));
+			}
+		}
 
-        return rect;
-    },
+		return rect;
+	},
 
-    /**
+	/**
      * Gets / sets the composite stream flag. If set to true, any objects
      * mounted to this one will have their streamMode() set to the same
      * value as this entity and will also have their compositeStream flag
@@ -1554,37 +1554,37 @@ var IgeEntity = IgeObject.extend({
      * @param val
      * @returns {*}
      */
-    compositeStream: function (val) {
-        if (val !== undefined) {
-            this._compositeStream = val;
-            return this;
-        }
+	compositeStream: function (val) {
+		if (val !== undefined) {
+			this._compositeStream = val;
+			return this;
+		}
 
-        return this._compositeStream;
-    },
+		return this._compositeStream;
+	},
 
-    /**
+	/**
      * Override the _childMounted method and apply entity-based flags.
      * @param {IgeEntity} child
      * @private
      */
-    _childMounted: function (child) {
-        // Check if we need to set the compositeStream and streamMode
-        if (this.compositeStream()) {
-            child.compositeStream(true);
-            child.streamMode(this.streamMode());
-            child.streamControl(this.streamControl());
-        }
+	_childMounted: function (child) {
+		// Check if we need to set the compositeStream and streamMode
+		if (this.compositeStream()) {
+			child.compositeStream(true);
+			child.streamMode(this.streamMode());
+			child.streamControl(this.streamControl());
+		}
 
-        IgeObject.prototype._childMounted.call(this, child);
+		IgeObject.prototype._childMounted.call(this, child);
 
-        // Check if we are compositeCached and update the cache
-        if (this.compositeCache()) {
-            this.cacheDirty(true);
-        }
-    },
+		// Check if we are compositeCached and update the cache
+		if (this.compositeCache()) {
+			this.cacheDirty(true);
+		}
+	},
 
-    /**
+	/**
      * Takes two values and returns them as an array where index [0]
      * is the y argument and index[1] is the x argument. This method
      * is used specifically in the 3d bounds intersection process to
@@ -1594,66 +1594,66 @@ var IgeEntity = IgeObject.extend({
      * @return {Array} The swapped arguments.
      * @private
      */
-    _swapVars: function (x, y) {
-        return [y, x];
-    },
+	_swapVars: function (x, y) {
+		return [y, x];
+	},
 
-    _internalsOverlap: function (x0, x1, y0, y1) {
-        var tempSwap;
+	_internalsOverlap: function (x0, x1, y0, y1) {
+		var tempSwap;
 
-        if (x0 > x1) {
-            tempSwap = this._swapVars(x0, x1);
-            x0 = tempSwap[0];
-            x1 = tempSwap[1];
-        }
+		if (x0 > x1) {
+			tempSwap = this._swapVars(x0, x1);
+			x0 = tempSwap[0];
+			x1 = tempSwap[1];
+		}
 
-        if (y0 > y1) {
-            tempSwap = this._swapVars(y0, y1);
-            y0 = tempSwap[0];
-            y1 = tempSwap[1];
-        }
+		if (y0 > y1) {
+			tempSwap = this._swapVars(y0, y1);
+			y0 = tempSwap[0];
+			y1 = tempSwap[1];
+		}
 
-        if (x0 > y0) {
-            tempSwap = this._swapVars(x0, y0);
-            x0 = tempSwap[0];
-            y0 = tempSwap[1];
+		if (x0 > y0) {
+			tempSwap = this._swapVars(x0, y0);
+			x0 = tempSwap[0];
+			y0 = tempSwap[1];
 
-            tempSwap = this._swapVars(x1, y1);
-            x1 = tempSwap[0];
-            y1 = tempSwap[1];
-        }
+			tempSwap = this._swapVars(x1, y1);
+			x1 = tempSwap[0];
+			y1 = tempSwap[1];
+		}
 
-        return y0 < x1;
-    },
+		return y0 < x1;
+	},
 
-    _projectionOverlap: function (otherObject) {
-        var thisG3d = this._bounds3d,
-            thisMin = {
-                x: this._translate.x - thisG3d.x / 2,
-                y: this._translate.y - thisG3d.y / 2,
-                z: this._translate.z - thisG3d.z,
-            },
-            thisMax = {
-                x: this._translate.x + thisG3d.x / 2,
-                y: this._translate.y + thisG3d.y / 2,
-                z: this._translate.z + thisG3d.z,
-            },
-            otherG3d = otherObject._bounds3d,
-            otherMin = {
-                x: otherObject._translate.x - otherG3d.x / 2,
-                y: otherObject._translate.y - otherG3d.y / 2,
-                z: otherObject._translate.z - otherG3d.z,
-            },
-            otherMax = {
-                x: otherObject._translate.x + otherG3d.x / 2,
-                y: otherObject._translate.y + otherG3d.y / 2,
-                z: otherObject._translate.z + otherG3d.z,
-            };
+	_projectionOverlap: function (otherObject) {
+		var thisG3d = this._bounds3d;
+		var thisMin = {
+			x: this._translate.x - thisG3d.x / 2,
+			y: this._translate.y - thisG3d.y / 2,
+			z: this._translate.z - thisG3d.z
+		};
+		var thisMax = {
+			x: this._translate.x + thisG3d.x / 2,
+			y: this._translate.y + thisG3d.y / 2,
+			z: this._translate.z + thisG3d.z
+		};
+		var otherG3d = otherObject._bounds3d;
+		var otherMin = {
+			x: otherObject._translate.x - otherG3d.x / 2,
+			y: otherObject._translate.y - otherG3d.y / 2,
+			z: otherObject._translate.z - otherG3d.z
+		};
+		var otherMax = {
+			x: otherObject._translate.x + otherG3d.x / 2,
+			y: otherObject._translate.y + otherG3d.y / 2,
+			z: otherObject._translate.z + otherG3d.z
+		};
 
-        return this._internalsOverlap(thisMin.x - thisMax.y, thisMax.x - thisMin.y, otherMin.x - otherMax.y, otherMax.x - otherMin.y) && this._internalsOverlap(thisMin.x - thisMax.z, thisMax.x - thisMin.z, otherMin.x - otherMax.z, otherMax.x - otherMin.z) && this._internalsOverlap(thisMin.z - thisMax.y, thisMax.z - thisMin.y, otherMin.z - otherMax.y, otherMax.z - otherMin.y);
-    },
+		return this._internalsOverlap(thisMin.x - thisMax.y, thisMax.x - thisMin.y, otherMin.x - otherMax.y, otherMax.x - otherMin.y) && this._internalsOverlap(thisMin.x - thisMax.z, thisMax.x - thisMin.z, otherMin.x - otherMax.z, otherMax.x - otherMin.z) && this._internalsOverlap(thisMin.z - thisMax.y, thisMax.z - thisMin.y, otherMin.z - otherMax.y, otherMax.z - otherMin.y);
+	},
 
-    /**
+	/**
      * Compares the current entity's 3d bounds to the passed entity and
      * determines if the current entity is "behind" the passed one. If an
      * entity is behind another, it is drawn first during the scenegraph
@@ -1665,61 +1665,61 @@ var IgeEntity = IgeObject.extend({
      * @return {Boolean} If true this entity is "behind" the passed entity
      * or false if not.
      */
-    isBehind: function (otherObject) {
-        var thisG3d = this._bounds3d,
-            otherG3d = otherObject._bounds3d,
-            thisTranslate = this._translate.clone(),
-            otherTranslate = otherObject._translate.clone();
+	isBehind: function (otherObject) {
+		var thisG3d = this._bounds3d;
+		var otherG3d = otherObject._bounds3d;
+		var thisTranslate = this._translate.clone();
+		var otherTranslate = otherObject._translate.clone();
 
-        // thisTranslate.thisToIso();
-        // otherTranslate.thisToIso();
+		// thisTranslate.thisToIso();
+		// otherTranslate.thisToIso();
 
-        if (this._origin.x !== 0.5 || this._origin.y !== 0.5) {
-            thisTranslate.x += this._bounds2d.x * (0.5 - this._origin.x);
-            thisTranslate.y += this._bounds2d.y * (0.5 - this._origin.y);
-        }
-        if (otherObject._origin.x !== 0.5 || otherObject._origin.y !== 0.5) {
-            otherTranslate.x += otherObject._bounds2d.x * (0.5 - otherObject._origin.x);
-            otherTranslate.y += otherObject._bounds2d.y * (0.5 - otherObject._origin.y);
-        }
+		if (this._origin.x !== 0.5 || this._origin.y !== 0.5) {
+			thisTranslate.x += this._bounds2d.x * (0.5 - this._origin.x);
+			thisTranslate.y += this._bounds2d.y * (0.5 - this._origin.y);
+		}
+		if (otherObject._origin.x !== 0.5 || otherObject._origin.y !== 0.5) {
+			otherTranslate.x += otherObject._bounds2d.x * (0.5 - otherObject._origin.x);
+			otherTranslate.y += otherObject._bounds2d.y * (0.5 - otherObject._origin.y);
+		}
 
-        var thisX = thisTranslate.x,
-            thisY = thisTranslate.y,
-            otherX = otherTranslate.x,
-            otherY = otherTranslate.y,
-            thisMin = new IgePoint3d(thisX - thisG3d.x / 2, thisY - thisG3d.y / 2, this._translate.z),
-            thisMax = new IgePoint3d(thisX + thisG3d.x / 2, thisY + thisG3d.y / 2, this._translate.z + thisG3d.z),
-            otherMin = new IgePoint3d(otherX - otherG3d.x / 2, otherY - otherG3d.y / 2, otherObject._translate.z),
-            otherMax = new IgePoint3d(otherX + otherG3d.x / 2, otherY + otherG3d.y / 2, otherObject._translate.z + otherG3d.z);
+		var thisX = thisTranslate.x;
+		var thisY = thisTranslate.y;
+		var otherX = otherTranslate.x;
+		var otherY = otherTranslate.y;
+		var thisMin = new IgePoint3d(thisX - thisG3d.x / 2, thisY - thisG3d.y / 2, this._translate.z);
+		var thisMax = new IgePoint3d(thisX + thisG3d.x / 2, thisY + thisG3d.y / 2, this._translate.z + thisG3d.z);
+		var otherMin = new IgePoint3d(otherX - otherG3d.x / 2, otherY - otherG3d.y / 2, otherObject._translate.z);
+		var otherMax = new IgePoint3d(otherX + otherG3d.x / 2, otherY + otherG3d.y / 2, otherObject._translate.z + otherG3d.z);
 
-        if (thisMax.x <= otherMin.x) {
-            return false;
-        }
+		if (thisMax.x <= otherMin.x) {
+			return false;
+		}
 
-        if (otherMax.x <= thisMin.x) {
-            return true;
-        }
+		if (otherMax.x <= thisMin.x) {
+			return true;
+		}
 
-        if (thisMax.y <= otherMin.y) {
-            return false;
-        }
+		if (thisMax.y <= otherMin.y) {
+			return false;
+		}
 
-        if (otherMax.y <= thisMin.y) {
-            return true;
-        }
+		if (otherMax.y <= thisMin.y) {
+			return true;
+		}
 
-        if (thisMax.z <= otherMin.z) {
-            return false;
-        }
+		if (thisMax.z <= otherMin.z) {
+			return false;
+		}
 
-        if (otherMax.z <= thisMin.z) {
-            return true;
-        }
+		if (otherMax.z <= thisMin.z) {
+			return true;
+		}
 
-        return thisX + thisY + this._translate.z > otherX + otherY + otherObject._translate.z;
-    },
+		return thisX + thisY + this._translate.z > otherX + otherY + otherObject._translate.z;
+	},
 
-    /**
+	/**
      * Get / set the flag determining if this entity will respond
      * to mouse interaction or not. When you set a mouse* event e.g.
      * mouseUp, mouseOver etc this flag will automatically be reset
@@ -1734,35 +1734,35 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    mouseEventsActive: function (val) {
-        if (val !== undefined) {
-            this._mouseEventsActive = val;
-            return this;
-        }
+	mouseEventsActive: function (val) {
+		if (val !== undefined) {
+			this._mouseEventsActive = val;
+			return this;
+		}
 
-        return this._mouseEventsActive;
-    },
+		return this._mouseEventsActive;
+	},
 
-    /**
+	/**
      * Sets the _ignoreCamera internal flag to the value passed for this
      * and all child entities down the scenegraph.
      * @param val
      */
-    ignoreCameraComposite: function (val) {
-        var i,
-            arr = this._children,
-            arrCount = arr.length;
+	ignoreCameraComposite: function (val) {
+		var i;
+		var arr = this._children;
+		var arrCount = arr.length;
 
-        this._ignoreCamera = val;
+		this._ignoreCamera = val;
 
-        for (i = 0; i < arrCount; i++) {
-            if (arr[i].ignoreCameraComposite) {
-                arr[i].ignoreCameraComposite(val);
-            }
-        }
-    },
+		for (i = 0; i < arrCount; i++) {
+			if (arr[i].ignoreCameraComposite) {
+				arr[i].ignoreCameraComposite(val);
+			}
+		}
+	},
 
-    /**
+	/**
      * Determines if the frame alternator value for this entity
      * matches the engine's frame alternator value. The entity's
      * frame alternator value will be set to match the engine's
@@ -1780,11 +1780,11 @@ var IgeEntity = IgeObject.extend({
      * @return {Boolean} If false, the entity's tick method has
      * not yet been processed for this tick.
      */
-    newFrame: function () {
-        return ige._frameAlternator !== this._frameAlternatorCurrent;
-    },
+	newFrame: function () {
+		return ige._frameAlternator !== this._frameAlternatorCurrent;
+	},
 
-    /**
+	/**
      * Sets the canvas context transform properties to match the the game
      * object's current transform values.
      * @param {CanvasRenderingContext2D} ctx The canvas context to apply
@@ -1798,30 +1798,30 @@ var IgeEntity = IgeObject.extend({
      *     entity._transformContext(ctx);
      * @private
      */
-    _transformContext: function (ctx, inverse) {
-        if (this._parent) {
-            ctx.globalAlpha = this._computedOpacity = this._parent._computedOpacity * this._opacity;
-        } else {
-            ctx.globalAlpha = this._computedOpacity = this._opacity;
-        }
+	_transformContext: function (ctx, inverse) {
+		if (this._parent) {
+			ctx.globalAlpha = this._computedOpacity = this._parent._computedOpacity * this._opacity;
+		} else {
+			ctx.globalAlpha = this._computedOpacity = this._opacity;
+		}
 
-        if (!inverse) {
-            this._localMatrix.transformRenderingContext(ctx);
-        } else {
-            this._localMatrix.getInverse().transformRenderingContext(ctx);
-        }
-    },
+		if (!inverse) {
+			this._localMatrix.transformRenderingContext(ctx);
+		} else {
+			this._localMatrix.getInverse().transformRenderingContext(ctx);
+		}
+	},
 
-    mouseAlwaysInside: function (val) {
-        if (val !== undefined) {
-            this._mouseAlwaysInside = val;
-            return this;
-        }
+	mouseAlwaysInside: function (val) {
+		if (val !== undefined) {
+			this._mouseAlwaysInside = val;
+			return this;
+		}
 
-        return this._mouseAlwaysInside;
-    },
+		return this._mouseAlwaysInside;
+	},
 
-    /**
+	/**
      * Processes the updates required each render frame. Any code in the update()
      * method will be called ONCE for each render frame BEFORE the tick() method.
      * This differs from the tick() method in that the tick method can be called
@@ -1831,69 +1831,69 @@ var IgeEntity = IgeObject.extend({
      * entity's motion, AI etc.
      * @param {CanvasRenderingContext2D} ctx The canvas context to render to.
      */
-    update: function (ctx, tickDelta, isForOrphans) {
-        // var category = this._category || 'etc';
-        // if (ige.updateCount[category] == undefined)
-        // 	ige.updateCount[category] = 0;
-        // ige.updateCount[category]++;
+	update: function (ctx, tickDelta, isForOrphans) {
+		// var category = this._category || 'etc';
+		// if (ige.updateCount[category] == undefined)
+		// 	ige.updateCount[category] = 0;
+		// ige.updateCount[category]++;
 
-        if (this._deathTime !== undefined && this._deathTime <= ige._tickStart) {
-            // Check if the deathCallBack was set
-            if (this._deathCallBack) {
-                this._deathCallBack.apply(this);
-                delete this._deathCallback;
-            }
+		if (this._deathTime !== undefined && this._deathTime <= ige._tickStart) {
+			// Check if the deathCallBack was set
+			if (this._deathCallBack) {
+				this._deathCallBack.apply(this);
+				delete this._deathCallback;
+			}
 
-            this.destroy();
-        } else {
-            // Check that the entity has been born
-            if (this._bornTime === undefined || ige._currentTime >= this._bornTime) {
-                // Remove the stream data cache
-                delete this._streamDataCache;
+			this.destroy();
+		} else {
+			// Check that the entity has been born
+			if (this._bornTime === undefined || ige._currentTime >= this._bornTime) {
+				// Remove the stream data cache
+				delete this._streamDataCache;
 
-                if (!isForOrphans && ige.gameLoopTickHasExecuted) {
-                    // Process any behaviours assigned to the entity
-                    this._processUpdateBehaviours(ctx, tickDelta);
-                }
+				if (!isForOrphans && ige.gameLoopTickHasExecuted) {
+					// Process any behaviours assigned to the entity
+					this._processUpdateBehaviours(ctx, tickDelta);
+				}
 
-                // Update this object's current frame alternator value
-                // which allows us to determine if we are still on the
-                // same frame
-                this._frameAlternatorCurrent = ige._frameAlternator;
-            } else {
-                // sometimes when user returns to the game's tab/window, this._parent is set to null and causing errors
-                if (this._parent) {
-                    // The entity is not yet born, unmount it and add to the spawn queue
-                    this._birthMount = this._parent.id();
-                }
-                this.unMount();
+				// Update this object's current frame alternator value
+				// which allows us to determine if we are still on the
+				// same frame
+				this._frameAlternatorCurrent = ige._frameAlternator;
+			} else {
+				// sometimes when user returns to the game's tab/window, this._parent is set to null and causing errors
+				if (this._parent) {
+					// The entity is not yet born, unmount it and add to the spawn queue
+					this._birthMount = this._parent.id();
+				}
+				this.unMount();
 
-                ige.spawnQueue(this);
-            }
-        }
+				ige.spawnQueue(this);
+			}
+		}
 
-        // dont process super class if its from orphan. bcz orphan only need to update stream data and its translate
-        if (!isForOrphans) {
-            // Process super class
-            IgeObject.prototype.update.call(this, ctx, tickDelta);
-        }
-    },
+		// dont process super class if its from orphan. bcz orphan only need to update stream data and its translate
+		if (!isForOrphans) {
+			// Process super class
+			IgeObject.prototype.update.call(this, ctx, tickDelta);
+		}
+	},
 
-    // convert numbers stored as string in database to int
-    parseEntityObject: function (stats) {
-        var self = this;
-        if (typeof stats === 'object') {
-            for (var key in stats) {
-                if (typeof stats[key] === 'object') {
-                    self.parseEntityObject(stats[key]);
-                } else if (/^-?\d+$/.test(stats[key])) {
-                    stats[key] = parseFloat(stats[key]);
-                }
-            }
-        }
-    },
+	// convert numbers stored as string in database to int
+	parseEntityObject: function (stats) {
+		var self = this;
+		if (typeof stats === 'object') {
+			for (var key in stats) {
+				if (typeof stats[key] === 'object') {
+					self.parseEntityObject(stats[key]);
+				} else if (/^-?\d+$/.test(stats[key])) {
+					stats[key] = parseFloat(stats[key]);
+				}
+			}
+		}
+	},
 
-    /**
+	/**
      * Processes the actions required each render frame.
      * @param {CanvasRenderingContext2D} ctx The canvas context to render to.
      * @param {Boolean} dontTransform If set to true, the tick method will
@@ -1902,309 +1902,306 @@ var IgeEntity = IgeObject.extend({
      * chain but have already transformed the entity in a previous overloaded
      * method.
      */
-    tick: function (ctx, dontTransform) {
-        if (this._inView) ige.inViewCount++;
-        if ((!this._hidden && this._inView && (!this._parent || this._parent._inView)) || mode != 'play') {
-            // var category = this._category || 'etc';
-            // if (ige.tickCount[category] == undefined)
-            // 	ige.tickCount[category] = 0;
-            // ige.tickCount[category]++;
-            ige.tickCount++;
+	tick: function (ctx, dontTransform) {
+		if (this._inView) ige.inViewCount++;
+		if ((!this._hidden && this._inView && (!this._parent || this._parent._inView)) || mode != 'play') {
+			// var category = this._category || 'etc';
+			// if (ige.tickCount[category] == undefined)
+			// 	ige.tickCount[category] = 0;
+			// ige.tickCount[category]++;
+			ige.tickCount++;
 
-            // Process any behaviours assigned to the entity
-            this._processTickBehaviours(ctx);
+			// Process any behaviours assigned to the entity
+			this._processTickBehaviours(ctx);
 
-            // Process any mouse events we need to do
+			// Process any mouse events we need to do
 
-            if (this._mouseEventsActive) {
-                if (this._processTriggerHitTests()) {
-                    // Point is inside the trigger bounds
-                    ige.input.queueEvent(this, this._mouseInTrigger, null);
-                } else {
-                    if (ige.input.mouseMove) {
-                        // There is a mouse move event but we are not inside the entity
-                        // so fire a mouse out event (_handleMouseOut will check if the
-                        // mouse WAS inside before firing an out event).
-                        this._handleMouseOut(ige.input.mouseMove);
-                    }
-                }
-            }
+			if (this._mouseEventsActive) {
+				if (this._processTriggerHitTests()) {
+					// Point is inside the trigger bounds
+					ige.input.queueEvent(this, this._mouseInTrigger, null);
+				} else {
+					if (ige.input.mouseMove) {
+						// There is a mouse move event but we are not inside the entity
+						// so fire a mouse out event (_handleMouseOut will check if the
+						// mouse WAS inside before firing an out event).
+						this._handleMouseOut(ige.input.mouseMove);
+					}
+				}
+			}
 
-            // _dontRender doesn't exist anywhere! ??? - jaeyun
-            if (!this._dontRender) {
-                // Check for cached version
-                if (this._cache || this._compositeCache) {
-                    // Caching is enabled
-                    if (this._cacheDirty) {
-                        // The cache is dirty, redraw it
-                        this._refreshCache(dontTransform);
-                    }
+			// _dontRender doesn't exist anywhere! ??? - jaeyun
+			if (!this._dontRender) {
+				// Check for cached version
+				if (this._cache || this._compositeCache) {
+					// Caching is enabled
+					if (this._cacheDirty) {
+						// The cache is dirty, redraw it
+						this._refreshCache(dontTransform);
+					}
 
-                    // Now render the cached image data to the main canvas
-                    this._renderCache(ctx);
-                } else {
-                    // Non-cached output
-                    // Transform the context by the current transform settings
-                    if (!dontTransform) {
-                        this._transformContext(ctx);
-                    }
+					// Now render the cached image data to the main canvas
+					this._renderCache(ctx);
+				} else {
+					// Non-cached output
+					// Transform the context by the current transform settings
+					if (!dontTransform) {
+						this._transformContext(ctx);
+					}
 
-                    // Render item below unit currently disabled
-                    // if (this._category === 'unit') {
-                    // 	if (this._compositeCache) {
-                    // 		if (this._cacheDirty) {
-                    // 			// Process children
-                    // 			IgeObject.prototype.tick.call(this, this._cacheCtx, true);
-                    // 			this._renderCache(ctx);
-                    // 			this._cacheDirty = false;
-                    // 		}
-                    // 	} else {
-                    // 		// Process children
-                    // 		IgeObject.prototype.tick.call(this, ctx, true);
-                    // 	}
-                    // }
-                    this._renderEntity(ctx, dontTransform);
-                }
-            }
+					// Render item below unit currently disabled
+					// if (this._category === 'unit') {
+					// 	if (this._compositeCache) {
+					// 		if (this._cacheDirty) {
+					// 			// Process children
+					// 			IgeObject.prototype.tick.call(this, this._cacheCtx, true);
+					// 			this._renderCache(ctx);
+					// 			this._cacheDirty = false;
+					// 		}
+					// 	} else {
+					// 		// Process children
+					// 		IgeObject.prototype.tick.call(this, ctx, true);
+					// 	}
+					// }
+					this._renderEntity(ctx, dontTransform);
+				}
+			}
 
-            // Process any automatic-mode stream updating required
-            if (this._streamMode === 1 || this._streamMode === 2) {
-                this.streamSync();
-            }
+			// Process any automatic-mode stream updating required
+			if (this._streamMode === 1 || this._streamMode === 2) {
+				this.streamSync();
+			}
 
-            if (this._compositeCache) {
-                if (this._cacheDirty) {
-                    // Process children
-                    IgeObject.prototype.tick.call(this, this._cacheCtx);
-                    this._renderCache(ctx);
-                    this._cacheDirty = false;
-                }
-            } else {
-                // Process children
-                IgeObject.prototype.tick.call(this, ctx);
-            }
-        }
-    },
-    playEffect: function (type) {
-        if (this._stats && this._stats.effects && this._stats.effects[type]) {
-            var effect = this._stats.effects[type];
+			if (this._compositeCache) {
+				if (this._cacheDirty) {
+					// Process children
+					IgeObject.prototype.tick.call(this, this._cacheCtx);
+					this._renderCache(ctx);
+					this._cacheDirty = false;
+				}
+			} else {
+				// Process children
+				IgeObject.prototype.tick.call(this, ctx);
+			}
+		}
+	},
+	playEffect: function (type) {
+		if (this._stats && this._stats.effects && this._stats.effects[type]) {
+			var effect = this._stats.effects[type];
 
-            if (ige.isServer) {
-                if (type == 'move' || type == 'idle' || type == 'none') {
-                    this.streamUpdateData([{ effect: type }]);
-                }
-            } else if (ige.isClient) {
+			if (ige.isServer) {
+				if (type == 'move' || type == 'idle' || type == 'none') {
+					this.streamUpdateData([{ effect: type }]);
+				}
+			} else if (ige.isClient) {
+				if (this._pixiContainer && this._pixiContainer._destroyed) {
+					return;
+				}
+				var position = this._translate;
 
-                if (this._pixiContainer && this._pixiContainer._destroyed) {
-                    return;
-                }
-                var position = this._translate;
+				if (this._category === 'item' && this._stats.currentBody && (this._stats.currentBody.type === 'spriteOnly' || this._stats.currentBody.type === 'none')) {
+					var ownerUnit = this.getOwnerUnit();
+					position = (ownerUnit && ownerUnit._pixiContainer) || position;
+				}
 
-                if (this._category === 'item' && this._stats.currentBody && (this._stats.currentBody.type === 'spriteOnly' || this._stats.currentBody.type === 'none')) {
-                    var ownerUnit = this.getOwnerUnit();
-                    position = (ownerUnit && ownerUnit._pixiContainer) || position;
-                }
+				// play default animation if animation isn't set.
+				if (effect.animation == undefined || effect.animation == 'none') {
+					var currentState = this._stats.states[this._stats.stateId];
+					this.applyAnimationById(currentState.animation);
+				} else {
+					this.applyAnimationById(effect.animation);
+				}
 
-                // play default animation if animation isn't set.
-                if (effect.animation == undefined || effect.animation == 'none') {
-                    var currentState = this._stats.states[this._stats.stateId];
-                    this.applyAnimationById(currentState.animation);
-                } else {
-                    this.applyAnimationById(effect.animation);
-                }
+				if (effect.projectileType) {
+					var projectile = ige.game.getAsset('projectileTypes', effect.projectileType);
+					if (projectile) {
+						var position = ige.game.lastProjectileHitPosition || (this.body && this.body.getPosition()) || this._translate;
+						if (this.body) {
+							position.x *= this._b2dRef._scaleRatio;
+							position.y *= this._b2dRef._scaleRatio;
+						}
+						projectile.defaultData = {
+							translate: {
+								x: position.x,
+								y: position.y
+							},
+							rotate: this._rotate.z
+						};
+						new Projectile(projectile);
+					}
+				}
 
-                if (effect.projectileType) {
-                    var projectile = ige.game.getAsset('projectileTypes', effect.projectileType);
-                    if (projectile) {
-                        var position = ige.game.lastProjectileHitPosition || (this.body && this.body.getPosition()) || this._translate;
-                        if (this.body) {
-                            position.x *= this._b2dRef._scaleRatio;
-                            position.y *= this._b2dRef._scaleRatio;
-                        }
-                        projectile.defaultData = {
-                            translate: {
-                                x: position.x,
-                                y: position.y,
-                            },
-                            rotate: this._rotate.z,
-                        };
-                        new Projectile(projectile);
-                    }
-                }
-
-                var shouldRepeat = type === 'move' ? true : false;
-                var isAlreadyPlaying = false;
-                if(this.isPlayingSound) {
-                    this.isPlayingSound.loop = shouldRepeat;
-                    if(shouldRepeat) {
+				var shouldRepeat = type === 'move';
+				var isAlreadyPlaying = false;
+				if (this.isPlayingSound) {
+					this.isPlayingSound.loop = shouldRepeat;
+					if (shouldRepeat) {
 						isAlreadyPlaying = true;
 						this.isPlayingSound.play();
-						
-                    }
-                }
-                if (effect.sound) {
-                    for (var soundKey in effect.sound) {
-                        if(!isAlreadyPlaying) {
-                            this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
-                            if(this.isPlayingSound) {
-                                this.isPlayingSound.effect = effect.sound[soundKey];
-                            }
-                        }
-                    }
-                }
-                
-                var angle = this._rotate.z;
-                if (type == 'attacked') {
-                    // get angle between attacked unit and attacking unit
-                    var attacker = this.lastAttackedBy;
-                    if (attacker) {
-                        angle = Math.atan2(attacker._translate.y - this._translate.y, attacker._translate.x - this._translate.x) + Math.radians(90);
-                    }
-                }
+					}
+				}
+				if (effect.sound) {
+					for (var soundKey in effect.sound) {
+						if (!isAlreadyPlaying) {
+							this.isPlayingSound = ige.sound.playSound(effect.sound[soundKey], position, soundKey, shouldRepeat);
+							if (this.isPlayingSound) {
+								this.isPlayingSound.effect = effect.sound[soundKey];
+							}
+						}
+					}
+				}
 
-                this.tween.start(effect.tween, angle);
-                
-            } else if (ige.isServer) {
-                if (effect.runScript) {
-                    ige.script.runScript(effect.runScript, {});
-                }
-            }
-        } else {
-            if (ige.isClient) {
-                this.applyAnimationById('default'); // play default animation if effect isn't set
-            }
-        }
-    },
-    _processTriggerHitTests: function () {
-        var mp, mouseTriggerPoly;
+				var angle = this._rotate.z;
+				if (type == 'attacked') {
+					// get angle between attacked unit and attacking unit
+					var attacker = this.lastAttackedBy;
+					if (attacker) {
+						angle = Math.atan2(attacker._translate.y - this._translate.y, attacker._translate.x - this._translate.x) + Math.radians(90);
+					}
+				}
 
-        if (ige._currentViewport) {
-            if (!this._mouseAlwaysInside) {
-                mp = this.mousePosWorld();
+				this.tween.start(effect.tween, angle);
+			} else if (ige.isServer) {
+				if (effect.runScript) {
+					ige.script.runScript(effect.runScript, {});
+				}
+			}
+		} else {
+			if (ige.isClient) {
+				this.applyAnimationById('default'); // play default animation if effect isn't set
+			}
+		}
+	},
+	_processTriggerHitTests: function () {
+		var mp, mouseTriggerPoly;
 
-                if (mp) {
-                    // Use the trigger polygon if defined
-                    if (this._triggerPolygon && this[this._triggerPolygon]) {
-                        mouseTriggerPoly = this[this._triggerPolygon](mp);
-                    } else {
-                        // Default to either aabb or bounds3dPolygon depending on entity parent mounting mode
-                        if (this._parent && this._parent._mountMode === 1) {
-                            // Use bounds3dPolygon
-                            mouseTriggerPoly = this.bounds3dPolygon();
-                        } else {
-                            // Use aabb
-                            mouseTriggerPoly = this.aabb();
-                        }
-                    }
+		if (ige._currentViewport) {
+			if (!this._mouseAlwaysInside) {
+				mp = this.mousePosWorld();
 
-                    // Check if the current mouse position is inside this aabb
-                    return mouseTriggerPoly.xyInside(mp.x, mp.y);
-                }
-            } else {
-                return true;
-            }
-        }
+				if (mp) {
+					// Use the trigger polygon if defined
+					if (this._triggerPolygon && this[this._triggerPolygon]) {
+						mouseTriggerPoly = this[this._triggerPolygon](mp);
+					} else {
+						// Default to either aabb or bounds3dPolygon depending on entity parent mounting mode
+						if (this._parent && this._parent._mountMode === 1) {
+							// Use bounds3dPolygon
+							mouseTriggerPoly = this.bounds3dPolygon();
+						} else {
+							// Use aabb
+							mouseTriggerPoly = this.aabb();
+						}
+					}
 
-        return false;
-    },
+					// Check if the current mouse position is inside this aabb
+					return mouseTriggerPoly.xyInside(mp.x, mp.y);
+				}
+			} else {
+				return true;
+			}
+		}
 
-    _refreshCache: function (dontTransform) {
-        // The cache is not clean so re-draw it
-        // Render the entity to the cache
-        var _canvas = this._cacheCanvas,
-            _ctx = this._cacheCtx;
+		return false;
+	},
 
-        if (this._compositeCache) {
-            // Get the composite entity AABB and alter the internal canvas
-            // to the composite size so we can render the entire entity
-            var aabbC = this.compositeAabb(true);
+	_refreshCache: function (dontTransform) {
+		// The cache is not clean so re-draw it
+		// Render the entity to the cache
+		var _canvas = this._cacheCanvas;
+		var _ctx = this._cacheCtx;
 
-            this._compositeAabbCache = aabbC;
+		if (this._compositeCache) {
+			// Get the composite entity AABB and alter the internal canvas
+			// to the composite size so we can render the entire entity
+			var aabbC = this.compositeAabb(true);
 
-            if (aabbC.width > 0 && aabbC.height > 0) {
-                _canvas.width = Math.ceil(aabbC.width);
-                _canvas.height = Math.ceil(aabbC.height);
-            } else {
-                // We cannot set a zero size for a canvas, it will
-                // cause the browser to freak out
-                _canvas.width = 2;
-                _canvas.height = 2;
-            }
+			this._compositeAabbCache = aabbC;
 
-            // Translate to the center of the canvas
-            _ctx.translate(-aabbC.x, -aabbC.y);
+			if (aabbC.width > 0 && aabbC.height > 0) {
+				_canvas.width = Math.ceil(aabbC.width);
+				_canvas.height = Math.ceil(aabbC.height);
+			} else {
+				// We cannot set a zero size for a canvas, it will
+				// cause the browser to freak out
+				_canvas.width = 2;
+				_canvas.height = 2;
+			}
 
-            /**
+			// Translate to the center of the canvas
+			_ctx.translate(-aabbC.x, -aabbC.y);
+
+			/**
              * Fires when the entity's composite cache is ready.
              * @event IgeEntity#compositeReady
              */
-            this.emit('compositeReady');
-        } else {
-            if (this._bounds2d.x > 0 && this._bounds2d.y > 0) {
-                _canvas.width = this._bounds2d.x;
-                _canvas.height = this._bounds2d.y;
-            } else {
-                // We cannot set a zero size for a canvas, it will
-                // cause the browser to freak out
-                _canvas.width = 1;
-                _canvas.height = 1;
-            }
+			this.emit('compositeReady');
+		} else {
+			if (this._bounds2d.x > 0 && this._bounds2d.y > 0) {
+				_canvas.width = this._bounds2d.x;
+				_canvas.height = this._bounds2d.y;
+			} else {
+				// We cannot set a zero size for a canvas, it will
+				// cause the browser to freak out
+				_canvas.width = 1;
+				_canvas.height = 1;
+			}
 
-            // Translate to the center of the canvas
-            _ctx.translate(this._bounds2d.x2, this._bounds2d.y2);
+			// Translate to the center of the canvas
+			_ctx.translate(this._bounds2d.x2, this._bounds2d.y2);
 
-            this._cacheDirty = false;
-        }
+			this._cacheDirty = false;
+		}
 
-        // Transform the context by the current transform settings
-        if (!dontTransform) {
-            this._transformContext(_ctx);
-        }
+		// Transform the context by the current transform settings
+		if (!dontTransform) {
+			this._transformContext(_ctx);
+		}
 
-        this._renderEntity(_ctx, dontTransform);
-    },
+		this._renderEntity(_ctx, dontTransform);
+	},
 
-    flip: function (flip) {
-        // if (this._category == 'item') {
-        // 	if (flip == 1)
-        // 	console.trace()
-        // console.log("flip", flip)
-        // }
-        // execute below iff flip orientation changes
-        if (ige.isServer) {
-            if (flip != this._stats.flip) {
-                // if (this._category == 'unit' && this._stats.name != 'm0dE')
-                // 	console.log(flip)
-                this.streamUpdateData([{ flip: flip }]);
-            }
-        } else if (ige.isClient) {
-            if (this._stats.flip != flip) {
-                // if (this._category =='unit' && this._stats.name != 'm0dE')
-                // 	console.log("wtf", flip)
+	flip: function (flip) {
+		// if (this._category == 'item') {
+		// 	if (flip == 1)
+		// 	console.trace()
+		// console.log("flip", flip)
+		// }
+		// execute below iff flip orientation changes
+		if (ige.isServer) {
+			if (flip != this._stats.flip) {
+				// if (this._category == 'unit' && this._stats.name != 'm0dE')
+				// 	console.log(flip)
+				this.streamUpdateData([{ flip: flip }]);
+			}
+		} else if (ige.isClient) {
+			if (this._stats.flip != flip) {
+				// if (this._category =='unit' && this._stats.name != 'm0dE')
+				// 	console.log("wtf", flip)
 
-                var entity = this._pixiTexture;
-                if (entity) {
-                    var x = Math.abs(entity.scale.x);
-                    var y = Math.abs(entity.scale.y);
-                    if (flip == 0) {
-                        entity.scale.set(x, y);
-                    }
-                    if (flip == 1) {
-                        entity.scale.set(-x, y);
-                    }
-                    if (flip == 2) {
-                        entity.scale.set(x, -y);
-                    }
-                    if (flip == 3) {
-                        entity.scale.set(-x, -y);
-                    }
-                }
-            }
-        }
-        this._stats.flip = flip;
-    },
+				var entity = this._pixiTexture;
+				if (entity) {
+					var x = Math.abs(entity.scale.x);
+					var y = Math.abs(entity.scale.y);
+					if (flip == 0) {
+						entity.scale.set(x, y);
+					}
+					if (flip == 1) {
+						entity.scale.set(-x, y);
+					}
+					if (flip == 2) {
+						entity.scale.set(x, -y);
+					}
+					if (flip == 3) {
+						entity.scale.set(-x, -y);
+					}
+				}
+			}
+		}
+		this._stats.flip = flip;
+	},
 
-    /**
+	/**
      * Handles calling the texture.render() method if a texture
      * is applied to the entity. This part of the tick process has
      * been abstracted to allow it to be overridden by an extending
@@ -2213,137 +2210,137 @@ var IgeEntity = IgeObject.extend({
      * the entity to.
      * @private
      */
-    _renderEntity: function (ctx) {
-        if (this._opacity > 0) {
-            // Check if the entity has a background pattern
-            if (this._backgroundPattern) {
-                if (!this._backgroundPatternFill) {
-                    // We have a pattern but no fill produced
-                    // from it. Check if we have a context to
-                    // generate a pattern from
-                    if (ctx) {
-                        // Produce the pattern fill
-                        this._backgroundPatternFill = ctx.createPattern(this._backgroundPattern.image, this._backgroundPatternRepeat);
-                    }
-                }
+	_renderEntity: function (ctx) {
+		if (this._opacity > 0) {
+			// Check if the entity has a background pattern
+			if (this._backgroundPattern) {
+				if (!this._backgroundPatternFill) {
+					// We have a pattern but no fill produced
+					// from it. Check if we have a context to
+					// generate a pattern from
+					if (ctx) {
+						// Produce the pattern fill
+						this._backgroundPatternFill = ctx.createPattern(this._backgroundPattern.image, this._backgroundPatternRepeat);
+					}
+				}
 
-                if (this._backgroundPatternFill) {
-                    // Draw the fill
-                    ctx.save();
-                    ctx.fillStyle = this._backgroundPatternFill;
+				if (this._backgroundPatternFill) {
+					// Draw the fill
+					ctx.save();
+					ctx.fillStyle = this._backgroundPatternFill;
 
-                    // TODO: When firefox has fixed their bug regarding negative rect co-ordinates, revert this change
+					// TODO: When firefox has fixed their bug regarding negative rect co-ordinates, revert this change
 
-                    // This is the proper way to do this but firefox has a bug which I'm gonna report
-                    // so instead I have to use ANOTHER translate call instead. So crap!
-                    //ctx.rect(-this._bounds2d.x2, -this._bounds2d.y2, this._bounds2d.x, this._bounds2d.y);
-                    ctx.translate(-this._bounds2d.x2, -this._bounds2d.y2);
-                    ctx.rect(0, 0, this._bounds2d.x, this._bounds2d.y);
-                    if (this._backgroundPatternTrackCamera) {
-                        ctx.translate(-ige._currentCamera._translate.x, -ige._currentCamera._translate.y);
-                        ctx.scale(ige._currentCamera._scale.x, ige._currentCamera._scale.y);
-                    }
-                    ctx.fill();
-                    ige._drawCount++;
+					// This is the proper way to do this but firefox has a bug which I'm gonna report
+					// so instead I have to use ANOTHER translate call instead. So crap!
+					// ctx.rect(-this._bounds2d.x2, -this._bounds2d.y2, this._bounds2d.x, this._bounds2d.y);
+					ctx.translate(-this._bounds2d.x2, -this._bounds2d.y2);
+					ctx.rect(0, 0, this._bounds2d.x, this._bounds2d.y);
+					if (this._backgroundPatternTrackCamera) {
+						ctx.translate(-ige._currentCamera._translate.x, -ige._currentCamera._translate.y);
+						ctx.scale(ige._currentCamera._scale.x, ige._currentCamera._scale.y);
+					}
+					ctx.fill();
+					ige._drawCount++;
 
-                    if (this._backgroundPatternIsoTile) {
-                        ctx.translate(-Math.floor(this._backgroundPattern.image.width) / 2, -Math.floor(this._backgroundPattern.image.height / 2));
-                        ctx.fill();
-                        ige._drawCount++;
-                    }
+					if (this._backgroundPatternIsoTile) {
+						ctx.translate(-Math.floor(this._backgroundPattern.image.width) / 2, -Math.floor(this._backgroundPattern.image.height / 2));
+						ctx.fill();
+						ige._drawCount++;
+					}
 
-                    ctx.restore();
-                }
-            }
+					ctx.restore();
+				}
+			}
 
-            var texture = this._texture;
+			var texture = this._texture;
 
-            // Check if the entity is visible based upon its opacity
-            if (texture && texture._loaded) {
-                // Draw the entity image
+			// Check if the entity is visible based upon its opacity
+			if (texture && texture._loaded) {
+				// Draw the entity image
 
-                // flip texture horizontally/vertically if requested
-                if (this._stats.flip == 1) {
-                    ctx.save();
-                    ctx.scale(-1, 1);
-                }
-                if (this._stats.flip == 2) {
-                    ctx.save();
-                    ctx.scale(1, -1);
-                }
-                if (this._stats.flip == 3) {
-                    ctx.save();
-                    ctx.scale(-1, -1);
-                }
+				// flip texture horizontally/vertically if requested
+				if (this._stats.flip == 1) {
+					ctx.save();
+					ctx.scale(-1, 1);
+				}
+				if (this._stats.flip == 2) {
+					ctx.save();
+					ctx.scale(1, -1);
+				}
+				if (this._stats.flip == 3) {
+					ctx.save();
+					ctx.scale(-1, -1);
+				}
 
-                texture.render(ctx, this, ige._tickDelta);
+				texture.render(ctx, this, ige._tickDelta);
 
-                if (this._stats.flip > 0) {
-                    ctx.restore();
-                }
+				if (this._stats.flip > 0) {
+					ctx.restore();
+				}
 
-                if (this._highlight) {
-                    ctx.globalCompositeOperation = 'lighter';
-                    texture.render(ctx, this);
-                }
-            }
+				if (this._highlight) {
+					ctx.globalCompositeOperation = 'lighter';
+					texture.render(ctx, this);
+				}
+			}
 
-            if (this._compositeCache && ige._currentViewport._drawCompositeBounds) {
-                //IgeEntity.prototype.log('moo');
-                ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
-                ctx.fillRect(-this._bounds2d.x2, -this._bounds2d.y2, this._bounds2d.x, this._bounds2d.y);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText('Composite Entity', -this._bounds2d.x2, -this._bounds2d.y2 - 15);
-                ctx.fillText(this.id(), -this._bounds2d.x2, -this._bounds2d.y2 - 5);
-            }
-        }
-    },
+			if (this._compositeCache && ige._currentViewport._drawCompositeBounds) {
+				// IgeEntity.prototype.log('moo');
+				ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
+				ctx.fillRect(-this._bounds2d.x2, -this._bounds2d.y2, this._bounds2d.x, this._bounds2d.y);
+				ctx.fillStyle = '#ffffff';
+				ctx.fillText('Composite Entity', -this._bounds2d.x2, -this._bounds2d.y2 - 15);
+				ctx.fillText(this.id(), -this._bounds2d.x2, -this._bounds2d.y2 - 5);
+			}
+		}
+	},
 
-    /**
+	/**
      * Draws the cached off-screen canvas image data to the passed canvas
      * context.
      * @param {CanvasRenderingContext2D} ctx The canvas context to render
      * the entity to.
      * @private
      */
-    _renderCache: function (ctx) {
-        ctx.save();
-        if (this._compositeCache) {
-            var aabbC = this._compositeAabbCache;
-            ctx.translate(this._bounds2d.x2 + aabbC.x, this._bounds2d.y2 + aabbC.y);
+	_renderCache: function (ctx) {
+		ctx.save();
+		if (this._compositeCache) {
+			var aabbC = this._compositeAabbCache;
+			ctx.translate(this._bounds2d.x2 + aabbC.x, this._bounds2d.y2 + aabbC.y);
 
-            if (this._parent && this._parent._ignoreCamera) {
-                // Translate the entity back to negate the scene translate
-                var cam = ige._currentCamera;
-                //ctx.translate(-cam._translate.x, -cam._translate.y);
-                /*this.scaleTo(1 / cam._scale.x, 1 / cam._scale.y, 1 / cam._scale.z);
-				this.rotateTo(-cam._rotate.x, -cam._rotate.y, -cam._rotate.z);*/
-            }
-        }
+			if (this._parent && this._parent._ignoreCamera) {
+				// Translate the entity back to negate the scene translate
+				var cam = ige._currentCamera;
+				// ctx.translate(-cam._translate.x, -cam._translate.y);
+				/* this.scaleTo(1 / cam._scale.x, 1 / cam._scale.y, 1 / cam._scale.z);
+				this.rotateTo(-cam._rotate.x, -cam._rotate.y, -cam._rotate.z); */
+			}
+		}
 
-        // We have a clean cached version so output that
-        ctx.drawImage(this._cacheCanvas, -this._bounds2d.x2, -this._bounds2d.y2);
+		// We have a clean cached version so output that
+		ctx.drawImage(this._cacheCanvas, -this._bounds2d.x2, -this._bounds2d.y2);
 
-        if (ige._currentViewport._drawCompositeBounds) {
-            ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
-            ctx.fillRect(-this._bounds2d.x2, -this._bounds2d.y2, this._cacheCanvas.width, this._cacheCanvas.height);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('Composite Cache', -this._bounds2d.x2, -this._bounds2d.y2 - 15);
-            ctx.fillText(this.id(), -this._bounds2d.x2, -this._bounds2d.y2 - 5);
-        }
+		if (ige._currentViewport._drawCompositeBounds) {
+			ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+			ctx.fillRect(-this._bounds2d.x2, -this._bounds2d.y2, this._cacheCanvas.width, this._cacheCanvas.height);
+			ctx.fillStyle = '#ffffff';
+			ctx.fillText('Composite Cache', -this._bounds2d.x2, -this._bounds2d.y2 - 15);
+			ctx.fillText(this.id(), -this._bounds2d.x2, -this._bounds2d.y2 - 5);
+		}
 
-        ige._drawCount++;
+		ige._drawCount++;
 
-        if (this._highlight) {
-            ctx.globalCompositeOperation = 'lighter';
-            ctx.drawImage(this._cacheCanvas, -this._bounds2d.x2, -this._bounds2d.y2);
+		if (this._highlight) {
+			ctx.globalCompositeOperation = 'lighter';
+			ctx.drawImage(this._cacheCanvas, -this._bounds2d.x2, -this._bounds2d.y2);
 
-            ige._drawCount++;
-        }
-        ctx.restore();
-    },
+			ige._drawCount++;
+		}
+		ctx.restore();
+	},
 
-    /**
+	/**
      * Transforms a point by the entity's parent world matrix and
      * it's own local matrix transforming the point to this entity's
      * world space.
@@ -2356,54 +2353,54 @@ var IgeEntity = IgeObject.extend({
      * @return {IgePoint3d} The transformed point.
      * @private
      */
-    _transformPoint: function (point) {
-        if (this._parent) {
-            var tempMat = new IgeMatrix2d();
-            // Copy the parent world matrix
-            tempMat.copy(this._parent._worldMatrix);
-            // Apply any local transforms
-            tempMat.multiply(this._localMatrix);
-            // Now transform the point
-            tempMat.getInverse().transformCoord(point, this);
-        } else {
-            this._localMatrix.transformCoord(point, this);
-        }
+	_transformPoint: function (point) {
+		if (this._parent) {
+			var tempMat = new IgeMatrix2d();
+			// Copy the parent world matrix
+			tempMat.copy(this._parent._worldMatrix);
+			// Apply any local transforms
+			tempMat.multiply(this._localMatrix);
+			// Now transform the point
+			tempMat.getInverse().transformCoord(point, this);
+		} else {
+			this._localMatrix.transformCoord(point, this);
+		}
 
-        return point;
-    },
+		return point;
+	},
 
-    /**
+	/**
      * Helper method to transform an array of points using _transformPoint.
      * @param {Array} points The points array to transform.
      * @private
      */
-    _transformPoints: function (points) {
-        var point,
-            pointCount = points.length;
+	_transformPoints: function (points) {
+		var point;
+		var pointCount = points.length;
 
-        var x = 0;
-        while (pointCount--) {
-            x++;
-            if (x > 10000) {
-                IgeEntity.prototype.log('IgeEntity 1964');
-                break;
-            } // for detecting infinite loops
-            point = points[pointCount];
-            if (this._parent) {
-                var tempMat = new IgeMatrix2d();
-                // Copy the parent world matrix
-                tempMat.copy(this._parent._worldMatrix);
-                // Apply any local transforms
-                tempMat.multiply(this._localMatrix);
-                // Now transform the point
-                tempMat.getInverse().transformCoord(point, this);
-            } else {
-                this._localMatrix.transformCoord(point, this);
-            }
-        }
-    },
+		var x = 0;
+		while (pointCount--) {
+			x++;
+			if (x > 10000) {
+				IgeEntity.prototype.log('IgeEntity 1964');
+				break;
+			} // for detecting infinite loops
+			point = points[pointCount];
+			if (this._parent) {
+				var tempMat = new IgeMatrix2d();
+				// Copy the parent world matrix
+				tempMat.copy(this._parent._worldMatrix);
+				// Apply any local transforms
+				tempMat.multiply(this._localMatrix);
+				// Now transform the point
+				tempMat.getInverse().transformCoord(point, this);
+			} else {
+				this._localMatrix.transformCoord(point, this);
+			}
+		}
+	},
 
-    /**
+	/**
      * Generates a string containing a code fragment that when
      * evaluated will reproduce this object's properties via
      * chained commands. This method will only check for
@@ -2412,87 +2409,87 @@ var IgeEntity = IgeObject.extend({
      * @return {String} The string code fragment that will
      * reproduce this entity when evaluated.
      */
-    _stringify: function (options) {
-        // Make sure we have an options object
-        if (options === undefined) {
-            options = {};
-        }
+	_stringify: function (options) {
+		// Make sure we have an options object
+		if (options === undefined) {
+			options = {};
+		}
 
-        // Get the properties for all the super-classes
-        var str = IgeObject.prototype._stringify.call(this, options),
-            i;
+		// Get the properties for all the super-classes
+		var str = IgeObject.prototype._stringify.call(this, options);
+		var i;
 
-        // Loop properties and add property assignment code to string
-        for (i in this) {
-            if (this.hasOwnProperty(i) && this[i] !== undefined) {
-                switch (i) {
-                    case '_opacity':
-                        str += '.opacity(' + this.opacity() + ')';
-                        break;
-                    case '_texture':
-                        str += ".texture(ige.$('" + this.texture().id() + "'))";
-                        break;
-                    case '_cell':
-                        str += '.cell(' + this.cell() + ')';
-                        break;
-                    case '_translate':
-                        if (options.transform !== false && options.translate !== false) {
-                            str += '.translateTo(' + this._translate.x + ', ' + this._translate.y + ', ' + this._translate.z + ')';
-                        }
-                        break;
-                    case '_rotate':
-                        if (options.transform !== false && options.rotate !== false) {
-                            str += '.rotateTo(' + this._rotate.x + ', ' + this._rotate.y + ', ' + this._rotate.z + ')';
-                        }
-                        break;
-                    case '_scale':
-                        if (options.transform !== false && options.scale !== false) {
-                            str += '.scaleTo(' + this._scale.x + ', ' + this._scale.y + ', ' + this._scale.z + ')';
-                        }
-                        break;
-                    case '_origin':
-                        if (options.origin !== false) {
-                            str += '.originTo(' + this._origin.x + ', ' + this._origin.y + ', ' + this._origin.z + ')';
-                        }
-                        break;
-                    case '_anchor':
-                        if (options.anchor !== false) {
-                            str += '.anchor(' + this._anchor.x + ', ' + this._anchor.y + ')';
-                        }
-                        break;
-                    case '_width':
-                        if (typeof this.width() === 'string') {
-                            str += ".width('" + this.width() + "')";
-                        } else {
-                            str += '.width(' + this.width() + ')';
-                        }
-                        break;
-                    case '_height':
-                        if (typeof this.height() === 'string') {
-                            str += ".height('" + this.height() + "')";
-                        } else {
-                            str += '.height(' + this.height() + ')';
-                        }
-                        break;
-                    case '_bounds3d':
-                        str += '.bounds3d(' + this._bounds3d.x + ', ' + this._bounds3d.y + ', ' + this._bounds3d.z + ')';
-                        break;
-                    case '_deathTime':
-                        if (options.deathTime !== false && options.lifeSpan !== false) {
-                            str += '.deathTime(' + this.deathTime() + ')';
-                        }
-                        break;
-                    case '_highlight':
-                        str += '.highlight(' + this.highlight() + ')';
-                        break;
-                }
-            }
-        }
+		// Loop properties and add property assignment code to string
+		for (i in this) {
+			if (this.hasOwnProperty(i) && this[i] !== undefined) {
+				switch (i) {
+					case '_opacity':
+						str += `.opacity(${this.opacity()})`;
+						break;
+					case '_texture':
+						str += `.texture(ige.$('${this.texture().id()}'))`;
+						break;
+					case '_cell':
+						str += `.cell(${this.cell()})`;
+						break;
+					case '_translate':
+						if (options.transform !== false && options.translate !== false) {
+							str += `.translateTo(${this._translate.x}, ${this._translate.y}, ${this._translate.z})`;
+						}
+						break;
+					case '_rotate':
+						if (options.transform !== false && options.rotate !== false) {
+							str += `.rotateTo(${this._rotate.x}, ${this._rotate.y}, ${this._rotate.z})`;
+						}
+						break;
+					case '_scale':
+						if (options.transform !== false && options.scale !== false) {
+							str += `.scaleTo(${this._scale.x}, ${this._scale.y}, ${this._scale.z})`;
+						}
+						break;
+					case '_origin':
+						if (options.origin !== false) {
+							str += `.originTo(${this._origin.x}, ${this._origin.y}, ${this._origin.z})`;
+						}
+						break;
+					case '_anchor':
+						if (options.anchor !== false) {
+							str += `.anchor(${this._anchor.x}, ${this._anchor.y})`;
+						}
+						break;
+					case '_width':
+						if (typeof this.width() === 'string') {
+							str += `.width('${this.width()}')`;
+						} else {
+							str += `.width(${this.width()})`;
+						}
+						break;
+					case '_height':
+						if (typeof this.height() === 'string') {
+							str += `.height('${this.height()}')`;
+						} else {
+							str += `.height(${this.height()})`;
+						}
+						break;
+					case '_bounds3d':
+						str += `.bounds3d(${this._bounds3d.x}, ${this._bounds3d.y}, ${this._bounds3d.z})`;
+						break;
+					case '_deathTime':
+						if (options.deathTime !== false && options.lifeSpan !== false) {
+							str += `.deathTime(${this.deathTime()})`;
+						}
+						break;
+					case '_highlight':
+						str += `.highlight(${this.highlight()})`;
+						break;
+				}
+			}
+		}
 
-        return str;
-    },
+		return str;
+	},
 
-    /**
+	/**
      * Destroys the entity by removing it from the scenegraph,
      * calling destroy() on any child entities and removing
      * any active event listeners for the entity. Once an entity
@@ -2501,134 +2498,134 @@ var IgeEntity = IgeObject.extend({
      * @example #Destroy the entity
      *     entity.destroy();
      */
-    destroy: function (destroyOrphan) {
-        IgeEntity.prototype.log('igeEntity: destroy ' + this._category + ' ' + this.id());
+	destroy: function (destroyOrphan) {
+		IgeEntity.prototype.log(`igeEntity: destroy ${this._category} ${this.id()}`);
 
-        this._alive = false;
-        /* CEXCLUDE */
-        // Check if the entity is streaming
-        if (ige.isServer) {
-            if (this._streamMode === 1 || this._streamMode === 2) {
-                delete this._streamDataCache;
-                this.streamDestroy();
-            }
-        }
-        
-        /* CEXCLUDE */
-        if (this.gluedEntities && this.gluedEntities.length > 0) {
-            this.gluedEntities.forEach(function (glueEntity) {
-                var entity = ige.$(glueEntity.id);
-                if (entity && (entity._pixiText || entity._pixiTexture)) {
-                    var texture = entity._pixiText || entity._pixiTexture;
-                    entity.unMount();
-                    entity.destroy();
-                    // texture.destroy({ children: true, texture: true });
-                    delete ige.pixi.trackEntityById[glueEntity.id];
-                }
-            });
-        }
+		this._alive = false;
+		/* CEXCLUDE */
+		// Check if the entity is streaming
+		if (ige.isServer) {
+			if (this._streamMode === 1 || this._streamMode === 2) {
+				delete this._streamDataCache;
+				this.streamDestroy();
+			}
+		}
 
-        if (ige.isClient) {
-            var entityId = this.entityId || this.id();
-            if (ige.pixi.trackEntityById[entityId]) {
-                // entity.destroy()
-                // ige.pixi.viewport.follow();
-                if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
-                    ige.pixi.viewport.removePlugin('follow');
-                }
-                var texture = ige.pixi.trackEntityById[entityId]._pixiTexture || ige.pixi.trackEntityById[entityId]._pixiText || ige.pixi.trackEntityById[entityId];
-                // its not instance of ige
-                if (texture && !texture.componentId && !texture._destroyed) {
-                    ige.pixi.world.removeChild(texture);
-                    texture.destroy({ children: true, texture: true });
+		/* CEXCLUDE */
+		if (this.gluedEntities && this.gluedEntities.length > 0) {
+			this.gluedEntities.forEach(function (glueEntity) {
+				var entity = ige.$(glueEntity.id);
+				if (entity && (entity._pixiText || entity._pixiTexture)) {
+					var texture = entity._pixiText || entity._pixiTexture;
+					entity.unMount();
+					entity.destroy();
+					// texture.destroy({ children: true, texture: true });
+					delete ige.pixi.trackEntityById[glueEntity.id];
+				}
+			});
+		}
 
-                    if (ige.pixiMap.layersGroup && !ige.pixiMap.layersGroup.floor.parent && !ige.isLog) {
-                        ige.isLog = true;
-                    }
-                }
-                ige.pixi.trackEntityById[entityId]._destroyed = true;
-                delete ige.pixi.trackEntityById[entityId];
-            }
+		if (ige.isClient) {
+			var entityId = this.entityId || this.id();
+			if (ige.pixi.trackEntityById[entityId]) {
+				// entity.destroy()
+				// ige.pixi.viewport.follow();
+				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
+					ige.pixi.viewport.removePlugin('follow');
+				}
+				var texture = ige.pixi.trackEntityById[entityId]._pixiTexture || ige.pixi.trackEntityById[entityId]._pixiText || ige.pixi.trackEntityById[entityId];
+				// its not instance of ige
+				if (texture && !texture.componentId && !texture._destroyed) {
+					ige.pixi.world.removeChild(texture);
+					texture.destroy({ children: true, texture: true });
 
-            // destory attribute bars
-            if (this.attributeBars) {
-                for (var attributeBarInfo of this.attributeBars) {
-                    var pixiBarId = attributeBarInfo.id;
-                    var pixiBar = ige.$(pixiBarId);
+					if (ige.pixiMap.layersGroup && !ige.pixiMap.layersGroup.floor.parent && !ige.isLog) {
+						ige.isLog = true;
+					}
+				}
+				ige.pixi.trackEntityById[entityId]._destroyed = true;
+				delete ige.pixi.trackEntityById[entityId];
+			}
 
-                    pixiBar.destroy();
-                }
-            }
-        }
+			// destory attribute bars
+			if (this.attributeBars) {
+				for (var attributeBarInfo of this.attributeBars) {
+					var pixiBarId = attributeBarInfo.id;
+					var pixiBar = ige.$(pixiBarId);
 
-        /**
+					pixiBar.destroy();
+				}
+			}
+		}
+
+		/**
          * Fires when the entity has been destroyed.
          * @event IgeEntity#destroyed
          * @param {IgeEntity} The entity that has been destroyed.
          */
-        for (var region in ige.regionManager.entitiesInRegion) {
-            delete ige.regionManager.entitiesInRegion[region][this.id()];
-        }
+		for (var region in ige.regionManager.entitiesInRegion) {
+			delete ige.regionManager.entitiesInRegion[region][this.id()];
+		}
 
-        IgeEntity.prototype.log('entity destroyed ' + this.id() + ' category: ' + this._category + ' ' + (this._stats ? this._stats.name : ''));
-        this.emit('destroyed', this);
+		IgeEntity.prototype.log(`entity destroyed ${this.id()} category: ${this._category} ${this._stats ? this._stats.name : ''}`);
+		this.emit('destroyed', this);
 
-        // Call IgeObject.destroy()
-        IgeObject.prototype.destroy.call(this);
+		// Call IgeObject.destroy()
+		IgeObject.prototype.destroy.call(this);
 
-        if (ige.isClient && ige.$('baseScene')._orphans) {
-            delete ige.$('baseScene')._orphans[this._id];
-        }
-    },
+		if (ige.isClient && ige.$('baseScene')._orphans) {
+			delete ige.$('baseScene')._orphans[this._id];
+		}
+	},
 
-    // remove all pointers referencing to this entity
-    clearAllPointers: function () {
-        var keysToDelete = ['ability', 'animation', 'attribute', 'attributeBarsContainer', 'fadingTextContainer', 'inventory', 'minimapUnit', 'unitNameLabel', 'unitUi', '_aabb', '_bounds2d', '_bounds3d', '_rotate', '_velocity'];
-        for (var i = 0; i < keysToDelete.length; i++) {
-            var key = keysToDelete[i];
-            if (this[key] && typeof this[key].destroy === 'function') {
-                this[key].destroy();
-                delete this[key];
-            }
-        }
-    },
+	// remove all pointers referencing to this entity
+	clearAllPointers: function () {
+		var keysToDelete = ['ability', 'animation', 'attribute', 'attributeBarsContainer', 'fadingTextContainer', 'inventory', 'minimapUnit', 'unitNameLabel', 'unitUi', '_aabb', '_bounds2d', '_bounds3d', '_rotate', '_velocity'];
+		for (var i = 0; i < keysToDelete.length; i++) {
+			var key = keysToDelete[i];
+			if (this[key] && typeof this[key].destroy === 'function') {
+				this[key].destroy();
+				delete this[key];
+			}
+		}
+	},
 
-    saveSpecialProp: function (obj, i) {
-        switch (i) {
-            case '_texture':
-                if (obj._texture) {
-                    return { _texture: obj._texture.id() };
-                }
-                break;
+	saveSpecialProp: function (obj, i) {
+		switch (i) {
+			case '_texture':
+				if (obj._texture) {
+					return { _texture: obj._texture.id() };
+				}
+				break;
 
-            default:
-                // Call super-class saveSpecialProp
-                return IgeObject.prototype.saveSpecialProp.call(this, obj, i);
-                break;
-        }
+			default:
+				// Call super-class saveSpecialProp
+				return IgeObject.prototype.saveSpecialProp.call(this, obj, i);
+				break;
+		}
 
-        return undefined;
-    },
+		return undefined;
+	},
 
-    loadSpecialProp: function (obj, i) {
-        switch (i) {
-            case '_texture':
-                return { _texture: ige.$(obj[i]) };
-                break;
+	loadSpecialProp: function (obj, i) {
+		switch (i) {
+			case '_texture':
+				return { _texture: ige.$(obj[i]) };
+				break;
 
-            default:
-                // Call super-class loadSpecialProp
-                return IgeObject.prototype.loadSpecialProp.call(this, obj, i);
-                break;
-        }
+			default:
+				// Call super-class loadSpecialProp
+				return IgeObject.prototype.loadSpecialProp.call(this, obj, i);
+				break;
+		}
 
-        return undefined;
-    },
+		return undefined;
+	},
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // INTERACTION
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// INTERACTION
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
      * Gets / sets the callback that is fired when a mouse
      * move event is triggered.
      * @param {Function=} callback
@@ -2646,17 +2643,17 @@ var IgeEntity = IgeObject.extend({
      *     });
      * @return {*}
      */
-    mouseMove: function (callback) {
-        if (callback) {
-            this._mouseMove = callback;
-            this._mouseEventsActive = true;
-            return this;
-        }
+	mouseMove: function (callback) {
+		if (callback) {
+			this._mouseMove = callback;
+			this._mouseEventsActive = true;
+			return this;
+		}
 
-        return this._mouseMove;
-    },
+		return this._mouseMove;
+	},
 
-    /**
+	/**
      * Gets / sets the callback that is fired when a mouse
      * over event is triggered.
      * @param {Function=} callback
@@ -2674,17 +2671,17 @@ var IgeEntity = IgeObject.extend({
      *     });
      * @return {*}
      */
-    mouseOver: function (callback) {
-        if (callback) {
-            this._mouseOver = callback;
-            this._mouseEventsActive = true;
-            return this;
-        }
+	mouseOver: function (callback) {
+		if (callback) {
+			this._mouseOver = callback;
+			this._mouseEventsActive = true;
+			return this;
+		}
 
-        return this._mouseOver;
-    },
+		return this._mouseOver;
+	},
 
-    /**
+	/**
      * Gets / sets the callback that is fired when a mouse
      * out event is triggered.
      * @param {Function=} callback
@@ -2702,17 +2699,17 @@ var IgeEntity = IgeObject.extend({
      *     });
      * @return {*}
      */
-    mouseOut: function (callback) {
-        if (callback) {
-            this._mouseOut = callback;
-            this._mouseEventsActive = true;
-            return this;
-        }
+	mouseOut: function (callback) {
+		if (callback) {
+			this._mouseOut = callback;
+			this._mouseEventsActive = true;
+			return this;
+		}
 
-        return this._mouseOut;
-    },
+		return this._mouseOut;
+	},
 
-    /**
+	/**
      * Gets / sets the callback that is fired when a mouse
      * up event is triggered.
      * @param {Function=} callback
@@ -2730,17 +2727,17 @@ var IgeEntity = IgeObject.extend({
      *     });
      * @return {*}
      */
-    mouseUp: function (callback) {
-        if (callback) {
-            this._mouseUp = callback;
-            this._mouseEventsActive = true;
-            return this;
-        }
+	mouseUp: function (callback) {
+		if (callback) {
+			this._mouseUp = callback;
+			this._mouseEventsActive = true;
+			return this;
+		}
 
-        return this._mouseUp;
-    },
+		return this._mouseUp;
+	},
 
-    /**
+	/**
      * Gets / sets the callback that is fired when a mouse
      * down event is triggered.
      * @param {Function=} callback
@@ -2758,17 +2755,17 @@ var IgeEntity = IgeObject.extend({
      *     });
      * @return {*}
      */
-    mouseDown: function (callback) {
-        if (callback) {
-            this._mouseDown = callback;
-            this._mouseEventsActive = true;
-            return this;
-        }
+	mouseDown: function (callback) {
+		if (callback) {
+			this._mouseDown = callback;
+			this._mouseEventsActive = true;
+			return this;
+		}
 
-        return this._mouseDown;
-    },
+		return this._mouseDown;
+	},
 
-    /**
+	/**
      * Gets / sets the callback that is fired when a mouse
      * wheel event is triggered.
      * @param {Function=} callback
@@ -2787,87 +2784,87 @@ var IgeEntity = IgeObject.extend({
      *     });
      * @return {*}
      */
-    mouseWheel: function (callback) {
-        if (callback) {
-            this._mouseWheel = callback;
-            this._mouseEventsActive = true;
-            return this;
-        }
+	mouseWheel: function (callback) {
+		if (callback) {
+			this._mouseWheel = callback;
+			this._mouseEventsActive = true;
+			return this;
+		}
 
-        return this._mouseWheel;
-    },
+		return this._mouseWheel;
+	},
 
-    /**
+	/**
      * Removes the callback that is fired when a mouse
      * move event is triggered.
      */
-    mouseMoveOff: function () {
-        delete this._mouseMove;
+	mouseMoveOff: function () {
+		delete this._mouseMove;
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Removes the callback that is fired when a mouse
      * over event is triggered.
      */
-    mouseOverOff: function () {
-        delete this._mouseOver;
+	mouseOverOff: function () {
+		delete this._mouseOver;
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Removes the callback that is fired when a mouse
      * out event is triggered.
      */
-    mouseOutOff: function () {
-        delete this._mouseOut;
+	mouseOutOff: function () {
+		delete this._mouseOut;
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Removes the callback that is fired when a mouse
      * up event is triggered.
      */
-    mouseUpOff: function () {
-        delete this._mouseUp;
+	mouseUpOff: function () {
+		delete this._mouseUp;
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Removes the callback that is fired when a mouse
      * down event is triggered if the listener was registered
      * via the mouseDown() method.
      */
-    mouseDownOff: function () {
-        delete this._mouseDown;
+	mouseDownOff: function () {
+		delete this._mouseDown;
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Removes the callback that is fired when a mouse
      * wheel event is triggered.
      */
-    mouseWheelOff: function () {
-        delete this._mouseWheel;
+	mouseWheelOff: function () {
+		delete this._mouseWheel;
 
-        return this;
-    },
+		return this;
+	},
 
-    triggerPolygon: function (poly) {
-        if (poly !== undefined) {
-            this._triggerPolygon = poly;
-            return this;
-        }
+	triggerPolygon: function (poly) {
+		if (poly !== undefined) {
+			this._triggerPolygon = poly;
+			return this;
+		}
 
-        return this._triggerPolygon;
-    },
+		return this._triggerPolygon;
+	},
 
-    /**
+	/**
      * Gets / sets the shape / polygon that the mouse events
      * are triggered against. There are two options, 'aabb' and
      * 'isoBounds'. The default is 'aabb'.
@@ -2875,154 +2872,154 @@ var IgeEntity = IgeObject.extend({
      * @returns {*}
      * @deprecated
      */
-    mouseEventTrigger: function (val) {
-        IgeEntity.prototype.log('mouseEventTrigger is no longer in use. Please see triggerPolygon() instead.', 'warning');
-        /*if (val !== undefined) {
+	mouseEventTrigger: function (val) {
+		IgeEntity.prototype.log('mouseEventTrigger is no longer in use. Please see triggerPolygon() instead.', 'warning');
+		/* if (val !== undefined) {
 			// Set default value
 			this._mouseEventTrigger = 0;
-			
+
 			switch (val) {
 				case 'isoBounds':
 					this._mouseEventTrigger = 1;
 					break;
-				
+
 				case 'custom':
 					this._mouseEventTrigger = 2;
 					break;
-				
+
 				case 'aabb':
 					this._mouseEventTrigger = 0;
 					break;
 			}
 			return this;
 		}
-		
-		return this._mouseEventTrigger === 0 ? 'aabb' : 'isoBounds';*/
-    },
 
-    /**
+		return this._mouseEventTrigger === 0 ? 'aabb' : 'isoBounds'; */
+	},
+
+	/**
      * Handler method that determines which mouse-move event
      * to fire, a mouse-over or a mouse-move.
      * @private
      */
-    _handleMouseIn: function (event, evc, data) {
-        // Check if the mouse move is a mouse over
-        if (!this._mouseStateOver) {
-            this._mouseStateOver = true;
-            if (this._mouseOver) {
-                this._mouseOver(event, evc, data);
-            }
+	_handleMouseIn: function (event, evc, data) {
+		// Check if the mouse move is a mouse over
+		if (!this._mouseStateOver) {
+			this._mouseStateOver = true;
+			if (this._mouseOver) {
+				this._mouseOver(event, evc, data);
+			}
 
-            /**
+			/**
              * Fires when the mouse moves over the entity.
              * @event IgeEntity#mouseOver
              * @param {Object} The DOM event object.
              * @param {Object} The IGE event control object.
              * @param {*} Any further event data.
              */
-            this.emit('mouseOver', [event, evc, data]);
-        }
+			this.emit('mouseOver', [event, evc, data]);
+		}
 
-        if (this._mouseMove) {
-            this._mouseMove(event, evc, data);
-        }
-        this.emit('mouseMove', [event, evc, data]);
-    },
+		if (this._mouseMove) {
+			this._mouseMove(event, evc, data);
+		}
+		this.emit('mouseMove', [event, evc, data]);
+	},
 
-    /**
+	/**
      * Handler method that determines if a mouse-out event
      * should be fired.
      * @private
      */
-    _handleMouseOut: function (event, evc, data) {
-        // The mouse went away from this entity so
-        // set mouse-down to false, regardless of the situation
-        this._mouseStateDown = false;
+	_handleMouseOut: function (event, evc, data) {
+		// The mouse went away from this entity so
+		// set mouse-down to false, regardless of the situation
+		this._mouseStateDown = false;
 
-        // Check if the mouse move is a mouse out
-        if (this._mouseStateOver) {
-            this._mouseStateOver = false;
-            if (this._mouseOut) {
-                this._mouseOut(event, evc, data);
-            }
+		// Check if the mouse move is a mouse out
+		if (this._mouseStateOver) {
+			this._mouseStateOver = false;
+			if (this._mouseOut) {
+				this._mouseOut(event, evc, data);
+			}
 
-            /**
+			/**
              * Fires when the mouse moves away from the entity.
              * @event IgeEntity#mouseOut
              * @param {Object} The DOM event object.
              * @param {Object} The IGE event control object.
              * @param {*} Any further event data.
              */
-            this.emit('mouseOut', [event, evc, data]);
-        }
-    },
+			this.emit('mouseOut', [event, evc, data]);
+		}
+	},
 
-    /**
+	/**
      * Handler method that determines if a mouse-wheel event
      * should be fired.
      * @private
      */
-    _handleMouseWheel: function (event, evc, data) {
-        if (this._mouseWheel) {
-            this._mouseWheel(event, evc, data);
-        }
+	_handleMouseWheel: function (event, evc, data) {
+		if (this._mouseWheel) {
+			this._mouseWheel(event, evc, data);
+		}
 
-        /**
+		/**
          * Fires when the mouse wheel is moved over the entity.
          * @event IgeEntity#mouseWheel
          * @param {Object} The DOM event object.
          * @param {Object} The IGE event control object.
          * @param {*} Any further event data.
          */
-        this.emit('mouseWheel', [event, evc, data]);
-    },
+		this.emit('mouseWheel', [event, evc, data]);
+	},
 
-    /**
+	/**
      * Handler method that determines if a mouse-up event
      * should be fired.
      * @private
      */
-    _handleMouseUp: function (event, evc, data) {
-        // Reset the mouse-down flag
-        this._mouseStateDown = false;
-        if (this._mouseUp) {
-            this._mouseUp(event, evc, data);
-        }
+	_handleMouseUp: function (event, evc, data) {
+		// Reset the mouse-down flag
+		this._mouseStateDown = false;
+		if (this._mouseUp) {
+			this._mouseUp(event, evc, data);
+		}
 
-        /**
+		/**
          * Fires when a mouse up occurs on the entity.
          * @event IgeEntity#mouseUp
          * @param {Object} The DOM event object.
          * @param {Object} The IGE event control object.
          * @param {*} Any further event data.
          */
-        this.emit('mouseUp', [event, evc, data]);
-    },
+		this.emit('mouseUp', [event, evc, data]);
+	},
 
-    /**
+	/**
      * Handler method that determines if a mouse-down event
      * should be fired.
      * @private
      */
-    _handleMouseDown: function (event, evc, data) {
-        if (!this._mouseStateDown) {
-            this._mouseStateDown = true;
-            if (this._mouseDown) {
-                this._mouseDown(event, evc, data);
-            }
+	_handleMouseDown: function (event, evc, data) {
+		if (!this._mouseStateDown) {
+			this._mouseStateDown = true;
+			if (this._mouseDown) {
+				this._mouseDown(event, evc, data);
+			}
 
-            /**
+			/**
              * Fires when a mouse down occurs on the entity.
              * @event IgeEntity#mouseDown
              * @param {Object} The DOM event object.
              * @param {Object} The IGE event control object.
              * @param {*} Any further event data.
              */
-            this.emit('mouseDown', [event, evc, data]);
-        }
-    },
+			this.emit('mouseDown', [event, evc, data]);
+		}
+	},
 
-    /**
+	/**
      * Checks mouse input types and fires the correct mouse event
      * handler. This is an internal method that should never be
      * called externally.
@@ -3031,32 +3028,32 @@ var IgeEntity = IgeObject.extend({
      * the new event.
      * @private
      */
-    _mouseInTrigger: function (evc, data) {
-        if (ige.input.mouseMove) {
-            // There is a mouse move event
-            this._handleMouseIn(ige.input.mouseMove, evc, data);
-        }
+	_mouseInTrigger: function (evc, data) {
+		if (ige.input.mouseMove) {
+			// There is a mouse move event
+			this._handleMouseIn(ige.input.mouseMove, evc, data);
+		}
 
-        if (ige.input.mouseDown) {
-            // There is a mouse down event
-            this._handleMouseDown(ige.input.mouseDown, evc, data);
-        }
+		if (ige.input.mouseDown) {
+			// There is a mouse down event
+			this._handleMouseDown(ige.input.mouseDown, evc, data);
+		}
 
-        if (ige.input.mouseUp) {
-            // There is a mouse up event
-            this._handleMouseUp(ige.input.mouseUp, evc, data);
-        }
+		if (ige.input.mouseUp) {
+			// There is a mouse up event
+			this._handleMouseUp(ige.input.mouseUp, evc, data);
+		}
 
-        if (ige.input.mouseWheel) {
-            // There is a mouse wheel event
-            this._handleMouseWheel(ige.input.mouseWheel, evc, data);
-        }
-    },
+		if (ige.input.mouseWheel) {
+			// There is a mouse wheel event
+			this._handleMouseWheel(ige.input.mouseWheel, evc, data);
+		}
+	},
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // TRANSFORM
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// TRANSFORM
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
      * Enables tracing calls which inadvertently assign NaN values to
      * transformation properties. When called on an entity this system
      * will break with a debug line when a transform property is set
@@ -3064,71 +3061,71 @@ var IgeEntity = IgeObject.extend({
      * determine where the offending value originated.
      * @returns {IgeEntity}
      */
-    debugTransforms: function () {
-        ige.traceSet(this._translate, 'x', 1, function (val) {
-            return isNaN(val);
-        });
+	debugTransforms: function () {
+		ige.traceSet(this._translate, 'x', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._translate, 'y', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._translate, 'y', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._translate, 'z', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._translate, 'z', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._rotate, 'x', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._rotate, 'x', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._rotate, 'y', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._rotate, 'y', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._rotate, 'z', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._rotate, 'z', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._scale, 'x', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._scale, 'x', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._scale, 'y', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._scale, 'y', 1, function (val) {
+			return isNaN(val);
+		});
 
-        ige.traceSet(this._scale, 'z', 1, function (val) {
-            return isNaN(val);
-        });
+		ige.traceSet(this._scale, 'z', 1, function (val) {
+			return isNaN(val);
+		});
 
-        return this;
-    },
+		return this;
+	},
 
-    velocityTo: function (x, y, z) {
-        if (x !== undefined && y !== undefined && z !== undefined) {
-            this._velocity.x = x;
-            this._velocity.y = y;
-            this._velocity.z = z;
-        } else {
-            IgeEntity.prototype.log('velocityTo() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	velocityTo: function (x, y, z) {
+		if (x !== undefined && y !== undefined && z !== undefined) {
+			this._velocity.x = x;
+			this._velocity.y = y;
+			this._velocity.z = z;
+		} else {
+			IgeEntity.prototype.log('velocityTo() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    velocityBy: function (x, y, z) {
-        if (x !== undefined && y !== undefined && z !== undefined) {
-            this._velocity.x += x;
-            this._velocity.y += y;
-            this._velocity.z += z;
-        } else {
-            IgeEntity.prototype.log('velocityBy() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	velocityBy: function (x, y, z) {
+		if (x !== undefined && y !== undefined && z !== undefined) {
+			this._velocity.x += x;
+			this._velocity.y += y;
+			this._velocity.z += z;
+		} else {
+			IgeEntity.prototype.log('velocityBy() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Translates the entity by adding the passed values to
      * the current translation values.
      * @param {Number} x The x co-ordinate.
@@ -3138,19 +3135,19 @@ var IgeEntity = IgeObject.extend({
      *     entity.translateBy(10, 0, 0);
      * @return {*}
      */
-    translateBy: function (x, y, z) {
-        if (!isNaN(x) && !isNaN(y) && !isNaN(z) && x !== undefined && y !== undefined && z !== undefined) {
-            this._translate.x += x;
-            this._translate.y += y;
-            this._translate.z += z;
-        } else {
-            IgeEntity.prototype.log('translateBy() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	translateBy: function (x, y, z) {
+		if (!isNaN(x) && !isNaN(y) && !isNaN(z) && x !== undefined && y !== undefined && z !== undefined) {
+			this._translate.x += x;
+			this._translate.y += y;
+			this._translate.z += z;
+		} else {
+			IgeEntity.prototype.log('translateBy() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Translates the entity to the passed values.
      * @param {Number} x The x co-ordinate.
      * @param {Number} y The y co-ordinate.
@@ -3159,107 +3156,107 @@ var IgeEntity = IgeObject.extend({
      *     entity.translateTo(10, 0, 0);
      * @return {*}
      */
-    translateTo: function (x, y) {
-        if (x !== undefined && y !== undefined) {
-            if (this._translate) {
-                this._translate.x = x;
-                this._translate.y = y;
-            }
+	translateTo: function (x, y) {
+		if (x !== undefined && y !== undefined) {
+			if (this._translate) {
+				this._translate.x = x;
+				this._translate.y = y;
+			}
 
-            if (ige.physics && ige.physics.engine == 'CRASH') {
-                x += this.width() / 2;
-                y += this.height() / 2;
-            }
+			if (ige.physics && ige.physics.engine == 'CRASH') {
+				x += this.width() / 2;
+				y += this.height() / 2;
+			}
 
-            // ensure this entity is created at its latest position to the new clients. (instead of spawnPosition)
-            // this.defaultData.translate = this._translate;
-        } else {
-            IgeEntity.prototype.log('translateTo() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+			// ensure this entity is created at its latest position to the new clients. (instead of spawnPosition)
+			// this.defaultData.translate = this._translate;
+		} else {
+			IgeEntity.prototype.log('translateTo() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    transformPixiEntity: function (x, y, z, type) {
-        if (!ige.isClient) return;
-        var entity = this._pixiText || this._pixiContainer;
-        if (entity && !entity._destroyed) {
-            if (this._pixiTexture) {
-                this._pixiTexture.rotation = z;
-            }
-            if (!type) {
-                entity.x = x;
-                entity.y = y;
-            }
-            entity.dirty = true;
-            if (ige.pixi.viewport) {
-                ige.pixi.viewport.dirty = true;
-            }
-        }
-        return this;
-    },
+	transformPixiEntity: function (x, y, z, type) {
+		if (!ige.isClient) return;
+		var entity = this._pixiText || this._pixiContainer;
+		if (entity && !entity._destroyed) {
+			if (this._pixiTexture) {
+				this._pixiTexture.rotation = z;
+			}
+			if (!type) {
+				entity.x = x;
+				entity.y = y;
+			}
+			entity.dirty = true;
+			if (ige.pixi.viewport) {
+				ige.pixi.viewport.dirty = true;
+			}
+		}
+		return this;
+	},
 
-    teleportTo: function (x, y, rotate) {
-        // console.log("teleporting to ", x, y)
-        
-        this.translateTo(x, y);
-        if (rotate != undefined) {
-            this.rotateTo(0, 0, rotate);
-        }
-        
-        if (ige.isServer) {
-            ige.network.send("teleport", { entityId: this.id(), position: [x, y] });
-            this.clientStreamedPosition = undefined;
-        } else if (ige.isClient) {
-            this.lastServerStreamedPosition = undefined;
-            this.prevPhysicsFrame = undefined;
-            this.nextPhysicsFrame = undefined;
-            this.movementHistory = [];
-            if (this.body) {
-                this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
-                if (rotate != undefined) {
-                    this.body.setAngle(rotate);
-                }
-            }
-        }
+	teleportTo: function (x, y, rotate) {
+		// console.log("teleporting to ", x, y)
 
-        this.discrepancyCount = 0;
-        this.lastTeleportedAt = ige._currentTime;
-       
-        if (this._category == 'unit') {
-            // teleport unit's attached items
-            for (entityId in this.jointsAttached) {
-                if ((attachedEntity = ige.$(entityId))) {
-                    if (attachedEntity._category == 'item') {
-                        // to prevent infinite loop, only move items that are attached to unit
-                        attachedEntity.teleportTo(attachedEntity._translate.x + offsetX, attachedEntity._translate.y + offsetY, attachedEntity._rotate.z);
-                    }
-                }
-            }
-        }
-    },
+		this.translateTo(x, y);
+		if (rotate != undefined) {
+			this.rotateTo(0, 0, rotate);
+		}
 
-    isInVP: function (rect2) {
-        var vp = ige.pixi.viewport.getVisibleBounds();
-        var rect1 = {
-            x1: vp.x,
-            y1: vp.y,
-            x2: vp.x + vp.width,
-            y2: vp.y + vp.height,
-        };
-        if (rect1.x1 >= rect2.x2 || rect2.x1 >= rect1.x2) {
-            return false;
-        }
+		if (ige.isServer) {
+			ige.network.send('teleport', { entityId: this.id(), position: [x, y] });
+			this.clientStreamedPosition = undefined;
+		} else if (ige.isClient) {
+			this.lastServerStreamedPosition = undefined;
+			this.prevPhysicsFrame = undefined;
+			this.nextPhysicsFrame = undefined;
+			this.movementHistory = [];
+			if (this.body) {
+				this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
+				if (rotate != undefined) {
+					this.body.setAngle(rotate);
+				}
+			}
+		}
 
-        // If one rectangle is above other
-        if (rect1.y1 >= rect2.y2 || rect2.y1 >= rect1.y2) {
-            return false;
-        }
+		this.discrepancyCount = 0;
+		this.lastTeleportedAt = ige._currentTime;
 
-        return true;
-    },
+		if (this._category == 'unit') {
+			// teleport unit's attached items
+			for (entityId in this.jointsAttached) {
+				if ((attachedEntity = ige.$(entityId))) {
+					if (attachedEntity._category == 'item') {
+						// to prevent infinite loop, only move items that are attached to unit
+						attachedEntity.teleportTo(attachedEntity._translate.x + offsetX, attachedEntity._translate.y + offsetY, attachedEntity._rotate.z);
+					}
+				}
+			}
+		}
+	},
 
-    /**
+	isInVP: function (rect2) {
+		var vp = ige.pixi.viewport.getVisibleBounds();
+		var rect1 = {
+			x1: vp.x,
+			y1: vp.y,
+			x2: vp.x + vp.width,
+			y2: vp.y + vp.height
+		};
+		if (rect1.x1 >= rect2.x2 || rect2.x1 >= rect1.x2) {
+			return false;
+		}
+
+		// If one rectangle is above other
+		if (rect1.y1 >= rect2.y2 || rect2.y1 >= rect1.y2) {
+			return false;
+		}
+
+		return true;
+	},
+
+	/**
      * Translates the entity to the passed point.
      * @param {IgePoint3d} point The point with co-ordinates.
      * @example #Translate the entity to 10, 0, 0
@@ -3269,19 +3266,19 @@ var IgeEntity = IgeObject.extend({
      *     entity.translateToPoint(point);
      * @return {*}
      */
-    translateToPoint: function (point) {
-        if (point !== undefined) {
-            this._translate.x = point.x;
-            this._translate.y = point.y;
-            this._translate.z = point.z;
-        } else {
-            IgeEntity.prototype.log('translateToPoint() called with a missing or undefined point parameter!', 'error');
-        }
+	translateToPoint: function (point) {
+		if (point !== undefined) {
+			this._translate.x = point.x;
+			this._translate.y = point.y;
+			this._translate.z = point.z;
+		} else {
+			IgeEntity.prototype.log('translateToPoint() called with a missing or undefined point parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Translates the object to the tile co-ordinates passed.
      * @param {Number} x The x tile co-ordinate.
      * @param {Number} y The y tile co-ordinate.
@@ -3300,44 +3297,44 @@ var IgeEntity = IgeObject.extend({
      * @return {*} The object this method was called from to allow
      * method chaining.
      */
-    translateToTile: function (x, y, z) {
-        if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
-            var finalZ;
+	translateToTile: function (x, y, z) {
+		if (this._parent && this._parent._tileWidth !== undefined && this._parent._tileHeight !== undefined) {
+			var finalZ;
 
-            // Handle being passed a z co-ordinate
-            if (z !== undefined) {
-                finalZ = z * this._parent._tileWidth;
-            } else {
-                finalZ = this._translate.z;
-            }
+			// Handle being passed a z co-ordinate
+			if (z !== undefined) {
+				finalZ = z * this._parent._tileWidth;
+			} else {
+				finalZ = this._translate.z;
+			}
 
-            this.translateTo(x * this._parent._tileWidth + this._parent._tileWidth / 2, y * this._parent._tileHeight + this._parent._tileWidth / 2, finalZ);
-        } else {
-            IgeEntity.prototype.log('Cannot translate to tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
-        }
+			this.translateTo(x * this._parent._tileWidth + this._parent._tileWidth / 2, y * this._parent._tileHeight + this._parent._tileWidth / 2, finalZ);
+		} else {
+			IgeEntity.prototype.log('Cannot translate to tile because the entity is not currently mounted to a tile map or the tile map has no tileWidth or tileHeight values.', 'warning');
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Gets the translate accessor object.
      * @example #Use the translate accessor object to alter the y co-ordinate of the entity to 10
      *     entity.translate().y(10);
      * @return {*}
      */
-    translate: function () {
-        if (arguments.length) {
-            IgeEntity.prototype.log('You called translate with arguments, did you mean translateTo or translateBy instead of translate?', 'warning');
-        }
+	translate: function () {
+		if (arguments.length) {
+			IgeEntity.prototype.log('You called translate with arguments, did you mean translateTo or translateBy instead of translate?', 'warning');
+		}
 
-        this.x = this._translateAccessorX;
-        this.y = this._translateAccessorY;
-        this.z = this._translateAccessorZ;
+		this.x = this._translateAccessorX;
+		this.y = this._translateAccessorY;
+		this.z = this._translateAccessorZ;
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * The translate accessor method for the x axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.translate().
@@ -3345,16 +3342,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _translateAccessorX: function (val) {
-        if (val !== undefined) {
-            this._translate.x = val;
-            return this._entity || this;
-        }
+	_translateAccessorX: function (val) {
+		if (val !== undefined) {
+			this._translate.x = val;
+			return this._entity || this;
+		}
 
-        return this._translate.x;
-    },
+		return this._translate.x;
+	},
 
-    /**
+	/**
      * The translate accessor method for the y axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.translate().
@@ -3362,16 +3359,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _translateAccessorY: function (val) {
-        if (val !== undefined) {
-            this._translate.y = val;
-            return this._entity || this;
-        }
+	_translateAccessorY: function (val) {
+		if (val !== undefined) {
+			this._translate.y = val;
+			return this._entity || this;
+		}
 
-        return this._translate.y;
-    },
+		return this._translate.y;
+	},
 
-    /**
+	/**
      * The translate accessor method for the z axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.translate().
@@ -3379,18 +3376,18 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _translateAccessorZ: function (val) {
-        // TODO: Do we need to do anything to the matrix here for iso views?
-        //this._localMatrix.translateTo(this._translate.x, this._translate.y);
-        if (val !== undefined) {
-            this._translate.z = val;
-            return this._entity || this;
-        }
+	_translateAccessorZ: function (val) {
+		// TODO: Do we need to do anything to the matrix here for iso views?
+		// this._localMatrix.translateTo(this._translate.x, this._translate.y);
+		if (val !== undefined) {
+			this._translate.z = val;
+			return this._entity || this;
+		}
 
-        return this._translate.z;
-    },
+		return this._translate.z;
+	},
 
-    /**
+	/**
      * Rotates the entity by adding the passed values to
      * the current rotation values.
      * @param {Number} x The x co-ordinate.
@@ -3400,20 +3397,20 @@ var IgeEntity = IgeObject.extend({
      *     entity.rotateBy(0, 0, Math.radians(10));
      * @return {*}
      */
-    rotateBy: function (x, y, z) {
-        if (!isNaN(x) && !isNaN(y) && !isNaN(z) && x !== undefined && y !== undefined && z !== undefined) {
-            this._rotate.x += x;
-            this._rotate.y += y;
-            this._rotate.z += z;
-            this.transformPixiEntity(0, 0, z, 'rotateBy');
-        } else {
-            IgeEntity.prototype.log('rotateBy() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	rotateBy: function (x, y, z) {
+		if (!isNaN(x) && !isNaN(y) && !isNaN(z) && x !== undefined && y !== undefined && z !== undefined) {
+			this._rotate.x += x;
+			this._rotate.y += y;
+			this._rotate.z += z;
+			this.transformPixiEntity(0, 0, z, 'rotateBy');
+		} else {
+			IgeEntity.prototype.log('rotateBy() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Rotates the entity to the passed values.
      * @param {Number} x The x co-ordinate.
      * @param {Number} y The y co-ordinate.
@@ -3422,39 +3419,39 @@ var IgeEntity = IgeObject.extend({
      *     entity.rotateTo(0, 0, Math.radians(10));
      * @return {*}
      */
-    rotateTo: function (x, y, z) {
-        // if (this._category == 'item')
-        // 	console.log("asdf!", z)
-        if (!isNaN(x) && !isNaN(y) && !isNaN(z) && x !== undefined && y !== undefined && z !== undefined) {
-            this._rotate.x = x;
-            this._rotate.y = y;
-            this._rotate.z = z;
-        } else {
-            IgeEntity.prototype.log('rotateTo() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	rotateTo: function (x, y, z) {
+		// if (this._category == 'item')
+		// 	console.log("asdf!", z)
+		if (!isNaN(x) && !isNaN(y) && !isNaN(z) && x !== undefined && y !== undefined && z !== undefined) {
+			this._rotate.x = x;
+			this._rotate.y = y;
+			this._rotate.z = z;
+		} else {
+			IgeEntity.prototype.log('rotateTo() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Gets the translate accessor object.
      * @example #Use the rotate accessor object to rotate the entity about the z axis 10 degrees
      *     entity.rotate().z(Math.radians(10));
      * @return {*}
      */
-    rotate: function () {
-        if (arguments.length) {
-            IgeEntity.prototype.log('You called rotate with arguments, did you mean rotateTo or rotateBy instead of rotate?', 'warning');
-        }
+	rotate: function () {
+		if (arguments.length) {
+			IgeEntity.prototype.log('You called rotate with arguments, did you mean rotateTo or rotateBy instead of rotate?', 'warning');
+		}
 
-        this.x = this._rotateAccessorX;
-        this.y = this._rotateAccessorY;
-        this.z = this._rotateAccessorZ;
+		this.x = this._rotateAccessorX;
+		this.y = this._rotateAccessorY;
+		this.z = this._rotateAccessorZ;
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * The rotate accessor method for the x axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.rotate().
@@ -3462,16 +3459,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _rotateAccessorX: function (val) {
-        if (val !== undefined) {
-            this._rotate.x = val;
-            return this._entity || this;
-        }
+	_rotateAccessorX: function (val) {
+		if (val !== undefined) {
+			this._rotate.x = val;
+			return this._entity || this;
+		}
 
-        return this._rotate.x;
-    },
+		return this._rotate.x;
+	},
 
-    /**
+	/**
      * The rotate accessor method for the y axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.rotate().
@@ -3479,16 +3476,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _rotateAccessorY: function (val) {
-        if (val !== undefined) {
-            this._rotate.y = val;
-            return this._entity || this;
-        }
+	_rotateAccessorY: function (val) {
+		if (val !== undefined) {
+			this._rotate.y = val;
+			return this._entity || this;
+		}
 
-        return this._rotate.y;
-    },
+		return this._rotate.y;
+	},
 
-    /**
+	/**
      * The rotate accessor method for the z axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.rotate().
@@ -3496,16 +3493,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _rotateAccessorZ: function (val) {
-        if (val !== undefined) {
-            this._rotate.z = val;
-            return this._entity || this;
-        }
+	_rotateAccessorZ: function (val) {
+		if (val !== undefined) {
+			this._rotate.z = val;
+			return this._entity || this;
+		}
 
-        return this._rotate.z;
-    },
+		return this._rotate.z;
+	},
 
-    /**
+	/**
      * Scales the entity by adding the passed values to
      * the current scale values.
      * @param {Number} x The x co-ordinate.
@@ -3515,19 +3512,19 @@ var IgeEntity = IgeObject.extend({
      *     entity.scaleBy(2, 0, 0);
      * @return {*}
      */
-    scaleBy: function (x, y, z) {
-        if (x !== undefined && y !== undefined && z !== undefined) {
-            this._scale.x += x;
-            this._scale.y += y;
-            this._scale.z += z;
-        } else {
-            IgeEntity.prototype.log('scaleBy() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	scaleBy: function (x, y, z) {
+		if (x !== undefined && y !== undefined && z !== undefined) {
+			this._scale.x += x;
+			this._scale.y += y;
+			this._scale.z += z;
+		} else {
+			IgeEntity.prototype.log('scaleBy() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Scale the entity to the passed values.
      * @param {Number} x The x co-ordinate.
      * @param {Number} y The y co-ordinate.
@@ -3536,68 +3533,68 @@ var IgeEntity = IgeObject.extend({
      *     entity.scaleTo(1, 1, 1);
      * @return {*}
      */
-    pixiScaleTo: function (x, y) {
-        // if (this._category == 'item') {
-        // }
-        if (x !== undefined && y !== undefined) {
-            if (this._pixiTexture && !this._pixiTexture._destroyed) {
-                this._pixiTexture.scale.set(x, y);
-            } else if (this._pixiText && !this._pixiText._destroyed) {
-                this._pixiText.scale.set(x, y);
-            } else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-                this._pixiContainer.scale.set(x, y);
-            }
-        }
-    },
-    scaleTo: function (x, y, z) {
-        this.pixiScaleTo(x, y);
-        if (this._scale && x !== undefined && y !== undefined && z !== undefined) {
-            this._scale.x = x;
-            this._scale.y = y;
-            this._scale.z = z;
-            // IgeEntity.prototype.log("scaling to ", this._scale)
-        } else {
-            IgeEntity.prototype.log('scaleTo() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	pixiScaleTo: function (x, y) {
+		// if (this._category == 'item') {
+		// }
+		if (x !== undefined && y !== undefined) {
+			if (this._pixiTexture && !this._pixiTexture._destroyed) {
+				this._pixiTexture.scale.set(x, y);
+			} else if (this._pixiText && !this._pixiText._destroyed) {
+				this._pixiText.scale.set(x, y);
+			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
+				this._pixiContainer.scale.set(x, y);
+			}
+		}
+	},
+	scaleTo: function (x, y, z) {
+		this.pixiScaleTo(x, y);
+		if (this._scale && x !== undefined && y !== undefined && z !== undefined) {
+			this._scale.x = x;
+			this._scale.y = y;
+			this._scale.z = z;
+			// IgeEntity.prototype.log("scaling to ", this._scale)
+		} else {
+			IgeEntity.prototype.log('scaleTo() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
-    scaleDimensions: function (width, height) {
-        if (this._stats.scaleDimensions) {
-            var originalWidth = this.width();
-            var originalHeight = this.height();
-            var scaleX = width / originalWidth;
-            var scaleY = height / originalHeight;
+		return this._entity || this;
+	},
+	scaleDimensions: function (width, height) {
+		if (this._stats.scaleDimensions) {
+			var originalWidth = this.width();
+			var originalHeight = this.height();
+			var scaleX = width / originalWidth;
+			var scaleY = height / originalHeight;
 
-            if (ige.isServer) {
-                this.scaleTo(scaleX, scaleY, 0);
-                this.updateBody(undefined, false, true);
-            } else {
-                this.height(height);
-                this.width(width);
-            }
-        }
-    },
+			if (ige.isServer) {
+				this.scaleTo(scaleX, scaleY, 0);
+				this.updateBody(undefined, false, true);
+			} else {
+				this.height(height);
+				this.width(width);
+			}
+		}
+	},
 
-    /**
+	/**
      * Gets the scale accessor object.
      * @example #Use the scale accessor object to set the scale of the entity on the x axis to 1
      *     entity.scale().x(1);
      * @return {*}
      */
-    scale: function () {
-        if (arguments.length) {
-            IgeEntity.prototype.log('You called scale with arguments, did you mean scaleTo or scaleBy instead of scale?', 'warning');
-        }
+	scale: function () {
+		if (arguments.length) {
+			IgeEntity.prototype.log('You called scale with arguments, did you mean scaleTo or scaleBy instead of scale?', 'warning');
+		}
 
-        this.x = this._scaleAccessorX;
-        this.y = this._scaleAccessorY;
-        this.z = this._scaleAccessorZ;
+		this.x = this._scaleAccessorX;
+		this.y = this._scaleAccessorY;
+		this.z = this._scaleAccessorZ;
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * The scale accessor method for the x axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.scale().
@@ -3605,16 +3602,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _scaleAccessorX: function (val) {
-        if (val !== undefined) {
-            this._scale.x = val;
-            return this._entity || this;
-        }
+	_scaleAccessorX: function (val) {
+		if (val !== undefined) {
+			this._scale.x = val;
+			return this._entity || this;
+		}
 
-        return this._scale.x;
-    },
+		return this._scale.x;
+	},
 
-    /**
+	/**
      * The scale accessor method for the y axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.scale().
@@ -3622,16 +3619,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _scaleAccessorY: function (val) {
-        if (val !== undefined) {
-            this._scale.y = val;
-            return this._entity || this;
-        }
+	_scaleAccessorY: function (val) {
+		if (val !== undefined) {
+			this._scale.y = val;
+			return this._entity || this;
+		}
 
-        return this._scale.y;
-    },
+		return this._scale.y;
+	},
 
-    /**
+	/**
      * The scale accessor method for the z axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.scale().
@@ -3639,16 +3636,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _scaleAccessorZ: function (val) {
-        if (val !== undefined) {
-            this._scale.z = val;
-            return this._entity || this;
-        }
+	_scaleAccessorZ: function (val) {
+		if (val !== undefined) {
+			this._scale.z = val;
+			return this._entity || this;
+		}
 
-        return this._scale.z;
-    },
+		return this._scale.z;
+	},
 
-    /**
+	/**
      * Sets the origin of the entity by adding the passed values to
      * the current origin values.
      * @param {Number} x The x co-ordinate.
@@ -3658,19 +3655,19 @@ var IgeEntity = IgeObject.extend({
      *     entity.originBy(0.5, 0, 0);
      * @return {*}
      */
-    originBy: function (x, y, z) {
-        if (x !== undefined && y !== undefined && z !== undefined) {
-            this._origin.x += x;
-            this._origin.y += y;
-            this._origin.z += z;
-        } else {
-            IgeEntity.prototype.log('originBy() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	originBy: function (x, y, z) {
+		if (x !== undefined && y !== undefined && z !== undefined) {
+			this._origin.x += x;
+			this._origin.y += y;
+			this._origin.z += z;
+		} else {
+			IgeEntity.prototype.log('originBy() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Set the origin of the entity to the passed values.
      * @param {Number} x The x co-ordinate.
      * @param {Number} y The y co-ordinate.
@@ -3679,33 +3676,33 @@ var IgeEntity = IgeObject.extend({
      *     entity.originTo(0.5, 0.5, 0.5);
      * @return {*}
      */
-    originTo: function (x, y, z) {
-        if (x !== undefined && y !== undefined && z !== undefined) {
-            this._origin.x = x;
-            this._origin.y = y;
-            this._origin.z = z;
-        } else {
-            IgeEntity.prototype.log('originTo() called with a missing or undefined x, y or z parameter!', 'error');
-        }
+	originTo: function (x, y, z) {
+		if (x !== undefined && y !== undefined && z !== undefined) {
+			this._origin.x = x;
+			this._origin.y = y;
+			this._origin.z = z;
+		} else {
+			IgeEntity.prototype.log('originTo() called with a missing or undefined x, y or z parameter!', 'error');
+		}
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * Gets the origin accessor object.
      * @example #Use the origin accessor object to set the origin of the entity on the x axis to 1
      *     entity.origin().x(1);
      * @return {*}
      */
-    origin: function () {
-        this.x = this._originAccessorX;
-        this.y = this._originAccessorY;
-        this.z = this._originAccessorZ;
+	origin: function () {
+		this.x = this._originAccessorX;
+		this.y = this._originAccessorY;
+		this.z = this._originAccessorZ;
 
-        return this._entity || this;
-    },
+		return this._entity || this;
+	},
 
-    /**
+	/**
      * The origin accessor method for the x axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.origin().
@@ -3713,16 +3710,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _originAccessorX: function (val) {
-        if (val !== undefined) {
-            this._origin.x = val;
-            return this._entity || this;
-        }
+	_originAccessorX: function (val) {
+		if (val !== undefined) {
+			this._origin.x = val;
+			return this._entity || this;
+		}
 
-        return this._origin.x;
-    },
+		return this._origin.x;
+	},
 
-    /**
+	/**
      * The origin accessor method for the y axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.origin().
@@ -3730,16 +3727,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _originAccessorY: function (val) {
-        if (val !== undefined) {
-            this._origin.y = val;
-            return this._entity || this;
-        }
+	_originAccessorY: function (val) {
+		if (val !== undefined) {
+			this._origin.y = val;
+			return this._entity || this;
+		}
 
-        return this._origin.y;
-    },
+		return this._origin.y;
+	},
 
-    /**
+	/**
      * The origin accessor method for the z axis. This
      * method is not called directly but is accessed through
      * the accessor object obtained by calling entity.origin().
@@ -3747,106 +3744,106 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      * @private
      */
-    _originAccessorZ: function (val) {
-        if (val !== undefined) {
-            this._origin.z = val;
-            return this._entity || this;
-        }
+	_originAccessorZ: function (val) {
+		if (val !== undefined) {
+			this._origin.z = val;
+			return this._entity || this;
+		}
 
-        return this._origin.z;
-    },
+		return this._origin.z;
+	},
 
-    _rotatePoint: function (point, radians, origin) {
-        var cosAngle = Math.cos(radians),
-            sinAngle = Math.sin(radians);
+	_rotatePoint: function (point, radians, origin) {
+		var cosAngle = Math.cos(radians);
+		var sinAngle = Math.sin(radians);
 
-        return {
-            x: origin.x + (point.x - origin.x) * cosAngle + (point.y - origin.y) * sinAngle,
-            y: origin.y - (point.x - origin.x) * sinAngle + (point.y - origin.y) * cosAngle,
-        };
-    },
+		return {
+			x: origin.x + (point.x - origin.x) * cosAngle + (point.y - origin.y) * sinAngle,
+			y: origin.y - (point.x - origin.x) * sinAngle + (point.y - origin.y) * cosAngle
+		};
+	},
 
-    /**
+	/**
      * Checks the current transform values against the previous ones. If
      * any value is different, the appropriate method is called which will
      * update the transformation matrix accordingly.
      */
-    updateTransform: function () {
-        ige.updateTransform++;
-        this._localMatrix.identity();
+	updateTransform: function () {
+		ige.updateTransform++;
+		this._localMatrix.identity();
 
-        if (this._mode === 0) {
-            // 2d translation
-            this._localMatrix.multiply(this._localMatrix._newTranslate(this._translate.x, this._translate.y));
-        }
+		if (this._mode === 0) {
+			// 2d translation
+			this._localMatrix.multiply(this._localMatrix._newTranslate(this._translate.x, this._translate.y));
+		}
 
-        if (this._mode === 1) {
-            if (!isNaN(this._translate.x) && !isNaN(this._translate.y)) {
-                // iso translation
-                var isoPoint = (this._translateIso = new IgePoint3d(this._translate.x, this._translate.y, this._translate.z + this._bounds3d.z / 2).toIso());
+		if (this._mode === 1) {
+			if (!isNaN(this._translate.x) && !isNaN(this._translate.y)) {
+				// iso translation
+				var isoPoint = (this._translateIso = new IgePoint3d(this._translate.x, this._translate.y, this._translate.z + this._bounds3d.z / 2).toIso());
 
-                if (this._parent && this._parent._bounds3d.z) {
-                    // This adjusts the child entity so that 0, 0, 0 inside the
-                    // parent is the center of the base of the parent
-                    isoPoint.y += this._parent._bounds3d.z / 1.6;
-                }
+				if (this._parent && this._parent._bounds3d.z) {
+					// This adjusts the child entity so that 0, 0, 0 inside the
+					// parent is the center of the base of the parent
+					isoPoint.y += this._parent._bounds3d.z / 1.6;
+				}
 
-                this._localMatrix.multiply(this._localMatrix._newTranslate(isoPoint.x, isoPoint.y));
-            } else {
-                console.log('localMatrix translate error: ', this._category, this._translate);
-                if (ige.chat) ige.chat.postMessage({ text: 'localMatrix translate error: ' + this._category + this._stats ? this._stats.name : '' });
-            }
-        }
+				this._localMatrix.multiply(this._localMatrix._newTranslate(isoPoint.x, isoPoint.y));
+			} else {
+				console.log('localMatrix translate error: ', this._category, this._translate);
+				if (ige.chat) ige.chat.postMessage({ text: `localMatrix translate error: ${this._category}${this._stats}` ? this._stats.name : '' });
+			}
+		}
 
-        ige.matrixEntityId = this.id();
-        ige.matrixAngle = this._rotate.z;
+		ige.matrixEntityId = this.id();
+		ige.matrixAngle = this._rotate.z;
 
-        this._localMatrix.rotateBy(this._rotate.z);
-        this._localMatrix.scaleBy(this._scale.x, this._scale.y);
+		this._localMatrix.rotateBy(this._rotate.z);
+		this._localMatrix.scaleBy(this._scale.x, this._scale.y);
 
-        // Adjust local matrix for origin values if not at center
-        if (this._origin.x !== 0.5 || this._origin.y !== 0.5) {
-            this._localMatrix.translateBy(this._bounds2d.x * (0.5 - this._origin.x), this._bounds2d.y * (0.5 - this._origin.y));
-        }
+		// Adjust local matrix for origin values if not at center
+		if (this._origin.x !== 0.5 || this._origin.y !== 0.5) {
+			this._localMatrix.translateBy(this._bounds2d.x * (0.5 - this._origin.x), this._bounds2d.y * (0.5 - this._origin.y));
+		}
 
-        // TODO: If the parent and local transforms are unchanged, we should used cached values
-        if (this._parent) {
-            this._worldMatrix.copy(this._parent._worldMatrix);
-            this._worldMatrix.multiply(this._localMatrix);
-        } else {
-            this._worldMatrix.copy(this._localMatrix);
-        }
+		// TODO: If the parent and local transforms are unchanged, we should used cached values
+		if (this._parent) {
+			this._worldMatrix.copy(this._parent._worldMatrix);
+			this._worldMatrix.multiply(this._localMatrix);
+		} else {
+			this._worldMatrix.copy(this._localMatrix);
+		}
 
-        // Check if the world matrix has changed and if so, set a few flags
-        // to allow other methods to know that a matrix change has occurred
-        if (!this._worldMatrix.compare(this._oldWorldMatrix)) {
-            this._oldWorldMatrix.copy(this._worldMatrix);
-            this._transformChanged = true;
-            this._aabbDirty = true;
-            this._bounds3dPolygonDirty = true;
-        } else {
-            this._transformChanged = false;
-        }
+		// Check if the world matrix has changed and if so, set a few flags
+		// to allow other methods to know that a matrix change has occurred
+		if (!this._worldMatrix.compare(this._oldWorldMatrix)) {
+			this._oldWorldMatrix.copy(this._worldMatrix);
+			this._transformChanged = true;
+			this._aabbDirty = true;
+			this._bounds3dPolygonDirty = true;
+		} else {
+			this._transformChanged = false;
+		}
 
-        // Check if the geometry has changed and if so, update the aabb dirty
-        if (!this._oldBounds2d.compare(this._bounds2d)) {
-            this._aabbDirty = true;
+		// Check if the geometry has changed and if so, update the aabb dirty
+		if (!this._oldBounds2d.compare(this._bounds2d)) {
+			this._aabbDirty = true;
 
-            // Record the new geometry to the oldGeometry data
-            this._oldBounds2d.copy(this._bounds2d);
-        }
+			// Record the new geometry to the oldGeometry data
+			this._oldBounds2d.copy(this._bounds2d);
+		}
 
-        if (!this._oldBounds3d.compare(this._bounds3d)) {
-            this._bounds3dPolygonDirty = true;
+		if (!this._oldBounds3d.compare(this._bounds3d)) {
+			this._bounds3dPolygonDirty = true;
 
-            // Record the new geometry to the oldGeometry data
-            this._oldBounds3d.copy(this._bounds3d);
-        }
+			// Record the new geometry to the oldGeometry data
+			this._oldBounds3d.copy(this._bounds3d);
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Gets / sets the disable interpolation flag. If set to true then
      * stream data being received by the client will not be interpolated
      * and will be instantly assigned instead. Useful if your entity's
@@ -3854,19 +3851,19 @@ var IgeEntity = IgeObject.extend({
      * @param val
      * @returns {*}
      */
-    disableInterpolation: function (val) {
-        if (val !== undefined) {
-            this._disableInterpolation = val;
-            return this;
-        }
+	disableInterpolation: function (val) {
+		if (val !== undefined) {
+			this._disableInterpolation = val;
+			return this;
+		}
 
-        return this._disableInterpolation;
-    },
+		return this._disableInterpolation;
+	},
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // STREAM
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// STREAM
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
      * Gets / sets the array of sections that this entity will
      * encode into its stream data.
      * @param {Array=} sectionArray An array of strings.
@@ -3875,509 +3872,506 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    streamSections: function (sectionArray) {
-        if (sectionArray !== undefined) {
-            this._streamSections = sectionArray;
-            return this;
-        }
+	streamSections: function (sectionArray) {
+		if (sectionArray !== undefined) {
+			this._streamSections = sectionArray;
+			return this;
+		}
 
-        return this._streamSections;
-    },
+		return this._streamSections;
+	},
 
-    /**
+	/**
      * Adds a section into the existing streamed sections array.
      * @param {String} sectionName The section name to add.
      */
-    streamSectionsPush: function (sectionName) {
-        this._streamSections = this._streamSections || [];
-        this._streamSections.push(sectionName);
+	streamSectionsPush: function (sectionName) {
+		this._streamSections = this._streamSections || [];
+		this._streamSections.push(sectionName);
 
-        return this;
-    },
-    getPersistentData: function (type) {
-        var self = this;
-        var dataToBeSaved = {};
-        var variables = {};
-        var unit = null;
-        var player = null;
-        var isUnitExists = false;
+		return this;
+	},
+	getPersistentData: function (type) {
+		var self = this;
+		var dataToBeSaved = {};
+		var variables = {};
+		var unit = null;
+		var player = null;
+		var isUnitExists = false;
 
-        dataToBeSaved[type] = {};
+		dataToBeSaved[type] = {};
 
-        if (type == 'player') {
-            player = self;
-            unit = ige.$(player._stats.selectedUnitId);
+		if (type == 'player') {
+			player = self;
+			unit = ige.$(player._stats.selectedUnitId);
 
-            if (!player || !player._stats) return;
-        } else if (type == 'unit') {
-            unit = self;
-            player = unit.getOwner();
+			if (!player || !player._stats) return;
+		} else if (type == 'unit') {
+			unit = self;
+			player = unit.getOwner();
 
-            if (!unit || !unit._stats) return;
-        }
+			if (!unit || !unit._stats) return;
+		}
 
-        isUnitExists = !!(unit && unit._stats);
+		isUnitExists = !!(unit && unit._stats);
 
-        var variablesToBeIgnored = ['unit', 'item', 'player', 'playerGroup', 'itemGroup', 'unitGroup', 'projectile', 'region'];
-        for (var variablesId in self.variables) {
-            var variable = self.variables[variablesId];
-            if (!variablesToBeIgnored.includes(variable.dataType)) {
-                variables[variablesId] = JSON.parse(JSON.stringify(variable));
-            }
-        }
+		var variablesToBeIgnored = ['unit', 'item', 'player', 'playerGroup', 'itemGroup', 'unitGroup', 'projectile', 'region'];
+		for (var variablesId in self.variables) {
+			var variable = self.variables[variablesId];
+			if (!variablesToBeIgnored.includes(variable.dataType)) {
+				variables[variablesId] = JSON.parse(JSON.stringify(variable));
+			}
+		}
 
-        if (isUnitExists) {
-            //remove all passive attributes applyed to this unit
-            unit._stats.itemIds.forEach(function (itemId) {
-                if (itemId) {
-                    var item = ige.$(itemId);
-                    if (item._stats.bonus && item._stats.bonus.passive) {
-                        if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
-                            unit.updateStats(itemId, true);
-                        }
-                    } else {
-                        unit.updateStats(itemId, true);
-                    }
-                    
-                    
-                }
-            });
-        }
+		if (isUnitExists) {
+			// remove all passive attributes applyed to this unit
+			unit._stats.itemIds.forEach(function (itemId) {
+				if (itemId) {
+					var item = ige.$(itemId);
+					if (item._stats.bonus && item._stats.bonus.passive) {
+						if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
+							unit.updateStats(itemId, true);
+						}
+					} else {
+						unit.updateStats(itemId, true);
+					}
+				}
+			});
+		}
 
-        dataToBeSaved[type] = {
-            attributes: _.cloneDeep(self._stats.attributes),
-            variables: variables,
-        };
+		dataToBeSaved[type] = {
+			attributes: _.cloneDeep(self._stats.attributes),
+			variables: variables
+		};
 
-        if (isUnitExists) {
-            //add all passive attributes applyed to this unit
-            unit._stats.itemIds.forEach(function (itemId) {
-                if (itemId) {
-                    var item = ige.$(itemId);
-                    if (item._stats.bonus && item._stats.bonus.passive) {
-                        if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
-                            unit.updateStats(itemId);
-                        }
-                    } else {
-                        unit.updateStats(itemId);
-                    }   
-                    
-                }
-            });
-        }
+		if (isUnitExists) {
+			// add all passive attributes applyed to this unit
+			unit._stats.itemIds.forEach(function (itemId) {
+				if (itemId) {
+					var item = ige.$(itemId);
+					if (item._stats.bonus && item._stats.bonus.passive) {
+						if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
+							unit.updateStats(itemId);
+						}
+					} else {
+						unit.updateStats(itemId);
+					}
+				}
+			});
+		}
 
-        if (isUnitExists && type == 'unit' && unit._stats.itemIds) {
-            var inventoryItems = unit._stats.itemIds.reduce(function (pv, cv) {
-                if (cv) {
-                    var item = ige.$(cv);
-                    if (item) {
-                        var itemVariable = {};
-                        for (var variablesId in item.variables) {
-                            var variable = item.variables[variablesId];
-                            if (!variablesToBeIgnored.includes(variable.dataType)) {
-                                itemVariable[variablesId] = JSON.parse(JSON.stringify(variable));
-                            }
-                        }
-                        var itemStatsToBeSaved = {
-                            itemTypeId: item._stats.itemTypeId,
-                            attributes: _.cloneDeep(item._stats.attributes),
-                            variables: _.cloneDeep(itemVariable),
-                            quantity: item._stats.quantity,
-                        };
+		if (isUnitExists && type == 'unit' && unit._stats.itemIds) {
+			var inventoryItems = unit._stats.itemIds.reduce(function (pv, cv) {
+				if (cv) {
+					var item = ige.$(cv);
+					if (item) {
+						var itemVariable = {};
+						for (var variablesId in item.variables) {
+							var variable = item.variables[variablesId];
+							if (!variablesToBeIgnored.includes(variable.dataType)) {
+								itemVariable[variablesId] = JSON.parse(JSON.stringify(variable));
+							}
+						}
+						var itemStatsToBeSaved = {
+							itemTypeId: item._stats.itemTypeId,
+							attributes: _.cloneDeep(item._stats.attributes),
+							variables: _.cloneDeep(itemVariable),
+							quantity: item._stats.quantity
+						};
 
-                        pv.push(itemStatsToBeSaved);
-                    }
-                }
-                return pv;
-            }, []);
-            dataToBeSaved[type].inventoryItems = inventoryItems;
-        }
+						pv.push(itemStatsToBeSaved);
+					}
+				}
+				return pv;
+			}, []);
+			dataToBeSaved[type].inventoryItems = inventoryItems;
+		}
 
-        return _.cloneDeep(dataToBeSaved[type]);
-    },
+		return _.cloneDeep(dataToBeSaved[type]);
+	},
 
-    updateStats: function (itemId, removeAttributes) {
-        var self = this;
-        var item = ige.$(itemId);
-        if (!ige.isServer) return;
-        // 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
-        var currentType = this._category === 'unit' ? 'unitTypes' : 'playerTypes';
-        var bonusType = this._category === 'unit' ? 'unitAttribute' : 'playerAttribute';
-        var currentEntityTypeId = this._category === 'unit' ? 'type' : 'playerTypeId';
-        var baseEntityStats = ige.game.getAsset(currentType, this._stats[currentEntityTypeId]);
+	updateStats: function (itemId, removeAttributes) {
+		var self = this;
+		var item = ige.$(itemId);
+		if (!ige.isServer) return;
+		// 1. store the unit's current attribute values. let's say we had 500/600 HP (base max 100hp)
+		var currentType = this._category === 'unit' ? 'unitTypes' : 'playerTypes';
+		var bonusType = this._category === 'unit' ? 'unitAttribute' : 'playerAttribute';
+		var currentEntityTypeId = this._category === 'unit' ? 'type' : 'playerTypeId';
+		var baseEntityStats = ige.game.getAsset(currentType, this._stats[currentEntityTypeId]);
 
-        if (!baseEntityStats) {
-            return;
-        }
+		if (!baseEntityStats) {
+			return;
+		}
 
-        var unit = self;
-        if (currentType === 'playerTypes') {
-            unit = this.getSelectedUnit();
-        }
+		var unit = self;
+		if (currentType === 'playerTypes') {
+			unit = this.getSelectedUnit();
+		}
 
-        if (item && item._stats.bonus && item._stats.bonus.passive && unit && (unit.canUseItem(item._stats) || removeAttributes)) {
-            var attributePassiveBonuses = item._stats.bonus.passive[bonusType];
+		if (item && item._stats.bonus && item._stats.bonus.passive && unit && (unit.canUseItem(item._stats) || removeAttributes)) {
+			var attributePassiveBonuses = item._stats.bonus.passive[bonusType];
 
-            if (attributePassiveBonuses) {
-                for (var attrId in attributePassiveBonuses) {
-                    var selectedAttribute = this._stats.attributes[attrId];
-                    var bonus = attributePassiveBonuses[attrId];
+			if (attributePassiveBonuses) {
+				for (var attrId in attributePassiveBonuses) {
+					var selectedAttribute = this._stats.attributes[attrId];
+					var bonus = attributePassiveBonuses[attrId];
 
-                    if (selectedAttribute && bonus) {
-                        var currentAttributeValue = parseFloat(selectedAttribute.value) || 1;
-                        var maxValue = parseFloat(selectedAttribute.max);
+					if (selectedAttribute && bonus) {
+						var currentAttributeValue = parseFloat(selectedAttribute.value) || 1;
+						var maxValue = parseFloat(selectedAttribute.max);
 
-                        if (currentAttributeValue != undefined) {
-                            if (removeAttributes) {
-                                if (bonus.type === 'percentage') {
-                                    var newValue = currentAttributeValue / (1 + parseFloat(bonus.value) / 100);
-                                    var newMax = maxValue / (1 + parseFloat(bonus.value) / 100);
-                                } else {
-                                    var newMax = maxValue - parseFloat(bonus.value);
-                                    var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue));
-                                }
-                            } else {
-                                if (bonus.type === 'percentage') {
-                                    var newValue = currentAttributeValue * (1 + parseFloat(bonus.value) / 100);
-                                    var newMax = maxValue * (1 + parseFloat(bonus.value) / 100);
-                                } else {
-                                    var newMax = maxValue + parseFloat(bonus.value);
-                                    var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue));
-                                }
-                            }
-                            // this._stats.attributes[attrId].value = newValue;
-                            // this._stats.attributes[attrId].max = newMax;
-                            // updatedAttributes[attrId] = newValue;
-                            // updatedAttributes[attrId] = newMax;
-                            this.attribute.setMax(attrId, newMax);
-                            this.attribute.update(attrId, newValue, true);
-                        }
-                    }
-                }
-            }
-        }
-        // update player attributes;
-        if (currentType === 'unitTypes') {
-            var player = this.getOwner();
-            player && player.updateStats(itemId, removeAttributes);
-        }
-    },
+						if (currentAttributeValue != undefined) {
+							if (removeAttributes) {
+								if (bonus.type === 'percentage') {
+									var newValue = currentAttributeValue / (1 + parseFloat(bonus.value) / 100);
+									var newMax = maxValue / (1 + parseFloat(bonus.value) / 100);
+								} else {
+									var newMax = maxValue - parseFloat(bonus.value);
+									var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue));
+								}
+							} else {
+								if (bonus.type === 'percentage') {
+									var newValue = currentAttributeValue * (1 + parseFloat(bonus.value) / 100);
+									var newMax = maxValue * (1 + parseFloat(bonus.value) / 100);
+								} else {
+									var newMax = maxValue + parseFloat(bonus.value);
+									var newValue = Math.min(newMax, Math.max(selectedAttribute.min, currentAttributeValue));
+								}
+							}
+							// this._stats.attributes[attrId].value = newValue;
+							// this._stats.attributes[attrId].max = newMax;
+							// updatedAttributes[attrId] = newValue;
+							// updatedAttributes[attrId] = newMax;
+							this.attribute.setMax(attrId, newMax);
+							this.attribute.update(attrId, newValue, true);
+						}
+					}
+				}
+			}
+		}
+		// update player attributes;
+		if (currentType === 'unitTypes') {
+			var player = this.getOwner();
+			player && player.updateStats(itemId, removeAttributes);
+		}
+	},
 
-    loadPersistentData: function (persistData) {
-        var self = this;
+	loadPersistentData: function (persistData) {
+		var self = this;
 
-        if (persistData) {
-            var attributes = persistData.attributes;
-            var variables = persistData.variables;
-            var max = {};
-            var min = {};
-            var regSpeed = {};
-            var keysToStream = ['min', 'max', 'regenerateSpeed', 'value'];
-            for (var attrKey in attributes) {
-                var persistAttribute = attributes[attrKey];
-                var playerAttribute = self._stats && self._stats.attributes && self._stats.attributes[attrKey];
-                if (playerAttribute) {
-                    for (var i = 0; i < keysToStream.length; i++) {
-                        var key = keysToStream[i];
-                        switch (key) {
-                            // we are persisting min, max and regenerating speed for
-                            // consumed item giving any bonuses
-                            case 'min':
-                                playerAttribute.min = persistAttribute[key];
-                                min[attrKey] = persistAttribute[key];
-                                break;
-                            case 'max':
-                                playerAttribute.max = persistAttribute[key];
-                                max[attrKey] = persistAttribute[key];
-                                break;
-                            case 'regenerateSpeed':
-                                playerAttribute.regenerateSpeed = persistAttribute[key];
-                                regSpeed[attrKey] = persistAttribute[key];
-                                break;
-                            case 'value':
-                                var newValue = Math.max(playerAttribute.min, Math.min(persistAttribute[key], playerAttribute.max));
-                                self.attribute.update(attrKey, newValue, true);
-                                break;
-                        }
-                    }
-                }
-            }
-            self.streamUpdateData([{ attributesMax: max }, { attributesMin: min }, { attributesRegenerateRate: regSpeed }]);
+		if (persistData) {
+			var attributes = persistData.attributes;
+			var variables = persistData.variables;
+			var max = {};
+			var min = {};
+			var regSpeed = {};
+			var keysToStream = ['min', 'max', 'regenerateSpeed', 'value'];
+			for (var attrKey in attributes) {
+				var persistAttribute = attributes[attrKey];
+				var playerAttribute = self._stats && self._stats.attributes && self._stats.attributes[attrKey];
+				if (playerAttribute) {
+					for (var i = 0; i < keysToStream.length; i++) {
+						var key = keysToStream[i];
+						switch (key) {
+							// we are persisting min, max and regenerating speed for
+							// consumed item giving any bonuses
+							case 'min':
+								playerAttribute.min = persistAttribute[key];
+								min[attrKey] = persistAttribute[key];
+								break;
+							case 'max':
+								playerAttribute.max = persistAttribute[key];
+								max[attrKey] = persistAttribute[key];
+								break;
+							case 'regenerateSpeed':
+								playerAttribute.regenerateSpeed = persistAttribute[key];
+								regSpeed[attrKey] = persistAttribute[key];
+								break;
+							case 'value':
+								var newValue = Math.max(playerAttribute.min, Math.min(persistAttribute[key], playerAttribute.max));
+								self.attribute.update(attrKey, newValue, true);
+								break;
+						}
+					}
+				}
+			}
+			self.streamUpdateData([{ attributesMax: max }, { attributesMin: min }, { attributesRegenerateRate: regSpeed }]);
 
-            for (var variableKey in variables) {
-                var persistVariable = variables[variableKey];
+			for (var variableKey in variables) {
+				var persistVariable = variables[variableKey];
 
-                if (self && self.variables && self.variables[variableKey]) {
-                    self.variables[variableKey] = persistVariable;
-                }
-            }
-        }
-    },
-    mouseEvents: function (defaultData) {
-        var self = this;
-        if (typeof mode === 'string' && mode === 'sandbox') {
-            IgeObject.prototype.mount.call(this, ige.client.rootScene);
-            self.mount(ige.client.rootScene);
-            self.drawMouse(true)
-                .drawBoundsData(false)
-                .mouseDown(function (event, evc) {
-                    if (event.which === 1 && ige.mapEditor.selectEntities) {
-                        this.onMouseDown = true;
-                        this.onMouseMove = false;
-                    }
-                })
-                .mouseMove(function (event) {
-                    if (this.onMouseDown && ige.mapEditor.selectEntities) {
-                        this.onMouseMove = true;
-                        this.translateTo(ige.mapEditor.mouseCoordinatesWRTVp.x, ige.mapEditor.mouseCoordinatesWRTVp.y, 0);
-                    }
-                })
-                .mouseUp(function (event) {
-                    if (this.onMouseDown === true) {
-                        if (this.onMouseMove === true) {
-                            self.scriptValues.x = ige.mapEditor.mouseCoordinatesWRTVp.x;
-                            self.scriptValues.y = ige.mapEditor.mouseCoordinatesWRTVp.y;
-                            ige.mapEditor.upsertMapEntities(self.scriptValues, parseInt(self.scriptValues.index));
-                        } else if (this.onMouseMove === false && ige.mapEditor.selectEntities && event.which === 1) {
-                            ige.mapEditor.openEntitiesModal(self.scriptValues, true);
-                            this.selectedEntityForMovement = true;
-                        }
-                    }
+				if (self && self.variables && self.variables[variableKey]) {
+					self.variables[variableKey] = persistVariable;
+				}
+			}
+		}
+	},
+	mouseEvents: function (defaultData) {
+		var self = this;
+		if (typeof mode === 'string' && mode === 'sandbox') {
+			IgeObject.prototype.mount.call(this, ige.client.rootScene);
+			self.mount(ige.client.rootScene);
+			self.drawMouse(true)
+				.drawBoundsData(false)
+				.mouseDown(function (event, evc) {
+					if (event.which === 1 && ige.mapEditor.selectEntities) {
+						this.onMouseDown = true;
+						this.onMouseMove = false;
+					}
+				})
+				.mouseMove(function (event) {
+					if (this.onMouseDown && ige.mapEditor.selectEntities) {
+						this.onMouseMove = true;
+						this.translateTo(ige.mapEditor.mouseCoordinatesWRTVp.x, ige.mapEditor.mouseCoordinatesWRTVp.y, 0);
+					}
+				})
+				.mouseUp(function (event) {
+					if (this.onMouseDown === true) {
+						if (this.onMouseMove === true) {
+							self.scriptValues.x = ige.mapEditor.mouseCoordinatesWRTVp.x;
+							self.scriptValues.y = ige.mapEditor.mouseCoordinatesWRTVp.y;
+							ige.mapEditor.upsertMapEntities(self.scriptValues, parseInt(self.scriptValues.index));
+						} else if (this.onMouseMove === false && ige.mapEditor.selectEntities && event.which === 1) {
+							ige.mapEditor.openEntitiesModal(self.scriptValues, true);
+							this.selectedEntityForMovement = true;
+						}
+					}
 
-                    this.onMouseDown = false;
-                    this.onMouseMove = false;
-                });
-        }
-    },
-    // use to apply max,min value before attributes value
-    // orderData: function (data) {
-    // 	var attributes = data.attributes && _.cloneDeep(data.attributes);
-    // 	var attributesMax = data.attributesMax && _.cloneDeep(data.attributesMax);
-    // 	var attributesMin = data.attributesMin && _.cloneDeep(data.attributesMin);
-    // 	if (attributesMax) {
-    // 		delete data.attributesMax;
-    // 		data.attributesMax = attributesMax;
-    // 	}
-    // 	if (attributesMin) {
-    // 		delete data.attributesMin;
-    // 		data.attributesMin = attributesMin;
-    // 	}
-    // 	if (attributes) {
-    // 		delete data.attributes;
-    // 		data.attributes = attributes;
-    // 	}
-    // 	return data;
-    // },
+					this.onMouseDown = false;
+					this.onMouseMove = false;
+				});
+		}
+	},
+	// use to apply max,min value before attributes value
+	// orderData: function (data) {
+	// 	var attributes = data.attributes && _.cloneDeep(data.attributes);
+	// 	var attributesMax = data.attributesMax && _.cloneDeep(data.attributesMax);
+	// 	var attributesMin = data.attributesMin && _.cloneDeep(data.attributesMin);
+	// 	if (attributesMax) {
+	// 		delete data.attributesMax;
+	// 		data.attributesMax = attributesMax;
+	// 	}
+	// 	if (attributesMin) {
+	// 		delete data.attributesMin;
+	// 		data.attributesMin = attributesMin;
+	// 	}
+	// 	if (attributes) {
+	// 		delete data.attributes;
+	// 		data.attributes = attributes;
+	// 	}
+	// 	return data;
+	// },
 
-    streamUpdateData: function (queuedData) {
-        var oldStats = {};
-        if (queuedData != undefined) {
-            for (var i = 0; i < queuedData.length; i++) {
-                var data = queuedData[i];
-                for (attrName in data) {
-                    var newValue = data[attrName];
-                    // console.log(this._category, this.id(), attrName, newValue)
-                    switch (attrName) {
-                        case 'attributes':
-                            // only on client side to prevent circular recursion
-                            if (ige.isClient) {
-                                var attributesObject = _.cloneDeep(this._stats.attributes);
-                                if (attributesObject) {
-                                    for (var attributeTypeId in data.attributes) {
-                                        var attributeData = attributesObject[attributeTypeId];
+	streamUpdateData: function (queuedData) {
+		var oldStats = {};
+		if (queuedData != undefined) {
+			for (var i = 0; i < queuedData.length; i++) {
+				var data = queuedData[i];
+				for (attrName in data) {
+					var newValue = data[attrName];
+					// console.log(this._category, this.id(), attrName, newValue)
+					switch (attrName) {
+						case 'attributes':
+							// only on client side to prevent circular recursion
+							if (ige.isClient) {
+								var attributesObject = _.cloneDeep(this._stats.attributes);
+								if (attributesObject) {
+									for (var attributeTypeId in data.attributes) {
+										var attributeData = attributesObject[attributeTypeId];
 
-                                        if (attributeData) {
-                                            var newAttributeValue = data.attributes[attributeTypeId];
-                                            var oldAttributeValue = attributeData.value;
-                                            
-                                            attributeData.hasChanged = newAttributeValue !== oldAttributeValue;
-                                            attributeData.value = newAttributeValue;
-                                            attributeData.type = attributeTypeId;
+										if (attributeData) {
+											var newAttributeValue = data.attributes[attributeTypeId];
+											var oldAttributeValue = attributeData.value;
 
-                                            this.attribute.update(attributeTypeId, attributeData.value);
+											attributeData.hasChanged = newAttributeValue !== oldAttributeValue;
+											attributeData.value = newAttributeValue;
+											attributeData.type = attributeTypeId;
 
-                                            if (this._category === 'unit') {
-                                                this.updateAttributeBar(attributeData);
-                                            }
-                                        }
-                                        // update attribute if entity has such attribute
-                                    }
-                                }
-                            } else if (ige.isServer) {
-                                for (var attributeTypeId in data.attributes) {
-                                    // prevent attribute being passed to client if it is invisible
-                                    if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
-                                        var attribute = this._stats.attributes[attributeTypeId];
-                                        if (
-                                            ((attribute.isVisible && typeof attribute.isVisible === 'boolean' && attribute.isVisible == false) || // will be deprecated.
+											this.attribute.update(attributeTypeId, attributeData.value);
+
+											if (this._category === 'unit') {
+												this.updateAttributeBar(attributeData);
+											}
+										}
+										// update attribute if entity has such attribute
+									}
+								}
+							} else if (ige.isServer) {
+								for (var attributeTypeId in data.attributes) {
+									// prevent attribute being passed to client if it is invisible
+									if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
+										var attribute = this._stats.attributes[attributeTypeId];
+										if (
+											((attribute.isVisible && typeof attribute.isVisible === 'boolean' && attribute.isVisible == false) || // will be deprecated.
                                                 (attribute.isVisible && attribute.isVisible.constructor === Array && attribute.isVisible.length == 0)) &&
                                             attributeTypeId !== ige.game.data.settings.scoreAttributeId
-                                        ) {
-                                            delete data[attrName];
-                                        }
-                                    }
-                                }
-                            }
-                            break;
+										) {
+											delete data[attrName];
+										}
+									}
+								}
+							}
+							break;
 
-                        case 'attributesMax':
-                            if (this._stats.attributes) {
-                                // only on client side to prevent circular recursion
-                                for (var attributeTypeId in data.attributesMax) {
-                                    if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
-                                        this._stats.attributes[attributeTypeId].max = data.attributesMax[attributeTypeId];
-                                    }
+						case 'attributesMax':
+							if (this._stats.attributes) {
+								// only on client side to prevent circular recursion
+								for (var attributeTypeId in data.attributesMax) {
+									if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
+										this._stats.attributes[attributeTypeId].max = data.attributesMax[attributeTypeId];
+									}
 
-                                    // update attribute if entity has such attribute
-                                    if (ige.isClient) {
-                                        if (this._category === 'unit') {
-                                            //this.updateAttributeBar(this._stats.attributes[attributeTypeId]);
-                                            this.unitUi && this.unitUi.updateAttributeBar(this._stats.attributes[attributeTypeId]);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
+									// update attribute if entity has such attribute
+									if (ige.isClient) {
+										if (this._category === 'unit') {
+											// this.updateAttributeBar(this._stats.attributes[attributeTypeId]);
+											this.unitUi && this.unitUi.updateAttributeBar(this._stats.attributes[attributeTypeId]);
+										}
+									}
+								}
+							}
+							break;
 
-                        case 'attributesMin':
-                            // only on client side to prevent circular recursion
-                            for (var attributeTypeId in data.attributesMin) {
-                                if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
-                                    this._stats.attributes[attributeTypeId].min = data.attributesMin[attributeTypeId];
+						case 'attributesMin':
+							// only on client side to prevent circular recursion
+							for (var attributeTypeId in data.attributesMin) {
+								if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
+									this._stats.attributes[attributeTypeId].min = data.attributesMin[attributeTypeId];
 
-                                    // update attribute if entity has such attribute
-                                    if (ige.isClient) {
-                                        if (this._category === 'unit') {
-                                            this.updateAttributeBar(this._stats.attributes[attributeTypeId]);
-                                            this.unitUi && this.unitUi.updateAttributeBar(this._stats.attributes[attributeTypeId]);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
+									// update attribute if entity has such attribute
+									if (ige.isClient) {
+										if (this._category === 'unit') {
+											this.updateAttributeBar(this._stats.attributes[attributeTypeId]);
+											this.unitUi && this.unitUi.updateAttributeBar(this._stats.attributes[attributeTypeId]);
+										}
+									}
+								}
+							}
+							break;
 
-                        case 'attributesRegenerateRate':
-                            // only on client side to prevent circular recursion
-                            for (var attributeTypeId in data.attributesRegenerateRate) {
-                                if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
-                                    this._stats.attributes[attributeTypeId].regenerateSpeed = data.attributesRegenerateRate[attributeTypeId];
-                                }
-                            }
-                            break;
+						case 'attributesRegenerateRate':
+							// only on client side to prevent circular recursion
+							for (var attributeTypeId in data.attributesRegenerateRate) {
+								if (this._stats.attributes && this._stats.attributes[attributeTypeId]) {
+									this._stats.attributes[attributeTypeId].regenerateSpeed = data.attributesRegenerateRate[attributeTypeId];
+								}
+							}
+							break;
 
-                        case 'depth':
-                            if (ige.isClient) {
-                                this.depth(data.depth);
-                            }
-                            break;
+						case 'depth':
+							if (ige.isClient) {
+								this.depth(data.depth);
+							}
+							break;
 
-                        case 'flip':
-                            // ignore flip command from server for my own unit, because it's already done locally
-                            if (ige.isClient && this != ige.client.selectedUnit && !(this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit)) {
-                                this.flip(newValue);
-                            }
-                            break;
-                        
-                        case 'isBeingUsed':
-                            // this case is in igeEntity.js instead of item.js, because if it's in item.js, 
-                            // we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
-                            if (ige.isClient) {
-                                if (this.getOwnerUnit() != ige.client.selectedUnit) {
-                                    this._stats.isBeingUsed = newValue;
-                                    if (newValue == false) {
-                                        this.playEffect('none');
-                                    }
-                                }
-                            }                            
-                            break;
+						case 'flip':
+							// ignore flip command from server for my own unit, because it's already done locally
+							if (ige.isClient && this != ige.client.selectedUnit && !(this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit)) {
+								this.flip(newValue);
+							}
+							break;
 
-                        case 'stopUsing':
-                            // This will only be called when we stop the unit from using an item from the server side, to prevent issues.
-                            if (ige.isClient) {
-                                this._stats.isBeingUsed = newValue;
-                                if (newValue == false) {
-                                    this.playEffect('none');
-                                }
-                            }                            
-                            break;
+						case 'isBeingUsed':
+							// this case is in igeEntity.js instead of item.js, because if it's in item.js,
+							// we cannot prevent updating my own unit's isBeingUsed, and item._stats.isBeingUsed will be updated regardless.
+							if (ige.isClient) {
+								if (this.getOwnerUnit() != ige.client.selectedUnit) {
+									this._stats.isBeingUsed = newValue;
+									if (newValue == false) {
+										this.playEffect('none');
+									}
+								}
+							}
+							break;
 
-                        default:
-                            // setting oldownerId b4 owner change
-                            if (attrName === 'ownerId') {
-                                this.oldOwnerId = this._stats[attrName];
-                            }
-                            this._stats[attrName] = newValue;
-                            break;
-                    }
+						case 'stopUsing':
+							// This will only be called when we stop the unit from using an item from the server side, to prevent issues.
+							if (ige.isClient) {
+								this._stats.isBeingUsed = newValue;
+								if (newValue == false) {
+									this.playEffect('none');
+								}
+							}
+							break;
 
-                    if (ige.isServer) {
-                        // keys that will stream even if its new value is same as the previous value
-                        var forceStreamKeys = ['anim', 'coin', 'stateId', 'ownerId', 'name', 'slotIndex', 'newItemId', 'quantity', 'spriteOnly', 'setFadingText', 'playerJoinedAgain', 'use', 'hidden'];
-                        if (typeof this.queueStreamData === 'function') {
-                            if (data[attrName] != oldStats[attrName] || forceStreamKeys.includes(attrName)) {
-                                // console.log("queueStreamData", attrName, data[attrName])
-                                var streamData = {};
-                                streamData[attrName] = data[attrName];
-                                this.queueStreamData(streamData);
-                            }
-                        }
-                    } else if (ige.isClient) {
-                        switch (attrName) {
-                            case 'stateId':
-                                // console.log('stateId', this.id(), this._stats.name, newValue);
-                                break;
-                            case 'effect':
-                                // don't use streamed effect call for my own unit or its items
-                                if (this == ige.client.selectedUnit || (this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit))
-                                    return;
-                                this.playEffect(newValue);
-                                break;
-                            case 'makePlayerSelectUnit':
-                                // this unit was queued to be selected by a player
-                                ige.client.myPlayer.selectUnit(this.id());
-                                break;
-                            case 'makePlayerCameraTrackUnit':
-                                // this unit was queued to be tracked by a player's camera
-                                ige.client.myPlayer.cameraTrackUnit(this);
-                                break;
-                            case 'hideUnit':
-                                this.hide();
-                                break;
-                            case 'showUnit':
-                                this.show();
-                                break;
-                            case 'hideNameLabel':
-                                this.unitNameLabel && this.unitNameLabel.hide();
-                                break;
-                            case 'showNameLabel':
-                                this.unitNameLabel && this.unitNameLabel.show();
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-    },
+						default:
+							// setting oldownerId b4 owner change
+							if (attrName === 'ownerId') {
+								this.oldOwnerId = this._stats[attrName];
+							}
+							this._stats[attrName] = newValue;
+							break;
+					}
 
-    // combine all data that'll be sent to the client, and send them altogether at the tick
-    queueStreamData: function (data) {
-        this._streamDataQueued = this._streamDataQueued.concat(data);
-        ige.server.bandwidthUsage[this._category] += JSON.stringify(this._streamDataQueued).length;
-    },
+					if (ige.isServer) {
+						// keys that will stream even if its new value is same as the previous value
+						var forceStreamKeys = ['anim', 'coin', 'stateId', 'ownerId', 'name', 'slotIndex', 'newItemId', 'quantity', 'spriteOnly', 'setFadingText', 'playerJoinedAgain', 'use', 'hidden'];
+						if (typeof this.queueStreamData === 'function') {
+							if (data[attrName] != oldStats[attrName] || forceStreamKeys.includes(attrName)) {
+								// console.log("queueStreamData", attrName, data[attrName])
+								var streamData = {};
+								streamData[attrName] = data[attrName];
+								this.queueStreamData(streamData);
+							}
+						}
+					} else if (ige.isClient) {
+						switch (attrName) {
+							case 'stateId':
+								// console.log('stateId', this.id(), this._stats.name, newValue);
+								break;
+							case 'effect':
+								// don't use streamed effect call for my own unit or its items
+								if (this == ige.client.selectedUnit || (this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit))
+									return;
+								this.playEffect(newValue);
+								break;
+							case 'makePlayerSelectUnit':
+								// this unit was queued to be selected by a player
+								ige.client.myPlayer.selectUnit(this.id());
+								break;
+							case 'makePlayerCameraTrackUnit':
+								// this unit was queued to be tracked by a player's camera
+								ige.client.myPlayer.cameraTrackUnit(this);
+								break;
+							case 'hideUnit':
+								this.hide();
+								break;
+							case 'showUnit':
+								this.show();
+								break;
+							case 'hideNameLabel':
+								this.unitNameLabel && this.unitNameLabel.hide();
+								break;
+							case 'showNameLabel':
+								this.unitNameLabel && this.unitNameLabel.show();
+								break;
+						}
+					}
+				}
+			}
+		}
+	},
 
-    /**
+	// combine all data that'll be sent to the client, and send them altogether at the tick
+	queueStreamData: function (data) {
+		this._streamDataQueued = this._streamDataQueued.concat(data);
+		ige.server.bandwidthUsage[this._category] += JSON.stringify(this._streamDataQueued).length;
+	},
+
+	/**
      * Removes a section into the existing streamed sections array.
      * @param {String} sectionName The section name to remove.
      */
-    streamSectionsPull: function (sectionName) {
-        if (this._streamSections) {
-            this._streamSections.pull(sectionName);
-        }
+	streamSectionsPull: function (sectionName) {
+		if (this._streamSections) {
+			this._streamSections.pull(sectionName);
+		}
 
-        return this;
-    },
+		return this;
+	},
 
-    /**
+	/**
      * Gets / sets a streaming property on this entity. If set, the
      * property's new value is streamed to clients on the next packet.
      *
@@ -4387,25 +4381,25 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when a propVal argument is passed to allow method
      * chaining or the current value if no propVal argument is specified.
      */
-    streamProperty: function (propName, propVal) {
-        this._streamProperty = this._streamProperty || {};
-        //this._streamPropertyChange = this._streamPropertyChange || {};
+	streamProperty: function (propName, propVal) {
+		this._streamProperty = this._streamProperty || {};
+		// this._streamPropertyChange = this._streamPropertyChange || {};
 
-        if (propName !== undefined) {
-            if (propVal !== undefined) {
-                //this._streamPropertyChange[propName] = this._streamProperty[propName] !== propVal;
-                this._streamProperty[propName] = propVal;
+		if (propName !== undefined) {
+			if (propVal !== undefined) {
+				// this._streamPropertyChange[propName] = this._streamProperty[propName] !== propVal;
+				this._streamProperty[propName] = propVal;
 
-                return this;
-            }
+				return this;
+			}
 
-            return this._streamProperty[propName];
-        }
+			return this._streamProperty[propName];
+		}
 
-        return undefined;
-    },
+		return undefined;
+	},
 
-    /**
+	/**
      * Gets / sets the data for the specified data section id. This method
      * is usually not called directly and instead is part of the network
      * stream system. General use case is to write your own custom streamSectionData
@@ -4420,178 +4414,178 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when a data argument is passed to allow method
      * chaining or the current value if no data argument is specified.
      */
-    streamSectionData: function (sectionId, data) {
-        switch (sectionId) {
-            case 'transform':
-                if (ige.isServer) {
-                    var x = this._translate.x.toFixed(0),
-                        y = this._translate.y.toFixed(0),
-                        angle = ((this._rotate.z % (2 * Math.PI)) * 1000).toFixed(0);
+	streamSectionData: function (sectionId, data) {
+		switch (sectionId) {
+			case 'transform':
+				if (ige.isServer) {
+					var x = this._translate.x.toFixed(0);
+					var y = this._translate.y.toFixed(0);
+					var angle = ((this._rotate.z % (2 * Math.PI)) * 1000).toFixed(0);
 
-                    if (x == this._oldTranform[0] && y == this._oldTranform[1] && angle == this._oldTranform[2]) {
-                        this._hasMoved = false;
-                    } else {
-                        this._hasMoved = true;
-                        this._oldTranform = [x, y, angle];
+					if (x == this._oldTranform[0] && y == this._oldTranform[1] && angle == this._oldTranform[2]) {
+						this._hasMoved = false;
+					} else {
+						this._hasMoved = true;
+						this._oldTranform = [x, y, angle];
 
-                        // var distanceTravelled = x - ige.lastX;
-                        // console.log(this.id(), ige._currentTime - ige.lastSnapshotTime, ige._currentTime, x,  distanceTravelled / (ige._currentTime - ige.lastSnapshotTime))
-                        // ige.lastX = x
-                        // ige.lastSnapshotTime = ige._currentTime;
+						// var distanceTravelled = x - ige.lastX;
+						// console.log(this.id(), ige._currentTime - ige.lastSnapshotTime, ige._currentTime, x,  distanceTravelled / (ige._currentTime - ige.lastSnapshotTime))
+						// ige.lastX = x
+						// ige.lastSnapshotTime = ige._currentTime;
 
-                        let buffArr = [];
-                        buffArr.push(Number(x));
-                        buffArr.push(Number(y));
-                        buffArr.push(Number(angle));
+						let buffArr = [];
+						buffArr.push(Number(x));
+						buffArr.push(Number(y));
+						buffArr.push(Number(angle));
 
-                        // IgeEntity.prototype.log(this._size, this._translate, this._rotate)
-                        if (this.bypassSmoothing) {
-                            buffArr.push(1);
-                            // ige.devLog("streamData", buff)
-                            this.bypassSmoothing = false;
-                        }
+						// IgeEntity.prototype.log(this._size, this._translate, this._rotate)
+						if (this.bypassSmoothing) {
+							buffArr.push(1);
+							// ige.devLog("streamData", buff)
+							this.bypassSmoothing = false;
+						}
 
-                        buffArr = buffArr.map(item => item.toString(16));
+						buffArr = buffArr.map(item => item.toString(16));
 
-                        this._streamSectionData = buffArr;
-                    }
-                }
-                break;
+						this._streamSectionData = buffArr;
+					}
+				}
+				break;
 
-            case 'depth':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        this.depth(parseInt(data));
-                    }
-                } else {
-                    return String(this.depth());
-                }
-                break;
+			case 'depth':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						this.depth(parseInt(data));
+					}
+				} else {
+					return String(this.depth());
+				}
+				break;
 
-            case 'layer':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        this.layer(parseInt(data));
-                    }
-                } else {
-                    return String(this.layer());
-                }
-                break;
+			case 'layer':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						this.layer(parseInt(data));
+					}
+				} else {
+					return String(this.layer());
+				}
+				break;
 
-            case 'bounds2d':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        var geom = data.split(',');
-                        this.bounds2d(parseFloat(geom[0]), parseFloat(geom[1]));
-                    }
-                } else {
-                    return String(this._bounds2d.x + ',' + this._bounds2d.y);
-                }
-                break;
+			case 'bounds2d':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						var geom = data.split(',');
+						this.bounds2d(parseFloat(geom[0]), parseFloat(geom[1]));
+					}
+				} else {
+					return String(`${this._bounds2d.x},${this._bounds2d.y}`);
+				}
+				break;
 
-            case 'bounds3d':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        var geom = data.split(',');
-                        this.bounds3d(parseFloat(geom[0]), parseFloat(geom[1]), parseFloat(geom[2]));
-                    }
-                } else {
-                    return String(this._bounds3d.x + ',' + this._bounds3d.y + ',' + this._bounds3d.z);
-                }
-                break;
+			case 'bounds3d':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						var geom = data.split(',');
+						this.bounds3d(parseFloat(geom[0]), parseFloat(geom[1]), parseFloat(geom[2]));
+					}
+				} else {
+					return String(`${this._bounds3d.x},${this._bounds3d.y},${this._bounds3d.z}`);
+				}
+				break;
 
-            case 'hidden':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        if (data == 'true') {
-                            this.hide();
-                        } else {
-                            this.show();
-                        }
-                    }
-                } else {
-                    return String(this.isHidden());
-                }
-                break;
+			case 'hidden':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						if (data == 'true') {
+							this.hide();
+						} else {
+							this.show();
+						}
+					}
+				} else {
+					return String(this.isHidden());
+				}
+				break;
 
-            case 'mount':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        if (data) {
-                            var newParent = ige.$(data);
+			case 'mount':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						if (data) {
+							var newParent = ige.$(data);
 
-                            if (newParent) {
-                                this.mount(newParent);
-                            }
-                        } else {
-                            // Unmount
-                            this.unMount();
-                        }
-                    }
-                } else {
-                    var parent = this.parent();
+							if (newParent) {
+								this.mount(newParent);
+							}
+						} else {
+							// Unmount
+							this.unMount();
+						}
+					}
+				} else {
+					var parent = this.parent();
 
-                    if (parent) {
-                        return this.parent().id();
-                    } else {
-                        return '';
-                    }
-                }
-                break;
+					if (parent) {
+						return this.parent().id();
+					} else {
+						return '';
+					}
+				}
+				break;
 
-            case 'origin':
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        var geom = data.split(',');
-                        this.origin(parseFloat(geom[0]), parseFloat(geom[1]), parseFloat(geom[2]));
-                    }
-                } else {
-                    return String(this._origin.x + ',' + this._origin.y + ',' + this._origin.z);
-                }
-                break;
+			case 'origin':
+				if (data !== undefined) {
+					if (ige.isClient) {
+						var geom = data.split(',');
+						this.origin(parseFloat(geom[0]), parseFloat(geom[1]), parseFloat(geom[2]));
+					}
+				} else {
+					return String(`${this._origin.x},${this._origin.y},${this._origin.z}`);
+				}
+				break;
 
-            case 'props':
-                var newData, changed, i;
+			case 'props':
+				var newData, changed, i;
 
-                if (data !== undefined) {
-                    if (ige.isClient) {
-                        var props = JSON.parse(data);
+				if (data !== undefined) {
+					if (ige.isClient) {
+						var props = JSON.parse(data);
 
-                        // Update properties that have been sent through
-                        for (i in props) {
-                            changed = false;
-                            if (props.hasOwnProperty(i)) {
-                                if (this._streamProperty[i] != props[i]) {
-                                    changed = true;
-                                }
-                                this._streamProperty[i] = props[i];
+						// Update properties that have been sent through
+						for (i in props) {
+							changed = false;
+							if (props.hasOwnProperty(i)) {
+								if (this._streamProperty[i] != props[i]) {
+									changed = true;
+								}
+								this._streamProperty[i] = props[i];
 
-                                this.emit('streamPropChange', [i, props[i]]);
-                            }
-                        }
-                    }
-                } else {
-                    newData = {};
+								this.emit('streamPropChange', [i, props[i]]);
+							}
+						}
+					}
+				} else {
+					newData = {};
 
-                    for (i in this._streamProperty) {
-                        if (this._streamProperty.hasOwnProperty(i)) {
-                            //if (this._streamPropertyChange[i]) {
-                            newData[i] = this._streamProperty[i];
-                            //this._streamPropertyChange[i] = false;
-                            //}
-                        }
-                    }
+					for (i in this._streamProperty) {
+						if (this._streamProperty.hasOwnProperty(i)) {
+							// if (this._streamPropertyChange[i]) {
+							newData[i] = this._streamProperty[i];
+							// this._streamPropertyChange[i] = false;
+							// }
+						}
+					}
 
-                    return JSON.stringify(newData);
-                }
-                break;
-        }
-    },
-    getQueuedStreamData: function () {
-        return this._streamDataQueued;
-    },
+					return JSON.stringify(newData);
+				}
+				break;
+		}
+	},
+	getQueuedStreamData: function () {
+		return this._streamDataQueued;
+	},
 
-    /**
+	/**
      * Gets / sets the stream mode that the stream system will use when
      * handling pushing data updates to connected clients.
      * @param {Number=} val A value representing the stream mode.
@@ -4604,17 +4598,17 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    streamMode: function (val) {
-        // console.log("streamMode (" + val + ")", (this._stats) ? this._stats.name : this._category)
-        if (val !== undefined) {
-            this._streamMode = val;            
-            return this;
-        }
+	streamMode: function (val) {
+		// console.log("streamMode (" + val + ")", (this._stats) ? this._stats.name : this._category)
+		if (val !== undefined) {
+			this._streamMode = val;
+			return this;
+		}
 
-        return this._streamMode;
-    },
+		return this._streamMode;
+	},
 
-    /**
+	/**
      * Gets / sets the stream control callback function that will be called
      * each time the entity tick method is called and stream-able data is
      * updated.
@@ -4638,16 +4632,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    streamControl: function (method) {
-        if (method !== undefined) {
-            this._streamControl = method;
-            return this;
-        }
+	streamControl: function (method) {
+		if (method !== undefined) {
+			this._streamControl = method;
+			return this;
+		}
 
-        return this._streamControl;
-    },
+		return this._streamControl;
+	},
 
-    /**
+	/**
      * Gets / sets the stream sync interval. This value
      * is in milliseconds and cannot be lower than 16. It will
      * determine how often data from this entity is added to the
@@ -4664,32 +4658,32 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    streamSyncInterval: function (val, sectionId) {
-        if (val !== undefined) {
-            if (!sectionId) {
-                if (val < 16) {
-                    delete this._streamSyncInterval;
-                } else {
-                    this._streamSyncDelta = 0;
-                    this._streamSyncInterval = val;
-                }
-            } else {
-                this._streamSyncSectionInterval = this._streamSyncSectionInterval || {};
-                this._streamSyncSectionDelta = this._streamSyncSectionDelta || {};
-                if (val < 16) {
-                    delete this._streamSyncSectionInterval[sectionId];
-                } else {
-                    this._streamSyncSectionDelta[sectionId] = 0;
-                    this._streamSyncSectionInterval[sectionId] = val;
-                }
-            }
-            return this;
-        }
+	streamSyncInterval: function (val, sectionId) {
+		if (val !== undefined) {
+			if (!sectionId) {
+				if (val < 16) {
+					delete this._streamSyncInterval;
+				} else {
+					this._streamSyncDelta = 0;
+					this._streamSyncInterval = val;
+				}
+			} else {
+				this._streamSyncSectionInterval = this._streamSyncSectionInterval || {};
+				this._streamSyncSectionDelta = this._streamSyncSectionDelta || {};
+				if (val < 16) {
+					delete this._streamSyncSectionInterval[sectionId];
+				} else {
+					this._streamSyncSectionDelta[sectionId] = 0;
+					this._streamSyncSectionInterval[sectionId] = val;
+				}
+			}
+			return this;
+		}
 
-        return this._streamSyncInterval;
-    },
+		return this._streamSyncInterval;
+	},
 
-    /**
+	/**
      * Gets / sets the precision by which floating-point values will
      * be encoded and sent when packaged into stream data.
      * @param {Number=} val The number of decimal places to preserve.
@@ -4704,31 +4698,31 @@ var IgeEntity = IgeObject.extend({
      * @return {*} "this" when arguments are passed to allow method
      * chaining or the current value if no arguments are specified.
      */
-    streamFloatPrecision: function (val) {
-        if (val !== undefined) {
-            this._streamFloatPrecision = val;
+	streamFloatPrecision: function (val) {
+		if (val !== undefined) {
+			this._streamFloatPrecision = val;
 
-            var i,
-                floatRemove = '\\.';
+			var i;
+			var floatRemove = '\\.';
 
-            // Update the floatRemove regular expression pattern
-            for (i = 0; i < this._streamFloatPrecision; i++) {
-                floatRemove += '0';
-            }
+			// Update the floatRemove regular expression pattern
+			for (i = 0; i < this._streamFloatPrecision; i++) {
+				floatRemove += '0';
+			}
 
-            // Add the trailing comma
-            floatRemove += ',';
+			// Add the trailing comma
+			floatRemove += ',';
 
-            // Create the new regexp
-            this._floatRemoveRegExp = new RegExp(floatRemove, 'g');
+			// Create the new regexp
+			this._floatRemoveRegExp = new RegExp(floatRemove, 'g');
 
-            return this;
-        }
+			return this;
+		}
 
-        return this._streamFloatPrecision;
-    },
+		return this._streamFloatPrecision;
+	},
 
-    /**
+	/**
      * Override this method if your entity should send data through to
      * the client when it is being created on the client for the first
      * time through the network stream. The data will be provided as the
@@ -4751,88 +4745,88 @@ var IgeEntity = IgeObject.extend({
      *
      * Valid return values must not include circular references!
      */
-    streamCreateData: function (clientId) {
-        if (ige.isServer) {
-            // remove _stats which are static and can be added from client as well. which will save our bandwidth
-            var keys = ige.server.keysToRemoveBeforeSend.slice();
+	streamCreateData: function (clientId) {
+		if (ige.isServer) {
+			// remove _stats which are static and can be added from client as well. which will save our bandwidth
+			var keys = ige.server.keysToRemoveBeforeSend.slice();
 
-            if (this._category === 'debris' && keys.indexOf('cellSheet') > -1) {
-                keys.splice(keys.indexOf('cellSheet'), 1);
-                keys = keys.concat(['rotation', 'type', 'density', 'friction', 'restitution', 'rotation', 'y', 'x']);
-            } else if (this._category === 'region') {
-                keys = keys.concat('value');
-            }
+			if (this._category === 'debris' && keys.indexOf('cellSheet') > -1) {
+				keys.splice(keys.indexOf('cellSheet'), 1);
+				keys = keys.concat(['rotation', 'type', 'density', 'friction', 'restitution', 'rotation', 'y', 'x']);
+			} else if (this._category === 'region') {
+				keys = keys.concat('value');
+			}
 
-            const statKeys = Object.keys(this._stats);
-            const data = {};
+			const statKeys = Object.keys(this._stats);
+			const data = {};
 
-            statKeys.forEach(key => {
-                if (!keys.includes(key)) {
-                    data[key] = this._stats[key];
-                }
-            });
+			statKeys.forEach(key => {
+				if (!keys.includes(key)) {
+					data[key] = this._stats[key];
+				}
+			});
 
-            return data;
-        }
-    },
+			return data;
+		}
+	},
 
-    /**
+	/**
      * Gets / sets the stream emit created flag. If set to true this entity
      * emit a "streamCreated" event when it is created by the stream, but
      * after the id and initial transform are set.
      * @param val
      * @returns {*}
      */
-    streamEmitCreated: function (val) {
-        if (val !== undefined) {
-            this._streamEmitCreated = val;
-            return this;
-        }
+	streamEmitCreated: function (val) {
+		if (val !== undefined) {
+			this._streamEmitCreated = val;
+			return this;
+		}
 
-        return this._streamEmitCreated;
-    },
+		return this._streamEmitCreated;
+	},
 
-    /**
+	/**
      * Queues stream data for this entity to be sent to the
      * specified client id or array of client ids.
      * @param {Array} clientId An array of string IDs of each
      * client to send the stream data to.
      * @return {IgeEntity} "this".
      */
-    streamSync: function (clientId) {
-        if (this._streamMode === 1 || this._streamMode === 2) {
-            // Check if we have a stream sync interval
-            if (this._streamSyncInterval) {
-                this._streamSyncDelta += ige._tickDelta;
+	streamSync: function (clientId) {
+		if (this._streamMode === 1 || this._streamMode === 2) {
+			// Check if we have a stream sync interval
+			if (this._streamSyncInterval) {
+				this._streamSyncDelta += ige._tickDelta;
 
-                if (this._streamSyncDelta < this._streamSyncInterval) {
-                    // The stream sync interval is still higher than
-                    // the stream sync delta so exit without calling the
-                    // stream sync method
-                    return this;
-                } else {
-                    // We've reached the delta we want so zero it now
-                    // ready for the next loop
-                    this._streamSyncDelta = 0;
-                }
-            }
+				if (this._streamSyncDelta < this._streamSyncInterval) {
+					// The stream sync interval is still higher than
+					// the stream sync delta so exit without calling the
+					// stream sync method
+					return this;
+				} else {
+					// We've reached the delta we want so zero it now
+					// ready for the next loop
+					this._streamSyncDelta = 0;
+				}
+			}
 
-            this._streamSync();
-            return this;
-        }
+			this._streamSync();
+			return this;
+		}
 
-        // if (this._streamMode === 2) {
-        // 	// Stream mode is advanced
-        // 	this._streamSync(clientId, this._streamRoomId);
+		// if (this._streamMode === 2) {
+		// 	// Stream mode is advanced
+		// 	this._streamSync(clientId, this._streamRoomId);
 
-        // 	return this;
-        // }
+		// 	return this;
+		// }
 
-        recipientArr = null;
-        return this;
-    },
+		recipientArr = null;
+		return this;
+	},
 
-    /**
+	/**
      * Asks the stream system to queue the stream data to the specified
      * client id or array of ids.
      * @param {Array} recipientArr The array of ids of the client(s) to
@@ -4842,38 +4836,38 @@ var IgeEntity = IgeObject.extend({
      * in (can be undefined or null if no room assigned).
      * @private
      */
-    _streamSync: function () {
-        var recipientArr = ige.network.clientIds,
-            arrCount = recipientArr.length,
-            arrIndex,
-            clientId,
-            thisId = this.id(),
-            createResult = true; // We set this to true by default
+	_streamSync: function () {
+		var recipientArr = ige.network.clientIds;
+		var arrCount = recipientArr.length;
+		var arrIndex;
+		var clientId;
+		var thisId = this.id();
+		var createResult = true; // We set this to true by default
 
-        var data = this._streamData();
-        // Loop the recipient array
-        for (arrIndex = 0; arrIndex < arrCount; arrIndex++) {
-            clientId = recipientArr[arrIndex];
+		var data = this._streamData();
+		// Loop the recipient array
+		for (arrIndex = 0; arrIndex < arrCount; arrIndex++) {
+			clientId = recipientArr[arrIndex];
 
-            // Check if the client has already received a create
-            // command for this entity
-            if (!ige.network.stream._streamClientCreated[thisId]) {
-                ige.network.stream._streamClientCreated[thisId] = {};
-            }
+			// Check if the client has already received a create
+			// command for this entity
+			if (!ige.network.stream._streamClientCreated[thisId]) {
+				ige.network.stream._streamClientCreated[thisId] = {};
+			}
 
-            if (!ige.network.stream._streamClientCreated[thisId][clientId]) {
-                createResult = this.streamCreate(clientId);
-                this._hasMoved = true;
-            }
-        }
+			if (!ige.network.stream._streamClientCreated[thisId][clientId]) {
+				createResult = this.streamCreate(clientId);
+				this._hasMoved = true;
+			}
+		}
 
-        if (data && recipientArr.length && this._streamMode === 1 && this._hasMoved) {
-            ige.server.bandwidthUsage[this._category] += data.length;
-            ige.network.stream.queue(thisId, data, recipientArr);
-        }
-    },
+		if (data && recipientArr.length && this._streamMode === 1 && this._hasMoved) {
+			ige.server.bandwidthUsage[this._category] += data.length;
+			ige.network.stream.queue(thisId, data, recipientArr);
+		}
+	},
 
-    /**
+	/**
      * Issues a create entity command to the passed client id
      * or array of ids. If no id is passed it will issue the
      * command to all connected clients. If using streamMode(1)
@@ -4888,43 +4882,43 @@ var IgeEntity = IgeObject.extend({
      *     entity.streamCreate('43245325');
      * @return {Boolean}
      */
-    streamCreate: function (clientId) {
-        // IgeEntity.prototype.log("streamCreate")
+	streamCreate: function (clientId) {
+		// IgeEntity.prototype.log("streamCreate")
 
-        if (this._parent && ige.network.stream._streamClientCreated !== undefined) {
-            var thisId = this.id(),
-                arr,
-                i;
+		if (this._parent && ige.network.stream._streamClientCreated !== undefined) {
+			var thisId = this.id();
+			var arr;
+			var i;
 
-            // Send the client an entity create command first
-            var streamCreateData = this.streamCreateData(clientId);
-            this.streamSectionData('transform'); // prepare this._streamSectionData
-            ige.network.send('_igeStreamCreate', [this.classId(), thisId, this._parent.id(), this._streamSectionData, streamCreateData], clientId);
-            ige.server.bandwidthUsage[this._category] += JSON.stringify(streamCreateData).length;
-            ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
+			// Send the client an entity create command first
+			var streamCreateData = this.streamCreateData(clientId);
+			this.streamSectionData('transform'); // prepare this._streamSectionData
+			ige.network.send('_igeStreamCreate', [this.classId(), thisId, this._parent.id(), this._streamSectionData, streamCreateData], clientId);
+			ige.server.bandwidthUsage[this._category] += JSON.stringify(streamCreateData).length;
+			ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
 
-            if (clientId) {
-                // Mark the client as having received a create
-                // command for this entity
-                ige.network.stream._streamClientCreated[thisId][clientId] = true;
-            } else {
-                // Mark all clients as having received this create
-                arr = ige.network.clients();
+			if (clientId) {
+				// Mark the client as having received a create
+				// command for this entity
+				ige.network.stream._streamClientCreated[thisId][clientId] = true;
+			} else {
+				// Mark all clients as having received this create
+				arr = ige.network.clients();
 
-                for (i in arr) {
-                    if (arr.hasOwnProperty(i)) {
-                        ige.network.stream._streamClientCreated[thisId][i] = true;
-                    }
-                }
-            }
+				for (i in arr) {
+					if (arr.hasOwnProperty(i)) {
+						ige.network.stream._streamClientCreated[thisId][i] = true;
+					}
+				}
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        return false;
-    },
+		return false;
+	},
 
-    /**
+	/**
      * Issues a destroy entity command to the passed client id
      * or array of ids. If no id is passed it will issue the
      * command to all connected clients. If using streamMode(1)
@@ -4939,33 +4933,33 @@ var IgeEntity = IgeObject.extend({
      *     entity.streamDestroy('43245325');
      * @return {Boolean}
      */
-    streamDestroy: function (clientId) {
-        var thisId = this.id(),
-            arr,
-            i;
+	streamDestroy: function (clientId) {
+		var thisId = this.id();
+		var arr;
+		var i;
 
-        // Send clients the stream destroy command for this entity
-        ige.network.send('_igeStreamDestroy', [ige._currentTime, thisId], clientId);
+		// Send clients the stream destroy command for this entity
+		ige.network.send('_igeStreamDestroy', [ige._currentTime, thisId], clientId);
 
-        if (!ige.network.stream) return true;
+		if (!ige.network.stream) return true;
 
-        ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
+		ige.network.stream._streamClientCreated[thisId] = ige.network.stream._streamClientCreated[thisId] || {};
 
-        if (clientId) {
-            // Mark the client as having received a destroy
-            // command for this entity
-            ige.network.stream._streamClientCreated[thisId][clientId] = false;
-        } else {
-            // Mark all clients as having received this destroy
-            arr = ige.network.clients();
+		if (clientId) {
+			// Mark the client as having received a destroy
+			// command for this entity
+			ige.network.stream._streamClientCreated[thisId][clientId] = false;
+		} else {
+			// Mark all clients as having received this destroy
+			arr = ige.network.clients();
 
-            delete ige.network.stream._streamClientCreated[thisId];
-        }
+			delete ige.network.stream._streamClientCreated[thisId];
+		}
 
-        return true;
-    },
+		return true;
+	},
 
-    /**
+	/**
      * Generates and returns the current stream data for this entity. The
      * data will usually include only properties that have changed since
      * the last time the stream data was generated. The returned data is
@@ -4975,82 +4969,82 @@ var IgeEntity = IgeObject.extend({
      * this entity.
      * @private
      */
-    _streamData: function () {
-        // Check if we already have a cached version of the streamData
-        if (this._streamDataCache) {
-            return this._streamDataCache;
-        } else {
-            // Let's generate our stream data
-            var sectionDataString = '',
-                sectionData,
-                sectionIndex,
-                sectionId;
+	_streamData: function () {
+		// Check if we already have a cached version of the streamData
+		if (this._streamDataCache) {
+			return this._streamDataCache;
+		} else {
+			// Let's generate our stream data
+			var sectionDataString = '';
+			var sectionData;
+			var sectionIndex;
+			var sectionId;
 
-            // Only send further data if the entity is still "alive"
-            if (this._alive) {
-                // Now loop the data sections array and compile the rest of the
-                // data string from the data section return data
-                for (sectionIndex = 0; sectionIndex < this._streamSections.length; sectionIndex++) {
-                    sectionData = '';
-                    sectionId = this._streamSections[sectionIndex];
-                    // if (this._streamMode === 2 && sectionId === 'transform') break;
-                    // Stream section sync intervals allow individual stream sections
-                    // to be streamed at different (usually longer) intervals than other
-                    // sections so you could for instance reduce the number of updates
-                    // a particular section sends out in a second because the data is
-                    // not that important compared to updated transformation data
-                    if (this._streamSyncSectionInterval && this._streamSyncSectionInterval[sectionId]) {
-                        // Check if the section interval has been reached
-                        this._streamSyncSectionDelta[sectionId] += ige._tickDelta;
+			// Only send further data if the entity is still "alive"
+			if (this._alive) {
+				// Now loop the data sections array and compile the rest of the
+				// data string from the data section return data
+				for (sectionIndex = 0; sectionIndex < this._streamSections.length; sectionIndex++) {
+					sectionData = '';
+					sectionId = this._streamSections[sectionIndex];
+					// if (this._streamMode === 2 && sectionId === 'transform') break;
+					// Stream section sync intervals allow individual stream sections
+					// to be streamed at different (usually longer) intervals than other
+					// sections so you could for instance reduce the number of updates
+					// a particular section sends out in a second because the data is
+					// not that important compared to updated transformation data
+					if (this._streamSyncSectionInterval && this._streamSyncSectionInterval[sectionId]) {
+						// Check if the section interval has been reached
+						this._streamSyncSectionDelta[sectionId] += ige._tickDelta;
 
-                        if (this._streamSyncSectionDelta[sectionId] >= this._streamSyncSectionInterval[sectionId]) {
-                            // Get the section data for this section id
-                            this.streamSectionData(sectionId);
-                            // Reset the section delta
-                            this._streamSyncSectionDelta[sectionId] = 0;
-                        }
-                    } else {
-                        // Get the section data for this section id
-                        this.streamSectionData(sectionId);
-                    }
-                }
+						if (this._streamSyncSectionDelta[sectionId] >= this._streamSyncSectionInterval[sectionId]) {
+							// Get the section data for this section id
+							this.streamSectionData(sectionId);
+							// Reset the section delta
+							this._streamSyncSectionDelta[sectionId] = 0;
+						}
+					} else {
+						// Get the section data for this section id
+						this.streamSectionData(sectionId);
+					}
+				}
 
-                if (this._streamSectionData !== undefined) {
-                    // Add the section start designator character. We do this
-                    // regardless of if there is actually any section data because
-                    // we want to be able to identify sections in a serial fashion
-                    // on receipt of the data string on the client
-                    // // sectionDataString += ige.network.stream._sectionDesignator;
+				if (this._streamSectionData !== undefined) {
+					// Add the section start designator character. We do this
+					// regardless of if there is actually any section data because
+					// we want to be able to identify sections in a serial fashion
+					// on receipt of the data string on the client
+					// // sectionDataString += ige.network.stream._sectionDesignator;
 
-                    // Add any custom data to the stream string at this point
+					// Add any custom data to the stream string at this point
 
-                    streamData = this.encodedStreamData();
+					streamData = this.encodedStreamData();
 
-                    // Remove any .00 from the string since we don't need that data
-                    // TODO: What about if a property is a string with something.00 and it should be kept?
-                    // // streamData = streamData.replace(this._floatRemoveRegExp, ',');
+					// Remove any .00 from the string since we don't need that data
+					// TODO: What about if a property is a string with something.00 and it should be kept?
+					// // streamData = streamData.replace(this._floatRemoveRegExp, ',');
 
-                    // Store the data in cache in case we are asked for it again this tick
-                    // the update() method of the IgeEntity class clears this every tick
-                    this._streamDataCache = streamData;
+					// Store the data in cache in case we are asked for it again this tick
+					// the update() method of the IgeEntity class clears this every tick
+					this._streamDataCache = streamData;
 
-                    return streamData;
-                }
-            }
-        }
-    },
+					return streamData;
+				}
+			}
+		}
+	},
 
-    encodedStreamData: function () {
-        var data = this.id();
-        return [data].concat(this._streamSectionData).join('&');
-    },
+	encodedStreamData: function () {
+		var data = this.id();
+		return [data].concat(this._streamSectionData).join('&');
+	},
 
-    /* CEXCLUDE */
+	/* CEXCLUDE */
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // INTERPOLATOR
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// INTERPOLATOR
+	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
      * Calculates the current value based on the time along the
      * value range.
      * @param {Number} startValue The value that the interpolation started from.
@@ -5060,214 +5054,214 @@ var IgeEntity = IgeObject.extend({
      * @param {Number} endTime The time the interpolation will end.
      * @return {Number} The interpolated value.
      */
-    interpolateValue: function (startValue, endValue, startTime, currentTime, endTime) {
-        var totalValue = endValue - startValue,
-            dataDelta = endTime - startTime,
-            offsetDelta = currentTime - startTime,
-            deltaTime = offsetDelta / dataDelta;
+	interpolateValue: function (startValue, endValue, startTime, currentTime, endTime) {
+		var totalValue = endValue - startValue;
+		var dataDelta = endTime - startTime;
+		var offsetDelta = currentTime - startTime;
+		var deltaTime = offsetDelta / dataDelta;
 
-        // Clamp the current time from 0
-        if (deltaTime < 0) {
+		// Clamp the current time from 0
+		if (deltaTime < 0) {
         	deltaTime = 0;
-        }
+		}
 
-        return totalValue * deltaTime + startValue;
-    },
+		return totalValue * deltaTime + startValue;
+	},
 
-    reconcileValue: function (startValue, endValue, startTime, currentTime, endTime) {
-        var totalValue = endValue - startValue,
-            dataDelta = endTime - startTime,
-            offsetDelta = currentTime - startTime,
-            t = Math.abs(offsetDelta / dataDelta),
-            deltaTime = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad (acceleration until halfway, then deceleration)
+	reconcileValue: function (startValue, endValue, startTime, currentTime, endTime) {
+		var totalValue = endValue - startValue;
+		var dataDelta = endTime - startTime;
+		var offsetDelta = currentTime - startTime;
+		var t = Math.abs(offsetDelta / dataDelta);
+		var deltaTime = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad (acceleration until halfway, then deceleration)
 
-        return totalValue * deltaTime + startValue;
-    },
+		return totalValue * deltaTime + startValue;
+	},
 
-    /**
+	/**
      * Processes the time stream for the entity.
      * @param {Number} renderTime The time that the time stream is
      * targeting to render the entity at.
      */
-    _processTransform: function () {
-        if (
-            // prevent igePixi calling this function multiple times for a same entity
-            this._lastTransformAt == ige._currentTime ||
+	_processTransform: function () {
+		if (
+		// prevent igePixi calling this function multiple times for a same entity
+			this._lastTransformAt == ige._currentTime ||
             // entity has no body
             this._translate == undefined ||
             this._stats.currentBody == undefined ||
             // ignore server stream of my own unit's sprite-only item
             (this._stats.currentBody && this._stats.currentBody.type == 'spriteOnly' && (this.getOwnerUnit && this.getOwnerUnit()) == ige.client.selectedUnit)
-        ) {
-            return;
-        }
+		) {
+			return;
+		}
 
-        // interpolate projectiles using data provided by physicsComponent. as snapshot data isn't streamed from server.
-        var x = this._translate.x,
-            y = this._translate.y,
-            rotate = this._rotate.z,
-            prevKeyFrame = null,
-            nextKeyFrame = null;
+		// interpolate projectiles using data provided by physicsComponent. as snapshot data isn't streamed from server.
+		var x = this._translate.x;
+		var y = this._translate.y;
+		var rotate = this._rotate.z;
+		var prevKeyFrame = null;
+		var nextKeyFrame = null;
 
-        if (ige.nextSnapshot) {
-            var nextTransform = ige.nextSnapshot[1][this.id()];
-            if (nextTransform) {
-                nextKeyFrame = [ige.nextSnapshot[0], nextTransform];
-            }
-        }
+		if (ige.nextSnapshot) {
+			var nextTransform = ige.nextSnapshot[1][this.id()];
+			if (nextTransform) {
+				nextKeyFrame = [ige.nextSnapshot[0], nextTransform];
+			}
+		}
 
-        // by default, prevTransform is where this unit currently is
-        
-        if (ige.prevSnapshot) {
-            // Set variables up to store the previous and next data
-            var prevTransform = ige.prevSnapshot[1][this.id()];
-            if (prevTransform) {
-                prevKeyFrame = [ige.prevSnapshot[0], prevTransform];
-            }
-        }
+		// by default, prevTransform is where this unit currently is
 
-        // interpolate using client side's physics frames. (this doesn't use snapshot streamed from the server)
-        // this is necessary, because physics don't run at 60 fps on clientside
-        if (
-            ige.physics && (
-                // 1. we're using cspMovement (experimental) for my own unit OR
-                (ige.game.cspEnabled  && ige.client.selectedUnit == this) ||
+		if (ige.prevSnapshot) {
+			// Set variables up to store the previous and next data
+			var prevTransform = ige.prevSnapshot[1][this.id()];
+			if (prevTransform) {
+				prevKeyFrame = [ige.prevSnapshot[0], prevTransform];
+			}
+		}
+
+		// interpolate using client side's physics frames. (this doesn't use snapshot streamed from the server)
+		// this is necessary, because physics don't run at 60 fps on clientside
+		if (
+			ige.physics && (
+			// 1. we're using cspMovement (experimental) for my own unit OR
+				(ige.game.cspEnabled && ige.client.selectedUnit == this) ||
                 // 2. item-fired projectiles
                 (this._category == 'projectile' && this._stats.sourceItemId != undefined && !this._streamMode)
-            )
-        ) {
-            if (this.nextPhysicsFrame) {
-                if (this.prevPhysicsFrame) {
-                    // interpolate using prev/next physics key frames provided by physicsComponent
-                    x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0])
-                    y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+			)
+		) {
+			if (this.nextPhysicsFrame) {
+				if (this.prevPhysicsFrame) {
+					// interpolate using prev/next physics key frames provided by physicsComponent
+					x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+					y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 
-                    if (this == ige.client.selectedUnit) {
-                        rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
-                    }
-                    
-                    // if (this == ige.client.selectedUnit) {
-                    // 	let distanceTraveled = x - this.previousX
-                    // 	let timeElapsed = (ige._currentTime-this.prevTime).toFixed(0)
-                    // 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
-                    // 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0),
-                    // 		'(' + timeElapsed + 'ms '+ ((ige._currentTime - this.prevPhysicsFrame[0])* 100 / (this.nextPhysicsFrame[0] - this.prevPhysicsFrame[0])).toFixed(0) +'%)',
-                    // 		this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
-                    // 	this.previousX = x;
-                    // 	this.prevTime = ige._currentTime;
-                    // }
-                } else {
-                    // unit is teleporting
-                    x = this.nextPhysicsFrame[1][0];
-                    y = this.nextPhysicsFrame[1][1];
-                    rotate = this.nextPhysicsFrame[1][2];
-                    // console.log("teleport")
-                }
+					if (this == ige.client.selectedUnit) {
+						rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
+					}
 
-                // for debugging my unit's x-movement interpolation
-            }
-        }
+					// if (this == ige.client.selectedUnit) {
+					// 	let distanceTraveled = x - this.previousX
+					// 	let timeElapsed = (ige._currentTime-this.prevTime).toFixed(0)
+					// 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
+					// 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0),
+					// 		'(' + timeElapsed + 'ms '+ ((ige._currentTime - this.prevPhysicsFrame[0])* 100 / (this.nextPhysicsFrame[0] - this.prevPhysicsFrame[0])).toFixed(0) +'%)',
+					// 		this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
+					// 	this.previousX = x;
+					// 	this.prevTime = ige._currentTime;
+					// }
+				} else {
+					// unit is teleporting
+					x = this.nextPhysicsFrame[1][0];
+					y = this.nextPhysicsFrame[1][1];
+					rotate = this.nextPhysicsFrame[1][2];
+					// console.log("teleport")
+				}
 
-        // if (ige.client.selectedUnit == this) {
-        //     console.log(prevKeyFrame[0], ige.renderTime, nextKeyFrame[0])
-        //     // console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
-        // }
+				// for debugging my unit's x-movement interpolation
+			}
+		}
 
-        // interpolate using snapshots streamed from the server.
-        if (prevTransform != undefined && nextTransform != undefined && 
-            prevKeyFrame[0] != nextKeyFrame[0] && 
+		// if (ige.client.selectedUnit == this) {
+		//     console.log(prevKeyFrame[0], ige.renderTime, nextKeyFrame[0])
+		//     // console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
+		// }
+
+		// interpolate using snapshots streamed from the server.
+		if (prevTransform != undefined && nextTransform != undefined &&
+            prevKeyFrame[0] != nextKeyFrame[0] &&
             prevKeyFrame[0] < ige.renderTime && ige.renderTime < nextKeyFrame[0]
-        ) {
-            targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
-            targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+		) {
+			targetX = this.interpolateValue(prevTransform[0], nextTransform[0], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+			targetY = this.interpolateValue(prevTransform[1], nextTransform[1], prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
 
-            // a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
-            var startValue = prevKeyFrame[1][2],
-                endValue = nextKeyFrame[1][2];
+			// a hack to prevent rotational interpolation suddnely jumping by 2 PI (e.g. 0.01 to -6.27)
+			var startValue = prevKeyFrame[1][2];
+			var endValue = nextKeyFrame[1][2];
 
-            if (Math.abs(endValue - startValue) > Math.PI) {
-                if (endValue > startValue) startValue += Math.PI * 2;
-                else startValue -= Math.PI * 2;
-            }
+			if (Math.abs(endValue - startValue) > Math.PI) {
+				if (endValue > startValue) startValue += Math.PI * 2;
+				else startValue -= Math.PI * 2;
+			}
 
-            if (this == ige.client.selectedUnit && this.angleToTarget != undefined && !isNaN(this.angleToTarget) && this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor && this._stats.currentBody && !this._stats.currentBody.fixedRotation) {
-                targetRotate = this.angleToTarget;
-            } else {
-                targetRotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
-            }
+			if (this == ige.client.selectedUnit && this.angleToTarget != undefined && !isNaN(this.angleToTarget) && this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor && this._stats.currentBody && !this._stats.currentBody.fixedRotation) {
+				targetRotate = this.angleToTarget;
+			} else {
+				targetRotate = this.interpolateValue(startValue, endValue, prevKeyFrame[0], ige.renderTime, nextKeyFrame[0]);
+			}
 
-            // don't set lastServerStreamedPosition unless more than 500ms has passed since last teleport.
-            // this prevents teleported position data getting overwritten by latest streamed snapshot
-            // console.log("this.lastReconciledAt != prevKeyFrame[0]", this.lastReconciledAt, prevKeyFrame[0])
-            if (this == ige.client.selectedUnit && this.lastReconciledAt != prevKeyFrame[0]) {
-                this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
-            }
+			// don't set lastServerStreamedPosition unless more than 500ms has passed since last teleport.
+			// this prevents teleported position data getting overwritten by latest streamed snapshot
+			// console.log("this.lastReconciledAt != prevKeyFrame[0]", this.lastReconciledAt, prevKeyFrame[0])
+			if (this == ige.client.selectedUnit && this.lastReconciledAt != prevKeyFrame[0]) {
+				this.lastServerStreamedPosition = [targetX, targetY, targetRotate];
+			}
 
-            // apply rubberbanding to all non-player entities when csp is enabled
-            if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
-                xDiff = targetX - x;
-                yDiff = targetY - y;
-                x += xDiff/3
-                y += yDiff/3
-            } else if (!ige.physics || !ige.game.cspEnabled  || this != ige.client.selectedUnit) {
-                // if physics isn't set, or csp is disabled, use server-streamed data to move entities                
-                x = targetX;
-                y = targetY;
-            }
-            rotate = targetRotate;
+			// apply rubberbanding to all non-player entities when csp is enabled
+			if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
+				xDiff = targetX - x;
+				yDiff = targetY - y;
+				x += xDiff / 3;
+				y += yDiff / 3;
+			} else if (!ige.physics || !ige.game.cspEnabled || this != ige.client.selectedUnit) {
+				// if physics isn't set, or csp is disabled, use server-streamed data to move entities
+				x = targetX;
+				y = targetY;
+			}
+			rotate = targetRotate;
 
-            if(this._debugEntity) {
-                this._debugEntity.position.set(targetX, targetY);
-                this._debugEntity.rotation = targetRotate;
-                this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
-            }
+			if (this._debugEntity) {
+				this._debugEntity.position.set(targetX, targetY);
+				this._debugEntity.rotation = targetRotate;
+				this._debugEntity.pivot.set(this._debugEntity.width / 2, this._debugEntity.height / 2);
+			}
 
-            // // for debugging my unit's x-movement interpolation
-            // if (this == ige.client.selectedUnit) {
-            // 	let distanceTraveled = x - this.previousX
-            // 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
-            // 	console.log(ige.snapshots.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
-            // 		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
-            // 		)
-            // 	this.previousX = x;
-            // 	this.previousRenderTime = ige.renderTime;
-            // }
-        }
+			// // for debugging my unit's x-movement interpolation
+			// if (this == ige.client.selectedUnit) {
+			// 	let distanceTraveled = x - this.previousX
+			// 	let timeElapsed = (ige.renderTime-this.previousRenderTime).toFixed(0)
+			// 	console.log(ige.snapshots.length, 'x', prevTransform[0], x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', nextTransform[0],
+			// 		'time', prevKeyFrame[0], ige.renderTime.toFixed(0), '(' + timeElapsed + 'ms '+ ((ige.renderTime - prevKeyFrame[0]) / (nextKeyFrame[0] - prevKeyFrame[0]) * 100).toFixed(0) +'%)', nextKeyFrame[0], "speed", (distanceTraveled/timeElapsed).toFixed(2)
+			// 		)
+			// 	this.previousX = x;
+			// 	this.previousRenderTime = ige.renderTime;
+			// }
+		}
 
-        // instantly rotate unit to mouse cursor
-        if (this == ige.client.selectedUnit) {
-            var ownerPlayer = ige.$(this._stats.ownerId);
-            if (ownerPlayer && ownerPlayer.control && ownerPlayer.control.input) {
-                var mouse = ownerPlayer.control.input.mouse;
-                if (mouse) {
-                    this.angleToTarget = Math.atan2(mouse.y - this._translate.y, mouse.x - this._translate.x) + Math.radians(90);
-                    if (this.angleToTarget != undefined && !isNaN(this.angleToTarget) && this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor && this._stats.currentBody && !this._stats.currentBody.fixedRotation) {
-                        rotate = this.angleToTarget;
-                    }
-                }
-            }
-        }
+		// instantly rotate unit to mouse cursor
+		if (this == ige.client.selectedUnit) {
+			var ownerPlayer = ige.$(this._stats.ownerId);
+			if (ownerPlayer && ownerPlayer.control && ownerPlayer.control.input) {
+				var mouse = ownerPlayer.control.input.mouse;
+				if (mouse) {
+					this.angleToTarget = Math.atan2(mouse.y - this._translate.y, mouse.x - this._translate.x) + Math.radians(90);
+					if (this.angleToTarget != undefined && !isNaN(this.angleToTarget) && this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor && this._stats.currentBody && !this._stats.currentBody.fixedRotation) {
+						rotate = this.angleToTarget;
+					}
+				}
+			}
+		}
 
-        if(this._stats.isStunned == undefined || this._stats.isStunned != true){
-            this.rotateTo(0, 0, rotate);    
-        }
-        this.translateTo(x, y, 0);
+		if (this._stats.isStunned == undefined || this._stats.isStunned != true) {
+			this.rotateTo(0, 0, rotate);
+		}
+		this.translateTo(x, y, 0);
 
-        this._lastTransformAt = ige._currentTime;
-    },
+		this._lastTransformAt = ige._currentTime;
+	},
 
-    getAttributeBarContainer: function () {
-        var self = this;
-        var attributeContainerId = self._stats && self._stats.attributeBarContainer && self._stats.attributeBarContainer.id;
+	getAttributeBarContainer: function () {
+		var self = this;
+		var attributeContainerId = self._stats && self._stats.attributeBarContainer && self._stats.attributeBarContainer.id;
 
-        if (attributeContainerId) {
-            return ige.$(attributeContainerId);
-        }
+		if (attributeContainerId) {
+			return ige.$(attributeContainerId);
+		}
 
-        return null;
-    },
+		return null;
+	}
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = IgeEntity;
+	module.exports = IgeEntity;
 }

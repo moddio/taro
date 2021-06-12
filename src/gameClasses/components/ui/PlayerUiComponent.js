@@ -17,35 +17,33 @@ var PlayerUiComponent = IgeEntity.extend({
 	},
 
 	setupListeners: function () {
-		//listeners for player input modal
+		// listeners for player input modal
 		var self = this;
 
 		$('#player-input-modal').on('hidden.bs.modal', function () {
 			if (self.pressedButton) {
 				ige.network.send('playerCustomInput', { status: 'submitted', inputText: self.lastInputValue });
 				self.lastInputValue = '';
-			}
-			else {
+			} else {
 				ige.network.send('playerCustomInput', { status: 'dismissed' });
 			}
 
-			$("#player-input-modal").removeClass('d-flex');
+			$('#player-input-modal').removeClass('d-flex');
 		});
 
 		$('#custom-modal').on('hidden.bs.modal', function () {
-			$("#custom-modal").removeClass('d-flex');
+			$('#custom-modal').removeClass('d-flex');
 		});
 
 		$('#custom-modal').on('shown.bs.modal', function () {
-			$("#custom-modal-cancel").focus();
+			$('#custom-modal-cancel').focus();
 		});
 
 		$('#player-input-modal').on('shown.bs.modal', function () {
 			if (self.isDismissibleInputModalShown) {
-				$("#player-input-cancel").focus();
-			}
-			else {
-				$("#player-input-field").focus();
+				$('#player-input-cancel').focus();
+			} else {
+				$('#player-input-field').focus();
 			}
 		});
 
@@ -65,14 +63,13 @@ var PlayerUiComponent = IgeEntity.extend({
 	updatePlayerAttributesDiv: function (attributes) {
 		var self = this;
 
-		$("#players-attribute-div").html("");
+		$('#players-attribute-div').html('');
 		var attributeTypes = ige.game.data.attributeTypes;
 
 		if (attributeTypes == undefined)
 			return;
 
 		for (var attrKey in attributes) {
-
 			var attr = attributes[attrKey];
 			if (attr) {
 				if (!attr.isVisible) continue;
@@ -80,46 +77,41 @@ var PlayerUiComponent = IgeEntity.extend({
 				var attributeType = attributeTypes[attrKey];
 				var name = attributeType ? attributeType.name : attr.name;
 
-
-				var attrName = $("<span/>", {
-					class: "pt-attribute-" + attrKey
+				var attrName = $('<span/>', {
+					class: `pt-attribute-${attrKey}`
 				});
-				var attrValue = $("<span/>", {
-					class: "pt-attribute-value-" + attrKey
+				var attrValue = $('<span/>', {
+					class: `pt-attribute-value-${attrKey}`
 				});
-				$("#players-attribute-div").append(
+				$('#players-attribute-div').append(
 					attrName
 				).append(
 					attrValue
-				).append($("<br/>"));
-				attrName.text(name + ": ");
+				).append($('<br/>'));
+				attrName.text(`${name}: `);
 
 				// if attr value is int, then do not show decimal points. otherwise, show up to 2 decimal points
 				if (attr.value % 1 === 0) {
-					attr.value = parseInt(attr.value)
-				}
-				else {
+					attr.value = parseInt(attr.value);
+				} else {
 					if (attr.decimalPlaces != undefined && attr.decimalPlaces != null) {
 						var decimalPlace = parseInt(attr.decimalPlaces);
 						if (decimalPlace != NaN) {
-							attr.value = parseFloat(attr.value).toFixed(decimalPlace)
+							attr.value = parseFloat(attr.value).toFixed(decimalPlace);
+						} else {
+							attr.value = parseFloat(attr.value).toFixed(2);
 						}
-						else {
-							attr.value = parseFloat(attr.value).toFixed(2)
-						}
-					}
-					else {
-						attr.value = parseFloat(attr.value).toFixed(2)
+					} else {
+						attr.value = parseFloat(attr.value).toFixed(2);
 					}
 				}
 
 				var value = attr.value && attr.value.toLocaleString('en-US') || 0;
 				attrValue.text(value);
 			}
-			
 		}
 
-		//update shop as player points are changed and when shop modal is open
+		// update shop as player points are changed and when shop modal is open
 		if ($('#modd-item-shop-modal').hasClass('show')) {
 			ige.shop.openItemShop();
 		}
@@ -133,7 +125,7 @@ var PlayerUiComponent = IgeEntity.extend({
 	},
 
 	showFriendsModal: function (config) {
-		$("#invite-friends-modal").modal('show');
+		$('#invite-friends-modal').modal('show');
 	},
 
 	// open a modal to ask for input
@@ -145,8 +137,8 @@ var PlayerUiComponent = IgeEntity.extend({
 
 		$('#player-input-field-label').html(config.fieldLabel || 'Field');
 		$('#player-input-field').val('');
-		$("#player-input-modal").addClass('d-flex');
-		$("#player-input-modal").modal({
+		$('#player-input-modal').addClass('d-flex');
+		$('#player-input-modal').modal({
 			backdrop: config.isDismissible ? true : 'static',
 			keyboard: config.isDismissible
 		});
@@ -154,13 +146,12 @@ var PlayerUiComponent = IgeEntity.extend({
 		if (config.isDismissible) {
 			$('#player-input-cancel-container').show();
 			$('#player-input-modal-dismiss-button').show();
-		}
-		else {
+		} else {
 			$('#player-input-cancel-container').hide();
 			$('#player-input-modal-dismiss-button').hide();
 		}
 
-		$("#player-input-modal").modal('show');
+		$('#player-input-modal').modal('show');
 
 		self.pressedButton = false;
 	},
@@ -176,13 +167,12 @@ var PlayerUiComponent = IgeEntity.extend({
 		if (config.title) {
 			$('#custom-modal .modal-title').html(config.title);
 			$('#custom-modal .modal-header').show();
-		}
-		else {
+		} else {
 			$('#custom-modal .modal-header').hide();
 		}
 
-		$("#custom-modal").addClass('d-flex');
-		$("#custom-modal").modal({
+		$('#custom-modal').addClass('d-flex');
+		$('#custom-modal').modal({
 			backdrop: config.isDismissible ? true : 'static',
 			keyboard: config.isDismissible
 		});
@@ -190,13 +180,12 @@ var PlayerUiComponent = IgeEntity.extend({
 		if (config.isDismissible) {
 			$('#custom-modal-cancel-container').show();
 			$('#custom-modal-dismiss-button').show();
-		}
-		else {
+		} else {
 			$('#custom-modal-cancel-container').hide();
 			$('#custom-modal-dismiss-button').hide();
 		}
 
-		$("#custom-modal").modal('show');
+		$('#custom-modal').modal('show');
 
 		self.pressedButton = false;
 	},
@@ -210,8 +199,8 @@ var PlayerUiComponent = IgeEntity.extend({
 
 		if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
 			swal({
-				title: "Please allow Popups",
-				text: "Your browser is blocking the content modd.io is trying to display",
+				title: 'Please allow Popups',
+				text: 'Your browser is blocking the content modd.io is trying to display',
 				imageWidth: 300,
 				imageUrl: '/assets/images/enable-popup.gif',
 				imageClass: 'rounded border'
@@ -223,8 +212,8 @@ var PlayerUiComponent = IgeEntity.extend({
 
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
 
-		$("#website-modal").find('iframe').attr('src', config.url);
-		$("#website-modal").modal({
+		$('#website-modal').find('iframe').attr('src', config.url);
+		$('#website-modal').modal({
 			backdrop: config.isDismissible ? true : 'static',
 			keyboard: config.isDismissible
 		});
@@ -234,7 +223,7 @@ var PlayerUiComponent = IgeEntity.extend({
 
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
 
-		$("#social-share-modal").modal({
+		$('#social-share-modal').modal({
 			backdrop: config.isDismissible ? true : 'static',
 			keyboard: config.isDismissible
 		});
@@ -243,7 +232,7 @@ var PlayerUiComponent = IgeEntity.extend({
 	openDialogueModal: function (dialogueId, extraData) {
 		var self = this;
 
-		function getDialogueInstance(dialogue) {
+		function getDialogueInstance (dialogue) {
 			var playerName = extraData && extraData.playerName;
 			dialogue = JSON.parse(JSON.stringify(dialogue));
 
@@ -262,7 +251,7 @@ var PlayerUiComponent = IgeEntity.extend({
 						var variableValue = extraData.variables[variableName];
 
 						// replace all occurrences of variableName
-						dialogue.message = dialogue.message.replace(new RegExp('\\$' + variableName + '\\$', 'g'), variableValue);
+						dialogue.message = dialogue.message.replace(new RegExp(`\\$${variableName}\\$`, 'g'), variableValue);
 					}
 				});
 			}
@@ -271,19 +260,19 @@ var PlayerUiComponent = IgeEntity.extend({
 			dialogue.currentFragmentIndex = 0;
 			dialogue.areAllMessagesPrinted = function () {
 				return this.currentFragmentIndex >= this.messageFragments.length;
-			}
+			};
 			dialogue.getNextMessage = function () {
 				return dialogue.messageFragments[dialogue.currentFragmentIndex++];
-			}
+			};
 			dialogue.hasOptions = function () {
 				return Object.keys(dialogue.options).length > 0;
-			}
+			};
 			dialogue.areOptionsRendered = false;
 
 			return dialogue;
 		}
 
-		function initModal() {
+		function initModal () {
 			$('#modd-dialogue-message').html('');
 			$('#modd-dialogue-image').attr('src', '');
 			$('#modd-dialogue-options-container').addClass('d-none');
@@ -299,8 +288,7 @@ var PlayerUiComponent = IgeEntity.extend({
 				$('#modd-dialogue-message-container').addClass('pl-md-0');
 				$('#modd-dialogue-message-container').removeClass('col-12');
 				$('#modd-dialogue-image').attr('src', dialogue.image);
-			}
-			else {
+			} else {
 				$('#modd-dialogue-image-container').addClass('d-none');
 				$('#modd-dialogue-message-container').removeClass('col-8');
 				$('#modd-dialogue-message-container').addClass('col-12');
@@ -311,7 +299,7 @@ var PlayerUiComponent = IgeEntity.extend({
 			$(document).on('click.modd-dialogue', skipText);
 		}
 
-		function printingCompleted() {
+		function printingCompleted () {
 			window.isPrintingDialogue = false;
 
 			if (dialogue.areAllMessagesPrinted()) {
@@ -319,17 +307,15 @@ var PlayerUiComponent = IgeEntity.extend({
 					if (!dialogue.areOptionsRendered) {
 						showOptions();
 					}
-				}
-				else {
+				} else {
 					$('#modd-dialogue-skip-hint').removeClass('d-none');
 				}
-			}
-			else {
+			} else {
 				$('#modd-dialogue-skip-hint').removeClass('d-none');
 			}
 		}
 
-		function showOptions() {
+		function showOptions () {
 			$('#modd-dialogue-options').html('');
 
 			for (var key in dialogue.options) {
@@ -346,7 +332,7 @@ var PlayerUiComponent = IgeEntity.extend({
 				});
 
 				button.append($('<i/>', { class: 'd-none fa fa-check mr-2' }));
-				button.append($('<span/>', { text: optionObject.name }))
+				button.append($('<span/>', { text: optionObject.name }));
 
 				$('#modd-dialogue-options').append(button);
 			}
@@ -357,18 +343,16 @@ var PlayerUiComponent = IgeEntity.extend({
 			dialogue.areOptionsRendered = true;
 		}
 
-		function showNextMessage() {
+		function showNextMessage () {
 			if (dialogue.areAllMessagesPrinted()) {
 				if (dialogue.hasOptions()) {
 					if (!dialogue.areOptionsRendered) {
 						showOptions();
 					}
-				}
-				else {
+				} else {
 					self.closeDialogueModal();
 				}
-			}
-			else {
+			} else {
 				self.dialogue.message = dialogue.getNextMessage();
 				self.dialogue.message = self.dialogue.message.replace(/%nl%/g, '<br/>');
 				window.isPrintingDialogue = true;
@@ -379,29 +363,28 @@ var PlayerUiComponent = IgeEntity.extend({
 			}
 		}
 
-		function skipText() {
+		function skipText () {
 			if (window.isPrintingDialogue) {
 				clearInterval(self.dialogue.messagePrinter);
 				$('#modd-dialogue-message').html(self.dialogue.message);
 				$('#modd-dialogue-skip-hint').removeClass('d-none');
 				window.isPrintingDialogue = false;
 
-				// if 
+				// if
 				// 1. user skips text in last fragment and
 				// 2. dialogue has options and
-				// 3. those options are still hidden 
+				// 3. those options are still hidden
 				// then direct render the options dont ask user for one more action
 
 				if (dialogue.areAllMessagesPrinted() && dialogue.hasOptions() && !dialogue.areOptionsRendered) {
 					showOptions();
 				}
-			}
-			else {
+			} else {
 				showNextMessage();
 			}
 		}
 
-		function keyboardListener(e) {
+		function keyboardListener (e) {
 			if (e.keyCode === 13 || e.keyCode === 32) {
 				e.stopPropagation();
 				skipText();
@@ -416,8 +399,7 @@ var PlayerUiComponent = IgeEntity.extend({
 			showNextMessage();
 
 			$('#modd-dialogue-modal').modal('show');
-		}
-		else {
+		} else {
 			console.error('dialogue', dialogueId, 'not found');
 		}
 	},
@@ -450,8 +432,7 @@ var PlayerUiComponent = IgeEntity.extend({
 
 		if (willOpenNewDialogue) {
 			this.clearListeners();
-		}
-		else {
+		} else {
 			self.closeDialogueModal();
 		}
 
@@ -464,6 +445,5 @@ var PlayerUiComponent = IgeEntity.extend({
 		}
 	}
 });
-
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = PlayerUiComponent; }

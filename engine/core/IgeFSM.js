@@ -6,7 +6,7 @@ var IgeFSM = IgeClass.extend({
 
 	init: function () {
 		var self = this;
-		
+
 		this._states = {};
 		this._transitions = {};
 
@@ -14,7 +14,7 @@ var IgeFSM = IgeClass.extend({
 		this._initialStateName = '';
 		this._currentStateName = '';
 		this._previousStateName = '';
-		
+
 		this._debug = false;
 	},
 
@@ -53,7 +53,7 @@ var IgeFSM = IgeClass.extend({
 			this._debug = val;
 			return this;
 		}
-		
+
 		return this._debug;
 	},
 
@@ -63,7 +63,7 @@ var IgeFSM = IgeClass.extend({
 	 * @param {Object} definition The state definition object.
 	 * @example #Define a state
 	 *     var fsm = new IgeFSM();
-	 *     
+	 *
 	 *     // Define an "idle" state
 	 *     fsm.defineState('idle', {
 	 *         enter: function (data, completeCallback) {
@@ -83,7 +83,7 @@ var IgeFSM = IgeClass.extend({
 		if (!this._initialStateName) {
 			this._initialStateName = name;
 		}
-		
+
 		return this;
 	},
 
@@ -97,7 +97,7 @@ var IgeFSM = IgeClass.extend({
 	 * transition to continue, or false to cancel it in the first parameter.
 	 * @example #Define a state transition
 	 *     var fsm = new IgeFSM();
-	 *     
+	 *
 	 *     // Define an "idle" state
 	 *     fsm.defineState('idle', {
 	 *         enter: function (data, completeCallback) {
@@ -109,7 +109,7 @@ var IgeFSM = IgeClass.extend({
 	 *             completeCallback();
 	 *         }
 	 *     });
-	 *     
+	 *
 	 *     // Define a "moving" state
 	 *     fsm.defineState('moving', {
 	 *         enter: function (data, completeCallback) {
@@ -121,7 +121,7 @@ var IgeFSM = IgeClass.extend({
 	 *             completeCallback();
 	 *         }
 	 *     });
-	 *     
+	 *
 	 *     // Define a transition between the two methods
 	 *     fsm.defineTransition('idle', 'moving', function (data, callback) {
 	 *         // Check some data we were passed
@@ -135,7 +135,7 @@ var IgeFSM = IgeClass.extend({
 	 *             callback('Some error string, or true or any data');
 	 *         }
 	 *     });
-	 *     
+	 *
 	 *     // Now change states and cause it to fail
 	 *     fsm.enterState('moving', 'notOk', function (err, data) {
 	 *         if (!err) {
@@ -146,7 +146,7 @@ var IgeFSM = IgeClass.extend({
 	 *             console.log('State did NOT change!', fsm.currentStateName());
 	 *         }
 	 *     });
-	 *     
+	 *
 	 *     // Now change states and pass "ok" in the data to make it proceed
 	 *     fsm.enterState('moving', 'ok', function (err, data) {
 	 *         if (!err) {
@@ -162,19 +162,19 @@ var IgeFSM = IgeClass.extend({
 	defineTransition: function (fromState, toState, transitionCheck) {
 		if (fromState && toState && transitionCheck) {
 			if (!this._states[fromState]) {
-				this.log('fromState "' + fromState + '" specified is not defined as a state!', 'error');
+				this.log(`fromState "${fromState}" specified is not defined as a state!`, 'error');
 			}
-	
+
 			if (!this._states[toState]) {
-				this.log('toState "' + toState + '" specified is not defined as a state!', 'error');
+				this.log(`toState "${toState}" specified is not defined as a state!`, 'error');
 			}
-	
+
 			this._transitions[fromState] = this._transitions[fromState] || {};
 			this._transitions[fromState][toState] = transitionCheck;
-			
+
 			return this;
 		}
-		
+
 		return false;
 	},
 
@@ -188,11 +188,11 @@ var IgeFSM = IgeClass.extend({
 	 */
 	initialState: function (stateName, data, callback) {
 		var newStateObj = this.getState(stateName);
-		
+
 		this._currentStateName = stateName;
-		
-		if (this._debug) { this.log('Entering initial state: ' + stateName); }
-		
+
+		if (this._debug) { this.log(`Entering initial state: ${stateName}`); }
+
 		if (newStateObj.enter) {
 			newStateObj.enter.apply(newStateObj, [data, function (enterErr, enterData) {
 				if (callback) { callback(enterErr, enterData); }
@@ -219,7 +219,7 @@ var IgeFSM = IgeClass.extend({
 	 */
 	enterState: function (newStateName, data, callback) {
 		var self = this;
-		
+
 		if (self._transitions[self._currentStateName] && self._transitions[self._currentStateName][newStateName]) {
 			// There is a transition check method, call it to see if we can change states
 			self._transitions[self._currentStateName][newStateName](data, function (err) {
@@ -228,9 +228,9 @@ var IgeFSM = IgeClass.extend({
 					self._transitionStates(self._currentStateName, newStateName, data, callback);
 				} else {
 					// State change not allowed or error
-					if (callback ) { callback(err); }
-					
-					this.log('Cannot transition from "' + self._currentStateName + '" to "' + newStateName + '" states.', 'warning');
+					if (callback) { callback(err); }
+
+					this.log(`Cannot transition from "${self._currentStateName}" to "${newStateName}" states.`, 'warning');
 				}
 			});
 		} else {
@@ -259,18 +259,18 @@ var IgeFSM = IgeClass.extend({
 	 * @private
 	 */
 	_transitionStates: function (oldStateName, newStateName, data, callback) {
-		var self = this,
-			currentStateObj = self.getState(self._currentStateName),
-			newStateObj = self.getState(newStateName);
-		
+		var self = this;
+		var currentStateObj = self.getState(self._currentStateName);
+		var newStateObj = self.getState(newStateName);
+
 		if (currentStateObj && newStateObj) {
-			if (self._debug) { self.log('Exiting state: ' + self._currentStateName); }
+			if (self._debug) { self.log(`Exiting state: ${self._currentStateName}`); }
 			if (currentStateObj.exit) {
 				currentStateObj.exit.apply(currentStateObj, [data, function (exitStateErr, exitStateData) {
 					self._previousStateName = self._currentStateName;
 					self._currentStateName = newStateName;
-					
-					if (self._debug) { self.log('Entering state: ' + newStateName); }
+
+					if (self._debug) { self.log(`Entering state: ${newStateName}`); }
 					if (newStateObj.enter) {
 						newStateObj.enter.apply(newStateObj, [data, function (enterStateErr, enterStateData) {
 							if (callback) { callback(enterStateErr, data); }
@@ -279,10 +279,10 @@ var IgeFSM = IgeClass.extend({
 				}]);
 			}
 		} else {
-			if (callback) { callback('Cannot change states from "' + self._currentStateName + '" to "' + newStateName + '" states.'); }
-			self.log('Cannot change states from "' + self._currentStateName + '" to "' + newStateName + '" states.', 'warning');
+			if (callback) { callback(`Cannot change states from "${self._currentStateName}" to "${newStateName}" states.`); }
+			self.log(`Cannot change states from "${self._currentStateName}" to "${newStateName}" states.`, 'warning');
 		}
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeFSM; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeFSM; }

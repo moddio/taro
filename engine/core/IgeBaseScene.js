@@ -5,7 +5,7 @@
  */
 var IgeBaseScene = IgeSceneGraph.extend({
 	classId: 'IgeBaseScene',
-	
+
 	init: function () {},
 
 	/**
@@ -17,7 +17,7 @@ var IgeBaseScene = IgeSceneGraph.extend({
 		if (ige.$('baseScene')) {
 			this.destroyGraph();
 		}
-		
+
 		// Create the scene
 		var baseScene = new IgeScene2d()
 			.id('baseScene');
@@ -38,10 +38,10 @@ var IgeBaseScene = IgeSceneGraph.extend({
 	removeGraph: function () {
 		// Destroy the viewport
 		ige.$('vp1').destroy();
-		
+
 		// Destroy the baseScene
 		ige.$('baseScene').destroy();
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeBaseScene; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeBaseScene; }

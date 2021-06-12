@@ -40,11 +40,10 @@ var TimerComponent = IgeEntity.extend({
 
 		if (ige.isServer) {
 			self.emptyTimeLimit = self.getTimeLimit();
-			self.startedAt = new Date(ige.server.startedOn)
+			self.startedAt = new Date(ige.server.startedOn);
 			console.log('initialized timer component', self.startedAt);
 			self.now = self.serverEmptySince = self.startedAt;
 		}
-
 	},
 
 	getTimeLimit: function () {
@@ -74,16 +73,15 @@ var TimerComponent = IgeEntity.extend({
 	startGameClock: function () {
 		var self = this;
 
-		console.log(new Date(), "gameClock started");
+		console.log(new Date(), 'gameClock started');
 		self.shutdownMessageCheckpoint = -1;
 
 		var everySecond = setInterval(function () {
-
 			self.now = Date.now();
 			if (ige.isServer) {
 				self.lastTick = self.now;
 				// var shouldLog = ige.server.logTriggers && ige.server.logTriggers.timerLogs;
-				ige.trigger.fire("secondTick");
+				ige.trigger.fire('secondTick');
 
 				// kill tier 1 servers that has been empty for over 15 minutes
 				// var playerCount = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human' }).length;
@@ -108,10 +106,10 @@ var TimerComponent = IgeEntity.extend({
 				});
 
 				if (messageToBroadcast) {
-					var message = "shutting down server in " + messageToBroadcast.message;
+					var message = `shutting down server in ${messageToBroadcast.message}`;
 					self.shutdownMessageCheckpoint = messageToBroadcast.checkpoint;
 
-					ige.chat.sendToRoom("1", message, undefined, undefined)
+					ige.chat.sendToRoom('1', message, undefined, undefined);
 				}
 
 				// if (shouldLog) {
@@ -120,8 +118,7 @@ var TimerComponent = IgeEntity.extend({
 				// if (age > lifeSpan) {
 				// 	ige.server.kill("server lifespan expired");
 				// }
-			}
-			else if (ige.isClient) {
+			} else if (ige.isClient) {
 				ige.scoreboard.update();
 			}
 		}, 1000);

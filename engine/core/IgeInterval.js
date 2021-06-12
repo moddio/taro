@@ -1,7 +1,7 @@
 /**
  * Provides an alternative to setInterval() which works based on the engine's internal
  * time system allowing intervals to fire correctly, taking into account pausing the
- * game and differences in rendering speed etc. 
+ * game and differences in rendering speed etc.
  */
 var IgeInterval = IgeEventingClass.extend({
 	classId: 'IgeInterval',
@@ -14,18 +14,18 @@ var IgeInterval = IgeEventingClass.extend({
 	 */
 	init: function (method, interval) {
 		var self = this;
-		
+
 		this._method = method;
 		this._interval = interval;
 		this._time = 0;
 		this._started = ige._currentTime;
-		
+
 		// Attach ourselves to the time system
 		ige.time.addTimer(this);
 	},
 
 	/**
-	 * Adds time to the timer's internal clock. 
+	 * Adds time to the timer's internal clock.
 	 * @param {Number} time The time in milliseconds to add to the timer's internal clock.
 	 * @returns {*}
 	 */
@@ -55,9 +55,9 @@ var IgeInterval = IgeEventingClass.extend({
 			this._method(ige._currentTime);
 			this._time -= this._interval;
 		}
-		
+
 		return this;
 	}
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = IgeInterval; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeInterval; }
