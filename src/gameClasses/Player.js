@@ -43,7 +43,8 @@ var Player = IgeEntity.extend({
 				ige.client.vp1.mouseMove(function (event, control) {
 					self.control.mouseMove()
 				});
-				this.updateBanChat(this._stats.banChat);
+
+				this.setChatMute(this._stats.banChat);
 			}
 
 			// redraw name labels and textures of all units owned by this player
@@ -474,7 +475,7 @@ var Player = IgeEntity.extend({
 							self.hideMenu();
 						}
 						if (attrName === 'banChat') {
-							self.updateBanChat(newValue);
+							self.setChatMute(newValue);
 						}
 						if (attrName === 'playerJoined') {
 							console.log("received player.playerJoined");
@@ -537,7 +538,10 @@ var Player = IgeEntity.extend({
 			}
 		}
 	},
-	updateBanChat: function (value) {
+	setChatMute: function (value) {
+		if (ige.env == 'local') // don't mute users in dev env
+			return;
+		
 		if (value) {
 			$('#message').attr("disabled", true);
 			$('#message').attr("placeholder", 'you are muted');

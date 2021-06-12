@@ -64,8 +64,8 @@ var IgeChatServer = {
 		var player = ige.game.getPlayerByClientId(from);
 		var gameData = ige.game.data && ige.game.data.defaultData;
 		if (from && player && player._stats) {
-			// don't send message if player is ban from sending message or unverified
-			if (player._stats.banChat || (gameData && gameData.allowVerifiedUserToChat && !player._stats.isUserVerified)) {
+			// don't send message if player is ban from sending message or unverified			
+			if (!global.isDev && (player._stats.banChat || (gameData && gameData.allowVerifiedUserToChat && !player._stats.isUserVerified))) {
 				return;
 			} else if (this.isSpamming(from, message)) {
 				// permanently mute player from this game;
@@ -188,6 +188,7 @@ var IgeChatServer = {
 		// msg.text = self.sanitizer.sanitize(msg.text);
 		// msg.text = self.validator.escape(msg.text);
 		// msg.text = self.filter.clean(msg.text);
+		msg.text = self.filter.cleanHacked(msg.text); // https://github.com/web-mech/badwords/issues/93
 		if (msg == undefined || msg.text == undefined)
 			return;
 

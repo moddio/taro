@@ -28,16 +28,16 @@ var IgeChatClient = {
 		var self = ige.chat;
 		var player = ige.game.getPlayerByClientId(data.from);
 
+		var isPlayerMuted = ige.client.myPlayer &&
+			ige.client.myPlayer._stats &&
+			ige.client.myPlayer._stats.mutedUsers &&
+			ige.client.myPlayer._stats.mutedUsers.indexOf(player._stats.userId) > -1;
+		
 		if (!player || isPlayerMuted) {
 			return;
 		}
 
-		var isPlayerMuted = ige.client.myPlayer &&
-			ige.client.myPlayer._stats &&
-			ige.client.myPlayer._stats.mutedUsers &&
-			ige.client.myPlayer._stats.mutedUsers.indexOf(player._stats.userId) > -1
 		var isChatHidden = $('#chat-box').hasClass('d-none');
-
 
 
 		// Emit the event and if it wasn't cancelled (by returning true) then

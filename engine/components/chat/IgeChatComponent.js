@@ -19,7 +19,28 @@ var IgeChatComponent = IgeEventingClass.extend({
         if (ige.isServer) {
 
             var Filter = require('bad-words');
-            this.filter = new Filter();
+            // this.filter = new Filter();            
+
+            // a hack to support special characters. bad-words currently crashes server when special characters are entered (v3.0.4)
+            // https://github.com/web-mech/badwords/issues/93
+            class FilterHacked extends Filter {
+                cleanHacked(string) {
+                    try {
+                        return this.clean(string);
+                    } catch {
+                        const joinMatch = this.splitRegex.exec(string);
+                        const joinString = (joinMatch && joinMatch[0]) || '';
+                        return string.split(this.splitRegex).map((word) => {
+                          return this.isProfane(word) ? this.replaceWord(word) : word;
+                        }).join(joinString);
+                    }
+                  }
+            }
+            module.exports = FilterHacked;
+            
+            this.filter = new FilterHacked();            
+            
+
             // this.sanitizer = require('sanitizer');
             this.validator = require('validator');
             this.xssFilters = require('xss-filters');
@@ -80,7 +101,7 @@ var IgeChatComponent = IgeEventingClass.extend({
                 message = message.substr(0, 80);
 
             //don't send chat message if user is ban or unverified.
-            if (player && (player._stats.banChat || (gameData && gameData.allowVerifiedUserToChat && !player._stats.isUserVerified))) {
+            if (ige.env != 'local' && player && (player._stats.banChat || (gameData && gameData.allowVerifiedUserToChat && !player._stats.isUserVerified))) {
                 // don't send message
             }
             else {
