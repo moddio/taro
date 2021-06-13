@@ -42,7 +42,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "node-arguments": "^0.0.1",
-    "node-schedule": "^2.0.0",
     "rollbar": "^2.22.0"
   }
 }
