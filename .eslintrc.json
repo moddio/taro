@@ -75,8 +75,8 @@
         "promise"
     ],
     "rules": {
-        // Eval should never be allowed, regardless of use case.
-        "no-eval": 2,
+        // Alternatives to eval should be used.
+        "no-eval": 1,
 
         // } else {}
         "brace-style": 1,
