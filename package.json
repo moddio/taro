@@ -16,7 +16,6 @@
   "dependencies": {
     "@clusterws/cws": "^3.0.0",
     "bad-words": "^3.0.4",
-    "bcrypt-nodejs": "0.0.3",
     "cookie-parser": "^1.4.4",
     "crash-colliders": "^2.0.2",
     "ejs": "^3.1.5",
