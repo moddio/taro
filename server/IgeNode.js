@@ -440,41 +440,15 @@ var IgeNode = IgeClass.extend({
 	},
 
 	obfuscate: function (source, seed, opts, deployOptions) {
-		var jsp = this.parser;
-		var UglifyJS = require('uglify-js');
-		var compressor = UglifyJS.Compressor(
-			{
-				warnings: true,
-				drop_debugger: !deployOptions.debug
-			}
-		);
-		var options;
-		var orig_code;
-		var ast;
-		var compressed_ast;
-		var finCode;
+		// Require babel.
+		let babel = require('@babel/core');
 
-		var babel = require('@babel/core');
-		// Remove client-exclude marked code
+		// Remove client-exclude marked code.
 		source = source.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
 
-		// Pass to the uglify-js module
-		/* orig_code = source;
-		ast = jsp.parse(orig_code); // parse code and get the initial AST
-		ast = pro.ast_mangle(ast); // get a new AST with mangled names
-		ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
+		let finCode = babel.transform(source, { ast: true, compact: true, minified: true, comments: false }).code.toString();
 
-		finCode = pro.gen_code(ast); // compressed code here */
-		// ast = babel.transform(source, {ast:true,compact:true,minified:true}).ast;
-		// //ast = UglifyJS.parse(source, options);
-		// //ast.figure_out_scope();
-		// compressed_ast = ast.transform(compressor);
-		// compressed_ast.figure_out_scope();
-		// compressed_ast.compute_char_frequency();
-		// compressed_ast.mangle_names();
-		finCode = babel.transform(source, { ast: true, compact: true, minified: true, comments: false }).code.toString();
-
-		// Return final code
+		// Return final code.
 		return finCode;
 	},
 
