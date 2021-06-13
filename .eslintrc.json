@@ -69,7 +69,6 @@
         "IgeViewport": "writable"
     },
     "plugins": [
-        "prefer-arrow",
         "import",
         "node",
         "promise"
