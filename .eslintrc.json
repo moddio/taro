@@ -92,15 +92,6 @@
         // Use templating strings with backticks whenever possible.
         "prefer-template": 1,
 
-        // Prefer fat arrow functions.
-        // "prefer-arrow-callback": 1,
-        // "arrow-body-style": ["warn", "as-needed"],
-        // "prefer-arrow/prefer-arrow-functions": ["warn", {
-        //     "disallowPrototype": true,
-        //     "singleReturnOnly": true,
-        //     "classPropertiesAllowed": false
-        // }],
-
         // ESLint globals have not been configured for these.
         "no-undef": 0,
         "no-var": 0,
