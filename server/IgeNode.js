@@ -441,7 +441,7 @@ var IgeNode = IgeClass.extend({
 
 	obfuscate: function (source, seed, opts, deployOptions) {
 		var jsp = this.parser;
-		var UglifyJS = require('uglify-js2');
+		var UglifyJS = require('uglify-js');
 		var compressor = UglifyJS.Compressor(
 			{
 				warnings: true,

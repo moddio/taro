@@ -45,6 +45,6 @@
     "node-arguments": "^0.0.1",
     "node-schedule": "^2.0.0",
     "rollbar": "^2.22.0",
-    "uglify-js2": "^2.1.11"
+    "uglify-js": "^3.13.9"
   }
 }
