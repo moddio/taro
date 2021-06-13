@@ -81,7 +81,8 @@
         // } else {}
         "brace-style": 1,
 
-        // Indents should be four spaces.
+        // Indents should be tabs.
+        // Hint: Ctrl + Shift + Z will atuomatically change your indentation in VSCode.
         "indent": [1, "tab", { "SwitchCase": 1 }],
 
         // Semicolons and singlequotes should always be used.
