@@ -27,7 +27,7 @@
     "public-ip": "^4.0.4",
     "q": "^1.5.1",
     "rate-limiter-flexible": "^2.2.2",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "rollbar": "^2.22.0",
     "sanitizer": "^0.1.3",
     "tick": "0.1.1",
