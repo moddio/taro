@@ -26,7 +26,6 @@
     "msgpack-lite": "^0.1.26",
     "public-ip": "^4.0.4",
     "q": "^1.5.1",
-    "randomstring": "^1.1.5",
     "rate-limiter-flexible": "^2.1.10",
     "request": "^2.88.0",
     "rollbar": "^2.22.0",
