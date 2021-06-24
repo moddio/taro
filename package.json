@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
-    "@babel/eslint-parser": "^7.14.5",
+    "@babel/eslint-parser": "^7.14.7",
     "cross-env": "^7.0.3",
     "eslint": "^7.29.0",
     "eslint-config-standard": "^16.0.3",
@@ -42,6 +42,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "node-arguments": "^0.0.1",
-    "rollbar": "^2.22.0"
+    "rollbar": "^2.23.0"
   }
 }
