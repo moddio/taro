@@ -1,7 +1,8 @@
 {
   "name": "taro-engine",
-  "main": "server/ige.js",
   "version": "1.0.0",
+  "description": "An HTML5 multiplayer game engine, enabling anyone to make games at modd.io.",
+  "main": "server/ige.js",
   "scripts": {
     "server": "cross-env ENV=standalone node server/ige.js -g ./src",
     "server:prod": "node server/ige.js -g ./src",
@@ -13,11 +14,26 @@
     "debug": "cross-env ENV=standalone node --inspect server/ige.js -g ./src",
     "dev:lint": "eslint . --fix"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moddio/taro.git"
+  },
+  "keywords": [
+    "game-development",
+    "game-engine",
+    "moddio"
+  ],
+  "author": "moddio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/moddio/taro/issues"
+  },
+  "homepage": "https://github.com/moddio/taro#readme",
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/eslint-parser": "^7.14.7",
     "cross-env": "^7.0.3",
-    "eslint": "^7.29.0",
+    "eslint": "^7.30.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
