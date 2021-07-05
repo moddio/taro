@@ -39,7 +39,7 @@
     "sha1": "^1.1.1",
     "tick": "0.1.1",
     "validator": "^5.7.0",
-    "ws": "^7.4.6",
+    "ws": "^7.5.2",
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
