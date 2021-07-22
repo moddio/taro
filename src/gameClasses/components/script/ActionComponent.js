@@ -182,7 +182,6 @@ var ActionComponent = IgeEntity.extend({
                                 if (ige.game.data.variables.hasOwnProperty(varName)) {
                                     ige.game.data.variables[varName].value = newValue;
                                 };
-                              console.log('Server responded with:', body);
                         });
                         
                         break;    
