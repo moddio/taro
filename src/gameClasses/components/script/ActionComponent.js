@@ -1,3 +1,4 @@
+const request = require("request")
 var ActionComponent = IgeEntity.extend({
     classId: 'ActionComponent',
     componentId: 'action',
@@ -163,8 +164,29 @@ var ActionComponent = IgeEntity.extend({
                         ige.game.lastAttackingItemId = item.id();
 
                         break;
-
+                    
+                    case 'makePostRequestAndSaveResponse':
+                        var obj = ige.variable.getValue(action.string, vars);
+                        var url = ige.variable.getValue(action.url, vars);
+                        var varName = ige.variable.getValue(action.varName, vars);
+                        obj = JSON.parse(obj);
+                        request.post({
+                            url:url,
+                            form: obj}, function optionalCallback(err, httpResponse, body) {
+                              if (err) {
+                                return console.error('upload failed:', err);
+                              }
+                              var res = JSON.parse(body);
+                              var newValue = res.response;
+                                params['newValue'] = newValue;
+                                if (ige.game.data.variables.hasOwnProperty(varName)) {
+                                    ige.game.data.variables[varName].value = newValue;
+                                };
+                              console.log('Server responded with:', body);
+                        });
                         
+                        break;    
+
                     /* Player */
                     
                     case 'kickPlayer':
