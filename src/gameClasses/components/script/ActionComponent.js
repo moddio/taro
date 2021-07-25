@@ -48,9 +48,9 @@ var ActionComponent = IgeEntity.extend({
 							// if variable has default field then it will be returned when variable's value is undefined
 							if (
 								newValue === undefined &&
-                                action.value &&
-                                action.value.function === 'undefinedValue' &&
-                                ige.game.data.variables[action.variableName].hasOwnProperty('default')
+                                				action.value &&
+                                				action.value.function === 'undefinedValue' &&
+                                				ige.game.data.variables[action.variableName].hasOwnProperty('default')
 							) {
 								ige.game.data.variables[action.variableName].default = undefined;
 							}
@@ -160,25 +160,25 @@ var ActionComponent = IgeEntity.extend({
 						break;
 
 					case 'makePostRequestAndSaveResponse':
-                        var obj = ige.variable.getValue(action.string, vars);
-                        var url = ige.variable.getValue(action.url, vars);
-                        var varName = ige.variable.getValue(action.varName, vars);
-                        obj = JSON.parse(obj);
-                        request.post({
-                            url:url,
-                            form: obj}, function optionalCallback(err, httpResponse, body) {
-                                if (err) {
-                                    return console.error('upload failed:', err);
-                                }
-                                var res = JSON.parse(body);
-                                var newValue = res.response;
-                                params['newValue'] = newValue;
-                                if (ige.game.data.variables.hasOwnProperty(varName)) {
-                                    ige.game.data.variables[varName].value = newValue;
-                                };
-                        });
-                        
-                        break;
+						var obj = ige.variable.getValue(action.string, vars);
+						var url = ige.variable.getValue(action.url, vars);
+						var varName = ige.variable.getValue(action.varName, vars);
+						obj = JSON.parse(obj);
+						request.post({
+						    url:url,
+						    form: obj}, function optionalCallback(err, httpResponse, body) {
+							if (err) {
+							    return console.error('upload failed:', err);
+							}
+							var res = JSON.parse(body);
+							var newValue = res.response;
+							params['newValue'] = newValue;
+							if (ige.game.data.variables.hasOwnProperty(varName)) {
+							    ige.game.data.variables[varName].value = newValue;
+							};
+						});
+
+						break;
 
 						/* Player */
 
