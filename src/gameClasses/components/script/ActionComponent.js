@@ -159,7 +159,7 @@ var ActionComponent = IgeEntity.extend({
 
 						break;
 
-					case 'makePostRequestAndSaveResponse':
+					case 'sendPostRequest':
 						var obj = ige.variable.getValue(action.string, vars);
 						var url = ige.variable.getValue(action.url, vars);
 						var varName = ige.variable.getValue(action.varName, vars);
