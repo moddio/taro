@@ -21,7 +21,7 @@ let users = {};
 
 // #functions
 // ##updateUsers: used mostly to update username, for now.
-function updateUsers () {
+function updateUsers() {
 	console.log('updating users...');
 	for (let p of ige.$$('player')) {
 		const uID = p.id();
@@ -36,7 +36,7 @@ function updateUsers () {
 	}
 }
 // ##disconnectFromRoom: used to disconnect user from current room.
-function disconnectFromRoom (newRoom = null) {
+function disconnectFromRoom(newRoom = null) {
 	if (newRoom == ROOM_ID) {
 		return;
 	}
@@ -59,7 +59,7 @@ function disconnectFromRoom (newRoom = null) {
 		}
 	}
 }
-function videoChatUpdateSpatialVideo (players) {
+function videoChatUpdateSpatialVideo(players) {
 	// if (Object.keys(players).length) {
 	//     console.log(players)
 	// }
@@ -91,7 +91,7 @@ function videoChatUpdateSpatialVideo (players) {
 	}
 }
 // ## switchRoom: used to join a new room or switch (disconnecting from the previous) to a new one.
-function switchRoom (_roomId) {
+function switchRoom(_roomId) {
 	if (!myID) {
 		switchRoomBuffer = _roomId;
 		return;
@@ -113,7 +113,7 @@ function switchRoom (_roomId) {
 }
 
 // ## connectToNewUser: used to establish peer connection using PeerJs
-function connectToNewUser (userId, stream, playerName = null) {
+function connectToNewUser(userId, stream, playerName = null) {
 	console.log(userId, myPeer, 'stream: ', stream);
 	const video = document.createElement('video');
 	const call = stream ? myPeer.call(userId, stream) : myPeer.connect(userId);
@@ -132,7 +132,7 @@ function connectToNewUser (userId, stream, playerName = null) {
 	peers[userId] = call;
 }
 // ## addVideoStream: used to generate new videoelement.
-function addVideoStream (video, stream, peerID = null, playerName = null, from = 'null') {
+function addVideoStream(video, stream, peerID = null, playerName = null, from = 'null') {
 	if (!stream) {
 		return;
 	}
@@ -190,7 +190,7 @@ function addVideoStream (video, stream, peerID = null, playerName = null, from =
 	}
 }
 // # status = true / audible, false / mute
-function setAudioStatus (peerID, status) {
+function setAudioStatus(peerID, status) {
 	const controls = $(`#video-controls-${peerID}`);
 	const iconClass = !status ? $('.mute-btn', controls).attr('data-istrueclass') : $('.mute-btn', controls).attr('data-isfalseclass');
 	$('.mute-btn i', controls).attr('class', iconClass);
@@ -214,7 +214,7 @@ function setAudioStatus (peerID, status) {
 	}
 }
 // # status = true / visible, false / hidden
-function setVideoVisibility (peerID, status) {
+function setVideoVisibility(peerID, status) {
 	const controls = $(`#video-controls-${peerID}`);
 	const iconClass = !status ? $('.hide-btn', controls).attr('data-istrueclass') : $('.hide-btn', controls).attr('data-isfalseclass');
 	$('.hide-btn i', controls).attr('class', iconClass);
@@ -238,7 +238,7 @@ function setVideoVisibility (peerID, status) {
 	}
 }
 // ## handleVideoUI: used to manage video-controls button presses.
-function handleVideoUI (el) {
+function handleVideoUI(el) {
 	el.blur();
 	let videoID = `video-${el.getAttribute('data-peer')}`;
 	let videoEl = document.getElementById(videoID);
@@ -275,7 +275,7 @@ const selectors = [audioInputSelect, audioOutputSelect, videoSelect];
 
 audioOutputSelect.disabled = !('sinkId' in HTMLMediaElement.prototype);
 
-function gotDevices (deviceInfos) {
+function gotDevices(deviceInfos) {
 	// Handles being called several times to update labels. Preserve values.
 	const values = selectors.map(select => select.value);
 	selectors.forEach(select => {
@@ -308,7 +308,7 @@ function gotDevices (deviceInfos) {
 }
 
 // Attach audio output device to video element using device/sink ID.
-function attachSinkId (element, sinkId) {
+function attachSinkId(element, sinkId) {
 	if (typeof element.sinkId !== 'undefined') {
 		element.setSinkId(sinkId)
 			.then(() => {
@@ -328,12 +328,12 @@ function attachSinkId (element, sinkId) {
 	}
 }
 
-function changeAudioDestination () {
+function changeAudioDestination() {
 	const audioDestination = audioOutputSelect.value;
 	attachSinkId(videoElement, audioDestination);
 }
 
-function gotStream (stream) {
+function gotStream(stream) {
 	window.stream = stream; // make stream available to console
 	console.log('stream refreshed');
 	videoElement.srcObject = stream;
@@ -347,7 +347,7 @@ function gotStream (stream) {
 	return navigator.mediaDevices.enumerateDevices();
 }
 
-function handleError (error) {
+function handleError(error) {
 	console.log('removing loading buttons');
 	$('.loading-button').addClass('d-none');
 	$('.videochat-choice[data-choice=disable]').removeClass('d-none');
@@ -355,7 +355,8 @@ function handleError (error) {
 }
 // this variable holds the state of the execution of the "gotStream" promise. -1 = not started, false = not fullfilled, true = fullfilled.
 let gotStr = -1;
-function vChatStart () {
+var streamCheckerTimer = null;
+function vChatStart() {
 	if (window.stream) {
 		window.stream.getTracks().forEach(track => {
 			track.stop();
@@ -370,7 +371,7 @@ function vChatStart () {
 	// if gotStr == -1 getusermedia was never executed so the interval will be started to check every 5 seconds if the stream was correctly initialized.
 	if (gotStr == -1) {
 		gotStr = false;
-		var streamCheckerTimer = setInterval(function () {
+		streamCheckerTimer = setInterval(function () {
 			if (gotStr) {
 				clearInterval(streamCheckerTimer);
 				return;
@@ -418,12 +419,13 @@ $(function () {
 				});
 			}
 			window.stream = null;
+			clearInterval(streamCheckerTimer);
 		}
 		// startVideoChat();
 		return false;
 	});
 });
-function processMyStream (stream) {
+function processMyStream(stream) {
 	if (stream) {
 		addVideoStream(myVideo, stream, 'myPeer');
 	}
@@ -464,7 +466,7 @@ function processMyStream (stream) {
 		// console.log("USERS: ", users);
 	});
 }
-function refreshUserName (_name) {
+function refreshUserName(_name) {
 	for (let p of ige.$$('player')) {
 		const uID = p.id();
 		p = p._stats;
@@ -482,7 +484,7 @@ function refreshUserName (_name) {
 	// }
 }
 var switchRoomBuffer = null;
-function startVideoChat (_peerID = undefined) {
+function startVideoChat(_peerID = undefined) {
 	if (videoChatConfig.peerJSConfig) {
 		socket = io(videoChatConfig.socketIOConfig.url);
 		myPeer = new Peer(_peerID, videoChatConfig.peerJSConfig);
