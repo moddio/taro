@@ -17,8 +17,7 @@
 
 
 <div align="center">
-  <h3>Demo</h3>
-  <a href="http://taro.town"><img src="./assets/images/demo.png" width="390" alt="Taro demo"></a>
+  <a href="http://beta.modd.io/play/two-houses"><h3>Demo</h3></a>
 </div>
 <br>
 
