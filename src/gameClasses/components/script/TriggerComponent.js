@@ -7,6 +7,30 @@ var TriggerComponent = IgeEntity.extend({
 		if (ige.isServer || (ige.isClient && ige.physics)) {
 			self._enableContactListener();
 		}
+		
+		this._registerTriggeredScripts();
+	},
+
+	// map trigger events, so we don't have to iterate through all scripts to find corresponding scripts
+	_registerTriggeredScripts: function() {
+		this.triggeredScripts = {}
+		for (scriptId in ige.game.data.scripts) {		
+			var script = ige.game.data.scripts[scriptId];
+			
+			// look for matching trigger within the script's triggers
+
+			if (script && script.triggers) {
+				for (j = 0; j < script.triggers.length; j++) {
+					var trigger = script.triggers[j];
+					if (this.triggeredScripts[trigger.type] == undefined) {
+						this.triggeredScripts[trigger.type] = [scriptId]
+					} else {
+						this.triggeredScripts[trigger.type].push(scriptId)
+					}					
+				}
+			}		
+		}
+		console.log("registered triggered scripts: ", this.triggeredScripts)
 	},
 
 	// Listen for when contact's begin
@@ -221,64 +245,18 @@ var TriggerComponent = IgeEntity.extend({
 		// look for script that has a matching trigger
 
 		if (ige.isServer || (ige.isClient && ige.physics)) {
-			for (scriptId in ige.game.data.scripts) {
-				var script = ige.game.data.scripts[scriptId];
-				var triggered = false;
+			let scriptIds = this.triggeredScripts[triggerName]
+			for (i in scriptIds) {
+				let scriptId = scriptIds[i]
+				ige.script.scriptLog(`\ntrigger: ${triggerName}`);
 
-				// look for matching trigger within the script's triggers
-
-				if (script && script.triggers) {
-					for (j = 0; j < script.triggers.length; j++) {
-						var scriptTrigger = script.triggers[j];
-						if (scriptTrigger.type == triggerName) {
-							triggered = true;
-						}
-					}
-
-					if (triggered) {
-						ige.script.scriptLog(`\ntrigger: ${triggerName}`);
-
-						var localVariables = {
-							triggeredBy: triggeredBy
-						};
-						ige.script.runScript(scriptId, localVariables);
-					}
-				}
+				var localVariables = {
+					triggeredBy: triggeredBy
+				};
+				ige.script.runScript(scriptId, localVariables);
 			}
 		}
 
-		if (triggeredBy && triggeredBy.projectileId) {
-			var projectile = ige.$(triggeredBy.projectileId);
-			if (projectile) {
-				switch (triggerName) {
-					case 'unitTouchesProjectile':
-						var attackedUnit = ige.$(ige.game.lastTouchingUnitId);
-						if (attackedUnit) {
-							var damageHasBeenInflicted = attackedUnit.inflictDamage(projectile._stats.damageData);
-
-							if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith.units && damageHasBeenInflicted) {
-								projectile.destroy();
-							}
-						}
-						break;
-					case 'projectileTouchesDebris':
-						if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith.debris) {
-							projectile.destroy();
-						}
-						break;
-					case 'projectileTouchesItem':
-						if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith.items) {
-							projectile.destroy();
-						}
-						break;
-					case 'projectileTouchesWall':
-						if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith.walls) {
-							projectile.destroy();
-						}
-						break;
-				}
-			}
-		}
 	}
 });
 
