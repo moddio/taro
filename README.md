@@ -16,9 +16,7 @@
 </div>
 
 
-<div align="center">
-  <a href="http://beta.modd.io/play/two-houses"><h3>Demo</h3></a>
-</div>
+<h3><a href="http://beta.modd.io/play/two-houses">Demo</a></h3>
 <br>
 
 ## What's included in the box
