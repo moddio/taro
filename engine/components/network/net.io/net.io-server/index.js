@@ -524,8 +524,9 @@ NetIo.Server = NetIo.EventingClass.extend({
 	init: function (port, callback) {
 		this._idCounter = 0;
 
-		this._websocket = require('@clusterws/cws');
-		// this._websocket = require('ws');
+		// this._websocket = require('@clusterws/cws');
+		this._websocket = require('ws');
+		// this._websocket = require('websocket');
 		this._fs = require('fs');
 		this._http = require('http');
 		this._https = require('https');
@@ -559,12 +560,12 @@ NetIo.Server = NetIo.EventingClass.extend({
 			response.writeHead(404);
 			response.end();
 		});
-		// this._socketServerHttp = new this._websocket.Server({
-		//     server: this._httpServer
-		// });
-		this._socketServerHttp = new this._websocket.WebSocketServer({
-			server: this._httpServer
+		this._socketServerHttp = new this._websocket.Server({
+		    server: this._httpServer
 		});
+		// this._socketServerHttp = new this._websocket.WebSocketServer({
+		// 	server: this._httpServer
+		// });
 		// Setup listener
 		this._socketServerHttp.on('connection', function (ws, request) {
 			self.socketConnection(ws, request);
@@ -654,7 +655,6 @@ NetIo.Server = NetIo.EventingClass.extend({
 		var jwt = require('jsonwebtoken');
 		var PING_SERVICE_HEADER = 'x-ping-service';
 		self.log('Client connecting...');
-		// var connection = request.accept('netio1', request.origin),
 		var socket = new NetIo.Socket(ws);
 		// Give the socket encode/decode methods
 		socket._encode = self._encode;
