@@ -20,6 +20,7 @@ var ScriptComponent = IgeEntity.extend({
 	},
 
 	runScript: function (scriptId, localVariables) {
+		// console.log("running script", scriptId)
 		var timings = false;
 		if (timings) var started = new Date();
 		var self = this;

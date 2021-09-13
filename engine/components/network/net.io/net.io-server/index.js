@@ -524,8 +524,9 @@ NetIo.Server = NetIo.EventingClass.extend({
 	init: function (port, callback) {
 		this._idCounter = 0;
 
-		this._websocket = require('@clusterws/cws');
-		// this._websocket = require('ws');
+		// this._websocket = require('@clusterws/cws');
+		this._websocket = require('ws');
+		// this._websocket = require('websocket');
 		this._fs = require('fs');
 		this._http = require('http');
 		this._https = require('https');
@@ -559,12 +560,12 @@ NetIo.Server = NetIo.EventingClass.extend({
 			response.writeHead(404);
 			response.end();
 		});
-		// this._socketServerHttp = new this._websocket.Server({
-		//     server: this._httpServer
-		// });
-		this._socketServerHttp = new this._websocket.WebSocketServer({
-			server: this._httpServer
+		this._socketServerHttp = new this._websocket.Server({
+		    server: this._httpServer
 		});
+		// this._socketServerHttp = new this._websocket.WebSocketServer({
+		// 	server: this._httpServer
+		// });
 		// Setup listener
 		this._socketServerHttp.on('connection', function (ws, request) {
 			self.socketConnection(ws, request);
@@ -653,56 +654,57 @@ NetIo.Server = NetIo.EventingClass.extend({
 		var self = this;
 		var jwt = require('jsonwebtoken');
 		var PING_SERVICE_HEADER = 'x-ping-service';
-		self.log('Client connecting...');
-		// var connection = request.accept('netio1', request.origin),
+		console.log('Client connecting...');
 		var socket = new NetIo.Socket(ws);
 		// Give the socket encode/decode methods
 		socket._encode = self._encode;
 		socket._decode = self._decode;
 		socket._remoteAddress = ws._socket.remoteAddress;
-		socket._fromPingService = request.headers[PING_SERVICE_HEADER];
-
+		// socket._fromPingService = request.headers[PING_SERVICE_HEADER];
+		
 		// extracting user from token and adding it in _token.
 		// if token doesnot exist in request close the socket.
 
-		if (!socket._fromPingService) {
-			if (request.url.indexOf('/?token=') === -1) {
-				socket.close('Unauthorized request');
-				return;
-			}
+		// if (!socket._fromPingService) {
+		// 	if (request.url.indexOf('/?token=') === -1) {
+		// 		socket.close('Unauthorized request');
+		// 		return;
+		// 	}
 
-			var token = request.url && request.url.replace('/?token=', '');
-			try {
-				var decodedToken = jwt.verify(token, 'k=9PE%C&Ammu}<K');
-				socket._token = {
-					userId: decodedToken.userId
-				};
-			} catch (e) {
-				socket._token = {
-					userId: ''
-				};
-			}
-		}
+		// 	var token = request.url && request.url.replace('/?token=', '');
+		// 	try {
+		// 		var decodedToken = jwt.verify(token, 'k=9PE%C&Ammu}<K');
+		// 		socket._token = {
+		// 			userId: decodedToken.userId
+		// 		};
+		// 	} catch (e) {
+		// 		socket._token = {
+		// 			userId: ''
+		// 		};
+		// 	}
+		// }
 		// Give the socket a unique ID
 		socket.id = self.newIdHex();
 		// Add the socket to the internal lookups
 		self._sockets.push(socket);
 		self._socketsById[socket.id] = socket;
 
+		console.log("1. Client", socket.id,"connected (net.io-server index.js)")
+
 		// Register a listener so that if the socket disconnects,
 		// we can remove it from the active socket lookups
 		socket.on('disconnect', function (response) {
-			if (!socket._fromPingService) {
-				if (response.code !== 1000 && response.code !== 1001) {
-					console.log('client disconnected. code:', response.code, ' reason:', response.reason);
-					// console.trace()
+			// if (!socket._fromPingService) {
+			// 	if (response.code !== 1000 && response.code !== 1001) {
+			// 		console.log('client disconnected.', socket.id, ' code:', response.code, ' reason:', response.reason);
+			// 		// console.trace()
 
-					// global.rollbar.error("client got disconnected involuntarily reason: " + response, {
-					//     reason: response,
-					//     ip: process.env.IP
-					// })
-				}
-			}
+			// 		// global.rollbar.error("client got disconnected involuntarily reason: " + response, {
+			// 		//     reason: response,
+			// 		//     ip: process.env.IP
+			// 		// })
+			// 	}
+			// }
 			var index = self._sockets.indexOf(socket);
 			if (index > -1) {
 				// Remove the socket from the array

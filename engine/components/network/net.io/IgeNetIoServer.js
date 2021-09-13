@@ -453,7 +453,7 @@ var IgeNetIoServer = {
 		var self = this;
 
 		var remoteAddress = socket._remoteAddress;
-		console.log('client is attempting to connect', remoteAddress);
+		console.log('2. _onClientConnect ', remoteAddress, " (IgeNetIoServer.js)");
 		var reason = '';
 
 		var bannedIps = ige.server.bannedIps;
