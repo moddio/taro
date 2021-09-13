@@ -242,8 +242,7 @@ var TriggerComponent = IgeEntity.extend({
 	*/
 	fire: function (triggerName, triggeredBy) {
 		// console.log("trigger fire", triggerName, triggeredBy)
-		// look for script that has a matching trigger
-
+		
 		if (ige.isServer || (ige.isClient && ige.physics)) {
 			let scriptIds = this.triggeredScripts[triggerName]
 			for (i in scriptIds) {
