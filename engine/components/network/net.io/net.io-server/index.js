@@ -604,12 +604,12 @@ NetIo.Server = NetIo.EventingClass.extend({
 				response.writeHead(404);
 				response.end();
 			});
-			// this._socketServerHttps = new this._websocket.Server({
-			//     server: this._httpsServer
-			// });
-			this._socketServerHttps = new this._websocket.WebSocketServer({
-				server: this._httpsServer
+			this._socketServerHttps = new this._websocket.Server({
+			    server: this._httpsServer
 			});
+			// this._socketServerHttps = new this._websocket.WebSocketServer({
+			// 	server: this._httpsServer
+			// });
 			// Setup listener
 			this._socketServerHttps.on('connection', function (ws, request) {
 				self.socketConnection(ws, request);
