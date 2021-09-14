@@ -327,7 +327,7 @@ var Item = IgeEntityBox2d.extend({
 
 									// console.log(self._stats.currentBody.type, "unit: ", angleToTarget, "item's rotate.z: ", self._rotate.z, "facing angle", itemrotate)
 									var data = Object.assign(
-										self.projectileData,
+										JSON.parse(JSON.stringify(self.projectileData)),
 										{
 											type: self._stats.projectileType,
 											sourceItemId: self.id(),
