@@ -94,7 +94,7 @@ NetIo.Client = NetIo.EventingClass.extend({
 		this._state = 1;
 
 		/*
-// Replace http:// with ws://
+		// Replace http:// with ws://
 		if (window.location.protocol == 'https:'){
 				url = url.replace('http://', 'wss://');
 		} else {

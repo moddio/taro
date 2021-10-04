@@ -327,7 +327,7 @@ var Item = IgeEntityBox2d.extend({
 
 									// console.log(self._stats.currentBody.type, "unit: ", angleToTarget, "item's rotate.z: ", self._rotate.z, "facing angle", itemrotate)
 									var data = Object.assign(
-										self.projectileData,
+										JSON.parse(JSON.stringify(self.projectileData)),
 										{
 											type: self._stats.projectileType,
 											sourceItemId: self.id(),
@@ -728,8 +728,10 @@ var Item = IgeEntityBox2d.extend({
 		if (ownerUnit && this._stats.stateId != 'dropped') {
 			// place item correctly based on its owner's transformation & its body's offsets.
 			if (self._stats.currentBody) {
+				var unitRotate = ownerUnit._rotate.z;
+
 				if (self._stats.currentBody.fixedRotation) {
-					rotate = ownerUnit._rotate.z;
+					rotate = unitRotate;
 				}
 
 				// get translation offset based on unitAnchor
@@ -754,8 +756,8 @@ var Item = IgeEntityBox2d.extend({
 					}
 
 					var unitAnchoredPosition = {
-						x: (unitAnchorOffsetX * Math.cos(rotate)) + (unitAnchorOffsetY * Math.sin(rotate)),
-						y: (unitAnchorOffsetX * Math.sin(rotate)) - (unitAnchorOffsetY * Math.cos(rotate))
+						x: (unitAnchorOffsetX * Math.cos(unitRotate)) + (unitAnchorOffsetY * Math.sin(unitRotate)),
+						y: (unitAnchorOffsetX * Math.sin(unitRotate)) - (unitAnchorOffsetY * Math.cos(unitRotate))
 					};
 
 					// get translation offset based on itemAnchor

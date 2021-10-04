@@ -13,7 +13,7 @@ var ServerNetworkEvents = {
 		// Tell the client to track their player entity
 		// Don't reject the client connection
 		var clientId = socket.id;
-		console.log("_onClientConnect " + clientId + " (ip: " + socket._remoteAddress + ") client count: " + Object.keys(ige.server.clients).length)
+		console.log("3. _onClientConnect " + clientId + " (ip: " + socket._remoteAddress + ") client count: " + Object.keys(ige.server.clients).length, "(ServerNetworkEvents.js)")
 
 		ige.server.clients[clientId] = {
 			id: clientId,
@@ -108,11 +108,12 @@ var ServerNetworkEvents = {
 
 		// check joining user is same as token user.
 		if (data._id && socket._token && socket._token.userId !== data._id) {
+			console.log("Unauthenticated user joining the game (ServerNetworkEvent.js)")
 			socket.close('Unauthenticated user joining the game');
 		}
 
 		if (client) {
-			console.log("_onJoinGame " + clientId + " time elapsed: " + (Date.now() - client.lastEventAt))
+			console.log("4. _onJoinGame " + clientId + " time elapsed: " + (Date.now() - client.lastEventAt), "(ServerNetworkEvent.js)")
 			client.lastEventAt = Date.now()
 			client.receivedJoinGame = Date.now();
 		}
@@ -207,7 +208,7 @@ var ServerNetworkEvents = {
 		}
 		else // guest player
 		{
-			console.log("joining as a guest player")
+			console.log("5. joining as a guest player (ServerNetworkEvents.js)")
 
 			var socket = ige.network._socketById[clientId]
 			if (socket) {

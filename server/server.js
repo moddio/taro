@@ -5,7 +5,6 @@ const publicIp = require('public-ip');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-var request = require('request');
 const fs = require('fs');
 const cluster = require('cluster');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
@@ -66,7 +65,7 @@ var Server = IgeClass.extend({
 		var self = this;
 
 		self.buildNumber = 466;
-
+		self.request = require('request');
 		self.status = 'stopped';
 		self.totalUnitsCreated = 0;
 		self.totalWallsCreated = 0;
@@ -216,7 +215,7 @@ var Server = IgeClass.extend({
 					return reject(new Error('Could not load game'));
 				}
 
-				request(`${gameUrl}&num=${self.retryCount}`, (error, response, body) => {
+				this.request(`${gameUrl}&num=${self.retryCount}`, (error, response, body) => {
 					if (error) {
 						console.log('LOADING GAME-JSON ERROR', self.retryCount, error);
 						return self.loadGameJSON(gameUrl)
@@ -667,7 +666,7 @@ var Server = IgeClass.extend({
 
 	giveCoinToUser: function (player, coin, itemName) {
 		if (coin && player._stats && player._stats.userId && (ige.game.data.defaultData.tier == 3 || ige.game.data.defaultData.tier == 4)) {
-			request({
+			this.request({
 				method: 'POST',
 				url: `${global.beUrl}/api/user/updateCoins`,
 				body: {
@@ -704,7 +703,7 @@ var Server = IgeClass.extend({
 	},
 	postConsumeCoinsForUsers: function () {
 		var self = this;
-		request({
+		this.request({
 			method: 'POST',
 			url: `${global.beUrl}/api/user/consumecoins`,
 			body: self.coinUpdate,

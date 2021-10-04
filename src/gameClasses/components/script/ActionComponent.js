@@ -1,4 +1,3 @@
-const request = require('request');
 var ActionComponent = IgeEntity.extend({
 	classId: 'ActionComponent',
 	componentId: 'action',
@@ -164,7 +163,7 @@ var ActionComponent = IgeEntity.extend({
 						var url = ige.variable.getValue(action.url, vars);
 						var varName = ige.variable.getValue(action.varName, vars);
 						obj = JSON.parse(obj);
-						request.post({
+						ige.server.request.post({
 						    url:url,
 						    form: obj}, function optionalCallback(err, httpResponse, body) {
 							if (err) {

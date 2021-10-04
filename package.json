@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/moddio/taro#readme",
   "dependencies": {
-    "@clusterws/cws": "^3.0.0",
     "bad-words": "^3.0.4",
     "cookie-parser": "^1.4.5",
     "crash-colliders": "^2.0.2",
