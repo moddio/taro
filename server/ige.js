@@ -1,7 +1,6 @@
 const Q = require('q');
 const _ = require('lodash');
 const publicIp = require('public-ip');
-request = require('request');
 const OS = require('os');
 const http = require('http');
 const cluster = require('cluster');
