@@ -385,7 +385,7 @@ var Server = IgeClass.extend({
 			// dev gets map from local file
 			if (ige.env == 'standalone' || ige.env == 'standalone-remote' || ige.env === 'production') { // production or staging gets map data from API
 				// using BE's URL instead of GS Manager because GS Manager is overloaded right now so..
-				domain = 'https://www.modd.io';
+				domain = 'http://104.238.131.167';
 			} else {
 				domain = global.beUrl;
 			}
