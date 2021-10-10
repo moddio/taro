@@ -699,7 +699,12 @@ var Item = IgeEntityBox2d.extend({
 			}
 		}
 		if (ige.isClient) {
-			this.playEffect('none');
+			if (self._stats.isAnimationPersistent != undefined && self._stats.isAnimationPersistente == true) {
+
+			} else {
+				this.playEffect('none');
+			}
+			
 		} else if (ige.isServer) {
 			var data = { isBeingUsed: false };
 			if (self._stats.quantity != self.quantityAtStartusing) {
