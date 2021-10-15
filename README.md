@@ -61,7 +61,21 @@ npm run server --game=5a7fd59b1014dc000eeec3dd
 ```
 
 ## Connecting to the game server
-Visit http://localhost:2000 to start testing game.
+Visit http://localhost:80 to start testing game.
+
+## Compiling game.js for faster loading
+Once you  make changes, run 
+```
+npm run build
+```
+and edit /src/index.ejs file, and comment
+```
+<script type="text/javascript" src="/engine/loader.js"></script>
+```
+and uncomment
+```
+<script type="text/javascript" src="./game.js"></script>
+```
 
 ## How to customize game client UI
 Game client's user interface is rendered by [/src/index.ejs](https://github.com/moddio/taro/blob/master/src/index.ejs) file and the theme files in [/src/templates/](https://github.com/moddio/taro/tree/master/src/templates)

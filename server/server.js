@@ -237,7 +237,7 @@ var Server = IgeClass.extend({
 	},
 	startServer: function () {
 		const app = express();
-		const port = process.env.PORT || 2000;
+		const port = process.env.PORT || 80;
 		this.port = 2001; // game started on
 
 		app.use(bodyParser.urlencoded({ extended: false }));
