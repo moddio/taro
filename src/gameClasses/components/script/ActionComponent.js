@@ -169,12 +169,20 @@ var ActionComponent = IgeEntity.extend({
 							if (err) {
 							    return console.error('upload failed:', err);
 							}
-							var res = JSON.parse(body);
-							var newValue = res.response;
-							params['newValue'] = newValue;
-							if (ige.game.data.variables.hasOwnProperty(varName)) {
-							    ige.game.data.variables[varName].value = newValue;
-							};
+							try{
+								var res = JSON.parse(body);
+								var newValue = res.response;
+								params['newValue'] = newValue;
+								if (ige.game.data.variables.hasOwnProperty(varName)) {
+									ige.game.data.variables[varName].value = newValue;
+								};
+							}catch(err){
+								console.error(err)
+								if (ige.game.data.variables.hasOwnProperty(varName)) {
+									ige.game.data.variables[varName].value = 'error';
+								};
+							}
+							
 						});
 
 						break;
