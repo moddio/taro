@@ -89,7 +89,7 @@ var IgeChatServer = {
 			});
 		}
 		
-		if (player.deleteNextMessage) {
+		if (player.deleteNextMessage) {// not displaying next message, so the messages like /ban result don't show
 			player.deleteNextMessage = false;
 			return;	
 		}
