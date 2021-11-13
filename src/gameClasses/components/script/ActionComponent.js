@@ -162,7 +162,12 @@ var ActionComponent = IgeEntity.extend({
 						var obj = ige.variable.getValue(action.string, vars);
 						var url = ige.variable.getValue(action.url, vars);
 						var varName = ige.variable.getValue(action.varName, vars);
-						obj = JSON.parse(obj);
+						try{
+							obj = JSON.parse(obj);
+						} catch {
+							console.error(err);
+							return;
+						}
 						ige.server.request.post({
 						    url:url,
 						    form: obj}, function optionalCallback(err, httpResponse, body) {
@@ -176,7 +181,7 @@ var ActionComponent = IgeEntity.extend({
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = newValue;
 								};
-							}catch(err){
+							} catch(err) {
 								console.error(err)
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = 'error';
@@ -2522,6 +2527,32 @@ var ActionComponent = IgeEntity.extend({
 						var owner = unit.getOwner();
 						if (unit && owner && owner.persistedData) {
 							unit.loadPersistentData();
+						}
+						break;
+
+					case 'loadUnitDataFromString':
+						var unit = ige.variable.getValue(action.unit, vars);
+						try {
+							var data = JSON.parse(ige.variable.getValue(action.string, vars));
+						} catch (err) {
+							console.error(err);
+							return;
+						}
+						if (unit && data) {
+							unit.loadDataFromString(data);
+						}
+						break;
+
+					case 'loadPlayerDataFromString':
+						var player = ige.variable.getValue(action.player, vars);
+						try {
+							var data = JSON.parse(ige.variable.getValue(action.string, vars));
+						} catch (err) {
+							console.error(err);
+							return;
+						}
+						if (player && data) {
+							player.loadDataFromString(data);
 						}
 						break;
 

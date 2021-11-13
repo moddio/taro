@@ -630,6 +630,16 @@ var Player = IgeEntity.extend({
 		self.persistentDataLoaded = true;
 	},
 
+	loadDataFromString: function (data) {
+		var self = this;
+
+		var persistData = data;
+		if (persistData) {
+			IgeEntity.prototype.loadPersistentData.call(this, persistData);
+		}
+		self.persistentDataLoaded = true;
+	},
+
 	hideMenu: function () {
 		if (ige.isClient) {
 			// UI related changes like hiding menu, etc...

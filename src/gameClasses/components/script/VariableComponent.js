@@ -1466,6 +1466,22 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getUnitData':
+					var unit = ige.variable.getValue(text.unit, vars);
+					var data = unit.getPersistentData('unit');
+					if (data) {
+						returnValue = JSON.stringify(data)
+					}
+					break;
+
+				case 'getPlayerData':
+					var player = ige.variable.getValue(text.player, vars);
+					var data = player.getPersistentData('player');
+					if (data) {
+						returnValue = JSON.stringify(data)
+					}
+					break;
+
 				case 'getLengthOfString':
 					var string = self.getValue(text.string, vars);
 					if (string && !isNaN(string.length)) {
