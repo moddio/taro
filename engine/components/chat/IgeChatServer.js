@@ -88,6 +88,11 @@ var IgeChatServer = {
 				playerId: player.id()
 			});
 		}
+		
+		if (player.deleteNextMessage) {
+			player.deleteNextMessage = false;
+			return;	
+		}
 
 		if (self._rooms[roomId]) {
 			var room = self._rooms[roomId];

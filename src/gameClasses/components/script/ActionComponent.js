@@ -564,6 +564,11 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 
+					case 'deleteNextPlayerMessage':
+						var player = ige.variable.getValue(action.player, vars);
+						player.streamUpdateData([{ deleteMessage: true}])
+						break;
+
 					case 'sendChatMessage':
 						var message = ige.variable.getValue(action.message, vars);
 						ige.chat.sendToRoom('1', message, undefined, undefined);

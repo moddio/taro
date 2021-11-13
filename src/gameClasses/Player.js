@@ -18,6 +18,7 @@ var Player = IgeEntity.extend({
 
 		self.previousAttributes = {};
 		self.lastCustomInput = '';
+		self.deleteNextMessage = false;
 
 		Player.prototype.log(`player created ${this.id()}`);
 
@@ -421,6 +422,9 @@ var Player = IgeEntity.extend({
 
 						self.updatePlayerType(playerTypeData);
 					}
+				}
+				if (attrName === 'deleteMessage') {
+					self.deleteNextMessage = true;
 				}
 
 				if (ige.isServer) {
