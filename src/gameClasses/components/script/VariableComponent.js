@@ -1489,6 +1489,74 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getLengthOfJsonArray':
+					var string = self.getValue(text.string, vars);
+					if (string) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						returnValue = array.length;
+					}
+					break;
+
+				case 'getValueFromJsonArray':
+					var string = self.getValue(text.string, vars);
+					var index = self.getValue(text.number, vars);
+					if (string && index) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						returnValue = array[index];
+					}
+					break;
+
+				case 'pushValueIntoJsonArray':
+					var string = self.getValue(text.string, vars);
+					var value = self.getValue(text.value, vars);
+					if (string && value) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						array.push(value);
+						returnValue = JSON.stringify(array);
+					}
+					break;
+
+				case 'editValueOfJsonArray':
+					var string = self.getValue(text.string, vars);
+					var index = self.getValue(text.number, vars);
+					var value = self.getValue(text.value, vars);
+					if (string && value && index) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						array[index] = value;
+						returnValue = JSON.stringify(array);
+					}
+					break;
+
+				case 'removeValueFromJsonArray':
+					var string = self.getValue(text.string, vars);
+					var index = self.getValue(text.number, vars);
+					if (string && index) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						array.splice(index,1)
+						returnValue = JSON.stringify(array);
+					}
+					break;
+
 				case 'toLowerCase':
 					var string = self.getValue(text.string, vars);
 					if (string && !isNaN(string.length)) {
