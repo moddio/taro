@@ -435,7 +435,6 @@ var Server = IgeClass.extend({
 				var tilesizeRatio = baseTilesize / game.data.map.tilewidth;
 
 				var engineTickFrameRate = 15;
-				console.log(game.data.defaultData);
 				if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
 					engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)); // keep fps range between 15 and 60
 				}

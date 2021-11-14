@@ -449,10 +449,11 @@ var ServerNetworkEvents = {
 
 	_onEquipSkin: function (equipPurchasable, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
-		var unit = player.getSelectedUnit();
-
-		if (unit) {
-			unit.equipSkin(equipPurchasable);
+		if (player) {
+			var unit = player.getSelectedUnit();
+			if (unit) {
+				unit.equipSkin(equipPurchasable);
+			}
 		}
 	},
 
