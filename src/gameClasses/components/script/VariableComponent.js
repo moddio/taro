@@ -1517,7 +1517,7 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
-				case 'getLengthOfJsonArray':
+				case 'getLengthOfArray':
 					var string = self.getValue(text.string, vars);
 					if (string) {
 						try {
@@ -1529,7 +1529,7 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
-				case 'getElementFromJsonArray':
+				case 'getElementFromArray':
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					if (string && index) {
@@ -1542,7 +1542,7 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
-				case 'pushElementIntoJsonArray':
+				case 'pushElementIntoArray':
 					var string = self.getValue(text.string, vars);
 					var value = self.getValue(text.value, vars);
 					if (string && value) {
@@ -1556,7 +1556,7 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
-				case 'editElementOfJsonArray':
+				case 'editElementOfArray':
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					var value = self.getValue(text.value, vars);
@@ -1571,7 +1571,7 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
-				case 'removeElementFromJsonArray':
+				case 'removeElementFromArray':
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					if (string && index) {
