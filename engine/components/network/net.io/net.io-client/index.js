@@ -154,16 +154,16 @@ NetIo.Client = NetIo.EventingClass.extend({
 		var serverDomain = urlWithoutProtocol.split('/')[0];
 		var serverName = serverDomain.split(':')[0];
 
-		$.ajax({
-			url: '/socket-error-count',
-			dataType: 'json',
-			type: 'POST',
-			data: {
-				status: true,
-				server: serverName,
-				tier: window.tier
-			}
-		});
+		// $.ajax({
+		// 	url: '/socket-error-count',
+		// 	dataType: 'json',
+		// 	type: 'POST',
+		// 	data: {
+		// 		status: true,
+		// 		server: serverName,
+		// 		tier: window.tier
+		// 	}
+		// });
 
 		this._state = 2;
 	},
@@ -245,16 +245,16 @@ NetIo.Client = NetIo.EventingClass.extend({
 			var urlWithoutProtocol = url.split('://')[1];
 			var serverDomain = urlWithoutProtocol.split('/')[0];
 
-			$.ajax({
-				url: '/socket-error-count',
-				dataType: 'json',
-				type: 'POST',
-				data: {
-					status: false,
-					server: serverDomain,
-					tier: window.tier
-				}
-			});
+			// $.ajax({
+			// 	url: '/socket-error-count',
+			// 	dataType: 'json',
+			// 	type: 'POST',
+			// 	data: {
+			// 		status: false,
+			// 		server: serverDomain,
+			// 		tier: window.tier
+			// 	}
+			// });
 		}
 		// if (code === 1006) {
 		// 	console.log('experienced issue 1006');

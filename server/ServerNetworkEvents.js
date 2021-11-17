@@ -243,24 +243,26 @@ var ServerNetworkEvents = {
 
 	_onBuySkin: function (skinHandle, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
-		var unit = player.getSelectedUnit();
-		if (
-			unit &&
-			ige.game.data.skins &&
-			ige.game.data.skins[skinHandle] &&
-			unit._stats.points >= ige.game.data.skins[skinHandle].price &&
-			unit._stats.skin != skinHandle
-		) {
-			unit._stats.points -= ige.game.data.skins[skinHandle].price;
-			unit._stats.skin = skinHandle;
-			unit.updateTexture(skinHandle);
+		if (player) {
+			var unit = player.getSelectedUnit();
+			if (
+				unit &&
+				ige.game.data.skins &&
+				ige.game.data.skins[skinHandle] &&
+				unit._stats.points >= ige.game.data.skins[skinHandle].price &&
+				unit._stats.skin != skinHandle
+			) {
+				unit._stats.points -= ige.game.data.skins[skinHandle].price;
+				unit._stats.skin = skinHandle;
+				unit.updateTexture(skinHandle);
 
-			ige.network.send('buySkin', skinHandle, clientId);
-			unit.streamUpdateData([
-				{ skin: unit._stats.skin },
-				{ points: unit._stats.points }
-			])
-		}
+				ige.network.send('buySkin', skinHandle, clientId);
+				unit.streamUpdateData([
+					{ skin: unit._stats.skin },
+					{ points: unit._stats.points }
+				])
+			}
+		}		
 	},
 
 	_onTrade: function (msg, clientId) {

@@ -74,17 +74,17 @@ var IgeNetIoClient = {
 							self.connectToGS(url)
 								.done(function () {
 									window.activatePlayGame = true;
-									if (gameId && typeof analyticsUrl != 'undefined' && analyticsUrl) {
-										$.post(`${analyticsUrl}api/game-report/game-access/${gameId}/gs-connected`)
-											.then(function () { }, function (xhr, status, error) {
-												$.post('/api/log', {
-													event: 'gs-connected',
-													game: gameId,
-													status: xhr.status,
-													text: xhr.statusText
-												});
-											});
-									}
+									// if (gameId && typeof analyticsUrl != 'undefined' && analyticsUrl) {
+									// 	$.post(`${analyticsUrl}api/game-report/game-access/${gameId}/gs-connected`)
+									// 		.then(function () { }, function (xhr, status, error) {
+									// 			$.post('/api/log', {
+									// 				event: 'gs-connected',
+									// 				game: gameId,
+									// 				status: xhr.status,
+									// 				text: xhr.statusText
+									// 			});
+									// 		});
+									// }
 									defer.resolve();
 								})
 								.fail(function (err) {
