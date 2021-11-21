@@ -356,7 +356,11 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
-		var port = process.env.PORT || 80;
+		var port = 80;
+		if (ige.env === 'production') {
+			port = 443;
+		}
+		
 
 		self.url = `http://${self.ip}:${port}`;
 
