@@ -380,7 +380,7 @@ var Server = IgeClass.extend({
 		// Add the networking component
 		ige.network.debug(self.isDebugging);
 		// Start the network server
-		ige.network.start(self.port, function (data) {
+		ige.network.start(port, function (data) {
 			console.log('IgeNetIoComponent: listening to', self.url);
 			console.log('connecting to BE:', global.beUrl);
 
