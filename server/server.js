@@ -206,7 +206,7 @@ var Server = IgeClass.extend({
 
 	loadGameJSON: function (gameUrl) {
 		var self = this;
-
+		console.log("loading game JSON")
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				self.retryCount++;
@@ -242,8 +242,7 @@ var Server = IgeClass.extend({
 	startServer: function () {
 		const app = express();
 		const port = process.env.PORT || 80;
-		this.port = 2001; // game started on
-
+		
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
@@ -357,8 +356,9 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
+		var port = process.env.PORT || 80;
 
-		self.url = `http://${self.ip}:${self.port}`;
+		self.url = `http://${self.ip}:${port}`;
 
 		this.duplicateIpCount = {};
 		this.bannedIps = [];
