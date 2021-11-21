@@ -356,11 +356,7 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
-		var port = 80;
-		if (ige.env === 'production') {
-			port = 443;
-		}
-		
+		var port = process.env.PORT || 80;
 
 		self.url = `http://${self.ip}:${port}`;
 
@@ -384,7 +380,7 @@ var Server = IgeClass.extend({
 		// Add the networking component
 		ige.network.debug(self.isDebugging);
 		// Start the network server
-		ige.network.start(port, function (data) {
+		ige.network.start(self.port, function (data) {
 			console.log('IgeNetIoComponent: listening to', self.url);
 			console.log('connecting to BE:', global.beUrl);
 
