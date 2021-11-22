@@ -209,8 +209,10 @@ var IgeChatServer = {
 					if (room.users.indexOf(clientId) > -1) {
 						var text = msg.text;
 						if (text) {
-							// console.log('Sending message to room...');
-							self.sendToRoom(msg.roomId, msg.text, msg.to, clientId);
+							if (text[0] != '/') { // if text isn't a chat command
+								// console.log('Sending message to room...');
+								self.sendToRoom(msg.roomId, msg.text, msg.to, clientId);
+							}
 						} else {
 							// console.log('Cannot send message because message text is empty!', msg);
 						}

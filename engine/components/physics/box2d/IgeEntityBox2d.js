@@ -420,11 +420,6 @@ var IgeEntityBox2d = IgeEntity.extend({
 
 		try {
 			if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
-				// if (ige.isClient && this == ige.client.selectedUnit) {
-				//     // client side's predicted physics is weaker than the server's, so buff it up!
-				//     x *= 1.2737
-				//     y *= 1.2737
-				// }
 				var thrustVector = new ige.physics.b2Vec2(x, y);
 				this.body.applyForce(thrustVector, this.body.getWorldCenter());
 			}

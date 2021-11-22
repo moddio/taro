@@ -127,7 +127,6 @@ var DevConsoleComponent = IgeEntity.extend({
 				statsPanels.igert._igertPanel.update(ige._renderTime, 100);
 				statsPanels.igett._igettPanel.update(ige._tickTime, 100);
 
-				// console.log(ige.physicsTickCount, ige.unitBehaviourCount)
 				ige.physicsTickCount = 0;
 				ige.unitBehaviourCount = 0;
 			}, 1000);
