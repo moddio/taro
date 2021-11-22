@@ -1663,6 +1663,34 @@ var Unit = IgeEntityBox2d.extend({
 		self.persistentDataLoaded = true;
 	},
 
+	loadDataFromString: function (data) {
+		var self = this;
+		var owner = self.getOwner();
+		var persistedData = _.cloneDeep(data);
+		if (persistedData) {
+			IgeEntity.prototype.loadPersistentData.call(this, persistedData);
+
+			var persistedInventoryItems = persistedData.inventoryItems;
+			for (var i = 0; i < persistedInventoryItems.length; i++) {
+				var persistedItem = persistedInventoryItems[i];
+				if (persistedItem) {
+					var itemData = ige.game.getAsset('itemTypes', persistedItem.itemTypeId);
+					if (itemData) {
+						itemData.quantity = persistedItem.quantity;
+						itemData.itemTypeId = persistedItem.itemTypeId;
+						if (self.pickUpItem(itemData)) {
+							var givenItem = ige.$(ige.game.lastCreatedItemId);
+							if (givenItem && givenItem.getOwnerUnit() == this) {
+								givenItem.loadPersistentData(persistedItem);
+							}
+						}
+					}
+				}
+			}
+		}
+		self.persistentDataLoaded = true;
+	},
+
 	startMoving: function () {
 		if (!this.isMoving) {
 			this.playEffect('move');
