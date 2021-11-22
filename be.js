@@ -1,19 +1,22 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
 const path = require('path');
 
-let modd = express();
+const express = require('express');
+const cookieParser = require('cookie-parser');
 
-modd.env = process.env.ENV || 'staging';
+const modd = express();
 const port = 8080;
 
+modd.env = process.env.ENV || 'staging';
 modd.set('view engine', 'ejs');
 
 modd.use(cookieParser());
-modd.use('/engine', express.static(path.join(`${__dirname}/engine`)));
-modd.use('/src', express.static(path.join(`${__dirname}/src`)));
-modd.use('/assets', express.static(path.join(`${__dirname}/assets`)));
+
+modd.use(express.json({ limit: '5mb' }));
+modd.use(express.urlencoded({ limit: '5mb' }));
+
+modd.use('/engine', express.static(path.resolve(__dirname, 'engine')));
+modd.use('/src', express.static(path.resolve(__dirname, 'src')));
+modd.use('/assets', express.static(path.resolve(__dirname, 'assets')));
 
 require('./app/routes.js')(modd);
-
 modd.listen(port);
