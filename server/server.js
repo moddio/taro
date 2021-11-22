@@ -206,7 +206,7 @@ var Server = IgeClass.extend({
 
 	loadGameJSON: function (gameUrl) {
 		var self = this;
-
+		console.log("loading game JSON")
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				self.retryCount++;
@@ -242,8 +242,7 @@ var Server = IgeClass.extend({
 	startServer: function () {
 		const app = express();
 		const port = process.env.PORT || 80;
-		this.port = 2001; // game started on
-
+		
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
@@ -357,8 +356,9 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
+		var port = process.env.PORT || 80;
 
-		self.url = `http://${self.ip}:${self.port}`;
+		self.url = `http://${self.ip}:${port}`;
 
 		this.duplicateIpCount = {};
 		this.bannedIps = [];
@@ -389,7 +389,7 @@ var Server = IgeClass.extend({
 			// dev gets map from local file
 			if (ige.env == 'standalone' || ige.env == 'standalone-remote' || ige.env === 'production') { // production or staging gets map data from API
 				// using BE's URL instead of GS Manager because GS Manager is overloaded right now so..
-				domain = 'http://104.238.131.167';
+				domain = 'https://www.modd.io';
 			} else {
 				domain = global.beUrl;
 			}
@@ -435,7 +435,6 @@ var Server = IgeClass.extend({
 				var tilesizeRatio = baseTilesize / game.data.map.tilewidth;
 
 				var engineTickFrameRate = 15;
-				console.log(game.data.defaultData);
 				if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
 					engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)); // keep fps range between 15 and 60
 				}
