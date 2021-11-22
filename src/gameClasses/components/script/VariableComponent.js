@@ -398,6 +398,20 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getPlayerFromId':
+					var id = self.getValue(text.string, vars);
+					if (id) {
+						returnValue = ige.$(id);
+					}
+					break;
+
+				case 'getUnitFromId':
+					var id = self.getValue(text.string, vars);
+					if (id) {
+						returnValue = ige.$(id);
+					}
+					break;
+
 				case 'getAttributeTypeOfAttribute':
 					if (entity) {
 						returnValue = entity.type;
@@ -1466,10 +1480,108 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getUnitData':
+					var unit = ige.variable.getValue(text.unit, vars);
+					var data = unit.getPersistentData('unit');
+					if (data) {
+						returnValue = JSON.stringify(data)
+					}
+					break;
+
+				case 'getPlayerData':
+					var player = ige.variable.getValue(text.player, vars);
+					var data = player.getPersistentData('player');
+					if (data) {
+						returnValue = JSON.stringify(data)
+					}
+					break;
+
+				case 'getPlayerId':
+					var player = ige.variable.getValue(text.player, vars);
+					if (player) {
+						returnValue = player.id()
+					}
+					break;
+
+				case 'getUnitId':
+					var unit = ige.variable.getValue(text.unit, vars);
+					if (unit) {
+						returnValue = unit.id()
+					}
+					break;
+
 				case 'getLengthOfString':
 					var string = self.getValue(text.string, vars);
 					if (string && !isNaN(string.length)) {
 						returnValue = string.length;
+					}
+					break;
+
+				case 'getStringArrayLength':
+					var string = self.getValue(text.string, vars);
+					if (string) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						returnValue = array.length;
+					}
+					break;
+
+				case 'getStringArrayElement':
+					var string = self.getValue(text.string, vars);
+					var index = self.getValue(text.number, vars);
+					if (string && index != undefined) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						returnValue = array[index];
+					}
+					break;
+
+				case 'insertStringArrayElement':
+					var string = self.getValue(text.string, vars);
+					var value = self.getValue(text.value, vars);
+					if (string && value) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						array.push(value);
+						returnValue = JSON.stringify(array);
+					}
+					break;
+
+				case 'updateStringArrayElement':
+					var string = self.getValue(text.string, vars);
+					var index = self.getValue(text.number, vars);
+					var value = self.getValue(text.value, vars);
+					if (string && value && index != undefined) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						array[index] = value;
+						returnValue = JSON.stringify(array);
+					}
+					break;
+
+				case 'removeStringArrayElement':
+					var string = self.getValue(text.string, vars);
+					var index = self.getValue(text.number, vars);
+					if (string && index != undefined) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						array.splice(index,1)
+						returnValue = JSON.stringify(array);
 					}
 					break;
 

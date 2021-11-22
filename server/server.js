@@ -64,6 +64,7 @@ var Server = IgeClass.extend({
 	init: function (options) {
 		var self = this;
 
+		self.gameServerPort = process.env.PORT || 2001;
 		self.buildNumber = 466;
 		self.request = require('request');
 		self.status = 'stopped';
@@ -156,7 +157,7 @@ var Server = IgeClass.extend({
 			if (process.env.ENV === 'standalone') {
 				self.gameId = process.env.npm_config_game;
 				self.ip = '127.0.0.1';
-				self.startServer();
+				self.startWebServer();
 				self.start();
 				self.startGame();
 			} else if (typeof ClusterServerComponent != 'undefined') {
@@ -206,7 +207,7 @@ var Server = IgeClass.extend({
 
 	loadGameJSON: function (gameUrl) {
 		var self = this;
-
+		console.log("loading game JSON")
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				self.retryCount++;
@@ -239,11 +240,9 @@ var Server = IgeClass.extend({
 			}, self.retryCount * 5000);
 		});
 	},
-	startServer: function () {
+	startWebServer: function () {
 		const app = express();
-		const port = process.env.PORT || 80;
-		this.port = 2001; // game started on
-
+		
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
@@ -343,7 +342,7 @@ var Server = IgeClass.extend({
 
 			return res.render('index.ejs', options);
 		});
-		app.listen(port, () => console.log(`MC listening on port ${port}!`));
+		app.listen(80, () => console.log(`Express listening on port 80!`));
 	},
 
 	// run a specific game in this server
@@ -358,16 +357,11 @@ var Server = IgeClass.extend({
 
 		this.socket = {};
 
-		self.url = `http://${self.ip}:${self.port}`;
+		self.url = `http://${self.ip}:${self.gameServerPort}`;
 
 		this.duplicateIpCount = {};
 		this.bannedIps = [];
 
-		// switch (process.env.TIER) {
-		// 	case '1': maxPlayerForTier = 16; break;
-		// 	case '2': maxPlayerForTier = 32; break;
-		// 	case '3': maxPlayerForTier = 64; break;
-		// }
 		self.maxPlayers = self.maxPlayers || 32;
 		this.maxPlayersAllowed = self.maxPlayers || 32;
 
@@ -380,7 +374,7 @@ var Server = IgeClass.extend({
 		// Add the networking component
 		ige.network.debug(self.isDebugging);
 		// Start the network server
-		ige.network.start(self.port, function (data) {
+		ige.network.start(self.gameServerPort, function (data) {
 			console.log('IgeNetIoComponent: listening to', self.url);
 			console.log('connecting to BE:', global.beUrl);
 
@@ -389,7 +383,7 @@ var Server = IgeClass.extend({
 			// dev gets map from local file
 			if (ige.env == 'standalone' || ige.env == 'standalone-remote' || ige.env === 'production') { // production or staging gets map data from API
 				// using BE's URL instead of GS Manager because GS Manager is overloaded right now so..
-				domain = 'http://45.32.219.118';
+				domain = 'https://www.modd.io';
 			} else {
 				domain = global.beUrl;
 			}
@@ -439,7 +433,6 @@ var Server = IgeClass.extend({
 					engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)); // keep fps range between 15 and 60
 				}
 
-				// ige.setFps(engineTickFrameRate)
 				ige._physicsTickRate = engineTickFrameRate;
 
 				// Add physics and setup physics world
@@ -523,7 +516,6 @@ var Server = IgeClass.extend({
 									ige.script.errorLogs = {};
 								}
 							}
-							// console.log(ige.physicsTickCount, ige.unitBehaviourCount)
 							ige.physicsTickCount = 0;
 							ige.unitBehaviourCount = 0;
 						}, 1000);

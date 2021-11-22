@@ -88,6 +88,10 @@ var IgeChatServer = {
 				playerId: player.id()
 			});
 		}
+		
+		if (message != undefined && message[0] == '/') {// do not show command messages that start with '/'. e.g. /ban user
+			return;	
+		}
 
 		if (self._rooms[roomId]) {
 			var room = self._rooms[roomId];
@@ -209,8 +213,10 @@ var IgeChatServer = {
 					if (room.users.indexOf(clientId) > -1) {
 						var text = msg.text;
 						if (text) {
-							// console.log('Sending message to room...');
-							self.sendToRoom(msg.roomId, msg.text, msg.to, clientId);
+							if (text[0] != '/') { // if text isn't a chat command
+								// console.log('Sending message to room...');
+								self.sendToRoom(msg.roomId, msg.text, msg.to, clientId);
+							}
 						} else {
 							// console.log('Cannot send message because message text is empty!', msg);
 						}

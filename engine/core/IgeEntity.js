@@ -65,10 +65,8 @@ var IgeEntity = IgeObject.extend({
 		// this ensures entity is spawning at a correct position initially. particularily useful for projectiles
 
 		this._keyFrames = [];
-		this.movementHistory = [];
 		this.prevKeyFrame = [ige.now, [this._translate.x, this._translate.y, this._rotate.z]];
 		this._lastTransformAt = null;
-		this.nextPhysicsFrame = null;
 		this.lastServerStreamedPosition = null;
 		this.lastTeleportedAt = 0;
 
@@ -3209,9 +3207,6 @@ var IgeEntity = IgeObject.extend({
 			this.clientStreamedPosition = undefined;
 		} else if (ige.isClient) {
 			this.lastServerStreamedPosition = undefined;
-			this.prevPhysicsFrame = undefined;
-			this.nextPhysicsFrame = undefined;
-			this.movementHistory = [];
 			if (this.body) {
 				this.body.setPosition({ x: x / this._b2dRef._scaleRatio, y: y / this._b2dRef._scaleRatio });
 				if (rotate != undefined) {
@@ -5140,16 +5135,6 @@ var IgeEntity = IgeObject.extend({
 						rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					}
 
-					// if (this == ige.client.selectedUnit) {
-					// 	let distanceTraveled = x - this.previousX
-					// 	let timeElapsed = (ige._currentTime-this.prevTime).toFixed(0)
-					// 	console.log('x', this.prevPhysicsFrame[1][0].toFixed(0), x.toFixed(0), '(' + distanceTraveled.toFixed(1) + ')', this.nextPhysicsFrame[1][0].toFixed(0),
-					// 		'time', this.prevPhysicsFrame[0].toFixed(0), ige._currentTime.toFixed(0),
-					// 		'(' + timeElapsed + 'ms '+ ((ige._currentTime - this.prevPhysicsFrame[0])* 100 / (this.nextPhysicsFrame[0] - this.prevPhysicsFrame[0])).toFixed(0) +'%)',
-					// 		this.nextPhysicsFrame[0].toFixed(0), "speed", (distanceTraveled/timeElapsed).toFixed(2))
-					// 	this.previousX = x;
-					// 	this.prevTime = ige._currentTime;
-					// }
 				} else {
 					// unit is teleporting
 					x = this.nextPhysicsFrame[1][0];
@@ -5161,11 +5146,6 @@ var IgeEntity = IgeObject.extend({
 				// for debugging my unit's x-movement interpolation
 			}
 		}
-
-		// if (ige.client.selectedUnit == this) {
-		//     console.log(prevKeyFrame[0], ige.renderTime, nextKeyFrame[0])
-		//     // console.log((prevKeyFrame)?prevKeyFrame[1]:'', (nextKeyFrame)?nextKeyFrame[1]:'', ige.nextSnapshot[1][this.id()])
-		// }
 
 		// interpolate using snapshots streamed from the server.
 		if (prevTransform != undefined && nextTransform != undefined &&
@@ -5201,8 +5181,8 @@ var IgeEntity = IgeObject.extend({
 			if (ige.physics && ige.game.cspEnabled && this != ige.client.selectedUnit) {
 				xDiff = targetX - x;
 				yDiff = targetY - y;
-				x += xDiff / 3;
-				y += yDiff / 3;
+				x += xDiff / 2;
+				y += yDiff / 2;
 			} else if (!ige.physics || !ige.game.cspEnabled || this != ige.client.selectedUnit) {
 				// if physics isn't set, or csp is disabled, use server-streamed data to move entities
 				x = targetX;

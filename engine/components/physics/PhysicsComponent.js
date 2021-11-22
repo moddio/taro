@@ -614,112 +614,24 @@ var PhysicsComponent = IgeEventingClass.extend({
 									var targetY = entity.clientStreamedPosition[1];
 									var xDiff = targetX - x;
 									var yDiff = targetY - y;
-									var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
-									var velocity = entity.body.getLinearVelocity();
-
-									// console.log(entity.id(), velocity.x.toFixed(0), xDiff.toFixed(0), velocity.y.toFixed(0), yDiff.toFixed(0))
-
-									if (distance > 100) {
-										entity.discrepancyCount++;
-										// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
-										if (entity.discrepancyCount > 15) {
-											// force client to teleport to server's position
-											entity.teleportTo(x, y);
-										}
-									} else {
-										entity.discrepancyCount = 0;
-
-										// reconciliate to client's streamed data iff server's position is BEHIND the client's position
-										if (
-											(velocity.x < 0 && x > targetX) ||
-											(velocity.x > 0 && x < targetX) ||
-											(velocity.x > -0.1 && velocity.x < 0.1)
-										) {
-											x += xDiff;
-										}
-
-										if (
-											(velocity.y < 0 && y > targetY) ||
-											(velocity.y > 0 && y < targetY) ||
-											(velocity.y > -0.1 && velocity.y < 0.1)
-										) {
-											y += yDiff;
-										}
-									}
-
-									entity.clientStreamedPosition = undefined;
+									x += xDiff/2
+									y += yDiff/2
 								}
-
-								// if (entity._stats.name && entity._stats.name.includes('user'))
-								// 	console.log(entity.clientStreamedPosition, x, y)
 
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
 							} else if (ige.isClient) {
 								if (ige.physics && ige.game.cspEnabled && ige.client.selectedUnit == entity) {
-									// var xDiff = entity.lastServerStreamedPosition[0] - x;
-									// var yDiff = entity.lastServerStreamedPosition[1] - y;
-									// var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-									// 			// if client-side's unit position is too far from server-streamed position, immediately move client unit to server's
-									// 			if (distance > 100) {
-									// 				x = entity.lastServerStreamedPosition[0];
-									// 				y = entity.lastServerStreamedPosition[1];
-									// 				entity.prevPhysicsFrame = undefined
-									// 				console.log(ige._currentTime, "reconciling to server");
-									// 			}
-
-									/* client-side reconciliation */
-									// skip through all movementHistories that are too old
-									while (entity.movementHistory.length > 0 && entity.movementHistory[0][0] < ige._currentTime - ige.network.bestLatency - 50) {
-										var history = entity.movementHistory.shift()[1];
-									}
-
-									// if movementHistory still has elements after shifting,
-									// this means we found a matching time between movementHistory & lastServerStreamedPosition's time.
-									if (history && entity.movementHistory.length > 0 && entity.lastServerStreamedPosition) {
-										// do not reconciliate if unit has teleported less than 500ms ago.
-
-										var xDiff = (entity.lastServerStreamedPosition[0] - history[0]);
-										var yDiff = (entity.lastServerStreamedPosition[1] - history[1]);
-
-										var distance = Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
-										// console.log(
-										// 		entity.discrepancyCount,
-										// 		xDiff.toFixed(0),
-										// 		yDiff.toFixed(0)
-										// 	);
-
-										// if there's more than 100px difference between client's unit and server's streamed position, log a discrepancyCount
-										if (distance > 100) {
-											entity.discrepancyCount++;
-											// if the discrepancy's been going on for a while, reconcile client unit's position to last konwn server's.
-											if (entity.discrepancyCount > 15) {
-												x = entity.lastServerStreamedPosition[0];
-												y = entity.lastServerStreamedPosition[1];
-												entity.teleportTo(x, y);
-											}
-											entity.lastServerStreamedPosition = undefined;
-											entity.lastReconciledAt = ige.prevSnapshot[0]; // prevent unit from reconciling multiple times
-											// console.log("setting entity.lastReconciledAt", entity.lastReconciledAt)
-										} else {
-											entity.discrepancyCount = 0;
-										}
-									}
-
 									if (entity.isOutOfBounds) {
 										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });
 										entity.body.setAngle(angle);
 									}
-
+									
 									if (entity.nextPhysicsFrame == undefined || ige._currentTime > entity.nextPhysicsFrame[0]) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
 										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
 									}
 
-									// console.log(x, y)
-									// if unit has moved
-									entity.movementHistory.push([ige._currentTime, [x, y, angle]]);
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									if (entity._streamMode == 0) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;

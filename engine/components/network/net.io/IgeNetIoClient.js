@@ -89,7 +89,7 @@ var IgeNetIoClient = {
 								})
 								.fail(function (err) {
 									console.log('connection failed, retrying...', err || '');
-									defer.resolve();
+									// defer.resolve();
 								});
 						} else {
 							defer.reject('websockets are not available');
