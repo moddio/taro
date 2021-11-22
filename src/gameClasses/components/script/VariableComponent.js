@@ -1532,7 +1532,7 @@ var VariableComponent = IgeEntity.extend({
 				case 'getStringArrayElement':
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
-					if (string && index) {
+					if (string && index != undefined) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
@@ -1560,7 +1560,7 @@ var VariableComponent = IgeEntity.extend({
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value && index) {
+					if (string && value && index != undefined) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
@@ -1574,7 +1574,7 @@ var VariableComponent = IgeEntity.extend({
 				case 'removeStringArrayElement':
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
-					if (string && index) {
+					if (string && index != undefined) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
