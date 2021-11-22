@@ -66,27 +66,29 @@ var ServerNetworkEvents = {
 		var reason = 'IP banned.';
 		var client = ige.server.clients[clientId];
 		var socket = ige.network._socketById[clientId];
-		var ipAddress = client.ip;
+		if (client) {
+			var ipAddress = client.ip;
 
-		var removeAllConnectedPlayerWithSameIp = function () {
-			var getAllPlayers = true;
-			var players = ige.game.getPlayerByIp(ipAddress, undefined, getAllPlayers);
-			players.forEach((player) => {
-				if (player) {
-					player.remove();
-					var ps = ige.network._socketById[player._stats.clientId];
-					ps && ps.close(reason);
-				}
-			});
+			var removeAllConnectedPlayerWithSameIp = function () {
+				var getAllPlayers = true;
+				var players = ige.game.getPlayerByIp(ipAddress, undefined, getAllPlayers);
+				players.forEach((player) => {
+					if (player) {
+						player.remove();
+						var ps = ige.network._socketById[player._stats.clientId];
+						ps && ps.close(reason);
+					}
+				});
+			}
+
+			if (ige.banIpsList.includes(ipAddress)) {
+				removeAllConnectedPlayerWithSameIp();
+				socket.close(reason);
+				return;
+			};
+
+			ige.server._onJoinGame(data, clientId);
 		}
-
-		if (ige.banIpsList.includes(ipAddress)) {
-			removeAllConnectedPlayerWithSameIp();
-			socket.close(reason);
-			return;
-		};
-
-		ige.server._onJoinGame(data, clientId);
 	},
 
 	_onJoinGame: function (data, clientId) {
@@ -447,10 +449,11 @@ var ServerNetworkEvents = {
 
 	_onEquipSkin: function (equipPurchasable, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
-		var unit = player.getSelectedUnit();
-
-		if (unit) {
-			unit.equipSkin(equipPurchasable);
+		if (player) {
+			var unit = player.getSelectedUnit();
+			if (unit) {
+				unit.equipSkin(equipPurchasable);
+			}
 		}
 	},
 

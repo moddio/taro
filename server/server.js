@@ -206,7 +206,7 @@ var Server = IgeClass.extend({
 
 	loadGameJSON: function (gameUrl) {
 		var self = this;
-
+		console.log("loading game JSON")
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				self.retryCount++;
@@ -217,7 +217,9 @@ var Server = IgeClass.extend({
 
 				this.request(`${gameUrl}&num=${self.retryCount}`, (error, response, body) => {
 					if (error) {
-						console.log('LOADING GAME-JSON ERROR', self.retryCount, error);
+						console.log('LOADING GAME-JSON ERROR', gameUrl);
+						console.log('retry #', self.retryCount);
+						console.log('error', error);
 						return self.loadGameJSON(gameUrl)
 							.then((data) => resolve(data))
 							.catch((err) => reject(err));
@@ -226,7 +228,9 @@ var Server = IgeClass.extend({
 					if (response.statusCode == 200) {
 						return resolve(JSON.parse(body));
 					} else {
-						console.log('LOADING GAME-JSON ERROR', self.retryCount, response.statusCode, body);
+						console.log('LOADING GAME-JSON ERROR', gameUrl);
+						console.log('retry #', self.retryCount);
+						console.log('response', response.statusCode, body);
 						return self.loadGameJSON(gameUrl)
 							.then((data) => resolve(data))
 							.catch((err) => reject(err));
@@ -237,9 +241,8 @@ var Server = IgeClass.extend({
 	},
 	startServer: function () {
 		const app = express();
-		const port = process.env.PORT || 2000;
-		this.port = 2001; // game started on
-
+		const port = process.env.PORT || 80;
+		
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
@@ -353,8 +356,9 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
+		var port = process.env.PORT || 80;
 
-		self.url = `http://${self.ip}:${self.port}`;
+		self.url = `http://${self.ip}:${port}`;
 
 		this.duplicateIpCount = {};
 		this.bannedIps = [];
@@ -431,7 +435,6 @@ var Server = IgeClass.extend({
 				var tilesizeRatio = baseTilesize / game.data.map.tilewidth;
 
 				var engineTickFrameRate = 15;
-				console.log(game.data.defaultData);
 				if (game.data.defaultData && !isNaN(game.data.defaultData.frameRate)) {
 					engineTickFrameRate = Math.max(15, Math.min(parseInt(game.data.defaultData.frameRate), 60)); // keep fps range between 15 and 60
 				}
