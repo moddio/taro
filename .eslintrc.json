@@ -69,19 +69,19 @@
         "IgeViewport": "writable"
     },
     "plugins": [
-        "prefer-arrow",
         "import",
         "node",
         "promise"
     ],
     "rules": {
-        // Eval should never be allowed, regardless of use case.
-        "no-eval": 2,
+        // Alternatives to eval should be used.
+        "no-eval": 1,
 
         // } else {}
         "brace-style": 1,
 
-        // Indents should be four spaces.
+        // Indents should be tabs.
+        // Hint: Ctrl + Shift + Z will atuomatically change your indentation in VSCode.
         "indent": [1, "tab", { "SwitchCase": 1 }],
 
         // Semicolons and singlequotes should always be used.
@@ -91,15 +91,6 @@
 
         // Use templating strings with backticks whenever possible.
         "prefer-template": 1,
-
-        // Prefer fat arrow functions.
-        // "prefer-arrow-callback": 1,
-        // "arrow-body-style": ["warn", "as-needed"],
-        // "prefer-arrow/prefer-arrow-functions": ["warn", {
-        //     "disallowPrototype": true,
-        //     "singleReturnOnly": true,
-        //     "classPropertiesAllowed": false
-        // }],
 
         // ESLint globals have not been configured for these.
         "no-undef": 0,
