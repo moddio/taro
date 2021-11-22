@@ -88,6 +88,10 @@ var IgeChatServer = {
 				playerId: player.id()
 			});
 		}
+		
+		if (message != undefined && message[0] == '/') {// do not show command messages that start with '/'. e.g. /ban user
+			return;	
+		}
 
 		if (self._rooms[roomId]) {
 			var room = self._rooms[roomId];
