@@ -3,6 +3,7 @@
 var net = require('net');
 const publicIp = require('public-ip');
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
@@ -246,11 +247,13 @@ var Server = IgeClass.extend({
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
-
+		
 		app.set('view engine', 'ejs');
 		app.set('views', path.resolve('src'));
-
 		app.use('/engine', express.static(path.resolve('./engine/')));
+
+		// Frameguard protects the site from clickjacking
+		app.use(helmet.frameguard({ action: 'DENY' }));
 
 		const FILES_TO_CACHE = [
 			'pixi-legacy.js',
