@@ -243,11 +243,12 @@ var Server = IgeClass.extend({
 	},
 	startWebServer: function () {
 		const app = express();
-		
+		const port = process.env.PORT || 80;
+
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
 		app.use(bodyParser.json());
-		
+
 		app.set('view engine', 'ejs');
 		app.set('views', path.resolve('src'));
 		app.use('/engine', express.static(path.resolve('./engine/')));
@@ -345,7 +346,7 @@ var Server = IgeClass.extend({
 
 			return res.render('index.ejs', options);
 		});
-		app.listen(80, () => console.log(`Express listening on port 80!`));
+		app.listen(port, () => console.log(`Express listening on port ${port}!`));
 	},
 
 	// run a specific game in this server
@@ -359,8 +360,9 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
+		var port = process.env.PORT || 80;
 
-		self.url = `http://${self.ip}:${self.gameServerPort}`;
+		self.url = `http://${self.ip}:${port}`;
 
 		this.duplicateIpCount = {};
 		this.bannedIps = [];
@@ -377,7 +379,7 @@ var Server = IgeClass.extend({
 		// Add the networking component
 		ige.network.debug(self.isDebugging);
 		// Start the network server
-		ige.network.start(self.gameServerPort, function (data) {
+		ige.network.start(self.port, function (data) {
 			console.log('IgeNetIoComponent: listening to', self.url);
 			console.log('connecting to BE:', global.beUrl);
 
