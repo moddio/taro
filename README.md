@@ -81,7 +81,7 @@ and uncomment
 Game client's user interface is rendered by [/src/index.ejs](https://github.com/moddio/taro/blob/master/src/index.ejs) file and the theme files in [/src/templates/](https://github.com/moddio/taro/tree/master/src/templates)
 
 ## How to make games on modd.io
-Please visit https://www.modd.io/tutorials for more information
+Please visit https://www.modd.io/tutorials for more information.
 
 ## We need contributors, and we are also hiring
 Performance optimization is a hard problem that takes aeons to solve. We are always looking for more developers to help us. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K) If you find yourself enjoying working with us, then we should seriously consider working together.
