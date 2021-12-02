@@ -255,7 +255,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString) {
+					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
 						returnValue = sourceString.includes(patternString);
 					}
 					break;
@@ -1616,7 +1616,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString) {
+					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
 						returnValue = sourceString.startsWith(patternString);
 					}
 					break;
@@ -1624,7 +1624,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString) {
+					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
 						returnValue = sourceString.endsWith(patternString);
 					}
 					break;
@@ -1633,7 +1633,7 @@ var VariableComponent = IgeEntity.extend({
 					var matchString = self.getValue(text.matchString, vars);
 					var newString = self.getValue(text.newString, vars);
 
-					if (sourceString && matchString && newString) {
+					if (sourceString && matchString && newString && typeof sourceString == 'string' && typeof matchString == 'string' && typeof newString == 'string') {
 						returnValue = sourceString.split(matchString).join(newString);
 					}
 					break;
