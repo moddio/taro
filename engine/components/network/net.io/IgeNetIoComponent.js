@@ -14,7 +14,7 @@ var IgeNetIoComponent = IgeEventingClass.extend([
 		this._networkCommandsLookup = {};
 
 		// Set some defaults
-		this._port = 8000;
+		this._port = 2001;
 		this._debug = false;
 		this._debugCounter = 0;
 		this._debugMax = 0;

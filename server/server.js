@@ -243,7 +243,7 @@ var Server = IgeClass.extend({
 	},
 	startWebServer: function () {
 		const app = express();
-		const port = process.env.PORT || 80;
+		const port = 80;
 
 		app.use(bodyParser.urlencoded({ extended: false }));
 		// parse application/json
@@ -360,7 +360,7 @@ var Server = IgeClass.extend({
 		}
 
 		this.socket = {};
-		var port = process.env.PORT || 80;
+		var port = process.env.PORT || 2001;
 
 		self.url = `http://${self.ip}:${port}`;
 
@@ -371,8 +371,7 @@ var Server = IgeClass.extend({
 		this.maxPlayersAllowed = self.maxPlayers || 32;
 
 		console.log('maxPlayersAllowed', this.maxPlayersAllowed);
-		console.log('starting netIoServer at', self.url);
-
+		
 		// Define an object to hold references to our player entities
 		this.clients = {};
 
@@ -380,7 +379,6 @@ var Server = IgeClass.extend({
 		ige.network.debug(self.isDebugging);
 		// Start the network server
 		ige.network.start(self.port, function (data) {
-			console.log('IgeNetIoComponent: listening to', self.url);
 			console.log('connecting to BE:', global.beUrl);
 
 			var domain = null;
