@@ -621,6 +621,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 								entity.translateTo(x, y, 0);
 								entity.rotateTo(0, 0, angle);
 							} else if (ige.isClient) {
+								let nextFrameTime = ige._currentTime + (1000 / ige._physicsTickRate);
 								if (ige.physics && ige.game.cspEnabled && ige.client.selectedUnit == entity) {
 									if (entity.isOutOfBounds) {
 										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });
@@ -629,13 +630,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 									
 									if (entity.nextPhysicsFrame == undefined || ige._currentTime > entity.nextPhysicsFrame[0]) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
-										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+										entity.nextPhysicsFrame = [nextFrameTime, [x, y, angle]];
 									}
 
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									if (entity._streamMode == 0) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
-										entity.nextPhysicsFrame = [ige._currentTime + (1000 / ige._physicsTickRate), [x, y, angle]];
+										entity.nextPhysicsFrame = [nextFrameTime, [x, y, angle]];
 									}
 								} else {
 									// all streamed entities are rigidly positioned

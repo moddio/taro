@@ -156,6 +156,7 @@ var IgeEngine = IgeEntity.extend({
 		this.tempSnapshot = [0, {}];
 		this.nextSnapshot = [0, {}];
 		this.renderTime = 0;
+		this.timeDiscrepancy = 0;
 
 		this.remainderFromLastStep = 0;
 
@@ -1763,12 +1764,9 @@ var IgeEngine = IgeEntity.extend({
 		var now = Date.now();
 
 		// console.log("increment time", this._currentTime, now, this._timeScaleLastTimestamp, (now - this._timeScaleLastTimestamp))
-		if (this._timeScaleLastTimestamp) {
-			this._currentTime += (now - this._timeScaleLastTimestamp) * this._timeScale;
-			this.renderTime += (now - this._timeScaleLastTimestamp) * this._timeScale;
-		}
-
-		this._timeScaleLastTimestamp = now;
+		this._currentTime = (now + this.timeDiscrepancy) * this._timeScale;
+		this.renderTime = this._currentTime - 100;
+		
 		// this.incrementCount++;
 		// if (now - this._aSecondAgo > 1000) {
 		// 	console.log((this._currentTime - this.lastIncrementAt), this.incrementCount, (this._currentTime - this.lastIncrementAt) / this.incrementCount)

@@ -30,7 +30,7 @@ var TriggerComponent = IgeEntity.extend({
 				}
 			}		
 		}
-		console.log("registered triggered scripts: ", this.triggeredScripts)
+		// console.log("registered triggered scripts: ", this.triggeredScripts)
 	},
 
 	// Listen for when contact's begin

@@ -522,11 +522,11 @@ var IgeNetIoClient = {
 					// sync server's timestamp with client's
 
 					if (ige._currentTime > newSnapshotTimeStamp + 100 || ige._currentTime < newSnapshotTimeStamp - 100) {
-						ige._currentTime = newSnapshotTimeStamp;
+						ige.timeDiscrepancy = newSnapshotTimeStamp - Date.now();
 					} else {
-						ige._currentTime = ige._currentTime + ((newSnapshotTimeStamp - ige._currentTime) / 5); // rubberband
+						ige.timeDiscrepancy += ((newSnapshotTimeStamp - Date.now()) - ige.timeDiscrepancy) / 5; // rubberband
 					}
-					ige.renderTime = ige._currentTime - 100;
+
 					// add the new snapshot into empty array
 					if (ige.snapshots.length == 0) {
 						ige.snapshots.push([newSnapshotTimeStamp, obj]);
