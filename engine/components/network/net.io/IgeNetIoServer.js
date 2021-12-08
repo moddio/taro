@@ -449,11 +449,11 @@ var IgeNetIoServer = {
    * @param {Object} socket The client socket object.
    * @private
    */
-	_onClientConnect: function (socket) {
+	 _onClientConnect: function (socket) {
 		var self = this;
 
 		var remoteAddress = socket._remoteAddress;
-		console.log('2. _onClientConnect ', remoteAddress, " (IgeNetIoServer.js)");
+		console.log('client is attempting to connect', remoteAddress);
 		var reason = '';
 
 		var bannedIps = ige.server.bannedIps;
@@ -470,13 +470,19 @@ var IgeNetIoServer = {
 		const playerCount = ige.$$('player').filter(function (player) {
 			return player._stats.controlledBy == 'human';
 		}).length;
-		const shouldConnect =
-      (this._acceptConnections || true) &&
-      ige.server &&
-      playerCount < ige.server.maxPlayers &&
-      !playerIsBanned;
 
-		if (shouldConnect || socket._fromPingService) {
+		var clientRejectReason = []
+		
+		if (this._acceptConnections != true)
+			clientRejectReason.push('server not accepting connections')
+		
+		if (playerCount > ige.server.maxPlayers)
+			clientRejectReason.push('server is full')
+		
+		if (playerIsBanned)
+			clientRejectReason.push('player ',socket._remoteAddress,' is banned')
+
+		if (clientRejectReason.length == 0) {
 			// Check if any listener cancels this
 			if (!this.emit('connect', socket)) {
 				this.log(
@@ -486,12 +492,9 @@ var IgeNetIoServer = {
 						remoteAddress}`
 				);
 				this._socketById[socket.id] = socket;
-				if (!socket._fromPingService) {
-					this.clientIds.push(socket.id);
-
-					self._socketById[socket.id].start = Date.now();
-					ige.server.socketConnectionCount.connected++;
-				}
+				this.clientIds.push(socket.id);
+				self._socketById[socket.id].start = Date.now();
+				ige.server.socketConnectionCount.connected++;
 
 				// Store a rooms array for this client
 				this._clientRooms[socket.id] = this._clientRooms[socket.id] || [];
@@ -544,21 +547,8 @@ var IgeNetIoServer = {
 		} else {
 			// console.log('Rejecting connection with id ' + socket.id + ' ' + reason);
 			// ige.network.send('playerDisconnect', {reason: reason, clientId: socket.id});
-			var reason =
-        `cannot connect due to shouldConnect = ${
-        	shouldConnect
-        } socket._fromPingService=${
-        	socket._fromPingService
-        },${
-        	this._acceptConnections
-        },${
-        	playerCount
-        },${
-        	ige.server.maxPlayers
-        },${
-        	!playerIsBanned}`;
-			console.log(reason);
-			socket.close(reason);
+			console.log('rejecting connection', clientRejectReason);
+			socket.close(clientRejectReason);
 		}
 	},
 

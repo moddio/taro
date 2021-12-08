@@ -2220,9 +2220,8 @@ var ActionComponent = IgeEntity.extend({
 					case 'moveEntity':
 						var position = ige.variable.getValue(action.position, vars);
 						var entity = ige.variable.getValue(action.entity, vars);
-						var jointsAttached = {};
-
-						if (entity && ['unit', 'item', 'projectile'].includes(entity._category)) {
+						
+						if (position && entity && ['unit', 'item', 'projectile'].includes(entity._category)) {
 							entity.teleportTo(position.x, position.y, entity._rotate.z);
 						}
 

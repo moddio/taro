@@ -642,7 +642,7 @@ var MenuUiComponent = IgeEntity.extend({
 		return vars;
 	},
 	onDisconnectFromServer: function (src, message) {
-		console.log('modal shown from', src);
+		console.log('modal shown from', src, message);
 
 		if (ige.mobileControls.isMobile) return;
 
