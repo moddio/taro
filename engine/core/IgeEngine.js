@@ -56,7 +56,7 @@ var IgeEngine = IgeEntity.extend({
 		if (this.isServer) {
 			// this._idCounter = 0
 			this.sanitizer = require('sanitizer').sanitize;
-			this.emptyTimeLimit = 5 * 60 * 1000; // in ms
+			this.emptyTimeLimit = 3 * 60 * 1000; // in ms
 			this.lastCheckedAt = Date.now();
 		}
 
@@ -2308,9 +2308,7 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	analyseTiming: function () {
-		if (igeConfig.debug._timing) {
-
-		} else {
+		if (!igeConfig.debug._timing) {
 			IgeEngine.prototype.log('Cannot analyse timing because the igeConfig.debug._timing flag is not enabled so no timing data has been recorded!', 'warning');
 		}
 	},
@@ -2586,18 +2584,18 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	devLog: function () {
-		return;
-		if (ige.env == 'local') {
-			var scriptInfo = '';
-			if (ige.script) {
-				var script = ige.game.data.scripts[ige.script.currentScriptId];
-				scriptInfo = `Script '${(script) ? script.name : ''}' in Action '${ige.script.currentActionName}' : `;
-			}
-			var info = scriptInfo + (new Error()).stack.split('\n')[2];
+		// return;
+		// if (ige.env == 'local') {
+		// 	var scriptInfo = '';
+		// 	if (ige.script) {
+		// 		var script = ige.game.data.scripts[ige.script.currentScriptId];
+		// 		scriptInfo = `Script '${(script) ? script.name : ''}' in Action '${ige.script.currentActionName}' : `;
+		// 	}
+		// 	var info = scriptInfo + (new Error()).stack.split('\n')[2];
 
-			Array.prototype.push.call(arguments, `     --- ${info}`);
-			console.log.apply(console, arguments);
-		}
+		// 	Array.prototype.push.call(arguments, `     --- ${info}`);
+		// 	console.log.apply(console, arguments);
+		// }
 	}
 });
 
