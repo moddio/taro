@@ -215,10 +215,14 @@ var ActionComponent = IgeEntity.extend({
 					case 'setPlayerAttribute':
 
 						var attrId = ige.variable.getValue(action.attribute, vars);
-						var player = entity;
-						if (player && player._category == 'player' && player._stats.attributes && player._stats.attributes[attrId] != undefined) {
-							var value = parseFloat(ige.variable.getValue(action.value, vars)).toFixed(2);
-							player.attribute.update(attrId, value, true); // update attribute, and check for attribute becoming 0
+						var player = entity;						
+						if (player && player._category == 'player' && player._stats.attributes) {
+							var attribute = player._stats.attributes[attrId];
+							if (attribute != undefined) {
+								var decimalPlace = parseInt(attribute.decimalPlaces) || 0;
+								var value = parseFloat(ige.variable.getValue(action.value, vars)).toFixed(decimalPlace);
+								player.attribute.update(attrId, value, true); // update attribute, and check for attribute becoming 0
+							}
 						}
 
 						break;

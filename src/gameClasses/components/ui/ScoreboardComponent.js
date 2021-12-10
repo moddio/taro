@@ -142,11 +142,13 @@ var ScoreboardComponent = IgeEntity.extend({
 					if (self.scoreAttributeId && player._stats.attributes && player._stats.attributes[self.scoreAttributeId]) {
 						var playerAttribute = player._stats.attributes[self.scoreAttributeId];
 						score = playerAttribute.value;
+						var decimalPlace = parseInt(playerAttribute.decimalPlaces) || 0;
+						var score = parseFloat(playerAttribute.value).toFixed(decimalPlace);
 					}
 
 					sortedScores.push({
 						key: clientId,
-						value: parseInt(score)
+						value: score
 					});
 				}
 			});
