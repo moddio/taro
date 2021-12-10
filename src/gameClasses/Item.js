@@ -192,7 +192,6 @@ var Item = IgeEntityBox2d.extend({
 	},
 
 	setOwnerUnit: function (newOwner) {
-		var transform;
 		var oldOwner = ige.$(this.oldOwnerId);
 
 		if (newOwner == oldOwner)

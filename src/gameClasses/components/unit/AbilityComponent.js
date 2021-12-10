@@ -110,9 +110,10 @@ var AbilityComponent = IgeEntity.extend({
 			var item = self._entity.dropItem(self._entity._stats.currentItemIndex);
 			if (item) {
 				// slightly push item in front of the unit
+				var rotate = self._entity.angleToTarget;
 				var vector = {
-					x: (20 * Math.sin(self._entity._rotate.z)),
-					y: -(20 * Math.cos(self._entity._rotate.z))
+					x: (20 * Math.sin(rotate)),
+					y: -(20 * Math.cos(rotate))
 				};
 				item.applyForce(vector.x, vector.y);
 			}
