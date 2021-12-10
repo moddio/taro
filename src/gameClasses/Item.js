@@ -766,7 +766,11 @@ var Item = IgeEntityBox2d.extend({
 
 					offset.x = (unitAnchoredPosition.x) + (itemAnchorOffsetX * Math.cos(rotate)) + (itemAnchorOffsetY * Math.sin(rotate)),
 					offset.y = (unitAnchoredPosition.y) + (itemAnchorOffsetX * Math.sin(rotate)) - (itemAnchorOffsetY * Math.cos(rotate));
-					offset.rotate = rotate;
+					if (self._stats.controls && self._stats.controls.mouseBehaviour) {
+						if (self._stats.controls.mouseBehaviour.rotateToFaceMouseCursor || (self._stats.currentBody && (self._stats.currentBody.jointType == 'weldJoint'))) {
+							offset.rotate = rotate;
+						}						
+					}
 				}
 			}
 		}
@@ -958,25 +962,11 @@ var Item = IgeEntityBox2d.extend({
 		var self = this;
 		var ownerUnit = this.getOwnerUnit();
 		if (ownerUnit && this._stats.stateId != 'dropped') {
-			rotate = self._rotate.z;
+			rotate = ownerUnit.angleToTarget;
 
 			if (self._stats.currentBody) {
 				if (self._stats.currentBody.jointType == 'weldJoint') {
 					rotate = ownerUnit._rotate.z;
-				} else if (self._stats.currentBody.type == 'spriteOnly' || self._stats.currentBody.type == 'dynamic') {
-					if (self._stats.controls && self._stats.controls.mouseBehaviour.rotateToFaceMouseCursor) {
-						if (ige.isServer || (ige.isClient && ige.client.selectedUnit == ownerUnit)) {
-							rotate = ownerUnit.angleToTarget;
-						}
-					}
-				}
-			}
-
-			if (self._stats.controls && self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
-				if (rotate > 0 && rotate < Math.PI) {
-					self.flip(0);
-				} else {
-					self.flip(1);
 				}
 			}
 
@@ -985,6 +975,16 @@ var Item = IgeEntityBox2d.extend({
 			var y = ownerUnit._translate.y + self.anchoredOffset.y;
 
 			self.translateTo(x, y);
+			if (self._stats.controls && self._stats.controls.mouseBehaviour) {
+				if (self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
+					if (rotate > 0 && rotate < Math.PI) {
+						self.flip(0);
+					} else {
+						self.flip(1);
+					}
+				}
+			}
+			
 			self.rotateTo(0, 0, rotate);
 		}
 

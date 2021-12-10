@@ -152,7 +152,6 @@ var TweenComponent = IgeEntity.extend({
 				}
 
 				interpolatedRotate += angle;
-
 				this.offset.x = (interpolatedX * Math.cos(interpolatedRotate)) + (interpolatedY * Math.sin(interpolatedRotate));
 				this.offset.y = (interpolatedX * Math.sin(interpolatedRotate)) - (interpolatedY * Math.cos(interpolatedRotate));
 			} else {
