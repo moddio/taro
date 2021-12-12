@@ -2221,6 +2221,15 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 
+					case 'removeAttributeBuffs':
+						var unit = ige.variable.getValue(action.unit, vars)
+						if(unit && unit._stats && unit._stats.buffs){
+							for(var i = 0; i < unit._stats.buffs.length; i++){
+								unit._stats.buffs[i].timeLimit = 0;
+							}
+						}
+						break;
+
 					case 'moveEntity':
 						var position = ige.variable.getValue(action.position, vars);
 						var entity = ige.variable.getValue(action.entity, vars);
