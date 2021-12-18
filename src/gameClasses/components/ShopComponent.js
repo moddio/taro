@@ -249,6 +249,7 @@ var ShopComponent = IgeEntity.extend({
 	},
 
 	loadUserPurchases: function () {
+		let self = this;
 		$.ajax({
 			url: `/api/user/${gameId}/purchases`,
 			type: 'GET',
@@ -268,26 +269,30 @@ var ShopComponent = IgeEntity.extend({
 					purchasableItems = purchasableItems.slice(0, 4);
 
 					purchasableItems.forEach(function (purchasable, index) {
-						var skin = $(
-							`<div id="skin-list-${purchasable._id}" class="border rounded bg-light p-2 mx-2 ${index < 2 ? 'mb-3' : ''} col-5 d-flex flex-column justify-content-between">` +
+						let html = `<div id="skin-list-${purchasable._id}" class="border rounded bg-light p-2 mx-2 ${index < 2 ? 'mb-3' : ''} col-5 d-flex flex-column justify-content-between">` +
 							'  <div class="my-2 text-center">' +
 							`	   <img src=" ${purchasable.image} " style="height: 45px; width: 45px;" />` +
 							'	 </div>' +
-							'	 <div class="d-flex justify-content-center action-button-container">' +
-							`		 <button class="btn btn-sm btn-outline-success btn-purchase-purchasable" id="${purchasable._id}"` +
-							`			 data-purchasabled="${purchasable.name}" data-price="${purchasable.price}">` +
-							'			 <div class="d-flex">' +
-							'				 <div>' +
-							'					 <img src="/assets/images/coin.png" style="width:15px; height: 15px" />' +
-							'				 </div>' +
-							`				 <div>${
-								purchasable.price
-							}				 </div>` +
-							'			 </div>' +
-							'		 </button>' +
-							'	 </div>' +
-							'</div>'
-						);
+							'	 <div class="d-flex justify-content-center action-button-container">';
+						if (purchasable.soldForSocialShare) {
+							html += self.getTwitterBtnHtml(purchasable);
+						}
+						else {
+							html += `		 <button class="btn btn-sm btn-outline-success btn-purchase-purchasable" id="${purchasable._id}"` +
+								`			 data-purchasabled="${purchasable.name}" data-price="${purchasable.price}">` +
+								'			 <div class="d-flex">' +
+								'				 <div>' +
+								'					 <img src="/assets/images/coin.png" style="width:15px; height: 15px" />' +
+								'				 </div>' +
+								`				 <div>${purchasable.price
+								}				 </div>` +
+								'			 </div>' +
+								'		 </button>';
+						}
+
+						html += '	 </div>' +
+							'</div>';
+						var skin = $(html);
 
 						$('#skins-list').append(skin);
 					});
@@ -480,23 +485,30 @@ var ShopComponent = IgeEntity.extend({
 			}
 		});
 	},
-	buttonForSocialShare: function (item, unauthenticated) {
-		var btnHtml = '';
+	getTwitterBtnHtml: function (item) {
 		var sharedOn = item.sharedOn || {};
-		var sharedOnFacebook = sharedOn.facebook ? 'disabled' : '';
+		var title = item.title || item.name;
 		var sharedOnTwitter = sharedOn.twitter ? 'disabled' : '';
 		var gameId = ige.game.data.defaultData._id;
-
-		var textToTweet = `Need more players!! Join me in ${ige.game.data.defaultData.title} (${location.href})`;
+		var textToTweet = `Join me in ${ige.game.data.defaultData.title} (${location.href})`;
 		var hashTags = ['games', 'moddio'];
 		var mentions = ['moddio'];
 		var twitterUrl = `https://twitter.com/intent/tweet?url=share.url&text=${textToTweet}&hashtags=${hashTags.join(',')}&via=${mentions.join(',')}`;
 
+		return `<a id="${item._id}" data-unauthenticated="true" href="${twitterUrl}" data-from="marketplace-item" data-item-data='{"type": "game", "value": "${gameId}", "itemId": "${item._id}"}' data-price="twitter" data-purchasable="${title}" class="btn btn-outline-info btn-purchase-purchasable ${sharedOnTwitter}"><i class="fab fa-twitter-square fa-lg"></i></a>`;
+	},
+	buttonForSocialShare: function (item, unauthenticated) {
+		var btnHtml = '';
+		var sharedOn = item.sharedOn || {};
+		var sharedOnFacebook = sharedOn.facebook ? 'disabled' : '';
+		var gameId = ige.game.data.defaultData._id;
+
 		if (item) {
 			var title = item.title || item.name;
 			btnHtml += '<div class="btn-group align-middle" role="group" aria-label="Basic example">';
-			btnHtml += `<button data-unauthenticated="true" id="${item._id}" type="button" data-price="facebook" data-purchasable="${title}" class="btn btn-outline-primary btn-purchase-purchasable ${sharedOnFacebook}" style="padding-right:14px;padding-left:15px;"><i class="fab fa-facebook-square fa-lg"></i></button>`;
-			btnHtml += `<a id="${item._id}" data-unauthenticated="true" href="${twitterUrl}" data-from="marketplace-item" data-item-data='{"type": "game", "value": "${gameId}", "itemId": "${item._id}"}' data-price="twitter" data-purchasable="${title}" class="btn btn-outline-info btn-purchase-purchasable ${sharedOnTwitter}"><i class="fab fa-twitter-square fa-lg"></i></a>`;
+			// remove facebook button from shop
+			// btnHtml += `<button data-unauthenticated="true" id="${item._id}" type="button" data-price="facebook" data-purchasable="${title}" class="btn btn-outline-primary btn-purchase-purchasable ${sharedOnFacebook}" style="padding-right:14px;padding-left:15px;"><i class="fab fa-facebook-square fa-lg"></i></button>`;
+			btnHtml += this.getTwitterBtnHtml(item);
 			btnHtml += '</div>';
 		}
 
