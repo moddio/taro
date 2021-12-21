@@ -271,7 +271,7 @@ var ShopComponent = IgeEntity.extend({
 					purchasableItems.forEach(function (purchasable, index) {
 						let html = `<div id="skin-list-${purchasable._id}" class="border rounded bg-light p-2 mx-2 ${index < 2 ? 'mb-3' : ''} col-5 d-flex flex-column justify-content-between">` +
 							'  <div class="my-2 text-center">' +
-							`	   <img src=" ${purchasable.image} " style="height: 45px; width: 45px;" />` +
+							`	   <div style="background:url('${purchasable.image}')" id="${purchasable._id}_menu_image" style="height: 45px; width: 45px;" />` +
 							'	 </div>' +
 							'	 <div class="d-flex justify-content-center action-button-container">';
 						if (purchasable.soldForSocialShare) {
@@ -293,8 +293,12 @@ var ShopComponent = IgeEntity.extend({
 						html += '	 </div>' +
 							'</div>';
 						var skin = $(html);
-
+						var itemDetails = null;
 						$('#skins-list').append(skin);
+						if (purchasable.target && purchasable.target.entityType == 'unit') {
+							itemDetails = ige.game.getAsset('unitTypes', purchasable.target.key);
+						}
+						self.renderShopImage(itemDetails, purchasable, 'menu_image');
 					});
 
 					$('#loading-skins').addClass('d-none');
@@ -493,7 +497,7 @@ var ShopComponent = IgeEntity.extend({
 		var textToTweet = `Join me in ${ige.game.data.defaultData.title} (${location.href})`;
 		var hashTags = ['games', 'moddio'];
 		var mentions = ['moddio'];
-		var twitterUrl = `https://twitter.com/intent/tweet?url=share.url&text=${textToTweet}&hashtags=${hashTags.join(',')}&via=${mentions.join(',')}`;
+		var twitterUrl = `https://twitter.com/intent/tweet?text=${textToTweet}&hashtags=${hashTags.join(',')}&via=${mentions.join(',')}`;
 
 		return `<a id="${item._id}" data-unauthenticated="true" href="${twitterUrl}" data-from="marketplace-item" data-item-data='{"type": "game", "value": "${gameId}", "itemId": "${item._id}"}' data-price="twitter" data-purchasable="${title}" class="btn btn-outline-info btn-purchase-purchasable ${sharedOnTwitter}"><i class="fab fa-twitter-square fa-lg"></i></a>`;
 	},
@@ -1225,37 +1229,41 @@ var ShopComponent = IgeEntity.extend({
 				itemDetails = ige.game.getAsset('unitTypes', item.target.key);
 			}
 
-			if (itemDetails && itemDetails.cellSheet) {
-				if (itemDetails.cellSheet.columnCount <= 0) {
-					itemDetails.cellSheet.columnCount = 1;
-				}
-				if (itemDetails.cellSheet.rowCount <= 0) {
-					itemDetails.cellSheet.rowCount = 1;
-				}
-
-				let image = new Image();
-				let itemId = item._id;
-				image.src = item.image;
-				image.onload = function () {
-					let img = document.getElementById(`${itemId}_image`);
-					let originalHeight = `${image.height / itemDetails.cellSheet.rowCount}px`;
-					let originalWidth = `${image.width / itemDetails.cellSheet.columnCount}px`;
-					// clipping = "height:" + originalHeight + "px;width:" + originalWidth + "px;background:url('" + item.image + "') 0px 0px no-repeat;";
-					img.style.height = originalHeight;
-					img.style.width = originalWidth;
-					img.style.background = `url('${image.src}')`;
-					if (itemDetails.cellSheet.rowCount <= 1 && itemDetails.cellSheet.columnCount <= 1) {
-						img.style.backgroundRepeat = 'no-repeat';
-						img.style.backgroundPosition = 'center center';
-						img.style.backgroundSize = 'contain';
-						img.style.maxHeight = '64px';
-						img.style.maxWidth = '64px';
-					}
-				};
-			}
+			this.renderShopImage(itemDetails, item, 'image');
 		}
 
 		$('#modd-shop-modal .shop-items').html(modalBody);
+	},
+	renderShopImage: function (itemDetails, item, selector) {
+		if (itemDetails && itemDetails.cellSheet) {
+			if (itemDetails.cellSheet.columnCount <= 0) {
+				itemDetails.cellSheet.columnCount = 1;
+			}
+			if (itemDetails.cellSheet.rowCount <= 0) {
+				itemDetails.cellSheet.rowCount = 1;
+			}
+
+			let image = new Image();
+			let itemId = item._id;
+			image.src = item.image;
+			image.onload = function () {
+				let img = document.getElementById(`${itemId}_${selector}`);
+				let originalHeight = `${image.height / itemDetails.cellSheet.rowCount}px`;
+				let originalWidth = `${image.width / itemDetails.cellSheet.columnCount}px`;
+				// clipping = "height:" + originalHeight + "px;width:" + originalWidth + "px;background:url('" + item.image + "') 0px 0px no-repeat;";
+				img.style.height = originalHeight;
+				img.style.width = originalWidth;
+				img.style.background = `url('${image.src}')`;
+				img.src = '';
+				if (itemDetails.cellSheet.rowCount <= 1 && itemDetails.cellSheet.columnCount <= 1) {
+					img.style.backgroundRepeat = 'no-repeat';
+					img.style.backgroundPosition = 'center center';
+					img.style.backgroundSize = 'contain';
+					img.style.maxHeight = '64px';
+					img.style.maxWidth = '64px';
+				}
+			};
+		}
 	},
 	paginationForSkins: function () {
 		var self = this;
