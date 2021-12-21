@@ -271,7 +271,7 @@ var ShopComponent = IgeEntity.extend({
 					purchasableItems.forEach(function (purchasable, index) {
 						let html = `<div id="skin-list-${purchasable._id}" class="border rounded bg-light p-2 mx-2 ${index < 2 ? 'mb-3' : ''} col-5 d-flex flex-column justify-content-between">` +
 							'  <div class="my-2 text-center">' +
-							`	   <div style="background:url('${purchasable.image}')" id="${purchasable._id}_menu_image" style="height: 45px; width: 45px;" />` +
+							`	<img src=" ${purchasable.image} " style="height: 45px; width: 45px;" />` +
 							'	 </div>' +
 							'	 <div class="d-flex justify-content-center action-button-container">';
 						if (purchasable.soldForSocialShare) {
@@ -293,12 +293,12 @@ var ShopComponent = IgeEntity.extend({
 						html += '	 </div>' +
 							'</div>';
 						var skin = $(html);
-						var itemDetails = null;
+						// var itemDetails = null;
 						$('#skins-list').append(skin);
-						if (purchasable.target && purchasable.target.entityType == 'unit') {
-							itemDetails = ige.game.getAsset('unitTypes', purchasable.target.key);
-						}
-						self.renderShopImage(itemDetails, purchasable, 'menu_image');
+						// if (purchasable.target && purchasable.target.entityType == 'unit') {
+						// 	itemDetails = ige.game.getAsset('unitTypes', purchasable.target.key);
+						// }
+						// self.renderShopImage(itemDetails, purchasable, 'menu_image');
 					});
 
 					$('#loading-skins').addClass('d-none');
