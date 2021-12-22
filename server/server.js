@@ -290,8 +290,6 @@ var Server = IgeClass.extend({
 				videoChatEnabled: videoChatEnabled
 			};
 
-			console.log("nig", videoChatEnabled)
-
 			const options = {
 				isAuthenticated: false,
 				env: process.env.ENV,
