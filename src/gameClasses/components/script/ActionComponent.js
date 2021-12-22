@@ -2220,6 +2220,15 @@ var ActionComponent = IgeEntity.extend({
 							entity.addAttributeBuff(attrId, value, time, true); // update attribute, and check for attribute becoming 0
 						}
 						break;
+					
+					case 'removeAllAttributeBuffs':
+						var unit = ige.variable.getValue(action.unit, vars)
+						if(unit && unit._stats && unit._stats.buffs){
+							for(var i = 0; i < unit._stats.buffs.length; i++){
+								unit._stats.buffs[i].timeLimit = 0;
+							}
+						}
+						break;
 
 					case 'moveEntity':
 						var position = ige.variable.getValue(action.position, vars);
