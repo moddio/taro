@@ -1016,7 +1016,7 @@ var IgeEntity = IgeObject.extend({
      * chaining or the current value if no arguments are specified.
      */
 	lifeSpan: function (milliseconds, deathCallback) {
-		if (milliseconds !== undefined) {
+		if (milliseconds != undefined) {
 			this.deathTime(ige._currentTime + milliseconds, deathCallback);
 			return this;
 		}
