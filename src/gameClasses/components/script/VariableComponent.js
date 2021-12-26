@@ -1541,6 +1541,48 @@ var VariableComponent = IgeEntity.extend({
 						returnValue = array[index];
 					}
 					break;
+					
+				case 'getStringObjectElement':
+					var string = self.getValue(text.string, vars);
+					var key = self.getValue(text.key, vars);
+					if (string && key != undefined) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						returnValue = object[key];
+					}
+					break;
+									
+				case 'setStringObjectElement':
+					var string = self.getValue(text.string, vars);
+					var key = self.getValue(text.key, vars);
+					var value = self.getValue(text.value, vars);
+					if (string && value && key != undefined) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						object[key] = value;
+						returnValue = JSON.stringify(object);
+					}
+					break;
+					
+				case 'removeStringObjectElement':
+					var string = self.getValue(text.string, vars);
+					var key = self.getValue(text.key, vars);
+					if (string && key != undefined) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						delete object[key];
+						returnValue = JSON.stringify(object);
+					}
+					break;
 
 				case 'insertStringArrayElement':
 					var string = self.getValue(text.string, vars);
