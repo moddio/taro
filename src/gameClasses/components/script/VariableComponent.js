@@ -291,6 +291,12 @@ var VariableComponent = IgeEntity.extend({
 						returnValue = entity._stats.name;
 					}
 					break;
+					
+				case 'getUserId':
+					if (entity && entity._category == 'player') {
+						returnValue = entity._stats.userId;
+					}
+					break;
 
 				case 'getPlayerVariable':
 					// console.log('text.variable', text.variable);
