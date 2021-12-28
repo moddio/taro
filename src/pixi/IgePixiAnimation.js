@@ -103,6 +103,7 @@ var IgePixiAnimation = IgeClass.extend({
 		self.startFrame = startFrame;
 		self.totalNumberOfFrames = frames.length;
 		self._entity.currentAnimId = cellSheetAnimId;
+		self._entity.currentAnimName = animName;
 
 		this.resetAnimation();
 
