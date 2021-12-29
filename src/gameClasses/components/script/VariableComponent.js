@@ -1593,7 +1593,7 @@ var VariableComponent = IgeEntity.extend({
 				case 'insertStringArrayElement':
 					var string = self.getValue(text.string, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value) {
+					if (string && value != null) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
@@ -1608,7 +1608,7 @@ var VariableComponent = IgeEntity.extend({
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value && index != undefined) {
+					if (string && value != null && index != undefined) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
