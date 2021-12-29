@@ -1548,6 +1548,15 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 					
+				case 'splitStringIntoArray':
+					var string = self.getValue(text.string, vars);
+					var separator = self.getValue(text.separator, vars);
+					if (string.split) {
+						var arr = string.split(separator);
+						returnValue = JSON.stringify(arr);
+					}
+					break;
+					
 				case 'getStringObjectElement':
 					var string = self.getValue(text.string, vars);
 					var key = self.getValue(text.key, vars);
@@ -1565,7 +1574,7 @@ var VariableComponent = IgeEntity.extend({
 					var string = self.getValue(text.string, vars);
 					var key = self.getValue(text.key, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value && key != undefined) {
+					if (string && value != null && key != undefined) {
 						try {
 							var object = JSON.parse(string);
 						} catch (err) {
