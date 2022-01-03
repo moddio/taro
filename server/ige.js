@@ -1,6 +1,6 @@
 const Q = require('q');
 const _ = require('lodash');
-const publicIp = import('public-ip');
+const publicIp = require('public-ip');
 const OS = require('os');
 const http = require('http');
 const cluster = require('cluster');

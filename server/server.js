@@ -1,7 +1,7 @@
 // var appInsights = require("applicationinsights");
 // appInsights.setup("db8b2d10-212b-4e60-8af0-2482871ccf1d").start();
 var net = require('net');
-const publicIp = import('public-ip');
+const publicIp = require('public-ip');
 const express = require('express');
 const helmet = require('helmet');
 const path = require('path');
