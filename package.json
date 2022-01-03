@@ -40,7 +40,7 @@
     "lodash": "^4.17.21",
     "lz-string": "^1.4.4",
     "msgpack-lite": "^0.1.26",
-    "public-ip": "^5.0.0",
+    "public-ip": "^2.5.0",
     "q": "^1.5.1",
     "rate-limiter-flexible": "^2.3.6",
     "request": "^2.88.2",
