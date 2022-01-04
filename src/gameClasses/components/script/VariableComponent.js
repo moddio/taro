@@ -1557,6 +1557,48 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 					
+				case 'stringArrayIncludesElement':
+					var string = self.getValue(text.string, vars);
+					var element = self.getValue(text.element, vars);
+					if (string) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						if (Array.isArray(array))
+							returnValue = array.includes(element);
+					}
+					break;
+					
+				case 'indexInStringArray':
+					var string = self.getValue(text.string, vars);
+					var element = self.getValue(text.element, vars);
+					if (string) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						if (Array.isArray(array))
+							returnValue = array.indexOf(element);
+					}
+					break;
+					
+				case 'stringObjectHasProperty':
+					var string = self.getValue(text.string, vars);
+					var property = self.getValue(text.property, vars);
+					if (string) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						if (object.hasOwnProperty)
+							returnValue = object.hasOwnProperty(property);
+					}
+					break;
+					
 				case 'getStringObjectElement':
 					var string = self.getValue(text.string, vars);
 					var key = self.getValue(text.key, vars);
