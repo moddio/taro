@@ -387,8 +387,8 @@ var InventoryComponent = IgeEntity.extend({
 					// 		item.setState('unselected');
 					// 	}
 					// }
-					if (item && item._stats && item._stats.inventoryColor) {
-						$(`#item-${slotIndex}`).css('background-image', 'radial-gradient(rgba(0, 0, 0, 0),' + item._stats.inventoryColor + ')');
+					if (item && item._stats && item._stats.inventorySlotColor) {
+						$(`#item-${slotIndex}`).css('background-image', 'radial-gradient(rgba(0, 0, 0, 0),' + item._stats.inventorySlotColor + ')');
 					} else {
 						$(`#item-${slotIndex}`).css('background-image', 'none');
 					}
