@@ -388,9 +388,9 @@ var InventoryComponent = IgeEntity.extend({
 					// 	}
 					// }
 					if (item && item._stats && item._stats.inventoryColor) {
-						$(`#item-${slotIndex}`).css('background-image', 'radial-gradient(rgba(0, 0, 0, 0),' + item._stats.inventoryColor + ')')
+						$(`#item-${slotIndex}`).css('background-image', 'radial-gradient(rgba(0, 0, 0, 0),' + item._stats.inventoryColor + ')');
 					} else {
-						$(`#item-${slotIndex}`).css('background-image', 'none')
+						$(`#item-${slotIndex}`).css('background-image', 'none');
 					}
 					ige.itemUi.updateItemSlot(item, slotIndex);
 

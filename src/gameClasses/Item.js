@@ -939,7 +939,7 @@ var Item = IgeEntityBox2d.extend({
 					case 'inventoryColor':
 						var owner = self.getOwnerUnit();
 						if (ige.isClient && ige.client.selectedUnit == owner) {
-							owner.inventory.update()
+							owner.inventory.update();
 						}
 						break;
 					case 'slotIndex':
