@@ -936,6 +936,12 @@ var Item = IgeEntityBox2d.extend({
 							ige.itemUi.updateItemSlot(this, this._stats.slotIndex);
 						}
 						break;
+					case 'inventoryColor':
+						var owner = self.getOwnerUnit();
+						if (ige.isClient && ige.client.selectedUnit == owner) {
+							owner.inventory.update()
+						}
+						break;
 					case 'slotIndex':
 						var owner = self.getOwnerUnit();
 						if (ige.isClient && owner) {
