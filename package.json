@@ -50,7 +50,7 @@
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.10",
+    "@babel/core": "^7.16.12",
     "@babel/eslint-parser": "^7.16.5",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
