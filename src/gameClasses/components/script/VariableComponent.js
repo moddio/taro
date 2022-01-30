@@ -22,8 +22,8 @@ var VariableComponent = IgeEntity.extend({
 			region = region._stats.default;
 		}
 
-		var randomX = Math.floor(Math.random() * ((region.x + region.width) - region.x) + region.x);
-		var randomY = Math.floor(Math.random() * ((region.y + region.height) - region.y) + region.y);
+		var randomX = Math.floor(Math.random() * region.width) + region.x;
+		var randomY = Math.floor(Math.random() * region.height) + region.y;
 		var position = { x: 0, y: 0 };
 
 		if (!isNaN(randomX) || !isNaN(randomY)) {
@@ -1140,7 +1140,7 @@ var VariableComponent = IgeEntity.extend({
 					break;
 
 				case 'getEntityPosition':
-					entity = self.getValue(text.entity, vars);
+					var entity = self.getValue(text.entity, vars);
 					if (entity) {
 						if (entity._category === 'item' && entity._stats && entity._stats.currentBody && entity._stats.currentBody.type === 'spriteOnly') {
 							var ownerUnit = entity.getOwnerUnit();
@@ -1160,6 +1160,19 @@ var VariableComponent = IgeEntity.extend({
 					}
 
 					break;
+					
+				case 'getPositionInFrontOfPosition':
+					var position = self.getValue(text.position, vars);
+					var distance = self.getValue(text.distance, vars);
+					var angle = self.getValue(text.angle, vars);
+					if (position && !isNaN(distance) && !isNaN(angle)) {
+						returnValue = {
+							x: distance * Math.cos(angle) + position.x,
+							y: distance * Math.sin(angle) + position.y
+						};
+					}
+					break;
+					
 				case 'getPositionX':
 					var position = self.getValue(text.position, vars);
 					if (position) {
