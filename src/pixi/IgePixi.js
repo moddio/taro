@@ -222,7 +222,7 @@ var IgeInitPixi = IgeClass.extend({
 
 		// check if need to update entities viewport status in this tick
 		let updateVPTick = false;
-		if (currentTime > this.vpStatusLastTick + 500) {
+		if (currentTime > this.vpStatusLastTick + 100) {
 			this.vpStatusLastTick = currentTime;
 			updateVPTick = true;
 		}
@@ -300,61 +300,59 @@ var IgeInitPixi = IgeClass.extend({
 				// check if entity need to render
 				if (updateVPTick) entity.updateEntityViewportStatus(ige.pixi.viewport);
 				// update transformation using incoming network stream
-				if (ige.network.stream && ige._renderLatency != undefined) {
-					if (entity.isInViewport) entity._processTransform();
+				if (ige.network.stream && ige._renderLatency != undefined && entity.isInViewport) {
+					entity._processTransform();
 				}
 
-				if (entity._translate && !entity.isHidden()) {
-					if (entity.isInViewport) {
-						var x = entity._translate.x;
-						var y = entity._translate.y;
-						var rotate = entity._rotate.z;
+				if (entity._translate && !entity.isHidden() && entity.isInViewport) {
+					var x = entity._translate.x;
+					var y = entity._translate.y;
+					var rotate = entity._rotate.z;
 
-						if (entity._category == 'item') {
-							var ownerUnit = entity.getOwnerUnit();
-							if (ownerUnit) {
-								ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
+					if (entity._category == 'item') {
+						var ownerUnit = entity.getOwnerUnit();
+						if (ownerUnit) {
+							ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
 
-								// immediately rotate items for my own unit
-								if (ownerUnit == ige.client.selectedUnit) {
-									if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
-										rotate = ownerUnit._rotate.z;
-									} else if (ownerUnit == ige.client.selectedUnit) {
-										rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
-									}
-								}
-
-								entity.anchoredOffset = entity.getAnchoredOffset(rotate);
-								if (entity.anchoredOffset) {
-									x = ownerUnit._translate.x + entity.anchoredOffset.x;
-									y = ownerUnit._translate.y + entity.anchoredOffset.y;
-									rotate = entity.anchoredOffset.rotate;
+							// immediately rotate items for my own unit
+							if (ownerUnit == ige.client.selectedUnit) {
+								if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
+									rotate = ownerUnit._rotate.z;
+								} else if (ownerUnit == ige.client.selectedUnit) {
+									rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
 								}
 							}
-						}
 
-						if (entity.tween && entity.tween.isTweening) {
-							entity.tween.update();
-							x += entity.tween.offset.x;
-							y += entity.tween.offset.y;
-							rotate += entity.tween.offset.rotate;
-						}
-
-						entity.transformPixiEntity(x, y, rotate);
-
-						// handle animation
-						if (entity.pixianimation) {
-							if (entity.pixianimation.animating) {
-								if (!entity.pixianimation.fpsCount) {
-									entity.pixianimation.fpsCount = 0;
-								}
-
-								if (entity.pixianimation.fpsCount > entity.pixianimation.fpsSecond) {
-									entity.pixianimation.animationTick();
-									entity.pixianimation.fpsCount = 0;
-								}
-								entity.pixianimation.fpsCount += tickDelta;
+							entity.anchoredOffset = entity.getAnchoredOffset(rotate);
+							if (entity.anchoredOffset) {
+								x = ownerUnit._translate.x + entity.anchoredOffset.x;
+								y = ownerUnit._translate.y + entity.anchoredOffset.y;
+								rotate = entity.anchoredOffset.rotate;
 							}
+						}
+					}
+
+					if (entity.tween && entity.tween.isTweening) {
+						entity.tween.update();
+						x += entity.tween.offset.x;
+						y += entity.tween.offset.y;
+						rotate += entity.tween.offset.rotate;
+					}
+
+					entity.transformPixiEntity(x, y, rotate);
+
+					// handle animation
+					if (entity.pixianimation) {
+						if (entity.pixianimation.animating) {
+							if (!entity.pixianimation.fpsCount) {
+								entity.pixianimation.fpsCount = 0;
+							}
+
+							if (entity.pixianimation.fpsCount > entity.pixianimation.fpsSecond) {
+								entity.pixianimation.animationTick();
+								entity.pixianimation.fpsCount = 0;
+							}
+							entity.pixianimation.fpsCount += tickDelta;
 						}
 					}
 				}
