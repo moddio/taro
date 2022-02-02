@@ -1189,6 +1189,14 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 
+					case 'changeInventorySlotColor':
+						var item = ige.variable.getValue(action.item, vars);
+						var color = ige.variable.getValue(action.string, vars);
+						if (item && color) {
+							item.streamUpdateData([{ inventorySlotColor: color }]);
+						}
+						break;
+
 					case 'setItemAmmo':
 						var item = ige.variable.getValue(action.item, vars);
 						var newAmmo = ige.variable.getValue(action.ammo, vars);
