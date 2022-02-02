@@ -299,12 +299,12 @@ var IgeInitPixi = IgeClass.extend({
 				// }
 				// check if entity need to render
 				if (updateVPTick) entity.updateEntityViewportStatus(ige.pixi.viewport);
-				// update transformation using incoming network stream
-				if (ige.network.stream && ige._renderLatency != undefined && entity.isInViewport) {
-					entity._processTransform();
-				}
 
 				if (entity._translate && !entity.isHidden() && entity.isInViewport) {
+					// update transformation using incoming network stream
+					if (ige.network.stream && ige._renderLatency != undefined) {
+						entity._processTransform();
+					}
 					var x = entity._translate.x;
 					var y = entity._translate.y;
 					var rotate = entity._rotate.z;
