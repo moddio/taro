@@ -295,6 +295,9 @@ var VariableComponent = IgeEntity.extend({
 				case 'getUserId':
 					if (entity && entity._category == 'player') {
 						returnValue = entity._stats.userId;
+						if (!returnValue) {
+							ige.script.errorLog(`Warning: Cannot get user id because user is not logged in`);
+						}
 					}
 					break;
 
@@ -1166,6 +1169,7 @@ var VariableComponent = IgeEntity.extend({
 					var distance = self.getValue(text.distance, vars);
 					var angle = self.getValue(text.angle, vars);
 					if (position && !isNaN(distance) && !isNaN(angle)) {
+						angle -= Math.PI / 2;
 						returnValue = {
 							x: distance * Math.cos(angle) + position.x,
 							y: distance * Math.sin(angle) + position.y
