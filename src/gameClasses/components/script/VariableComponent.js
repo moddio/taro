@@ -22,8 +22,8 @@ var VariableComponent = IgeEntity.extend({
 			region = region._stats.default;
 		}
 
-		var randomX = Math.floor(Math.random() * ((region.x + region.width) - region.x) + region.x);
-		var randomY = Math.floor(Math.random() * ((region.y + region.height) - region.y) + region.y);
+		var randomX = Math.floor(Math.random() * region.width) + region.x;
+		var randomY = Math.floor(Math.random() * region.height) + region.y;
 		var position = { x: 0, y: 0 };
 
 		if (!isNaN(randomX) || !isNaN(randomY)) {
@@ -289,6 +289,12 @@ var VariableComponent = IgeEntity.extend({
 				case 'getPlayerName':
 					if (entity && entity._category == 'player') {
 						returnValue = entity._stats.name;
+					}
+					break;
+					
+				case 'getUserId':
+					if (entity && entity._category == 'player') {
+						returnValue = entity._stats.userId;
 					}
 					break;
 
@@ -1134,7 +1140,7 @@ var VariableComponent = IgeEntity.extend({
 					break;
 
 				case 'getEntityPosition':
-					entity = self.getValue(text.entity, vars);
+					var entity = self.getValue(text.entity, vars);
 					if (entity) {
 						if (entity._category === 'item' && entity._stats && entity._stats.currentBody && entity._stats.currentBody.type === 'spriteOnly') {
 							var ownerUnit = entity.getOwnerUnit();
@@ -1154,6 +1160,19 @@ var VariableComponent = IgeEntity.extend({
 					}
 
 					break;
+					
+				case 'getPositionInFrontOfPosition':
+					var position = self.getValue(text.position, vars);
+					var distance = self.getValue(text.distance, vars);
+					var angle = self.getValue(text.angle, vars);
+					if (position && !isNaN(distance) && !isNaN(angle)) {
+						returnValue = {
+							x: distance * Math.cos(angle) + position.x,
+							y: distance * Math.sin(angle) + position.y
+						};
+					}
+					break;
+					
 				case 'getPositionX':
 					var position = self.getValue(text.position, vars);
 					if (position) {
@@ -1541,11 +1560,104 @@ var VariableComponent = IgeEntity.extend({
 						returnValue = array[index];
 					}
 					break;
+					
+				case 'splitStringIntoArray':
+					var string = self.getValue(text.string, vars);
+					var separator = self.getValue(text.separator, vars);
+					if (string.split) {
+						var arr = string.split(separator);
+						returnValue = JSON.stringify(arr);
+					}
+					break;
+					
+				case 'stringArrayIncludesElement':
+					var string = self.getValue(text.string, vars);
+					var element = self.getValue(text.element, vars);
+					if (string) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						if (Array.isArray(array))
+							returnValue = array.includes(element);
+					}
+					break;
+					
+				case 'indexInStringArray':
+					var string = self.getValue(text.string, vars);
+					var element = self.getValue(text.element, vars);
+					if (string) {
+						try {
+							var array = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						if (Array.isArray(array))
+							returnValue = array.indexOf(element);
+					}
+					break;
+					
+				case 'stringObjectHasProperty':
+					var string = self.getValue(text.string, vars);
+					var property = self.getValue(text.property, vars);
+					if (string) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						if (object.hasOwnProperty)
+							returnValue = object.hasOwnProperty(property);
+					}
+					break;
+					
+				case 'getStringObjectElement':
+					var string = self.getValue(text.string, vars);
+					var key = self.getValue(text.key, vars);
+					if (string && key != undefined) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						returnValue = object[key];
+					}
+					break;
+									
+				case 'setStringObjectElement':
+					var string = self.getValue(text.string, vars);
+					var key = self.getValue(text.key, vars);
+					var value = self.getValue(text.value, vars);
+					if (string && value != null && key != undefined) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						object[key] = value;
+						returnValue = JSON.stringify(object);
+					}
+					break;
+					
+				case 'removeStringObjectElement':
+					var string = self.getValue(text.string, vars);
+					var key = self.getValue(text.key, vars);
+					if (string && key != undefined) {
+						try {
+							var object = JSON.parse(string);
+						} catch (err) {
+							console.error(err);
+						}
+						delete object[key];
+						returnValue = JSON.stringify(object);
+					}
+					break;
 
 				case 'insertStringArrayElement':
 					var string = self.getValue(text.string, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value) {
+					if (string && value != null) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
@@ -1560,7 +1672,7 @@ var VariableComponent = IgeEntity.extend({
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value && index != undefined) {
+					if (string && value != null && index != undefined) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
