@@ -918,3 +918,7 @@ div#dev-console-table {
   -khtml-user-select: none;
   -ms-user-select: none;
 }
+
+#play-game-button, #backpack-wrapper {
+  z-index: 9999;
+}
