@@ -965,6 +965,13 @@ var VariableComponent = IgeEntity.extend({
 
 					returnValue = units.length;
 					break;
+					
+				case 'allUnitsOfUnitType':
+					var unitType = self.getValue(text.unitType, vars);
+					var units = ige.$$('unit').filter(unit => unit._stats.type === unitType);
+
+					returnValue = units;
+					break;
 
 				case 'getNumberOfPlayersOfPlayerType':
 					var playerType = self.getValue(text.playerType, vars);
@@ -973,6 +980,13 @@ var VariableComponent = IgeEntity.extend({
 					});
 
 					returnValue = players.length;
+					break;
+					
+				case 'allPlayersOfPlayerType':
+					var playerType = self.getValue(text.playerType, vars);
+					var players = ige.$$('player').filter(player => player._stats.playerTypeId === playerType);
+
+					returnValue = players;
 					break;
 
 				case 'getRandomNumberBetween':
