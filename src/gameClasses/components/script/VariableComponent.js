@@ -1575,7 +1575,8 @@ var VariableComponent = IgeEntity.extend({
 						} catch (err) {
 							console.error(err);
 						}
-						returnValue = array[index];
+						var element = array[index];
+						returnValue = (typeof element == 'object') ? JSON.stringify(element) : element;
 					}
 					break;
 					
@@ -1639,7 +1640,8 @@ var VariableComponent = IgeEntity.extend({
 						} catch (err) {
 							console.error(err);
 						}
-						returnValue = object[key];
+						var element = object[key];
+						returnValue = (typeof element == 'object') ? JSON.stringify(element) : element;
 					}
 					break;
 									
