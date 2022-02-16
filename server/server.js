@@ -442,20 +442,20 @@ var Server = IgeClass.extend({
 				ige._physicsTickRate = engineTickFrameRate;
 
 				// Add physics and setup physics world
-				ige.addComponent(PhysicsComponent)
+				/* ige.addComponent(PhysicsComponent)
 					.physics.sleep(true)
-					.physics.tilesizeRatio(tilesizeRatio);
+					.physics.tilesizeRatio(tilesizeRatio); */
 
 				if (game.data.settings) {
 					var gravity = game.data.settings.gravity;
 					if (gravity) {
 						console.log('setting gravity', gravity);
-						ige.physics.gravity(gravity.x, gravity.y);
+						// ige.physics.gravity(gravity.x, gravity.y);
 					}
 				}
 
-				ige.physics.createWorld();
-				ige.physics.start();
+				// ige.physics.createWorld();
+				// ige.physics.start();
 				console.log('box2d world started');
 
 				// console.log("game data", game)

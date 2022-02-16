@@ -4413,6 +4413,7 @@ var IgeEntity = IgeObject.extend({
 		switch (sectionId) {
 			case 'transform':
 				if (ige.isServer) {
+					// if (this.bodyDef && this.bodyDef.type != 'static' ) {
 					var x = this._translate.x.toFixed(0);
 					var y = this._translate.y.toFixed(0);
 					var angle = ((this._rotate.z % (2 * Math.PI)) * 1000).toFixed(0);
@@ -4444,6 +4445,7 @@ var IgeEntity = IgeObject.extend({
 
 						this._streamSectionData = buffArr;
 					}
+					// }
 				}
 				break;
 

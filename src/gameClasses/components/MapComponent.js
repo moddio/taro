@@ -68,7 +68,7 @@ var MapComponent = IgeEntity.extend({
 
 					if (ige.isServer || (ige.isClient && ige.physics)) {
 						console.log('load staticsFromMap');
-						ige.physics.staticsFromMap(layersById.walls);
+						// ige.physics.staticsFromMap(layersById.walls);
 					}
 					var mapArray = layersById.floor.map._gameData;
 
@@ -129,7 +129,7 @@ var MapComponent = IgeEntity.extend({
 							self.minimapLayers = _.cloneDeep(layerArray);
 
 							if (ige.isServer || (ige.isClient && ige.physics)) {
-								ige.physics.staticsFromMap(IgeLayersById.walls);
+								// ige.physics.staticsFromMap(IgeLayersById.walls);
 							}
 							self.createRegions();
 							// We can add all our layers to our main scene by looping the

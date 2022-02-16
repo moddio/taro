@@ -5,7 +5,7 @@ var TriggerComponent = IgeEntity.extend({
 	init: function () {
 		var self = this;
 		if (ige.isServer || (ige.isClient && ige.physics)) {
-			self._enableContactListener();
+			// self._enableContactListener();
 		}
 		
 		this._registerTriggeredScripts();
