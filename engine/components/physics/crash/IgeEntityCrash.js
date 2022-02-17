@@ -1,5 +1,5 @@
 /**
- * Creates a new entity with box2d integration.
+ * Creates a new entity with crash integration.
  */
 var IgeEntityPhysics = IgeEntity.extend({
 	classId: 'IgeEntityPhysics',
@@ -15,8 +15,8 @@ var IgeEntityPhysics = IgeEntity.extend({
 			// don't create body on clientside if CSP is disabled
 		}
 
-		// Check if box2d is enabled in the engine
-		if (ige.isServer && ige.physics) {
+		// Check if crash is enabled in the engine
+		/* if (ige.isServer && ige.physics) {
 			if (!this._b2dRef._networkDebugMode) {
 				// Store the existing transform methods
 				this._translateToProto = this.translateTo;
@@ -46,7 +46,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 			this.jointsAttached = {};
 			this.isOutOfBounds = false;
-		}
+		} */
 
 		this._actionQueue = [];
 
@@ -108,12 +108,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 					filterGroupIndex: 0,
 					filterCategoryBits: filterCategoryBits,
 					filterMaskBits: ((collidesWith.walls) ? 0x0001 : 0) |
-                                    ((collidesWith.units) ? 0x0002 : 0) |
-                                    ((collidesWith.debris) ? 0x0004 : 0) |
-                                    ((collidesWith.items) ? 0x0008 : 0) |
-                                    ((collidesWith.projectiles) ? 0x0010 : 0) |
-                                    ((this._category != 'sensor') ? 0x0020 : 0) | // all entities aside from sensor will collide with regions
-                                    ((this._category == 'unit' || this._category == 'item') ? 0x0040 : 0) // units & items will collide with sensors
+						((collidesWith.units) ? 0x0002 : 0) |
+						((collidesWith.debris) ? 0x0004 : 0) |
+						((collidesWith.items) ? 0x0008 : 0) |
+						((collidesWith.projectiles) ? 0x0010 : 0) |
+						((this._category != 'sensor') ? 0x0020 : 0) | // all entities aside from sensor will collide with regions
+						((this._category == 'unit' || this._category == 'item') ? 0x0040 : 0) // units & items will collide with sensors
 
 				},
 				shape: {
@@ -178,13 +178,13 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Gets / sets the box2d body's active flag which determines
-     * if it will be included as part of the physics simulation
-     * or not.
-     * @param {Boolean=} val Set to true to include the body in
-     * the physics simulation or false for it to be ignored.
-     * @return {*}
-     */
+	 * Gets / sets the box2d body's active flag which determines
+	 * if it will be included as part of the physics simulation
+	 * or not.
+	 * @param {Boolean=} val Set to true to include the body in
+	 * the physics simulation or false for it to be ignored.
+	 * @return {*}
+	 */
 	box2dActive: function (val) {
 		if (this.body) {
 			if (val !== undefined) {
@@ -199,12 +199,58 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Gets / sets the physics body definition. When setting the
-     * definition the physics body will also be created automatically
-     * from the supplied definition.
-     * @param def
-     * @return {*}
-     */
+	 * Gets / sets the physics body definition. When setting the
+	 * definition the physics body will also be created automatically
+	 * from the supplied definition.
+	 * @param def
+	 * @return {*}
+	 */
+	physicsBody: function (def, isLossTolerant) {
+		if (def) {
+			this.bodyDef = def;
+
+			// def object example
+			/* {
+				type: 'dynamic',
+				linearDamping: 0,
+				angularDamping: 0,
+				allowSleep: false,
+				bullet: true,
+				fixedRotation: true,
+				affectedByGravity: true,
+				fixtures: [
+				  {
+					density: 0,
+					friction: 0,
+					restitution: 0,
+					isSensor: true,
+					filter: [Object],
+					shape: [Object],
+					igeId: '23b8f525'
+				  }
+				]
+			  } */
+
+			console.log('crash body', ige.physics);
+
+			// Check that the crash component exists
+			if (ige.physics) {
+				if (isLossTolerant) {
+					ige.physics.createBody(this, def, isLossTolerant);
+				} else {
+					this.destroyBody();
+					ige.physics.queueAction({ type: 'createBody', entity: this, def: def });
+				}
+			} else {
+				// IgeEntityBox2d.prototype.log('You are trying to create a box2d entity but you have not added the box2d component to the ige instance!', 'error');
+			}
+
+			return this;
+		}
+
+		return this.bodyDef;
+	},
+
 	box2dBody: function (def, isLossTolerant) {
 		if (def) {
 			this.bodyDef = def;
@@ -229,7 +275,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	destroyBody: function () {
-		IgeEntityPhysics.prototype.log('destroyBody');
+		IgeEntityBox2d.prototype.log('destroyBody');
 
 		if (this.jointsAttached) {
 			for (var entityId in this.jointsAttached) {
@@ -240,12 +286,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 		ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
 	},
 	/**
-     * Gets / sets the box2d body's gravitic value. If set to false,
-     * this entity will not be affected by gravity. If set to true it
-     * will be affected by gravity.
-     * @param {Boolean=} val True to allow gravity to affect this entity.
-     * @returns {*}
-     */
+	 * Gets / sets the box2d body's gravitic value. If set to false,
+	 * this entity will not be affected by gravity. If set to true it
+	 * will be affected by gravity.
+	 * @param {Boolean=} val True to allow gravity to affect this entity.
+	 * @returns {*}
+	 */
 	gravitic: function (val) {
 		if (this.body) {
 			if (val !== undefined) {
@@ -311,7 +357,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 					break;
 
 				default:
-					IgeEntityPhysics.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
+					IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
 					break;
 			}
 		} else {
@@ -347,7 +393,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	detachEntity: function (entityId) {
 		var attachedEntity = ige.$(entityId);
 		if (entityId && attachedEntity) {
-			IgeEntityPhysics.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
+			IgeEntityBox2d.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
 
 			ige.physics.queueAction({
 				type: 'destroyJoint',
@@ -425,7 +471,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 		} catch (e) {
 			console.log(e);
-			IgeEntityPhysics.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
+			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
 		}
 	},
 
@@ -455,7 +501,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 		} catch (e) {
 			console.log(e);
-			IgeEntityPhysics.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
+			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
 		}
 	},
 
@@ -465,7 +511,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				this.body.applyTorque(torque);
 			}
 		} catch (e) {
-			IgeEntityPhysics.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
+			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
 		}
 	},
 	_setupContactListeners: function () {
@@ -531,13 +577,13 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Takes over translateTo calls and processes box2d movement as well.
-     * @param x
-     * @param y
-     * @param z
-     * @return {*}
-     * @private
-     */
+	 * Takes over translateTo calls and processes box2d movement as well.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return {*}
+	 * @private
+	 */
 	_translateTo: function (x, y) {
 		if (isNaN(x) || isNaN(y)) {
 			return;
@@ -588,12 +634,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Takes over translateBy calls and processes box2d movement as well.
-     * @param x
-     * @param y
-     * @param z
-     * @private
-     */
+	 * Takes over translateBy calls and processes box2d movement as well.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @private
+	 */
 	_translateBy: function (x, y, z) {
 		this._translateTo(this._translate.x + x, this._translate.y + y, this._translate.z + z, 'translateBy');
 	},
@@ -603,13 +649,13 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this.translateToLT(this._translate.x + x, this._translate.y + y, this._translate.z + z);
 	},
 	/**
-     * Takes over translateTo calls and processes box2d movement as well.
-     * @param x
-     * @param y
-     * @param z
-     * @return {*}
-     * @private
-     */
+	 * Takes over translateTo calls and processes box2d movement as well.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return {*}
+	 * @private
+	 */
 	_rotateTo: function (x, y, z) {
 		if (isNaN(x) || isNaN(y) || isNaN(z)) {
 			return;
@@ -696,12 +742,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Takes over translateBy calls and processes box2d movement as well.
-     * @param x
-     * @param y
-     * @param z
-     * @private
-     */
+	 * Takes over translateBy calls and processes box2d movement as well.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @private
+	 */
 	_rotateBy: function (x, y, z) {
 		this._rotateTo(this._rotate.x + x, this._rotate.y + y, this._rotate.z + z);
 		// this.body.setAngle(this._rotate.z + z);
@@ -709,11 +755,11 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Purely for networkDebugMode handling, ensures that an entity's transform is
-     * not taken over by the physics simulation and is instead handled by the engine.
-     * @param ctx
-     * @private
-     */
+	 * Purely for networkDebugMode handling, ensures that an entity's transform is
+	 * not taken over by the physics simulation and is instead handled by the engine.
+	 * @param ctx
+	 * @private
+	 */
 	_update: function (ctx) {
 		// Call the original method
 		this._updateProto(ctx);
@@ -725,9 +771,9 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * If true, disabled box2d debug shape drawing for this entity.
-     * @param {Boolean} val
-     */
+	 * If true, disabled box2d debug shape drawing for this entity.
+	 * @param {Boolean} val
+	 */
 	box2dNoDebug: function (val) {
 		if (val !== undefined) {
 			this._box2dNoDebug = val;
@@ -824,9 +870,9 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-     * Destroys the physics entity and the box2d body that
-     * is attached to it.
-     */
+	 * Destroys the physics entity and the box2d body that
+	 * is attached to it.
+	 */
 	destroy: function () {
 		this._alive = false;
 		this.destroyBody();
@@ -835,4 +881,4 @@ var IgeEntityPhysics = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEntityPhysics; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEntityBox2d; }

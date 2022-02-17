@@ -446,6 +446,9 @@ var Server = IgeClass.extend({
 					.physics.sleep(true)
 					.physics.tilesizeRatio(tilesizeRatio); */
 
+				crash = new global.Crash({});
+				console.log('PHYSICS ENGINE:', ige.game.data.defaultData.physicsEngine, crash)
+
 				if (game.data.settings) {
 					var gravity = game.data.settings.gravity;
 					if (gravity) {

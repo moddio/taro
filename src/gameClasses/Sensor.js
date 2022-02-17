@@ -1,11 +1,11 @@
-var Sensor = IgeEntityBox2d.extend({
+var Sensor = IgeEntityPhysics.extend({
 	classId: 'Sensor',
 
 	init: function (ownerUnit, radius) {
 		var self = this;
 		self.category('sensor');
 		self.ownerUnitId = ownerUnit.id();
-		IgeEntityBox2d.prototype.init.call(this, {});
+		IgeEntityPhysics.prototype.init.call(this, {});
 		this.updateRadius(radius);
 		if (ige.isServer) {
 			self.mount(ige.$('baseScene'));

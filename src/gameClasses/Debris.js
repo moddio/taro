@@ -1,10 +1,10 @@
-var Debris = IgeEntityBox2d.extend({
+var Debris = IgeEntityPhysics.extend({
 	classId: 'Debris',
 
 	init: function (data, entityIdFromServer) {
 		var self = this;
 
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		if (ige.isClient) {
 			this._pixiContainer = new PIXI.Container();
 		}

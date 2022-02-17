@@ -1,8 +1,8 @@
-var Item = IgeEntityBox2d.extend({
+var Item = IgeEntityPhysics.extend({
 	classId: 'Item',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer); // ensure that entityId is consistent between server & client
 		if (ige.isClient) {
 			this._pixiContainer = new PIXI.Container();
@@ -113,7 +113,7 @@ var Item = IgeEntityBox2d.extend({
 		}
 
 		if (body && body.type != 'none') {
-			IgeEntityBox2d.prototype.updateBody.call(self, initTransform);
+			IgeEntityPhysics.prototype.updateBody.call(self, initTransform);
 
 			self.show();
 			if (ige.isClient) {
@@ -802,7 +802,7 @@ var Item = IgeEntityBox2d.extend({
 			}
 		}
 
-		IgeEntityBox2d.prototype.remove.call(this);
+		IgeEntityPhysics.prototype.remove.call(this);
 		// this.destroy()
 	},
 
@@ -1025,7 +1025,7 @@ var Item = IgeEntityBox2d.extend({
 	},
 	destroy: function () {
 		this.playEffect('destroy');
-		IgeEntityBox2d.prototype.destroy.call(this);
+		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
 

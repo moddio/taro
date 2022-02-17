@@ -1,10 +1,10 @@
 
-var Region = IgeEntityBox2d.extend({
+var Region = IgeEntityPhysics.extend({
 	classId: 'Region',
 	componentId: 'region',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this);
+		IgeEntityPhysics.prototype.init.call(this);
 
 		// on server regions are offsetted by 2 tile. So adding offset just server
 		// making region work fine on both side

@@ -21,7 +21,7 @@
         "ige": "writable",
         "$":"writable",
         "window":"writable",
-        "IgeEntityBox2d": "writable",
+        "IgeEntityPhysics": "writable",
         "Item": "writable",
         "FloatingText": "writable",
         "localStorage": "writable",
