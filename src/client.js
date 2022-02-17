@@ -107,6 +107,7 @@ var Client = IgeClass.extend({
 
         self.tradeOffers = [undefined, undefined, undefined, undefined, undefined]
 
+
         self.implement(ClientNetworkEvents);
 
         //	ige.addComponent(IgeEditorComponent);
@@ -141,7 +142,6 @@ var Client = IgeClass.extend({
             })
         }
 
-        console.log("client box2d world started")
         // components required for client side game logic
         // Add physics and setup physics world
         ige.addComponent(GameComponent);
@@ -489,12 +489,20 @@ var Client = IgeClass.extend({
             })
         }
         promise.then(function (game) {
+
             var params = ige.client.getUrlVars();
 
             if (!game.data.isDeveloper) {
                 game.data.isDeveloper = window.isStandalone;
             }
             ige.game.data = game.data;
+
+            /* Significant changes below */
+            var physicsEngine = ige.game.data.physicsEngine;
+            window.igeLoader.physicsConfigReady(physicsEngine);
+
+            console.log("Physics engine loaded.");
+            /* Significant changes above */
 
             if (ige.game.data.isDeveloper) {
                 $('#mod-this-game-menu-item').removeClass('d-none');
@@ -510,10 +518,10 @@ var Client = IgeClass.extend({
                 }
             }
 
-            if (ige.game.data.defaultData.clientPhysicsEngine) {
-                ige.addComponent(PhysicsComponent)
-                    .physics.sleep(true);
-            }
+            // if (ige.game.data.defaultData.clientPhysicsEngine) {
+            //     ige.addComponent(PhysicsComponent)
+            //         .physics.sleep(true);
+            // }
 
             ige.menuUi.clipImageForShop();
             ige.scaleMap(game.data.map);
