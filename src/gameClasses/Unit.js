@@ -1,8 +1,8 @@
-var Unit = IgeEntityBox2d.extend({
+var Unit = IgeEntityPhysics.extend({
 	classId: 'Unit',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 
 		this.id(entityIdFromServer);
 		if (ige.isClient) {
@@ -1376,7 +1376,7 @@ var Unit = IgeEntityBox2d.extend({
 				}
 			}
 
-			IgeEntityBox2d.prototype.remove.call(this);
+			IgeEntityPhysics.prototype.remove.call(this);
 			// this.destroy()
 		}
 	},
@@ -1877,7 +1877,7 @@ var Unit = IgeEntityBox2d.extend({
 
 	destroy: function () {
 		this.playEffect('destroy');
-		IgeEntityBox2d.prototype.destroy.call(this);
+		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
 

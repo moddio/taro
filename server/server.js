@@ -446,13 +446,16 @@ var Server = IgeClass.extend({
 				 * Let's test loading PhysicsConfig here
 				*/
 				var igePhysicsConfig = require('../engine/PhysicsConfig');
-				igePhysicsConfig.loadPhysics(game.data.defaultData.physicsEngine);
+				igePhysicsConfig.loadSelectPhysics(game.data.defaultData.physicsEngine);
+				igePhysicsConfig.loadPhysicsGameClasses();
 				/*
 				 * Significant changes above
 				*/
 
 				// Add physics and setup physics world
-				ige.addComponent(PhysicsComponent)
+				// hacked for now:
+				var physicsComponent = ige.game.data.defaultData.physicsEngine === 'crash' ? CrashComponent : Box2dComponent;
+				ige.addComponent(physicsComponent)
 					.physics.sleep(true)
 					.physics.tilesizeRatio(tilesizeRatio);
 

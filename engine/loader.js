@@ -24,13 +24,11 @@ window.igeLoader = (function () {
 		ccScript = document.createElement('script');
 		ccScript.src = `${igeRoot}CoreConfig.js`;
 		ccScript.onload = function () {
-			self.coreConfigReady();
+			self.loadCoreConfig();
 		};
 		ccScript.addEventListener('error', function () {
 			throw (`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
 		}, true);
-
-		document.getElementsByTagName('head')[0].appendChild(ccScript);
 
 		// Load the physicsConfig.js file into browser memory
 		pcScript = document.createElement('script');
@@ -44,7 +42,7 @@ window.igeLoader = (function () {
 		document.getElementsByTagName('head')[0].appendChild(pcScript);
 	};
 
-	IgeLoader.prototype.coreConfigReady = function () {
+	IgeLoader.prototype.loadCoreConfig = function () {
 		var self = this;
 
 		if (typeof (igeCoreConfig) !== 'undefined') {
@@ -52,7 +50,7 @@ window.igeLoader = (function () {
 			ccScript = document.createElement('script');
 			ccScript.src = `${igeClientRoot}ClientConfig.js`;
 			ccScript.onload = function () {
-				self.clientConfigReady();
+				self.loadClientConfig();
 			};
 			ccScript.addEventListener('error', function () {
 				throw ('ERROR LOADING ClientConfig.js - does it exist?');
@@ -64,7 +62,7 @@ window.igeLoader = (function () {
 		}
 	};
 
-	IgeLoader.prototype.clientConfigReady = function () {
+	IgeLoader.prototype.loadClientConfig = function () {
 		// Add the two array items into a single array
 		this._coreList = igeCoreConfig.include;
 		this._clientList = igeClientConfig.include;
@@ -84,16 +82,24 @@ window.igeLoader = (function () {
 		this.loadNext();
 	};
 
-	IgeLoader.prototype.physicsConfigReady = function (physicsEngine) {
+	IgeLoader.prototype.loadPhysicsConfig = function (physicsEngine, callback) {
 		// this.fileList should be empty after loadNext runs the first time
 		// but lets show it and comment it out
 		// this._fileList = [];
-
-		this._physicsList = igePhysicsConfig.selectPhysics(physicsEngine);
+		this.callback = callback
+		this._physicsList = igePhysicsConfig.igePhysicsChoices[physicsEngine];
+		this._physicsGameClasses = igePhysicsConfig.gameClasses;
 		for (i = 0; i < this._physicsList.length; i++) {
 			// Check that the file should be loaded on the client
 			if (this._physicsList[i][0].indexOf('c') > -1) {
-				this._fileList.push(igeRoot + this._physicsList[i][2]);
+				this._fileList.push(igeRoot + this._physicsList[i][2].slice(2));
+			}
+		}
+
+		for (i = 0; i < this._physicsGameClasses.length; i++) {
+			// Check that the file should be loaded on the client
+			if (this._physicsGameClasses[i][0].indexOf('c') > -1) {
+				this._fileList.push(igeClientRoot + this._physicsGameClasses[i][2].slice(7));
 			}
 		}
 
@@ -116,6 +122,12 @@ window.igeLoader = (function () {
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(script);
+			console.log(url);
+		} else {
+			console.log('loading completed');
+			if (typeof this.callback === 'function') {
+				this.callback();
+			}
 		}
 	};
 

@@ -60,17 +60,17 @@ var dists = {
 		},
 
 		createBody: function (self, entity, body, isLossTolerant) {
-			PhysicsComponent.prototype.log(`createBody of ${entity._stats.name}`);
+			Box2dComponent.prototype.log(`createBody of ${entity._stats.name}`);
 
 			// immediately destroy body if entity already has box2dBody
 			if (!entity) {
-				PhysicsComponent.prototype.log('warning: creating body for non-existent entity');
+				Box2dComponent.prototype.log('warning: creating body for non-existent entity');
 				return;
 			}
 
 			// if there's already a body, destroy it first
 			if (entity.body) {
-				PhysicsComponent.prototype.log('body already exists, destroying body');
+				Box2dComponent.prototype.log('body already exists, destroying body');
 				self.destroyBody(entity);
 			}
 
@@ -206,7 +206,7 @@ var dists = {
 									}
 								}
 							} else {
-								PhysicsComponent.prototype.log('Box2D body has no fixtures, have you specified fixtures correctly? They are supposed to be an array of fixture objects.', 'warning');
+								Box2dComponent.prototype.log('Box2D body has no fixtures, have you specified fixtures correctly? They are supposed to be an array of fixture objects.', 'warning');
 							}
 							break;
 					}
@@ -223,7 +223,7 @@ var dists = {
 			// rotate body to its previous value
 			entity.rotateTo(0, 0, entity._rotate.z);
 
-			PhysicsComponent.prototype.log(`successfully created body for ${entity.id()} ${entity._category} ${entity._stats.name} ${entity._stats.type}`);
+			Box2dComponent.prototype.log(`successfully created body for ${entity.id()} ${entity._category} ${entity._stats.name} ${entity._stats.type}`);
 
 			return tempBod;
 		},
@@ -616,11 +616,11 @@ var dists = {
 		},
 
 		createBody: function (self, entity, body, isLossTolerant) {
-			PhysicsComponent.prototype.log(`createBody of ${entity._stats.name}`);
+			Box2dComponent.prototype.log(`createBody of ${entity._stats.name}`);
 
 			// immediately destroy body if entity already has box2dBody
 			if (!entity) {
-				PhysicsComponent.prototype.log('warning: creating body for non-existent entity');
+				Box2dComponent.prototype.log('warning: creating body for non-existent entity');
 				return;
 			}
 
@@ -816,7 +816,7 @@ var dists = {
 			if (!aBody || aBody.jointType == 'none' || aBody.type == 'none') return;
 
 			// create a joint only if there isn't pre-existing joint
-			PhysicsComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
+			Box2dComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
 
 			if (
 				entityA && entityA.body && entityB && entityB.body &&
@@ -850,7 +850,7 @@ var dists = {
 				var joint = self._world.CreateJoint(joint_def); // joint between two pieces
 
 				// var serverStats = ige.server.getStatus()
-				PhysicsComponent.prototype.log('joint created ', aBody.jointType);
+				Box2dComponent.prototype.log('joint created ', aBody.jointType);
 
 				entityA.jointsAttached[entityB.id()] = joint;
 				entityB.jointsAttached[entityA.id()] = joint;
@@ -975,11 +975,11 @@ var dists = {
 
 		createBody: function (self, entity, body) {
 			console.log('createBody', entity._category, body);
-			PhysicsComponent.prototype.log(`createBody of ${entity._stats.name}`);
+			Box2dComponent.prototype.log(`createBody of ${entity._stats.name}`);
 
 			// immediately destroy body if entity already has box2dBody
 			if (!entity) {
-				PhysicsComponent.prototype.log('warning: creating body for non-existent entity');
+				Box2dComponent.prototype.log('warning: creating body for non-existent entity');
 				return;
 			}
 
@@ -1178,7 +1178,7 @@ var dists = {
 			if (!aBody || aBody.jointType == 'none' || aBody.type == 'none') return;
 
 			// create a joint only if there isn't pre-existing joint
-			PhysicsComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
+			Box2dComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
 
 			if (
 				entityA && entityA.body && entityB && entityB.body &&
@@ -1209,7 +1209,7 @@ var dists = {
 				var joint = self._world.CreateJoint(joint_def); // joint between two pieces
 
 				// var serverStats = ige.server.getStatus()
-				PhysicsComponent.prototype.log('joint created ', aBody.jointType);
+				Box2dComponent.prototype.log('joint created ', aBody.jointType);
 
 				entityA.jointsAttached[entityB.id()] = joint;
 				entityB.jointsAttached[entityA.id()] = joint;
@@ -1357,17 +1357,17 @@ var dists = {
 		},
 
 		createBody: function (self, entity, body) {
-			PhysicsComponent.prototype.log(`createBody of ${entity._stats.name}`);
+			Box2dComponent.prototype.log(`createBody of ${entity._stats.name}`);
 
 			// immediately destroy body if entity already has box2dBody
 			if (!entity) {
-				PhysicsComponent.prototype.log('warning: creating body for non-existent entity');
+				Box2dComponent.prototype.log('warning: creating body for non-existent entity');
 				return;
 			}
 
 			// if there's already a body, destroy it first
 			if (entity.body) {
-				PhysicsComponent.prototype.log('body already exists, destroying body');
+				Box2dComponent.prototype.log('body already exists, destroying body');
 				self.destroyBody(entity.body);
 			}
 
@@ -1584,7 +1584,7 @@ var dists = {
 			if (!aBody || aBody.jointType == 'none' || aBody.type == 'none') return;
 
 			// create a joint only if there isn't pre-existing joint
-			PhysicsComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
+			Box2dComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
 
 			if (
 				entityA && entityA.body && entityB && entityB.body &&
@@ -1618,7 +1618,7 @@ var dists = {
 				var joint = self._world.CreateJoint(joint_def); // joint between two pieces
 
 				// var serverStats = ige.server.getStatus()
-				PhysicsComponent.prototype.log('joint created ', aBody.jointType);
+				Box2dComponent.prototype.log('joint created ', aBody.jointType);
 
 				entityA.jointsAttached[entityB.id()] = joint;
 				entityB.jointsAttached[entityA.id()] = joint;
@@ -1728,17 +1728,17 @@ var dists = {
 		},
 
 		createBody: function (self, entity, body) {
-			PhysicsComponent.prototype.log(`createBody of ${entity._stats.name}`);
+			Box2dComponent.prototype.log(`createBody of ${entity._stats.name}`);
 
 			// immediately destroy body if entity already has box2dBody
 			if (!entity) {
-				PhysicsComponent.prototype.log('warning: creating body for non-existent entity');
+				Box2dComponent.prototype.log('warning: creating body for non-existent entity');
 				return;
 			}
 
 			// if there's already a body, destroy it first
 			if (entity.body) {
-				PhysicsComponent.prototype.log('body already exists, destroying body');
+				Box2dComponent.prototype.log('body already exists, destroying body');
 				self.destroyBody(entity);
 			}
 
@@ -1953,7 +1953,7 @@ var dists = {
 			if (!aBody || aBody.jointType == 'none' || aBody.type == 'none') return;
 
 			// create a joint only if there isn't pre-existing joint
-			PhysicsComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
+			Box2dComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
 
 			if (
 				entityA && entityA.body && entityB && entityB.body &&
@@ -1987,7 +1987,7 @@ var dists = {
 				var joint = self._world.CreateJoint(joint_def); // joint between two pieces
 
 				// var serverStats = ige.server.getStatus()
-				PhysicsComponent.prototype.log('joint created ', aBody.jointType);
+				Box2dComponent.prototype.log('joint created ', aBody.jointType);
 
 				entityA.jointsAttached[entityB.id()] = joint;
 				entityB.jointsAttached[entityA.id()] = joint;
@@ -2099,17 +2099,17 @@ var dists = {
 		},
 
 		createBody: function (self, entity, body) {
-			PhysicsComponent.prototype.log(`createBody of ${entity._stats.name}`);
+			Box2dComponent.prototype.log(`createBody of ${entity._stats.name}`);
 
 			// immediately destroy body if entity already has box2dBody
 			if (!entity) {
-				PhysicsComponent.prototype.log('warning: creating body for non-existent entity');
+				Box2dComponent.prototype.log('warning: creating body for non-existent entity');
 				return;
 			}
 
 			// if there's already a body, destroy it first
 			if (entity.body) {
-				PhysicsComponent.prototype.log('body already exists, destroying body');
+				Box2dComponent.prototype.log('body already exists, destroying body');
 				self.destroyBody(entity);
 			}
 
@@ -2324,7 +2324,7 @@ var dists = {
 			if (!aBody || aBody.jointType == 'none' || aBody.type == 'none') return;
 
 			// create a joint only if there isn't pre-existing joint
-			PhysicsComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
+			Box2dComponent.prototype.log(`creating ${aBody.jointType} joint between ${entityA._stats.name} and ${entityB._stats.name}`);
 
 			if (
 				entityA && entityA.body && entityB && entityB.body &&
@@ -2371,7 +2371,7 @@ var dists = {
 				var joint = self._world.CreateJoint(joint_def); // joint between two pieces
 
 				// var serverStats = ige.server.getStatus()
-				PhysicsComponent.prototype.log('joint created ', aBody.jointType);
+				Box2dComponent.prototype.log('joint created ', aBody.jointType);
 
 				entityA.jointsAttached[entityB.id()] = joint;
 				entityB.jointsAttached[entityA.id()] = joint;

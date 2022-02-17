@@ -310,7 +310,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 					};
 				}
 
-				var wall = new IgeEntityBox2d(defaultData)
+				var wall = new IgeEntityPhysics(defaultData)
 					.width(rect.width * tileWidth)
 					.height(rect.height * tileHeight)
 					.drawBounds(false)
