@@ -236,9 +236,11 @@ var IgeEntityPhysics = IgeEntity.extend({
 			// Check that the crash component exists
 			if (ige.physics) {
 				if (isLossTolerant) {
+					// crash havent createBody, so we need write it for crash
 					ige.physics.createBody(this, def, isLossTolerant);
 				} else {
 					this.destroyBody();
+					// will we use queueAction?
 					ige.physics.queueAction({ type: 'createBody', entity: this, def: def });
 				}
 			} else {
@@ -251,7 +253,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		return this.bodyDef;
 	},
 
-	box2dBody: function (def, isLossTolerant) {
+	/* box2dBody: function (def, isLossTolerant) {
 		if (def) {
 			this.bodyDef = def;
 			// console.trace()
@@ -272,7 +274,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}
 
 		return this.bodyDef;
-	},
+	}, */
 
 	destroyBody: function () {
 		IgeEntityBox2d.prototype.log('destroyBody');
