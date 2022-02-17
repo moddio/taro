@@ -1,15 +1,3 @@
-/* Box2D Physics to Entity Components */
-var box2dUtilities = [
-	['csap', 'PhysicsComponent', 'components/physics/PhysicsComponent.js'],
-	['csap', 'IgeBox2dWorld', 'components/physics/box2d/IgeBox2dDebugPainter.js'],
-	['csap', 'IgeEntityPhysics', 'components/physics/box2d/IgeEntityBox2d.js'],
-	['csap', 'dists', 'components/physics/box2d/dists.js'],
-];
-
-var nonbox2dUtil = [
-	['csap', 'IgeEntityPhysics', 'components/physics/box2d/IgeEntityCrash.js'],
-];
-
 var igePhysicsConfig = {
 
 	igePhysicsChoices: {
@@ -24,24 +12,37 @@ var igePhysicsConfig = {
 		// Going with concat over spread for performance
 
 		/* Physics Libraries */
-		planck: box2dUtilities.concat([
+		planck: [
+			['csap', 'PhysicsComponent', 'components/physics/box2d/PhysicsComponentBox2d.js'],
+			['csap', 'IgeBox2dWorld', 'components/physics/box2d/IgeBox2dDebugPainter.js'],
+			['csap', 'IgeEntityPhysics', 'components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'dists', 'components/physics/box2d/dists.js'],
 			['csap', 'planck', 'components/physics/box2d/dists/planck/planck.js']
-		]),
+		],
 
-		box2dweb: box2dUtilities.concat([
+		box2dweb: [
+			['csap', 'PhysicsComponent', 'components/physics/box2d/PhysicsComponentBox2d.js'],
+			['csap', 'IgeBox2dWorld', 'components/physics/box2d/IgeBox2dDebugPainter.js'],
+			['csap', 'IgeEntityPhysics', 'components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'dists', 'components/physics/box2d/dists.js'],
 			['csap', 'box2dweb', 'components/physics/box2d/dists/box2dweb/lib_box2d.js', 'box2dweb'],
 			['csap', 'box2dninja', 'components/physics/box2d/dists/box2dweb/box2d_ninja.js', 'box2dninja']
-		]),
+		],
 
-		box2dts: box2dUtilities.concat([
+		box2dts: [
+			['csap', 'PhysicsComponent', 'components/physics/box2d/PhysicsComponentBox2d.js'],
+			['csap', 'IgeBox2dWorld', 'components/physics/box2d/IgeBox2dDebugPainter.js'],
+			['csap', 'IgeEntityPhysics', 'components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'dists', 'components/physics/box2d/dists.js'],
 			['csap', 'box2dts', 'components/physics/box2d/dists/flyoverbox2dts/bundle.js']
-		]),
+		],
 
-		crash: nonbox2dUtil.concat([
+		crash: [
+			['csap', 'PhysicsComponent', 'components/physics/crash/PhysicsComponentCrash.js'],
 			['csap', 'rbush', 'components/physics/crash/rbush.js', 'rbush'],
 			['csap', 'sat', 'components/physics/crash/sat.js', 'sat'],
 			['csap', 'crash', 'components/physics/crash/crash.js', 'crash']
-		])
+		]
 	},
 
 	selectPhysics: function (physicsChoice) {

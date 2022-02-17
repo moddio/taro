@@ -126,12 +126,7 @@ var igeCoreConfig = {
 		['cap', 'IgeFilters.invert', 'filters/invert.js'],
 		['cap', 'IgeFilters.glowMask', 'filters/glowMask.js'],
 		/* Engine Actual */
-		['csap', 'IgeEngine', 'core/IgeEngine.js'],
-		/* Box2D Physics to Entity Components */
-		['csap', 'PhysicsComponent', 'components/physics/PhysicsComponent.js'],
-		['csap', 'IgeBox2dWorld', 'components/physics/box2d/IgeBox2dDebugPainter.js'],
-		['csap', 'IgeEntityBox2d', 'components/physics/box2d/IgeEntityBox2d.js'],
-		['csap', 'dists', 'components/physics/box2d/dists.js']
+		['csap', 'IgeEngine', 'core/IgeEngine.js']
 	]
 };
 

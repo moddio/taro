@@ -10,7 +10,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// Check that the engine has not already started
 		// as this will mess everything up if it has
 		if (ige._state !== 0) {
-			console.log('Cannot add box2d component to the ige instance once the engine has started!', 'error');
+			console.log('Cannot add box2d physics component to the ige instance once the engine has started!', 'error');
 		}
 
 		this._entity = entity;
@@ -627,12 +627,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });
 										entity.body.setAngle(angle);
 									}
-									
+
 									if (entity.nextPhysicsFrame == undefined || ige._currentTime > entity.nextPhysicsFrame[0]) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
 										entity.nextPhysicsFrame = [nextFrameTime, [x, y, angle]];
 									}
-
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									if (entity._streamMode == 0) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
