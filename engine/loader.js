@@ -37,7 +37,7 @@ window.igeLoader = (function () {
 		pcScript.src = `${igeRoot}PhysicsConfig.js`;
 
 		ccScript.addEventListener('error', function () {
-			throw (`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
+			throw (`ERROR LOADING ${igeRoot}PhysicsConfig.js` + ' - does it exist?');
 		}, true);
 
 		document.getElementsByTagName('head')[0].appendChild(ccScript);
