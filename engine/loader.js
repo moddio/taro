@@ -1,4 +1,3 @@
-
 var pathArray = window.location.href.split('/');
 var igeRoot = `http://${pathArray[2]}/engine/`;
 var igeClientRoot = `http://${pathArray[2]}/src/`;
@@ -18,20 +17,37 @@ window.igeLoader = (function () {
 	var IgeLoader = function () {
 		var self = this;
 		var ccScript;
+		var pcScript;
 
 		this._loadingCount = 0;
 
 		// Load the clientConfig.js file into browser memory
 		ccScript = document.createElement('script');
 		ccScript.src = `${igeRoot}CoreConfig.js`;
+
+		/*
+		* Significant changes below
+		* Let's test loading PhysicsConfig here
+		*/
+		pcScript = document.createElement('script');
+		pcScript.src = `${igeRoot}PhysicsConfig.js`;
+
 		ccScript.onload = function () {
 			self.coreConfigReady();
 		};
-		ccScript.addEventListener('error', function () {
-			throw (`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
-		}, true);
 
-		document.getElementsByTagName('head')[0].appendChild(ccScript);
+		// var loadingError = function (configType) {
+		// 	throw new Error(`ERROR LOADING ${igeRoot}${configType}Config.js` + ' - does it exist?');
+		// };
+
+		// ccScript.addEventListener('error', loadingError('Core'), true);
+		// pcScript.addEventListener('error', loadingError('Physics'), true);
+
+		var documentHead = document.getElementsByTagName('head')[0];
+		documentHead.appendChild(ccScript);
+		documentHead.appendChild(pcScript);
+
+		var coreAndPhysics = igeCoreConfig.include.concat()
 	};
 
 	IgeLoader.prototype.coreConfigReady = function () {
@@ -45,19 +61,24 @@ window.igeLoader = (function () {
 				self.clientConfigReady();
 			};
 			ccScript.addEventListener('error', function () {
-				throw ('ERROR LOADING ClientConfig.js - does it exist?');
+				throw new Error('ERROR LOADING ClientConfig.js - does it exist?');
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(ccScript);
 		} else {
-			throw ('ERROR READING igeCoreConfig object - was it specified in CoreConfig.js?');
+			throw new Error('ERROR READING igeCoreConfig object - was it specified in CoreConfig.js?');
 		}
 	};
+
+	IgeLoader.prototype.physicsConfigReady = function () {
+
+	}
 
 	IgeLoader.prototype.clientConfigReady = function () {
 		// Add the two array items into a single array
 		this._coreList = igeCoreConfig.include;
 		this._clientList = igeClientConfig.include;
+		// this._physicsList = igePhysicsConfig.selectPhysics(asdfasdf);
 
 		this._fileList = [];
 		for (i = 0; i < this._coreList.length; i++) {
@@ -72,6 +93,10 @@ window.igeLoader = (function () {
 		}
 
 		this.loadNext();
+
+		/*
+		* Significant changes above
+		*/
 	};
 
 	IgeLoader.prototype.loadNext = function () {
@@ -86,7 +111,7 @@ window.igeLoader = (function () {
 			};
 
 			script.addEventListener('error', function () {
-				throw (`ERROR LOADING ${url} - does it exist?`);
+				throw new Error(`ERROR LOADING ${url} - does it exist?`);
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(script);

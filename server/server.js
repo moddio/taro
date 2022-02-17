@@ -374,7 +374,7 @@ var Server = IgeClass.extend({
 		this.maxPlayersAllowed = self.maxPlayers || 32;
 
 		console.log('maxPlayersAllowed', this.maxPlayersAllowed);
-		
+
 		// Define an object to hold references to our player entities
 		this.clients = {};
 
@@ -440,6 +440,16 @@ var Server = IgeClass.extend({
 				}
 
 				ige._physicsTickRate = engineTickFrameRate;
+
+				/*
+				 * Significant changes below
+				 * Let's test loading PhysicsConfig here
+				*/
+				var igePhysicsConfig = require('../engine/PhysicsConfig');
+				igePhysicsConfig.loadPhysics(game.data.defaultData.physicsEngine);
+				/*
+				 * Significant changes above
+				*/
 
 				// Add physics and setup physics world
 				ige.addComponent(PhysicsComponent)
