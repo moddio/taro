@@ -2167,32 +2167,25 @@ var IgeEntity = IgeObject.extend({
 		// }
 		// execute below iff flip orientation changes
 		if (ige.isServer) {
-			if (flip != this._stats.flip) {
-				// if (this._category == 'unit' && this._stats.name != 'm0dE')
-				// 	console.log(flip)
-				this.streamUpdateData([{ flip: flip }]);
-			}
-		} else if (ige.isClient) {
-			if (this._stats.flip != flip) {
-				// if (this._category =='unit' && this._stats.name != 'm0dE')
-				// 	console.log("wtf", flip)
 
-				var entity = this._pixiTexture;
-				if (entity) {
-					var x = Math.abs(entity.scale.x);
-					var y = Math.abs(entity.scale.y);
-					if (flip == 0) {
-						entity.scale.set(x, y);
-					}
-					if (flip == 1) {
-						entity.scale.set(-x, y);
-					}
-					if (flip == 2) {
-						entity.scale.set(x, -y);
-					}
-					if (flip == 3) {
-						entity.scale.set(-x, -y);
-					}
+		} else if (ige.isClient) {
+			// if (this._category =='unit' && this._stats.name != 'm0dE')
+			// 	console.log("wtf", flip)
+			var entity = this._pixiTexture;
+			if (entity) {
+				var x = entity.scale.x;
+				var y = entity.scale.y;
+				if (flip == 0) {
+					entity.scale.set(x, y);
+				}
+				if (flip == 1) {
+					entity.scale.set(-x, y);
+				}
+				if (flip == 2) {
+					entity.scale.set(x, -y);
+				}
+				if (flip == 3) {
+					entity.scale.set(-x, -y);
 				}
 			}
 		}
@@ -4262,9 +4255,9 @@ var IgeEntity = IgeObject.extend({
 
 						case 'flip':
 							// ignore flip command from server for my own unit, because it's already done locally
-							if (ige.isClient && this != ige.client.selectedUnit && !(this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit)) {
+							//if (ige.isClient && this != ige.client.selectedUnit && !(this._category == 'item' && this.getOwnerUnit() == ige.client.selectedUnit)) {
 								this.flip(newValue);
-							}
+							//}
 							break;
 
 						case 'isBeingUsed':
