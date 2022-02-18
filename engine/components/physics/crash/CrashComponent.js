@@ -17,6 +17,18 @@ var PhysicsComponent = IgeEventingClass.extend({
 	gravity: function (x, y) {
 		// for now let's just set to 0,0
 		console.log('Gravity temporarily unavailable...');
+	},
+
+	contactListener: function (cb1, cb2) {
+
+	},
+
+	update: function () {
+
+	},
+	
+	staticsFromMap: function () {
+		
 	}
 });
 

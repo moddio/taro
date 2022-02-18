@@ -493,7 +493,8 @@ var Client = IgeClass.extend({
             }
             ige.game.data = game.data;
 
-            var physicsEngine = ige.game.data.physicsEngine;
+            var physicsEngine = ige.game.data.defaultData.physicsEngine;
+            console.log(physicsEngine);
             window.igeLoader.loadPhysicsConfig(physicsEngine, function() {
                 console.log("Physics engine loaded.");
 

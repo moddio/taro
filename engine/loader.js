@@ -86,7 +86,7 @@ window.igeLoader = (function () {
 		// this.fileList should be empty after loadNext runs the first time
 		// but lets show it and comment it out
 		// this._fileList = [];
-		this.callback = callback
+		this.callback = callback;
 		this._physicsList = igePhysicsConfig.igePhysicsChoices[physicsEngine];
 		this._physicsGameClasses = igePhysicsConfig.gameClasses;
 		for (i = 0; i < this._physicsList.length; i++) {
