@@ -467,7 +467,7 @@ var Server = IgeClass.extend({
 				// 	}
 				// }
 
-				// ige.physics.createWorld();
+				ige.physics.createWorld();
 				// ige.physics.start();
 				// console.log('box2d world started');
 

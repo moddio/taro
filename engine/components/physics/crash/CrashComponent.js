@@ -14,6 +14,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 		}
 	},
 
+    createWorld: function (){
+        console.log ('create world');   
+    },
+
     /**
 	 * Creates a Box2d body and attaches it to an IGE entity
 	 * based on the supplied body definition.
