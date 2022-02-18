@@ -119,7 +119,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 		// console.log("collidesWith", this._category, filterCategoryBits, collidesWith, body)
 
-		// this.box2dBody(body, isLossTolerant);
+		this.physicsBody(body, isLossTolerant);
 		// if (this._category === 'item') {
 		//     this.previousState = this._stats && this._stats.states && this._stats.states[this._stats.stateId] || {};
 		//     console.log('setting previous sate', this.previousState);
@@ -224,18 +224,18 @@ var IgeEntityPhysics = IgeEntity.extend({
 				]
 			  } */
 
-			console.log('crash body', ige.physics);
+			console.log('crash body', def);
 
 			// Check that the crash component exists
 			if (ige.physics) {
-				if (isLossTolerant) {
+				// if (isLossTolerant) {
 					// crash havent createBody, so we need write it for crash
 					ige.physics.createBody(this, def, isLossTolerant);
-				} else {
+				/* } else {
 					this.destroyBody();
 					// will we use queueAction?
 					ige.physics.queueAction({ type: 'createBody', entity: this, def: def });
-				}
+				} */
 			} else {
 				// IgeEntityBox2d.prototype.log('You are trying to create a box2d entity but you have not added the box2d component to the ige instance!', 'error');
 			}

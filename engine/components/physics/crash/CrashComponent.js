@@ -14,6 +14,20 @@ var PhysicsComponent = IgeEventingClass.extend({
 		}
 	},
 
+    /**
+	 * Creates a Box2d body and attaches it to an IGE entity
+	 * based on the supplied body definition.
+	 * @param {IgeEntity} entity
+	 * @param {Object} body
+	 * @return {b2Body}
+	 */
+	createBody: function (entity, body, isLossTolerant) {
+        console.log('CRASH BODY CREATION');
+		this.totalBodiesCreated++;
+
+        return ige.entity.physics.Circle (new crash.Vector(5,2),  10);
+	},
+
 	gravity: function (x, y) {
 		// for now let's just set to 0,0
 		console.log('Gravity temporarily unavailable...');
