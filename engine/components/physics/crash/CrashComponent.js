@@ -12,6 +12,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 		if (ige._state !== 0) {
 			console.log('Cannot add box2d physics component to the ige instance once the engine has started!', 'error');
 		}
+
+        this.crash = new Crash();
+        console.log('CRASH ENGINE INIT', this.crash);
 	},
 
     createWorld: function (){
@@ -29,7 +32,7 @@ var PhysicsComponent = IgeEventingClass.extend({
         console.log('CRASH BODY CREATION');
 		this.totalBodiesCreated++;
 
-        return ige.entity.physics.Circle (new crash.Vector(5,2),  10);
+        return this.crash.Circle (new crash.Vector(5,2),  10);
 	},
 
 	gravity: function (x, y) {
