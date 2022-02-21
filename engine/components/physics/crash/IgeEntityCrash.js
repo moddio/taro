@@ -224,7 +224,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				]
 			  } */
 
-			console.log('crash body', def);
+			// console.log('crash body', def);
 
 			// Check that the crash component exists
 			if (ige.physics) {
@@ -268,7 +268,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	}, */
 
 	destroyBody: function () {
-		IgeEntityBox2d.prototype.log('destroyBody');
+		// IgeEntityBox2d.prototype.log('destroyBody');
 
 		if (this.jointsAttached) {
 			for (var entityId in this.jointsAttached) {
@@ -276,7 +276,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 		}
 
-		ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
+		// ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
 	},
 	/**
 	 * Gets / sets the box2d body's gravitic value. If set to false,
@@ -350,7 +350,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 					break;
 
 				default:
-					IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
+					// IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
 					break;
 			}
 		} else {
@@ -386,7 +386,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	detachEntity: function (entityId) {
 		var attachedEntity = ige.$(entityId);
 		if (entityId && attachedEntity) {
-			IgeEntityBox2d.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
+			// IgeEntityBox2d.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
 
 			ige.physics.queueAction({
 				type: 'destroyJoint',
@@ -464,7 +464,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 		} catch (e) {
 			console.log(e);
-			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
+			// IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
 		}
 	},
 
@@ -494,7 +494,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 		} catch (e) {
 			console.log(e);
-			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
+			// IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
 		}
 	},
 
@@ -504,7 +504,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				this.body.applyTorque(torque);
 			}
 		} catch (e) {
-			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
+			// IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
 		}
 	},
 	_setupContactListeners: function () {

@@ -845,6 +845,10 @@ var Server = IgeClass.extend({
 
 			return returnData;
 		}
+		//temprorary for testing crash engine
+		else {
+			ige.physics.getInfo();
+		}
 	}
 });
 
