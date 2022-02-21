@@ -44,15 +44,15 @@ var PhysicsComponent = IgeEventingClass.extend({
 		let crashBody = {};
 		let x = entity._translate.x;
 		let y = entity._translate.y;
-		let data = body.fixtures[0].igeId;
+		let igeId = body.fixtures[0].igeId;
 		if (shape === 'circle') {
 			let radius = entity._bounds2d.x;
-			crashBody = this.crash.Circle(new this.crash.Vector(x,y), radius, true, [data]);
+			crashBody = this.crash.Circle(new this.crash.Vector(x,y), radius, true, igeId);
 		}
 		else if (shape === 'rectangle') {
 			let width = entity._bounds2d.x;
 			let height = entity._bounds2d.y;
-			crashBody = this.crash.Box(new this.crash.Vector(x,y), width, height, true, [data]);
+			crashBody = this.crash.Box(new this.crash.Vector(x,y), width, height, true, igeId);
 		}
 		else {
 			console.log('body shape is wrong');
