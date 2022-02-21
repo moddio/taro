@@ -66,9 +66,16 @@ var igeClientConfig = {
 		'pixi/IgePixiChatBubble.js',
 		'pixi/PixiAttributeBar.js',
 
+		/* Phaser */
+		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',
+		'phaser/Game.js',
+		'phaser/Test.js',
+
 		'/client.js',
 		'/index.js'
 	]
 };
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = igeClientConfig; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = igeClientConfig;
+}
