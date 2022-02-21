@@ -61,6 +61,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 		return entity.fixtures[0].shape.data;
 	},
 
+	getBodiesInRegion: function (region) {
+		console.log('get bodies in region', region);
+	},
+
 	gravity: function (x, y) {
 		// for now let's just set to 0,0
 		console.log('Gravity temporarily unavailable...');
