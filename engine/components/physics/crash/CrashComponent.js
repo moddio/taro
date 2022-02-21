@@ -41,24 +41,29 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var type = body.fixtures[0].shape.type;
 		// console.log(body.fixtures[0].shape.type);
 		// console.log(entity, body);
-
+		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
 		var igeId = body.fixtures[0].igeId;
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x;
-			entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
+			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
+			crashBody = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
-			entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
+			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
+			crashBody = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
 		}
 		else {
 			console.log('body shape is wrong');
+			// added return here
+			return;
 		}
 
-		return entity.fixtures[0].shape.data;
+		// return entity.fixtures[0].shape.data;
+		return crashBody;
 	},
 
 	gravity: function (x, y) {
