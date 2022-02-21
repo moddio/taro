@@ -36,7 +36,7 @@
     "cookie-parser": "^1.4.6",
     "crash-colliders": "^2.0.2",
     "ejs": "^3.1.6",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "helmet": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
@@ -53,7 +53,7 @@
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.2",
+    "@babel/core": "^7.17.4",
     "@babel/eslint-parser": "^7.17.0",
     "@types/node": "^17.0.18",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
