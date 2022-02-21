@@ -8,6 +8,8 @@
     "server:prod": "node server/ige.js -g ./src",
     "server:dev": "cross-env ENV=local node server/ige.js -g ./src",
     "server:remote": "cross-env ENV=standalone-remote node server/ige.js -g ./src",
+    "tsc": "tsc",
+    "tsc-watch": "tsc -w",
     "build": "node server/ige.js -deploy ./src -to ./src",
     "build:gs": "cross-env TEST=true node server/ige.js -deploy ./src -to ../../be/assets",
     "build:git": "cross-env TEST=true node server/ige.js -deploy ./src -to ./build",
