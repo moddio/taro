@@ -35,13 +35,30 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @return {b2Body}
 	 */
 	createBody: function (entity, body, isLossTolerant) {
-        console.log('CRASH BODY CREATION');
+        // console.log('CRASH BODY CREATION');
 		this.totalBodiesCreated++;
-
-		//need to update this code with proper body shape, width, position etc
-		let crashBody = this.crash.Circle (new this.crash.Vector(5,2),  10);
-		this.crash.insert(crashBody);
-
+		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
+		let shape = body.fixtures[0].shape.type;
+		// console.log(body.fixtures[0].shape.type);
+		// console.log(entity, body);
+		let crashBody = {};
+		let x = entity._translate.x;
+		let y = entity._translate.y;
+		let data = {};
+		if (shape === 'circle') {
+			let radius = entity._bounds2d.x;
+			crashBody = this.crash.Circle(new this.crash.Vector(x,y), radius, true, [data]);
+		}
+		else if (shape === 'rectangle') {
+			let width = entity._bounds2d.x;
+			let height = entity._bounds2d.y;
+			crashBody = this.crash.Box(new this.crash.Vector(x,y), width, height, true, [data]);
+		}
+		else {
+			console.log('body shape is wrong');
+		}
+		
+		
         return crashBody;
 	},
 
