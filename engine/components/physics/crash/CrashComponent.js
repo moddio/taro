@@ -14,20 +14,20 @@ var PhysicsComponent = IgeEventingClass.extend({
 			console.log('Cannot add box2d physics component to the ige instance once the engine has started!', 'error');
 		}
 
-        this.crash = new Crash();
-        console.log('CRASH ENGINE INIT', this.crash);
+		this.crash = new Crash();
+		console.log('CRASH ENGINE INIT', this.crash);
 	},
 
-    createWorld: function (){
-        console.log ('create world');
+	createWorld: function () {
+		console.log('create world');
 		this._world = {};
 		this._world.m_stack = [];
 		this._world.m_bodies = [];
 		this._world.m_contacts = [];
-		this._world.m_joints = [];  
-    },
+		this._world.m_joints = [];
+	},
 
-    /**
+	/**
 	 * Creates a Box2d body and attaches it to an IGE entity
 	 * based on the supplied body definition.
 	 * @param {IgeEntity} entity
@@ -35,31 +35,30 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @return {b2Body}
 	 */
 	createBody: function (entity, body, isLossTolerant) {
-        // console.log('CRASH BODY CREATION');
+		// console.log('CRASH BODY CREATION');
 		this.totalBodiesCreated++;
 		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
-		let shape = body.fixtures[0].shape.type;
+		var type = body.fixtures[0].shape.type;
 		// console.log(body.fixtures[0].shape.type);
 		// console.log(entity, body);
-		let crashBody = {};
-		let x = entity._translate.x;
-		let y = entity._translate.y;
-		let igeId = body.fixtures[0].igeId;
-		if (shape === 'circle') {
-			let radius = entity._bounds2d.x;
-			crashBody = this.crash.Circle(new this.crash.Vector(x,y), radius, true, igeId);
+
+		var x = entity._translate.x;
+		var y = entity._translate.y;
+		var igeId = body.fixtures[0].igeId;
+		if (type === 'circle') {
+			var radius = entity._bounds2d.x;
+			entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
 		}
-		else if (shape === 'rectangle') {
-			let width = entity._bounds2d.x;
-			let height = entity._bounds2d.y;
-			crashBody = this.crash.Box(new this.crash.Vector(x,y), width, height, true, igeId);
+		else if (eype === 'rectangle') {
+			var width = entity._bounds2d.x;
+			var height = entity._bounds2d.y;
+			entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
 		}
 		else {
 			console.log('body shape is wrong');
 		}
-		
-		
-        return crashBody;
+
+		return entity.fixtures[0].shape.data;
 	},
 
 	gravity: function (x, y) {
@@ -74,16 +73,15 @@ var PhysicsComponent = IgeEventingClass.extend({
 	update: function () {
 
 	},
-	
+
 	staticsFromMap: function () {
-		
+
 	},
 
-	//temprorary for testing crash engine
+	// temprorary for testing crash engine
 	getInfo: function() {
 		console.log('TOTAL CRASH BODIES', this.crash.all().length);
 	},
-
 
 	/**
 	 * Gets / sets the current engine to box2d scaling ratio.
@@ -98,6 +96,22 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 		return this._scaleRatio;
 	},
+
+	getBodiesInRegion: function (region) {
+		var regionCollider = region.fixtures[0].shape.data;
+		var entities = [];
+		var foundColliders = this.crash.search(regionCollider);
+		var collider;
+
+		for (collider of foundColliders) {
+			var entity = ige.$(collider.data.igeId);
+			if (entity) {
+				entities.push(entity);
+			}
+		}
+
+		return entities;
+	}
 });
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = PhysicsComponent; }
