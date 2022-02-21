@@ -44,7 +44,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		let crashBody = {};
 		let x = entity._translate.x;
 		let y = entity._translate.y;
-		let data = {};
+		let data = body.fixtures[0].igeId;
 		if (shape === 'circle') {
 			let radius = entity._bounds2d.x;
 			crashBody = this.crash.Circle(new this.crash.Vector(x,y), radius, true, [data]);
