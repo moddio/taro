@@ -54,7 +54,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 		// console.log("updatebody", defaultData, this._stats.currentBody.type)
 
-		body = this._stats.currentBody;
+		var body = this._stats.currentBody;
 		if (!body) {
 			return;
 		}
@@ -230,6 +230,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			if (ige.physics) {
 				// if (isLossTolerant) {
 					// crash havent createBody, so we need write it for crash
+
 					ige.physics.createBody(this, def, isLossTolerant);
 				/* } else {
 					this.destroyBody();
@@ -276,7 +277,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 		}
 
-		// ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
+		ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
 	},
 	/**
 	 * Gets / sets the box2d body's gravitic value. If set to false,
@@ -430,7 +431,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				//     x *= 1.2737
 				//     y *= 1.2737
 				// }
-				this.body.setLinearVelocity(new IgePoint3d(x, y, 0));
+				this.setLinearVelocity(new IgePoint3d(x, y, 0));
 			}
 		} catch (e) {
 			console.log(`igeEntityCrash.js: setLinearVelocityLT ${e}`);

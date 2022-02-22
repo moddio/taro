@@ -406,7 +406,7 @@ var Server = IgeClass.extend({
 				promise = self.loadGameJSON(gameUrl);
 			} else {
 				promise = new Promise(function (resolve, reject) {
-					var game = fs.readFileSync(`${__dirname}/../src/game.json`);
+					var game = fs.readFileSync(`${__dirname}/../src/gamejam22.json`);
 					game = JSON.parse(game);
 					game.defaultData = game;
 					var data = { data: {} };
