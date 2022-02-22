@@ -291,15 +291,6 @@ var VariableComponent = IgeEntity.extend({
 						returnValue = entity._stats.name;
 					}
 					break;
-					
-				case 'getUserId':
-					if (entity && entity._category == 'player') {
-						returnValue = entity._stats.userId;
-						if (!returnValue) {
-							ige.script.errorLog(`Warning: Cannot get user id because user is not logged in`);
-						}
-					}
-					break;
 
 				case 'getPlayerVariable':
 					// console.log('text.variable', text.variable);
@@ -1577,100 +1568,6 @@ var VariableComponent = IgeEntity.extend({
 						}
 						var element = array[index];
 						returnValue = (typeof element == 'object') ? JSON.stringify(element) : element;
-					}
-					break;
-					
-				case 'splitStringIntoArray':
-					var string = self.getValue(text.string, vars);
-					var separator = self.getValue(text.separator, vars);
-					if (string.split) {
-						var arr = string.split(separator);
-						returnValue = JSON.stringify(arr);
-					}
-					break;
-					
-				case 'stringArrayIncludesElement':
-					var string = self.getValue(text.string, vars);
-					var element = self.getValue(text.element, vars);
-					if (string) {
-						try {
-							var array = JSON.parse(string);
-						} catch (err) {
-							console.error(err);
-						}
-						if (Array.isArray(array))
-							returnValue = array.includes(element);
-					}
-					break;
-					
-				case 'indexInStringArray':
-					var string = self.getValue(text.string, vars);
-					var element = self.getValue(text.element, vars);
-					if (string) {
-						try {
-							var array = JSON.parse(string);
-						} catch (err) {
-							console.error(err);
-						}
-						if (Array.isArray(array))
-							returnValue = array.indexOf(element);
-					}
-					break;
-					
-				case 'stringObjectHasProperty':
-					var string = self.getValue(text.string, vars);
-					var property = self.getValue(text.property, vars);
-					if (string) {
-						try {
-							var object = JSON.parse(string);
-						} catch (err) {
-							console.error(err);
-						}
-						if (object.hasOwnProperty)
-							returnValue = object.hasOwnProperty(property);
-					}
-					break;
-					
-				case 'getStringObjectElement':
-					var string = self.getValue(text.string, vars);
-					var key = self.getValue(text.key, vars);
-					if (string && key != undefined) {
-						try {
-							var object = JSON.parse(string);
-						} catch (err) {
-							console.error(err);
-						}
-						var element = object[key];
-						returnValue = (typeof element == 'object') ? JSON.stringify(element) : element;
-					}
-					break;
-									
-				case 'setStringObjectElement':
-					var string = self.getValue(text.string, vars);
-					var key = self.getValue(text.key, vars);
-					var value = self.getValue(text.value, vars);
-					if (string && value != null && key != undefined) {
-						try {
-							var object = JSON.parse(string);
-						} catch (err) {
-							console.error(err);
-						}
-						object[key] = value;
-						returnValue = JSON.stringify(object);
-					}
-					break;
-					
-				case 'removeStringObjectElement':
-					var string = self.getValue(text.string, vars);
-					var key = self.getValue(text.key, vars);
-					if (string && key != undefined) {
-						try {
-							var object = JSON.parse(string);
-						} catch (err) {
-							console.error(err);
-						}
-						delete object[key];
-						returnValue = JSON.stringify(object);
 					}
 					break;
 
