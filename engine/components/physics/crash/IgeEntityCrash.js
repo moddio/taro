@@ -409,7 +409,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	setLinearVelocity: function (x, y, z, isLossTolerant) {
 		// if body doesn't exist yet, queue
 		// console.log("3. locked", ige.physics._world.isLocked(), "body",  this.body != undefined, isLossTolerant);
-		if ((!ige.physics._world.isLocked() && this.body != undefined) || isLossTolerant) {
+		if ((/*!ige.physics._world.isLocked() &&*/this.body != undefined) || isLossTolerant) {
 			this.setLinearVelocityLT(x, y);
 		} else {
 			// console.log("4. queue setLinearVelocity", x, y);
@@ -433,7 +433,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				this.body.setLinearVelocity(new IgePoint3d(x, y, 0));
 			}
 		} catch (e) {
-			console.log(`igeEntityBox2d.js: setLinearVelocityLT ${e}`);
+			console.log(`igeEntityCrash.js: setLinearVelocityLT ${e}`);
 		}
 	},
 
@@ -783,6 +783,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// this means if there's too many actions queued, chances are, applyForce will be ignored ;-;
 		// however, regardless of queueSize, translateTo and destroy will always be queued
 		if (this._actionQueue && (this._actionQueue.length < 10 || action.type == 'destroy' || action.type == 'translateTo')) {
+			console.log('action', action);
 			// if we're sending translateTo before previously queued translateTo was processed, then replace the last translatedTo with the newest coordinates.
 			var previousAction = this._actionQueue[this._actionQueue.length - 1];
 			if (action.type == 'translateTo' && previousAction && previousAction.type == 'translateTo') {

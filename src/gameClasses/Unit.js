@@ -1782,6 +1782,7 @@ var Unit = IgeEntityPhysics.extend({
 							x: self.direction.x * speed,
 							y: self.direction.y * speed
 						};
+						// console.log('unit movement 1', vector)
 					}
 				}
 
@@ -1803,9 +1804,9 @@ var Unit = IgeEntityPhysics.extend({
 				}
 
 				ige.unitBehaviourCount++; // for debugging
-
 				// apply movement if it's either human-controlled unit, or ai unit that's currently moving
 				if (self.body && vector && (vector.x != 0 || vector.y != 0)) {
+					// console.log('unit movement 2', vector);
 					if (self._stats.controls)
 						switch (self._stats.controls.movementMethod) { // velocity-based movement
 							case 'velocity':
