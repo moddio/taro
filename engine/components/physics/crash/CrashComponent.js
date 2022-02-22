@@ -63,14 +63,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 		}
 		// Store the entity that is linked to self body
 		crashBody._entity = entity;
-
+		entity.body = body;
 		// Add the body to the world with the passed fixture
-		entity.body = crashBody;
+		entity.body.fixtures[0].shape.data = crashBody;
 
-		console.log(crashBody);
+		console.log(crashBody.data);
 
 		//temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
-		crashBody.setLinearVelocity =  function (info) {
+		entity.body.setLinearVelocity = function (info) {
 			console.log ('set linear velocity run', info);
 		};
 
