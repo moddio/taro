@@ -48,13 +48,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x;
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
 			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
-			crashBody = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
+			crashBody = new this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
 		}
 		else {
 			console.log('body shape is wrong');
@@ -66,6 +66,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 		// Add the body to the world with the passed fixture
 		entity.body = crashBody;
+
+		console.log(crashBody);
 
 		//temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
 		crashBody.setLinearVelocity =  function (info) {
