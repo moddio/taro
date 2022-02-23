@@ -470,7 +470,7 @@ var Client = IgeClass.extend({
         } else {
             promise = new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: '/src/gamejam22.json',
+                    url: '/src/game.json',
                     dataType: "json",
                     type: 'GET',
                     success: function (game) {
