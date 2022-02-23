@@ -621,6 +621,11 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getPlayerCurrentlySelectedUnit':
+					if (entity && entity._category == 'player') {
+						returnValue = entity.getSelectedUnit();
+					}
+					break;
 				case 'selectedPlayer':
 				case 'getSelectedPlayer':
 					if (vars && vars.selectedPlayer) {
