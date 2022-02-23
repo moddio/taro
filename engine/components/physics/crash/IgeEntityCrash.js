@@ -246,14 +246,16 @@
 		return this.bodyDef;
 	},
 
-	_behaviour: function () {
+	_behaviourCrash: function () {
+		// console.log('crash behavior!!')
 		// update position based on its velocity, collision, and damping
-		this.body.moveBy(this._velocity.x, this._velocity.y);
+		this.body.fixtures[0].shape.data.moveBy(this._velocity.x, this._velocity.y);
 		var damping = 2;
 		this._velocity.x = this._velocity.x / damping;
 		this._velocity.y = this._velocity.y / damping;
 	
-		this._translate = this.body.pos;
+		this._translate.x = this.body.fixtures[0].shape.data.pos.x;
+		this._translate.y = this.body.fixtures[0].shape.data.pos.y;
 	},
 
 	destroyBody: function () {
