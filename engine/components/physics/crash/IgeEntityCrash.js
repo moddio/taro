@@ -246,26 +246,15 @@
 		return this.bodyDef;
 	},
 
-	/* box2dBody: function (def, isLossTolerant) {
-		if (def) {
-			this.bodyDef = def;
-			// console.trace()
-			// ige.devLog("box2dBody", this._category, this._stats.name)
-			// Check that the box2d component exists
-			if (ige.physics) {
-				if (isLossTolerant) {
-					ige.physics.createBody(this, def, isLossTolerant);
-				} else {
-					this.destroyBody();
-					ige.physics.queueAction({ type: 'createBody', entity: this, def: def });
-				}
-			} else {
-				// IgeEntityBox2d.prototype.log('You are trying to create a box2d entity but you have not added the box2d component to the ige instance!', 'error');
-			}
-			return this;
-		}
-		return this.bodyDef;
-	}, */
+	_behaviour: function () {
+		// update position based on its velocity, collision, and damping
+		this.body.moveBy(this._velocity.x, this._velocity.y);
+		var damping = 2;
+		this._velocity.x = this._velocity.x / damping;
+		this._velocity.y = this._velocity.y / damping;
+	
+		this._translate = this.body.pos;
+	},
 
 	destroyBody: function () {
 		// IgeEntityBox2d.prototype.log('destroyBody');

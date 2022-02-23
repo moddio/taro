@@ -41,7 +41,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
 		var type = body.fixtures[0].shape.type;
 		// console.log(body.fixtures[0].shape.type);
-		// console.log(entity, body);
+		console.log(entity, body);
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
@@ -68,11 +68,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// Add the body to the world with the passed fixture
 		entity.body.fixtures[0].shape.data = crashBody;
 
-		console.log(crashBody.data);
+		// console.log(crashBody.data);
 
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
+		// entity.body._velocity = {x: 0, y: 0};
 		entity.body.setLinearVelocity = function (info) {
 			console.log('set linear velocity run', info);
+			entity._velocity.x = info.x;
+			entity._velocity.y = info.y;
 		};
 
 		// return entity.fixtures[0].shape.data;
@@ -99,7 +102,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	update: function () {
-
+		// console.log('crash update');
 	},
 
 	/* setLinearVelocity: function () {

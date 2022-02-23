@@ -1835,6 +1835,11 @@ var IgeEntity = IgeObject.extend({
 		// 	ige.updateCount[category] = 0;
 		// ige.updateCount[category]++;
 
+		if (ige.physics.engine === 'CRASH' && this.body) {
+			console.log('entity update!!')
+			this._behaviour();
+		}
+
 		if (this._deathTime !== undefined && this._deathTime <= ige._tickStart) {
 			// Check if the deathCallBack was set
 			if (this._deathCallBack) {
