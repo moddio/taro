@@ -249,13 +249,15 @@
 	_behaviourCrash: function () {
 		// console.log('crash behavior!!')
 		// update position based on its velocity, collision, and damping
-		this.body.fixtures[0].shape.data.moveBy(this._velocity.x, this._velocity.y);
-		var damping = 2;
-		this._velocity.x = this._velocity.x / damping;
-		this._velocity.y = this._velocity.y / damping;
+		if(this._velocity.x != 0 || this._velocity.y != 0) {
+			this.body.fixtures[0].shape.data.moveBy(this._velocity.x, this._velocity.y);
+			var damping = 2;
+			this._velocity.x = this._velocity.x / damping;
+			this._velocity.y = this._velocity.y / damping;
 	
-		this._translate.x = this.body.fixtures[0].shape.data.pos.x;
-		this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+			this._translate.x = this.body.fixtures[0].shape.data.pos.x;
+			this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+		}
 	},
 
 	destroyBody: function () {

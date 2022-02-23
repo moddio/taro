@@ -73,7 +73,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
 		// entity.body._velocity = {x: 0, y: 0};
 		entity.body.setLinearVelocity = function (info) {
-			console.log('set linear velocity run', info);
+			// console.log('set linear velocity run', info);
 			entity._velocity.x = info.x;
 			entity._velocity.y = info.y;
 		};
