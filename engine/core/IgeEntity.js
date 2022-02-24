@@ -1991,6 +1991,10 @@ var IgeEntity = IgeObject.extend({
 				if (type == 'move' || type == 'idle' || type == 'none') {
 					this.streamUpdateData([{ effect: type }]);
 				}
+
+				// if (effect.runScript) {
+				// 	ige.script.runScript(effect.runScript, {});
+				// }
 			} else if (ige.isClient) {
 				if (this._pixiContainer && this._pixiContainer._destroyed) {
 					return;
@@ -2025,7 +2029,8 @@ var IgeEntity = IgeObject.extend({
 							},
 							rotate: this._rotate.z
 						};
-						new Projectile(projectile);
+
+						const proj = new Projectile(projectile);
 					}
 				}
 
@@ -2059,10 +2064,6 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				this.tween.start(effect.tween, angle);
-			} else if (ige.isServer) {
-				if (effect.runScript) {
-					ige.script.runScript(effect.runScript, {});
-				}
 			}
 		} else {
 			if (ige.isClient) {
@@ -2599,7 +2600,6 @@ var IgeEntity = IgeObject.extend({
 			default:
 				// Call super-class saveSpecialProp
 				return IgeObject.prototype.saveSpecialProp.call(this, obj, i);
-				break;
 		}
 
 		return undefined;
@@ -2609,15 +2609,10 @@ var IgeEntity = IgeObject.extend({
 		switch (i) {
 			case '_texture':
 				return { _texture: ige.$(obj[i]) };
-				break;
-
 			default:
 				// Call super-class loadSpecialProp
 				return IgeObject.prototype.loadSpecialProp.call(this, obj, i);
-				break;
 		}
-
-		return undefined;
 	},
 
 	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3786,7 +3781,7 @@ var IgeEntity = IgeObject.extend({
 				this._localMatrix.multiply(this._localMatrix._newTranslate(isoPoint.x, isoPoint.y));
 			} else {
 				console.log('localMatrix translate error: ', this._category, this._translate);
-				if (ige.chat) ige.chat.postMessage({ text: `localMatrix translate error: ${this._category}${this._stats}` ? this._stats.name : '' });
+				if (ige.chat) ige.chat.postMessage({ text: `localMatrix translate error: ${this._category}${this._stats}${this._stats.name ?? ''}` });
 			}
 		}
 

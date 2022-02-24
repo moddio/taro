@@ -966,15 +966,12 @@ var ActionComponent = IgeEntity.extend({
 						if (!vars) vars = {};
 						vars.break = true;
 						return 'break';
-						break;
 
 					case 'continue':
 						return 'continue';
-						break;
 
 					case 'return':
 						return 'return';
-						break;
 
 					case 'endGame':
 						ige.server.kill('end game called');
@@ -1211,7 +1208,7 @@ var ActionComponent = IgeEntity.extend({
 						if (item && item._category === 'item' && item._stats.type === 'weapon' && !isNaN(newAmmo)) {
 							item.streamUpdateData([{ quantity: newAmmo }]);
 						}
-
+						break;
 					case 'dropItem':
 						var entity = ige.variable.getValue(action.entity, vars);
 
@@ -1455,7 +1452,6 @@ var ActionComponent = IgeEntity.extend({
 							]);
 						}
 						break;
-						'';
 					case 'makeUnitVisibleToFriendlyPlayers':
 						if (entity && entity._category == 'unit') {
 							entity.streamUpdateData([

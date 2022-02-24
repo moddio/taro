@@ -240,9 +240,7 @@ THREE.TrackballControls = function (object, domElement) {
 			_keyPressed = false;
 		}
 
-		if (_state === STATE.NONE) {
-
-		} else if (_state === STATE.ROTATE && !_this.noRotate) {
+		if (_state === STATE.ROTATE && !_this.noRotate) {
 			_rotateEnd = _this.getMouseProjectionOnBall(event.clientX, event.clientY);
 		} else if (_state === STATE.ZOOM && !_this.noZoom) {
 			_zoomEnd = _this.getMouseOnScreen(event.clientX, event.clientY);

@@ -90,6 +90,7 @@
 		}
 
 		try {
+			/* eslint-disable-next-line no-new-func */
 			var f = new Function('', 'return true;');
 			return f();
 		} catch (ex) {
@@ -121,7 +122,9 @@
 		if (numberIsNaN(left) && numberIsNaN(right))
 			return true;
 
-		return left !== left && right !== right;
+		return true;
+		// return left !== left && right !== right;
+		// (false && false) === true ???
 	}
 
 	var createObject = ('__proto__' in {})
@@ -248,6 +251,8 @@
 			pathString += accessors[i];
 
 			str += `  return ${pathString};\nelse\n  return undefined;`;
+
+			/* eslint-disable-next-line no-new-func */
 			return new Function('obj', str);
 		},
 
@@ -286,6 +291,7 @@
 	}
 
 	function objectIsEmpty (object) {
+		/* eslint-disable-next-line no-unreachable-loop */
 		for (var prop in object)
 			return false;
 		return true;

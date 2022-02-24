@@ -81,9 +81,7 @@ var AdComponent = IgeEntity.extend({
 	},
 
 	showAnchorTag: function () {
-		if (noAds) {
-
-		}
+		// if (noAds) {}
 	}
 
 });

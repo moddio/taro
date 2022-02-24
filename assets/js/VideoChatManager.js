@@ -99,9 +99,8 @@ function switchRoom (_roomId) {
 	if (!videoChatEnabled) {
 		return false;
 	}
-	if (_roomId != myID) {
+	// if (_roomId != myID) {}
 
-	}
 	const player = ige.game.getPlayerByClientId(ige.client.myPlayer._stats.clientId);
 	$('#video-div-id-myPeer .name-label').html(player._stats.name);
 	// socket.emit('sendPlayerName', { peerID: myID, playerName: player._stats.name });

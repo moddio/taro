@@ -49,9 +49,7 @@ var IgeUiMenu = IgeUiElement.extend({
 	},
 
 	addItem: function (item) {
-		if (item !== undefined) {
-
-		}
+		// if (item !== undefined) {}
 	},
 
 	_buildMenu: function (data, parent) {

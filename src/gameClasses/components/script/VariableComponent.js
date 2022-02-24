@@ -1996,9 +1996,8 @@ var VariableComponent = IgeEntity.extend({
 
 			params.newValue = newValue;
 			this.updateDevConsole({ type: 'setVariable', params: params });
-		} else if (ige.isClient) {
-
 		}
+		// else if (ige.isClient) {}
 	},
 
 	// update dev console table w/ latest setValue data

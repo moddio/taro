@@ -628,7 +628,7 @@ var Item = IgeEntityBox2d.extend({
 			return canAffordCost;
 		} else {
 			return false;
-			ItemComponent.prototype.log('can\'t afford cost');
+			// ItemComponent.prototype.log('can\'t afford cost');
 		}
 	},
 
@@ -879,34 +879,34 @@ var Item = IgeEntityBox2d.extend({
 						}
 						break;
 
-					case 'scaleBody':
-						if (ige.isServer) {
-							// finding all attach entities before changing body dimensions
-							if (self.jointsAttached) {
-								var attachedEntities = {};
-								for (var entityId in self.jointsAttached) {
-									var entity = self.jointsAttached[entityId];
-									if (entityId != self.id()) {
-										attachedEntities[entityId] = true;
-									}
-								}
-							}
+						// case 'scaleBody':
+						// 	if (ige.isServer) {
+						// 		// finding all attach entities before changing body dimensions
+						// 		if (self.jointsAttached) {
+						// 			var attachedEntities = {};
+						// 			for (var entityId in self.jointsAttached) {
+						// 				var entity = self.jointsAttached[entityId];
+						// 				if (entityId != self.id()) {
+						// 					attachedEntities[entityId] = true;
+						// 				}
+						// 			}
+						// 		}
 
-							// attaching entities
-							self._scaleBox2dBody(newValue);
+						// 		// attaching entities
+						// 		self._scaleBox2dBody(newValue);
 
-							// for (var entityId in attachedEntities) {
-							// 	var entity = ige.$(entityId);
-							// 	// attaching item to owner
-							// 	if (entity && entity._category == 'unit') {
-							// 		var owner = self.getOwnerUnit();
-							// 		if (owner.id() == entity.id()) {
-							// 			self.mount(owner._pixiTexture);
-							// 		}
-							// 	}
-							// }
-						}
-						break;
+						// 		// for (var entityId in attachedEntities) {
+						// 		// 	var entity = ige.$(entityId);
+						// 		// 	// attaching item to owner
+						// 		// 	if (entity && entity._category == 'unit') {
+						// 		// 		var owner = self.getOwnerUnit();
+						// 		// 		if (owner.id() == entity.id()) {
+						// 		// 			self.mount(owner._pixiTexture);
+						// 		// 		}
+						// 		// 	}
+						// 		// }
+						// 	}
+						// 	break;
 
 					case 'quantity':
 						self.updateQuantity(newValue);

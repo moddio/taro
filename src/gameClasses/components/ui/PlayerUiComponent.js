@@ -96,7 +96,7 @@ var PlayerUiComponent = IgeEntity.extend({
 				} else {
 					if (attr.decimalPlaces != undefined && attr.decimalPlaces != null) {
 						var decimalPlace = parseInt(attr.decimalPlaces);
-						if (decimalPlace != NaN) {
+						if (!isNaN(decimalPlace)) {
 							attr.value = parseFloat(attr.value).toFixed(decimalPlace);
 						} else {
 							attr.value = parseFloat(attr.value).toFixed(2);
@@ -119,7 +119,7 @@ var PlayerUiComponent = IgeEntity.extend({
 
 	updatePlayerCoin: function (newValue) {
 		var coin = parseInt($('.player-coins').html());
-		if (coin != NaN) {
+		if (!isNaN(coin)) {
 			$('.player-coins').html(parseInt(newValue));
 		}
 	},

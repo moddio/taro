@@ -710,17 +710,17 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 
 		// TODO: WRITE THIS FOR THIS CLASS - EPIC AMOUNT OF WORK HERE
 		// Loop properties and add property assignment code to string
-		for (i in this) {
-			if (this.hasOwnProperty(i) && this[i] !== undefined) {
-				switch (i) {
-					case '':
-						str += `.text(${this.text()})`;
-						break;
-				}
-			}
-		}
+		// for (i in this) {
+		// 		if (this.hasOwnProperty(i) && this[i] !== undefined) {
+		// 			switch (i) {
+		// 				case '':
+		// 					str += `.text(${this.text()})`;
+		// 					break;
+		// 			}
+		// 		}
+		// 	}
 
-		return str;
+		// return str;
 	}
 });
 

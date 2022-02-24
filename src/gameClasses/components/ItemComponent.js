@@ -109,6 +109,7 @@ var ItemComponent = IgeEntity.extend({
 
 								case 'ammoSize':
 									itemStats.ammo = parseInt(itemStats.ammo * (1 + buffValue)); // fill ammo to the weapon's new max ammo capacity
+									break;
 								case 'ammoTotal':
 								case 'reloadRate':
 								case 'fireRate':
@@ -122,7 +123,7 @@ var ItemComponent = IgeEntity.extend({
 									if (!itemStats.isGun) {
 										buffValue = buffValue * 3;
 									}
-
+									break;
 								case 'bulletDistance':
 								case 'recoilForce':
 								case 'movementSpeed':

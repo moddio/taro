@@ -78,9 +78,6 @@ var Unit = IgeEntityBox2d.extend({
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
-		if (self._stats.scale) {
-
-		}
 		if (self._stats.scaleBody) {
 			self._stats.scale = parseFloat(self._stats.scaleBody);
 		} else {

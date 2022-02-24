@@ -1628,12 +1628,8 @@ var IgeEngine = IgeEntity.extend({
 			},
 			set: function (val) {
 				if (callbackEvaluator) {
-					if (callbackEvaluator(val)) {
-						debugger;
-					}
-				} else {
-					debugger;
-				}
+					if (callbackEvaluator(val)) debugger;
+				} else debugger;
 
 				obj.___igeTraceCurrentVal[propName] = val;
 				obj.___igeTraceCount++;
