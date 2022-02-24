@@ -128,6 +128,7 @@
 	};
 
 	Crash.prototype.insert = function (collider) {
+		// console.log(`adding ${collider.data.igeId} to crash.all()`)
 		this.rbush.insert(collider);
 
 		return this;

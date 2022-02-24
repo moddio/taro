@@ -8,7 +8,7 @@
 		IgeEntity.prototype.init.call(this, defaultData);
 		var self = this;
 
-		this._b2dRef = ige.physics;
+		// this._b2dRef = ige.physics;
 
 		if (ige.isClient) {
 			self.addComponent(IgeAnimationComponent);
@@ -227,7 +227,7 @@
 			// console.log('crash body', def);
 
 			// Check that the crash component exists
-			if (ige.physics) {
+			if (ige.physics && !this.body) {
 				// if (isLossTolerant) {
 					// crash havent createBody, so we need write it for crash
 					ige.physics.createBody(this, def, isLossTolerant);
@@ -249,12 +249,14 @@
 	_behaviourCrash: function () {
 		// console.log('crash behavior!!')
 		// update position based on its velocity, collision, and damping
-		if(this._velocity.x != 0 || this._velocity.y != 0) {
-			this.body.fixtures[0].shape.data.moveBy(this._velocity.x, this._velocity.y);
-			var damping = 2;
+
+		if(Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
+			console.log(`unit ${this._id} velocity currently: `, this._velocity);
+			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
+			var damping = 5;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
-	
+
 			this._translate.x = this.body.fixtures[0].shape.data.pos.x;
 			this._translate.y = this.body.fixtures[0].shape.data.pos.y;
 		}
@@ -263,12 +265,9 @@
 	destroyBody: function () {
 		// IgeEntityBox2d.prototype.log('destroyBody');
 
-		if (this.jointsAttached) {
-			for (var entityId in this.jointsAttached) {
-				this.detachEntity(entityId);
-			}
+		if (ige.physics) {
+			ige.physics.destroyBody(this, this.body);
 		}
-
 		// ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
 	},
 	/**
@@ -295,60 +294,60 @@
 	},
 
 	on: function () {
-		if (arguments.length === 3) {
-			var evName = arguments[0];
-			var target = arguments[1];
-			var callback = arguments[2];
-			var type;
+		// if (arguments.length === 3) {
+		// 	var evName = arguments[0];
+		// 	var target = arguments[1];
+		// 	var callback = arguments[2];
+		// 	var type;
 
-			switch (target.substr(0, 1)) {
-				case '#':
-					type = 0;
-					break;
+		// 	switch (target.substr(0, 1)) {
+		// 		case '#':
+		// 			type = 0;
+		// 			break;
 
-				case '.':
-					type = 1;
-					break;
-			}
+		// 		case '.':
+		// 			type = 1;
+		// 			break;
+		// 	}
 
-			target = target.substr(1, target.length - 1);
+		// 	target = target.substr(1, target.length - 1);
 
-			switch (evName) {
-				case 'collisionStart':
-					this._collisionStartListeners = this._collisionStartListeners || [];
-					this._collisionStartListeners.push({
-						type: type,
-						target: target,
-						callback: callback
-					});
+		// 	switch (evName) {
+		// 		case 'collisionStart':
+		// 			this._collisionStartListeners = this._collisionStartListeners || [];
+		// 			this._collisionStartListeners.push({
+		// 				type: type,
+		// 				target: target,
+		// 				callback: callback
+		// 			});
 
-					if (!this._contactListener) {
-						// Setup contact listener
-						this._contactListener = this._setupContactListeners();
-					}
-					break;
+		// 			if (!this._contactListener) {
+		// 				// Setup contact listener
+		// 				this._contactListener = this._setupContactListeners();
+		// 			}
+		// 			break;
 
-				case 'collisionEnd':
-					this._collisionEndListeners = this._collisionEndListeners || [];
-					this._collisionEndListeners.push({
-						type: type,
-						target: target,
-						callback: callback
-					});
+		// 		case 'collisionEnd':
+		// 			this._collisionEndListeners = this._collisionEndListeners || [];
+		// 			this._collisionEndListeners.push({
+		// 				type: type,
+		// 				target: target,
+		// 				callback: callback
+		// 			});
 
-					if (!this._contactListener) {
-						// Setup contact listener
-						this._contactListener = this._setupContactListeners();
-					}
-					break;
+		// 			if (!this._contactListener) {
+		// 				// Setup contact listener
+		// 				this._contactListener = this._setupContactListeners();
+		// 			}
+		// 			break;
 
-				default:
-					// IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
-					break;
-			}
-		} else {
-			IgeEntity.prototype.on.apply(this, arguments);
-		}
+		// 		default:
+		// 			// IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
+		// 			break;
+		// 	}
+		// } else {
+		// 	IgeEntity.prototype.on.apply(this, arguments);
+		// }
 	},
 
 	off: function () {
@@ -525,42 +524,42 @@
 		);
 	},
 
-	_checkContact: function (contact, arr) {
-		var self = this;
-		var arrCount = arr.length;
-		var otherEntity;
-		var listener;
-		var i;
+	// _checkContact: function (contact, arr) {
+	// 	var self = this;
+	// 	var arrCount = arr.length;
+	// 	var otherEntity;
+	// 	var listener;
+	// 	var i;
 
-		if (contact.igeEntityA()._id === self._id) {
-			otherEntity = contact.igeEntityB();
-		} else if (contact.igeEntityB()._id === self._id) {
-			otherEntity = contact.igeEntityA();
-		} else {
-			// This contact has nothing to do with us
-			return;
-		}
+	// 	if (contact.igeEntityA()._id === self._id) {
+	// 		otherEntity = contact.igeEntityB();
+	// 	} else if (contact.igeEntityB()._id === self._id) {
+	// 		otherEntity = contact.igeEntityA();
+	// 	} else {
+	// 		// This contact has nothing to do with us
+	// 		return;
+	// 	}
 
-		for (i = 0; i < arrCount; i++) {
-			listener = arr[i];
+	// 	for (i = 0; i < arrCount; i++) {
+	// 		listener = arr[i];
 
-			if (listener.type === 0) {
-				// Listener target is an id
-				if (otherEntity._id === listener.target) {
-					// Contact with target established, fire callback
-					listener.callback(contact);
-				}
-			}
+	// 		if (listener.type === 0) {
+	// 			// Listener target is an id
+	// 			if (otherEntity._id === listener.target) {
+	// 				// Contact with target established, fire callback
+	// 				listener.callback(contact);
+	// 			}
+	// 		}
 
-			if (arr[i].type === 1) {
-				// Listener target is a category
-				if (otherEntity._category === listener.target) {
-					// Contact with target established, fire callback
-					listener.callback(contact);
-				}
-			}
-		}
-	},
+	// 		if (arr[i].type === 1) {
+	// 			// Listener target is a category
+	// 			if (otherEntity._category === listener.target) {
+	// 				// Contact with target established, fire callback
+	// 				listener.callback(contact);
+	// 			}
+	// 		}
+	// 	}
+	// },
 
 	/**
 	 * Takes over translateTo calls and processes box2d movement as well.

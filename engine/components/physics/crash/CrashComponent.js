@@ -15,7 +15,15 @@ var PhysicsComponent = IgeEventingClass.extend({
 		}
 
 		this.crash = new Crash();
-		console.log('CRASH ENGINE INIT', this.crash);
+		this.crash.rbush.toBBox = function (item) {
+			item.minX = item.aabb.x1;
+			item.minY = item.aabb.y1;
+			item.maxX = item.aabb.x2;
+			item.maxY = item.aabb.y2;
+
+			return item;
+		};
+		this.totalBodiesCreated = 0;
 	},
 
 	createWorld: function () {
@@ -36,12 +44,16 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @return {b2Body}
 	 */
 	createBody: function (entity, body, isLossTolerant) {
-		// console.log('CRASH BODY CREATION');
+		// console.log('Entity: ', entity);
+		console.log('Body fixtures: ', body.fixtures);
+
+		if (entity.body) { return; }
+		console.log('CRASH BODY CREATION');
 		this.totalBodiesCreated++;
 		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
 		var type = body.fixtures[0].shape.type;
 		// console.log(body.fixtures[0].shape.type);
-		console.log(entity, body);
+
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
@@ -49,13 +61,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x;
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
 			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
-			crashBody = new this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
+			crashBody = new this.crash.Box(new this.crash.Vector(x, y), width, height, false, { igeId: igeId });
+			console.log('after crash col spawn');
 		}
 		else {
 			console.log('body shape is wrong');
@@ -63,12 +76,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 			return;
 		}
 		// Store the entity that is linked to self body
-		crashBody._entity = entity;
+		// crashBody._entity = entity;
 		entity.body = body;
 		// Add the body to the world with the passed fixture
 		entity.body.fixtures[0].shape.data = crashBody;
 
 		// console.log(crashBody.data);
+		this.crash.insert(entity.body.fixtures[0].shape.data);
+		console.log('after crash col insert');
 
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
 		// entity.body._velocity = {x: 0, y: 0};
@@ -77,6 +92,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			entity._velocity.x = info.x;
 			entity._velocity.y = info.y;
 		};
+		entity.addBehaviour('crash behaviour', entity._behaviourCrash, false);
 
 		// return entity.fixtures[0].shape.data;
 		return crashBody;
@@ -88,7 +104,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			this.crash.remove(entity.body.fixtures[0].shape.data);
 			entity.body = null;
 		} else {
-			PhysicsComponent.prototype.log('failed to destroy body - body doesn\'t exist.');
+			console.log('failed to destroy body - body doesn\'t exist.');
 		}
 	},
 
@@ -101,8 +117,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	},
 
+	start: function () {
+		this.crash.checkAll();
+		console.log('start');
+	},
+
 	update: function () {
-		// console.log('crash update');
+		this.crash.check();
 	},
 
 	/* setLinearVelocity: function () {
@@ -177,7 +198,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	// temprorary for testing crash engine
 	getInfo: function () {
-		console.log('TOTAL CRASH BODIES', this.crash.all().length);
+		console.log('TOTAL in rbush.all(): ', this.crash.rbush.all().length);
+		console.log('TOTAL in crash.__moved: ', this.crash.__moved.length);
 	},
 
 	/**
