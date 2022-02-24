@@ -216,15 +216,15 @@ var AttributeComponent = IgeEntity.extend({
 
 						var triggeredBy = { attribute: attribute };
 						triggeredBy[`${this._entity._category}Id`] = this._entity.id();
-						if (newValue <= 0 && oldValue > 0) // when attribute becomes zero, trigger attributeBecomesZero event
-						{
+						if (newValue <= 0 && oldValue > 0) {
+							// when attribute becomes zero, trigger attributeBecomesZero event
 							// unit's health became 0. announce death
 							if (self._entity._category == 'unit' && attributeTypeId == 'health') {
 								self._entity.ai.announceDeath();
 							}
 							ige.trigger.fire(`${this._entity._category}AttributeBecomesZero`, triggeredBy);
-						} else if (newValue >= attribute.max) // when attribute becomes full, trigger attributeBecomesFull event
-						{
+						} else if (newValue >= attribute.max) {
+							// when attribute becomes full, trigger attributeBecomesFull event
 							// console.log("update attr fire!")
 							ige.trigger.fire(`${this._entity._category}AttributeBecomesFull`, triggeredBy);
 						}

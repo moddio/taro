@@ -403,8 +403,7 @@ var MenuUiComponent = IgeEntity.extend({
 									` data-server-id="${server.id}"` +
 									` data-url="${dataUrl}"` +
 									` value="${server.id}"` +
-									`>${optionText} (${server.playerCount} / ${server.maxPlayers})${
-									 acceptingPlayers}</option>`;
+									`>${optionText} (${server.playerCount} / ${server.maxPlayers})${acceptingPlayers}</option>`;
 							}
 
 							// select best server in avail servers

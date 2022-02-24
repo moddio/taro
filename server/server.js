@@ -148,7 +148,7 @@ var Server = IgeClass.extend({
 		// for debugging reasons
 		global.isServer = ige.isServer;
 
-		if (typeof HttpComponent != 'undefined') {
+		if (typeof HttpComponent !== 'undefined') {
 			ige.addComponent(HttpComponent);
 		}
 		console.log('cluster.isMaster', cluster.isMaster);
@@ -159,11 +159,11 @@ var Server = IgeClass.extend({
 				self.startWebServer();
 				self.start();
 				self.startGame();
-			} else if (typeof ClusterServerComponent != 'undefined') {
+			} else if (typeof ClusterServerComponent !== 'undefined') {
 				ige.addComponent(ClusterServerComponent);
 			}
 		} else {
-			if (typeof ClusterClientComponent != 'undefined') {
+			if (typeof ClusterClientComponent !== 'undefined') {
 				ige.addComponent(ClusterClientComponent); // backend component will retrieve "start" command from BE
 			}
 
@@ -174,8 +174,8 @@ var Server = IgeClass.extend({
 					self.ip = ip;
 					self.start();
 				});
-			} else // use 127.0.0.1 if dev env
-			{
+			} else {
+				// use 127.0.0.1 if dev env
 				self.ip = '127.0.0.1';
 				self.start();
 			}
@@ -282,7 +282,6 @@ var Server = IgeClass.extend({
 		}
 
 		app.get('/', (req, res) => {
-
 			const videoChatEnabled = ige.game.data && ige.game.data.defaultData && ige.game.data.defaultData.enableVideoChat ? ige.game.data.defaultData.enableVideoChat : false;
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
@@ -408,7 +407,7 @@ var Server = IgeClass.extend({
 				promise = self.loadGameJSON(gameUrl);
 			} else {
 				promise = new Promise(function (resolve, reject) {
-					var game = fs.readFileSync(`${__dirname}/../src/game.json`);
+					var game = fs.readFileSync(path.resolve(__dirname, '../src/game.json'));
 					game = JSON.parse(game);
 					game.defaultData = game;
 					var data = { data: {} };

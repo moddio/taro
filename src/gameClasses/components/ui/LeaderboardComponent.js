@@ -131,8 +131,8 @@ var LeaderboardComponent = IgeEntity.extend({
 			var topPlayersToShow = ige.mobileControls.isMobile ? 3 : 10;
 
 			players.forEach(function (player) {
-				if (player._stats && player._stats.clientId) // only display human players on scoreboard
-				{
+				if (player._stats && player._stats.clientId) {
+					// only display human players on scoreboard
 					var clientId = player._stats.clientId;
 					var score = 0;
 					if (self.scoreAttributeId && player._stats.attributes && player._stats.attributes[self.scoreAttributeId]) {

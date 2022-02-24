@@ -548,7 +548,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				var tempBod = self._world.getBodyList();
 
 				// iterate through every physics body
-				while (tempBod && typeof tempBod.getNext == 'function') {
+				while (tempBod && typeof tempBod.getNext === 'function') {
 					// Check if the body is awake && not static
 					if (tempBod.m_type !== 'static' && tempBod.isAwake()) {
 						entity = tempBod._entity;
@@ -614,8 +614,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 									var targetY = entity.clientStreamedPosition[1];
 									var xDiff = targetX - x;
 									var yDiff = targetY - y;
-									x += xDiff/2
-									y += yDiff/2
+									x += xDiff / 2;
+									y += yDiff / 2;
 								}
 
 								entity.translateTo(x, y, 0);
@@ -627,12 +627,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 										entity.body.setPosition({ x: x / entity._b2dRef._scaleRatio, y: y / entity._b2dRef._scaleRatio });
 										entity.body.setAngle(angle);
 									}
-									
+
 									if (entity.nextPhysicsFrame == undefined || ige._currentTime > entity.nextPhysicsFrame[0]) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;
 										entity.nextPhysicsFrame = [nextFrameTime, [x, y, angle]];
 									}
-
 								} else if (entity._category == 'projectile' && entity._stats.sourceItemId != undefined) {
 									if (entity._streamMode == 0) {
 										entity.prevPhysicsFrame = entity.nextPhysicsFrame;

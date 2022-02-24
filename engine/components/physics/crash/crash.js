@@ -286,7 +286,6 @@
 		var res = res || this.RESPONSE;
 		var possible = this.search(a);
 
-		loop:
 		for (var i = 0, len = possible.length; i < len; i++) {
 			var b = possible[i];
 			var str = this.getTestString(a.type, b.type);
@@ -297,7 +296,7 @@
 				if (!this.OVERLAP_LIMIT || Math.abs(res.overlap) > this.OVERLAP_LIMIT) {
 					this.__onCollision(a, b, res);
 					if (this.BREAK) {
-						break loop;
+						break;
 					}
 				}
 			}

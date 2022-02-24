@@ -222,10 +222,10 @@ var ItemUiComponent = IgeEntity.extend({
 		}
 		return itemDiv;
 
-		return $('<div/>', {
-			style: 'font-size: 16px; width: 250px;',
-			html: ''
-		});
+		// return $('<div/>', {
+		// 	style: 'font-size: 16px; width: 250px;',
+		// 	html: ''
+		// });
 	},
 
 	getItemHtml: function (itemStats) {

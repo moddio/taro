@@ -168,7 +168,7 @@ var MapComponent = IgeEntity.extend({
 				var data = regions[regionName];
 				if (data) {
 					data.id = regionName;
-					new Region(data);
+					const reg = new Region(data);
 				}
 			}
 		}
@@ -265,7 +265,6 @@ var MapComponent = IgeEntity.extend({
 		if (!updatedDebris || Object.keys(updatedDebris).length <= 0) return;
 		$.ajax({
 			url: `/api/game-client/${gameId}/updatedebris/${ige.game.data.releaseId}`,
-			dataType: 'html',
 			type: 'POST',
 			dataType: 'json',
 			data: { data: JSON.stringify(updatedDebris) },

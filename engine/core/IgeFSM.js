@@ -279,7 +279,7 @@ var IgeFSM = IgeClass.extend({
 				}]);
 			}
 		} else {
-			if (callback) { callback(`Cannot change states from "${self._currentStateName}" to "${newStateName}" states.`); }
+			if (callback) callback(`Cannot change states from "${self._currentStateName}" to "${newStateName}" states.`);
 			self.log(`Cannot change states from "${self._currentStateName}" to "${newStateName}" states.`, 'warning');
 		}
 	}
