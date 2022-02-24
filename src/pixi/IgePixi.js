@@ -96,7 +96,7 @@ var IgeInitPixi = IgeClass.extend({
 			self.resizeQueuedAt = ige._currentTime;
 		});
 
-		if (typeof ga != 'undefined' && ige.env != 'local') {
+		if (typeof ga !== 'undefined' && ige.env != 'local') {
 			var renderingEngine = 'canvas';
 			if (this.app.renderer.context.gl) {
 				renderingEngine = `webgl-${this.app.renderer.context.webGLVersion}`;
@@ -264,7 +264,7 @@ var IgeInitPixi = IgeClass.extend({
 						// Check if the deathCallBack was set
 						if (entity._deathCallBack) {
 							entity._deathCallBack.apply(entity);
-							delete entity._deathCallback;
+							delete entity._deathCallBack;
 						}
 						entity.destroy();
 					}

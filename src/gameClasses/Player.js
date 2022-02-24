@@ -63,8 +63,8 @@ var Player = IgeEntity.extend({
 		}
 
 		if (self._stats.playerJoined != true) {
-			if (self._stats.controlledBy == 'human' && ige.script) // do not send trigger for neutral player
-			{
+			if (self._stats.controlledBy == 'human' && ige.script) {
+				// do not send trigger for neutral player
 				ige.trigger.fire('playerJoinsGame', { playerId: self.id() });
 			}
 
@@ -350,8 +350,8 @@ var Player = IgeEntity.extend({
 	},
 
 	remove: function () {
-		if (this._stats.controlledBy == 'human' && ige.script) // do not send trigger for neutral player
-		{
+		if (this._stats.controlledBy == 'human' && ige.script) {
+			// do not send trigger for neutral player
 			ige.trigger.fire('playerLeavesGame', { playerId: this.id() });
 		}
 
@@ -438,7 +438,7 @@ var Player = IgeEntity.extend({
 				if (ige.isClient) {
 					if (attrName === 'name') {
 						// update here
-						if (typeof refreshUserName == 'function') {
+						if (typeof refreshUserName === 'function') {
 							refreshUserName(newValue);
 						}
 					}

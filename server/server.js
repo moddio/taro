@@ -1,6 +1,5 @@
 // var appInsights = require("applicationinsights");
 // appInsights.setup("db8b2d10-212b-4e60-8af0-2482871ccf1d").start();
-var net = require('net');
 const publicIp = require('public-ip');
 const express = require('express');
 const helmet = require('helmet');
@@ -12,7 +11,6 @@ const { RateLimiterMemory } = require('rate-limiter-flexible');
 _ = require('lodash');
 
 const config = require('../config');
-const { FILE } = require('dns');
 const Console = console.constructor;
 // redirect global console object to log file
 
@@ -150,7 +148,7 @@ var Server = IgeClass.extend({
 		// for debugging reasons
 		global.isServer = ige.isServer;
 
-		if (typeof HttpComponent != 'undefined') {
+		if (typeof HttpComponent !== 'undefined') {
 			ige.addComponent(HttpComponent);
 		}
 		console.log('cluster.isMaster', cluster.isMaster);
@@ -161,11 +159,11 @@ var Server = IgeClass.extend({
 				self.startWebServer();
 				self.start();
 				self.startGame();
-			} else if (typeof ClusterServerComponent != 'undefined') {
+			} else if (typeof ClusterServerComponent !== 'undefined') {
 				ige.addComponent(ClusterServerComponent);
 			}
 		} else {
-			if (typeof ClusterClientComponent != 'undefined') {
+			if (typeof ClusterClientComponent !== 'undefined') {
 				ige.addComponent(ClusterClientComponent); // backend component will retrieve "start" command from BE
 			}
 
@@ -176,8 +174,8 @@ var Server = IgeClass.extend({
 					self.ip = ip;
 					self.start();
 				});
-			} else // use 127.0.0.1 if dev env
-			{
+			} else {
+				// use 127.0.0.1 if dev env
 				self.ip = '127.0.0.1';
 				self.start();
 			}
@@ -208,7 +206,7 @@ var Server = IgeClass.extend({
 
 	loadGameJSON: function (gameUrl) {
 		var self = this;
-		console.log("loading game JSON")
+		console.log('loading game JSON');
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				self.retryCount++;
@@ -278,9 +276,12 @@ var Server = IgeClass.extend({
 
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
-		
+		if (global.isDev) {
+			// needed for source maps
+			app.use('/ts', express.static(path.resolve('./ts/')));
+		}
+
 		app.get('/', (req, res) => {
-			
 			const videoChatEnabled = ige.game.data && ige.game.data.defaultData && ige.game.data.defaultData.enableVideoChat ? ige.game.data.defaultData.enableVideoChat : false;
 			const game = {
 				_id: global.standaloneGame.defaultData._id,
@@ -374,7 +375,7 @@ var Server = IgeClass.extend({
 		this.maxPlayersAllowed = self.maxPlayers || 32;
 
 		console.log('maxPlayersAllowed', this.maxPlayersAllowed);
-		
+
 		// Define an object to hold references to our player entities
 		this.clients = {};
 
@@ -406,7 +407,7 @@ var Server = IgeClass.extend({
 				promise = self.loadGameJSON(gameUrl);
 			} else {
 				promise = new Promise(function (resolve, reject) {
-					var game = fs.readFileSync(`${__dirname}/../src/game.json`);
+					var game = fs.readFileSync(path.resolve(__dirname, '../src/game.json'));
 					game = JSON.parse(game);
 					game.defaultData = game;
 					var data = { data: {} };
@@ -789,7 +790,9 @@ var Server = IgeClass.extend({
 			var returnData = {
 				clientCount: Object.keys(ige.network._socketById).length,
 				entityCount: {
-					player: ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human'; }).length,
+					player: ige.$$('player').filter(function (player) {
+						return player._stats.controlledBy == 'human';
+					}).length,
 					unit: ige.$$('unit').length,
 					item: ige.$$('item').length,
 					debris: ige.$$('debris').length,
@@ -835,4 +838,6 @@ var Server = IgeClass.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Server; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Server;
+}

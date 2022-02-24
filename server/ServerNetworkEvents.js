@@ -13,17 +13,17 @@ var ServerNetworkEvents = {
 		// Tell the client to track their player entity
 		// Don't reject the client connection
 		var clientId = socket.id;
-		console.log("3. _onClientConnect " + clientId + " (ip: " + socket._remoteAddress + ") client count: " + Object.keys(ige.server.clients).length, "(ServerNetworkEvents.js)")
+		console.log(`3. _onClientConnect ${clientId} (ip: ${socket._remoteAddress}) client count: ${Object.keys(ige.server.clients).length}`, '(ServerNetworkEvents.js)');
 
 		ige.server.clients[clientId] = {
 			id: clientId,
 			socket: socket,
 			ip: socket._remoteAddress
-		}
+		};
 
-		ige.server.clients[clientId].lastEventAt = Date.now()
+		ige.server.clients[clientId].lastEventAt = Date.now();
 
-		ige.server.testerId = clientId
+		ige.server.testerId = clientId;
 	},
 
 	_onClientDisconnect: function (clientId) {
@@ -33,17 +33,17 @@ var ServerNetworkEvents = {
 
 		// remove client from streamData
 		for (entityId in ige.network.stream._streamClientCreated) {
-			delete ige.network.stream._streamClientCreated[entityId][clientId]
+			delete ige.network.stream._streamClientCreated[entityId][clientId];
 		}
 
 		var client = ige.server.clients[clientId];
-		var player = ige.game.getPlayerByClientId(clientId)
+		var player = ige.game.getPlayerByClientId(clientId);
 
 		if (client && client._id) {
-			ige.devLog("BE(out): clientDisconnect: " + clientId + " " + client._id)
+			ige.devLog(`BE(out): clientDisconnect: ${clientId} ${client._id}`);
 
 			if (player) {
-				console.log("_onclientDisconnect" + clientId + " (" + player._stats.name + ")" + (Date.now() - client.lastEventAt));
+				console.log(`_onclientDisconnect${clientId} (${player._stats.name})${Date.now() - client.lastEventAt}`);
 				player.updatePlayerHighscore();
 
 				if (player._stats.userId) {
@@ -51,18 +51,17 @@ var ServerNetworkEvents = {
 				}
 			}
 
-			ige.clusterClient.emit("clientDisconnect", client._id)
+			ige.clusterClient.emit('clientDisconnect', client._id);
 		}
 
-		delete client;
+		// delete client; // This doesn't work, for the record.
 
 		if (player) {
-			player.remove()
+			player.remove();
 		}
 	},
 
 	_onJoinGameWrapper: function (data, clientId) {
-
 		var reason = 'IP banned.';
 		var client = ige.server.clients[clientId];
 		var socket = ige.network._socketById[clientId];
@@ -79,24 +78,22 @@ var ServerNetworkEvents = {
 						ps && ps.close(reason);
 					}
 				});
-			}
+			};
 
 			if (ige.banIpsList.includes(ipAddress)) {
 				removeAllConnectedPlayerWithSameIp();
 				socket.close(reason);
 				return;
-			};
+			}
 
 			ige.server._onJoinGame(data, clientId);
 		}
 	},
 
 	_onJoinGame: function (data, clientId) {
-
 		// assign _id and sessionID to the new client
 		var client = ige.server.clients[clientId];
 		var socket = ige.network._socketById[clientId];
-
 
 		if (process.env.ENV === 'standalone' || process.env.ENV == 'standalone-remote') {
 			delete data._id;
@@ -110,13 +107,13 @@ var ServerNetworkEvents = {
 
 		// check joining user is same as token user.
 		if (data._id && socket._token && socket._token.userId !== data._id) {
-			console.log("Unauthenticated user joining the game (ServerNetworkEvent.js)")
+			console.log('Unauthenticated user joining the game (ServerNetworkEvent.js)');
 			socket.close('Unauthenticated user joining the game');
 		}
 
 		if (client) {
-			console.log("4. _onJoinGame " + clientId + " time elapsed: " + (Date.now() - client.lastEventAt), "(ServerNetworkEvent.js)")
-			client.lastEventAt = Date.now()
+			console.log(`4. _onJoinGame ${clientId} time elapsed: ${Date.now() - client.lastEventAt}`, '(ServerNetworkEvent.js)');
+			client.lastEventAt = Date.now();
 			client.receivedJoinGame = Date.now();
 		}
 
@@ -129,7 +126,7 @@ var ServerNetworkEvents = {
 		});
 
 		if (isIpRestricted) {
-			console.log("IP is banned for ", clientId);
+			console.log('IP is banned for ', clientId);
 			var reason = 'Restricted IP detected.';
 			ige.network.send('clientDisconnect', { reason, clientId: clientId });
 			if (socket) {
@@ -144,7 +141,7 @@ var ServerNetworkEvents = {
 		// if (playerWithDuplicateIP && playerWithDuplicateIP.getUnitCount() >= 1 && !(ige.game.data && ige.game.data.settings.allowDuplicateIPs)) {
 		if (playerWithDuplicateIP && playerWithDuplicateIP.getUnitCount() >= maximumDuplicateIpsAllowed) {
 			var reason = 'Duplicate IP detected. <br/>Please login to play the game <br/><a href="/?login=true" class="btn btn-primary">Login</a>';
-			console.log("Duplicate IP " + currentClientIp + " detected for " + clientId)
+			console.log(`Duplicate IP ${currentClientIp} detected for ${clientId}`);
 			ige.network.send('clientDisconnect', { reason, clientId: clientId });
 			socket.close(reason);
 			return;
@@ -155,79 +152,75 @@ var ServerNetworkEvents = {
 			// if player already exists in the game
 			var player = ige.game.getPlayerByUserId(data._id);
 
-			//condition for menu open and click for play game button durring current play game.
+			// condition for menu open and click for play game button durring current play game.
 			if (player && player._stats && clientId != player._stats.clientId) {
-				console.log('Client already exists. Kicking the existing player ' + player._stats.clientId + " (" + player._stats.name + ")");
+				console.log(`Client already exists. Kicking the existing player ${player._stats.clientId} (${player._stats.name})`);
 				player.updatePlayerHighscore();
 				var oldPlayerClientId = player._stats.clientId;
 				ige.network.send('clientDisconnect', { reason: 'Player disconnected', clientId: oldPlayerClientId });
 
 				if (ige.server.clients[oldPlayerClientId] && ige.server.clients[oldPlayerClientId]._id) {
-					ige.clusterClient.emit("clientDisconnect", ige.server.clients[oldPlayerClientId]._id)
+					ige.clusterClient.emit('clientDisconnect', ige.server.clients[oldPlayerClientId]._id);
 				}
 
 				delete ige.server.clients[oldPlayerClientId];
 
-				//kicking player out of the game.
+				// kicking player out of the game.
 				player.remove();
 			}
 
-			//if player open menu during game play
+			// if player open menu during game play
 			if (player && clientId == player._stats.clientId) {
-				console.log("Player requested to join game " + clientId + " (" + player._stats.name + ")")
+				console.log(`Player requested to join game ${clientId} (${player._stats.name})`);
 				player._stats.isAdBlockEnabled = data.isAdBlockEnabled;
 				player.joinGame();
-			}
-			else {
+			} else {
 				if (client) {
-					client._id = data._id
+					client._id = data._id;
 				}
 
-				console.log("request-user-data for " + clientId + ' (user._id:' + data._id + ")");
-				ige.clusterClient && ige.clusterClient.emit("request-user-data", data)
+				console.log(`request-user-data for ${clientId} (user._id:${data._id})`);
+				ige.clusterClient && ige.clusterClient.emit('request-user-data', data);
 				if (process.env.ENV === 'standalone') {
 					if (player == undefined) {
 						var userData = {
 							controlledBy: 'human',
-							name: 'user' + (Math.floor(Math.random() * 999) + 100),
+							name: `user${Math.floor(Math.random() * 999) + 100}`,
 							points: 0,
 							coins: 0,
 							clientId: client._id,
 							purchasables: {}
 						};
-						var player = ige.game.createPlayer()
+						var player = ige.game.createPlayer();
 						for (key in userData) {
-							var obj = {}
+							var obj = {};
 							obj[key] = userData[key];
-							data.push(obj)
+							data.push(obj);
 						}
 						player.joinGame();
 						player.streamUpdateData(data);
 					}
 				}
 			}
+		} else {
+			// guest player
+			console.log('5. joining as a guest player (ServerNetworkEvents.js)');
 
-		}
-		else // guest player
-		{
-			console.log("5. joining as a guest player (ServerNetworkEvents.js)")
-
-			var socket = ige.network._socketById[clientId]
+			var socket = ige.network._socketById[clientId];
 			if (socket) {
-
 				// if this guest hasn't created player yet (hasn't joined the game yet)
-				var player = ige.game.getPlayerByClientId(socket.id)
+				var player = ige.game.getPlayerByClientId(socket.id);
 
 				if (player) {
 					player._stats.isAdBlockEnabled = data.isAdBlockEnabled;
 				} else {
-					if (typeof data.number != 'number') {
-						data.number = " lol"
+					if (typeof data.number !== 'number') {
+						data.number = ' lol';
 					}
 
 					var player = ige.game.createPlayer({
-						controlledBy: "human",
-						name: "user" + data.number,
+						controlledBy: 'human',
+						name: `user${data.number}`,
 						coins: 0,
 						points: 0,
 						clientId: clientId,
@@ -239,7 +232,6 @@ var ServerNetworkEvents = {
 			}
 		}
 	},
-
 
 	_onBuySkin: function (skinHandle, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
@@ -260,9 +252,9 @@ var ServerNetworkEvents = {
 				unit.streamUpdateData([
 					{ skin: unit._stats.skin },
 					{ points: unit._stats.points }
-				])
+				]);
 			}
-		}		
+		}
 	},
 
 	_onTrade: function (msg, clientId) {
@@ -271,7 +263,7 @@ var ServerNetworkEvents = {
 				var requestedBy = ige.$(msg.requestedBy);
 				var acceptedBy = ige.$(msg.acceptedBy);
 				if (requestedBy && acceptedBy && requestedBy._category === 'player' && acceptedBy._category === 'player') {
-					var tradeBetween = { playerA: requestedBy.id(), playerB: acceptedBy.id() }
+					var tradeBetween = { playerA: requestedBy.id(), playerB: acceptedBy.id() };
 					ige.network.send('trade', { type: 'start', between: tradeBetween }, requestedBy._stats.clientId);
 					requestedBy.tradingWith = acceptedBy.id();
 					requestedBy.isTrading = true;
@@ -299,7 +291,7 @@ var ServerNetworkEvents = {
 
 				if (acceptedBy && acceptedFor) {
 					if (!acceptedBy.acceptTrading) {
-						ige.chat.sendToRoom("1", "Trading has been accepted by " + acceptedBy._stats.name, acceptedFor._stats.clientId);
+						ige.chat.sendToRoom('1', `Trading has been accepted by ${acceptedBy._stats.name}`, acceptedFor._stats.clientId);
 					}
 					if (acceptedBy.tradingWith === acceptedFor.id()) {
 						acceptedBy.acceptTrading = true;
@@ -347,13 +339,11 @@ var ServerNetworkEvents = {
 							ige.network.send('trade', { type: 'error', between: tradeBetween }, acceptedFor._stats.clientId);
 
 							ige.network.send('trade', { type: 'error', between: tradeBetween }, acceptedBy._stats.clientId);
-							return
+							return;
 						}
 
 						unitA.streamUpdateData([{ itemIds: unitA._stats.itemIds }]);
 						unitB.streamUpdateData([{ itemIds: unitB._stats.itemIds }]);
-
-
 
 						ige.network.send('trade', { type: 'success', between: tradeBetween }, acceptedFor._stats.clientId);
 
@@ -387,9 +377,9 @@ var ServerNetworkEvents = {
 					delete playerB.acceptTrading;
 				}
 
-				var tradeBetween = { playerA: msg.cancleBy, playerB: msg.cancleTo }
+				var tradeBetween = { playerA: msg.cancleBy, playerB: msg.cancleTo };
 				ige.network.send('trade', { type: 'cancel', between: tradeBetween }, playerB._stats.clientId);
-				ige.chat.sendToRoom("1", "Trading has been cancel by " + playerA._stats.name, playerB._stats.clientId);
+				ige.chat.sendToRoom('1', `Trading has been cancel by ${playerA._stats.name}`, playerB._stats.clientId);
 
 				var unitA = playerA.getSelectedUnit();
 				if (unitA) {
@@ -428,23 +418,23 @@ var ServerNetworkEvents = {
 	},
 
 	_onBuyItem: function (id, clientId) {
-		ige.devLog("player " + clientId + " wants to purchase item" + id);
+		ige.devLog(`player ${clientId} wants to purchase item${id}`);
 
 		var player = ige.game.getPlayerByClientId(clientId);
 		if (player) {
 			var unit = player.getSelectedUnit();
 			if (unit) {
-				unit.buyItem(id)
+				unit.buyItem(id);
 			}
 		}
 	},
 	_onBuyUnit: function (id, clientId) {
-		ige.devLog("player " + clientId + " wants to purchase item" + id);
+		ige.devLog(`player ${clientId} wants to purchase item${id}`);
 		var player = ige.game.getPlayerByClientId(clientId);
 		if (player) {
 			var unit = player.getSelectedUnit();
 			if (unit) {
-				unit.buyUnit(id)
+				unit.buyUnit(id);
 			}
 		}
 	},
@@ -506,22 +496,20 @@ var ServerNetworkEvents = {
 
 					if (fromItem._stats.bonus && fromItem._stats.bonus.passive && fromItem._stats.bonus.passive.isDisabledInBackpack == true) {
 						if (data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize) {
-							unit.updateStats(fromItem.id(), true)
-						}
-						else if (data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize) {
-							unit.updateStats(fromItem.id())
+							unit.updateStats(fromItem.id(), true);
+						} else if (data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize) {
+							unit.updateStats(fromItem.id());
 						}
 					}
-					
+
 					if (toItem._stats.bonus && toItem._stats.bonus.passive && toItem._stats.bonus.passive.isDisabledInBackpack == true) {
 						if (data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize) {
-							unit.updateStats(toItem.id(), true)
-						}
-						else if (data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize) {
-							unit.updateStats(toItem.id())
+							unit.updateStats(toItem.id(), true);
+						} else if (data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize) {
+							unit.updateStats(toItem.id());
 						}
 					}
-          
+
 					var temp = itemIds[data.from];
 					itemIds[data.from] = itemIds[data.to];
 					itemIds[data.to] = temp;
@@ -532,7 +520,7 @@ var ServerNetworkEvents = {
 			if (
 				fromItem != undefined &&
 				toItem == undefined &&
-				data.to < unit.inventory.getTotalInventorySize() && 
+				data.to < unit.inventory.getTotalInventorySize() &&
 				(
 					fromItem._stats.controls == undefined ||
 					fromItem._stats.controls.permittedInventorySlots == undefined ||
@@ -544,14 +532,13 @@ var ServerNetworkEvents = {
 				fromItem.streamUpdateData([{ slotIndex: parseInt(data.to) }]);
 
 				if (fromItem._stats.bonus && fromItem._stats.bonus.passive && fromItem._stats.bonus.passive.isDisabledInBackpack == true) {
-					if (data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize){
-						unit.updateStats(fromItem.id(), true)
-					}
-					else if (data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize) {
-						unit.updateStats(fromItem.id())
+					if (data.from + 1 <= unit._stats.inventorySize && data.to + 1 > unit._stats.inventorySize) {
+						unit.updateStats(fromItem.id(), true);
+					} else if (data.to + 1 <= unit._stats.inventorySize && data.from + 1 > unit._stats.inventorySize) {
+						unit.updateStats(fromItem.id());
 					}
 				}
-				
+
 				itemIds[data.to] = itemIds[data.from];
 				itemIds[data.from] = undefined;
 			}
@@ -678,21 +665,21 @@ var ServerNetworkEvents = {
 	},
 
 	_onPlayerMouseMoved: function (position, clientId) {
-		var player = ige.game.getPlayerByClientId(clientId)
+		var player = ige.game.getPlayerByClientId(clientId);
 		if (player) {
-			var unit = player.getSelectedUnit()
+			var unit = player.getSelectedUnit();
 			// prevent taking mouse input if mouse cursor is right above the selected unit
 			if (unit && (Math.abs(position[0]) > 20 || Math.abs(position[1]) > 20)) {
-				player.control.input.mouse.x = position[0]
-				player.control.input.mouse.y = position[1]
+				player.control.input.mouse.x = position[0];
+				player.control.input.mouse.y = position[1];
 			}
 		}
 	},
 
 	_onPlayerUnitMoved: function (position, clientId) {
-		var player = ige.game.getPlayerByClientId(clientId)
+		var player = ige.game.getPlayerByClientId(clientId);
 		if (player) {
-			var unit = player.getSelectedUnit()
+			var unit = player.getSelectedUnit();
 			if (unit) {
 				unit.clientStreamedPosition = position;
 			}
@@ -700,14 +687,14 @@ var ServerNetworkEvents = {
 	},
 
 	_onPlayerCustomInput: function (data, clientId) {
-		var player = ige.game.getPlayerByClientId(clientId)
+		var player = ige.game.getPlayerByClientId(clientId);
 		if (player && data && data.status === 'submitted') {
-			player.lastCustomInput = data.inputText
-			ige.trigger.fire("playerCustomInput", { playerId: player.id() })
+			player.lastCustomInput = data.inputText;
+			ige.trigger.fire('playerCustomInput', { playerId: player.id() });
 		}
 	},
 	_onPlayerAbsoluteAngle: function (data, clientId) {
-		var player = ige.game.getPlayerByClientId(clientId)
+		var player = ige.game.getPlayerByClientId(clientId);
 		if (player) {
 			player.absoluteAngle = data;
 		}
@@ -739,7 +726,7 @@ var ServerNetworkEvents = {
 					ige.script.runScript(selectedOption.scriptName, {});
 				}
 				if (selectedOption.followUpDialogue) {
-					ige.network.send("openDialogue", {
+					ige.network.send('openDialogue', {
 						type: selectedOption.followUpDialogue,
 						extraData: {
 							playerName: player._stats.name
@@ -753,15 +740,14 @@ var ServerNetworkEvents = {
 	_onPlayerKeyDown: function (data, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
 		if (player != undefined) {
-			player.control.keyDown(data.device, data.key)
+			player.control.keyDown(data.device, data.key);
 		}
 	},
-
 
 	_onPlayerKeyUp: function (data, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
 		if (player != undefined) {
-			player.control.keyUp(data.device, data.key)
+			player.control.keyUp(data.device, data.key);
 		}
 	},
 
@@ -777,12 +763,12 @@ var ServerNetworkEvents = {
 		var unit = ige.$(data.unitId);
 		var player = ige.game.getPlayerByClientId(clientId);
 		if (player && unit) {
-			player.selectUnit(data.unitId)
+			player.selectUnit(data.unitId);
 		}
 	},
 
 	_onSomeBullshit: function () {
-		//bullshit
+		// bullshit
 	}
 };
 

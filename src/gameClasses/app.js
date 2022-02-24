@@ -36,7 +36,7 @@ function prerollComplete () {
 }
 
 function showAipPreroll () {
-	if (typeof aipPlayer != 'undefined') {
+	if (typeof aipPlayer !== 'undefined') {
 		adplayer = new aipPlayer({
 			AD_WIDTH: 960,
 			AD_HEIGHT: 540,
@@ -55,7 +55,7 @@ function showAipPreroll () {
 }
 
 function showAipMidroll () {
-	if (typeof aipPlayer != 'undefined') {
+	if (typeof aipPlayer !== 'undefined') {
 		adplayer = new aipPlayer({
 			AD_WIDTH: 960,
 			AD_HEIGHT: 540,

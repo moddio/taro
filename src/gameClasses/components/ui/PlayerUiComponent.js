@@ -96,7 +96,7 @@ var PlayerUiComponent = IgeEntity.extend({
 				} else {
 					if (attr.decimalPlaces != undefined && attr.decimalPlaces != null) {
 						var decimalPlace = parseInt(attr.decimalPlaces);
-						if (decimalPlace != NaN) {
+						if (!isNaN(decimalPlace)) {
 							attr.value = parseFloat(attr.value).toFixed(decimalPlace);
 						} else {
 							attr.value = parseFloat(attr.value).toFixed(2);
@@ -119,7 +119,7 @@ var PlayerUiComponent = IgeEntity.extend({
 
 	updatePlayerCoin: function (newValue) {
 		var coin = parseInt($('.player-coins').html());
-		if (coin != NaN) {
+		if (!isNaN(coin)) {
 			$('.player-coins').html(parseInt(newValue));
 		}
 	},
@@ -197,7 +197,7 @@ var PlayerUiComponent = IgeEntity.extend({
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
 		var newWin = window.open(config.url);
 
-		if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+		if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
 			swal({
 				title: 'Please allow Popups',
 				text: 'Your browser is blocking the content modd.io is trying to display',

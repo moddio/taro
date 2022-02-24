@@ -320,9 +320,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 	},
 
 	off: function () {
-		if (arguments.length === 3) {
-
-		} else {
+		if (arguments.length !== 3) {
 			IgeEntity.prototype.off.apply(this, arguments);
 		}
 	},

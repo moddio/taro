@@ -35,6 +35,7 @@ printStackTrace.implementation.prototype = {
 		// Use either the stored mode, or resolve it
 		// var mode = this._mode || this.mode(ex);
 		if (mode === 'other') {
+			// eslint-disable-next-line no-caller
 			return this.other(arguments.callee);
 		} else {
 			return this[mode](ex);

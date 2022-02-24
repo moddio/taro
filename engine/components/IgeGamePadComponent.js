@@ -169,7 +169,7 @@ var IgeGamePadComponent = IgeEventingClass.extend({
 			var gamepadsChanged = false;
 
 			for (var i = 0; i < rawGamepads.length; i++) {
-				if (typeof rawGamepads[i] != this.prevRawGamepadTypes[i]) {
+				if (typeof rawGamepads[i] !== this.prevRawGamepadTypes[i]) {
 					gamepadsChanged = true;
 					this.prevRawGamepadTypes[i] = typeof rawGamepads[i];
 				}

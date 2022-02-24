@@ -1,11 +1,11 @@
 var moddioConfig =
-    process.env.ENV === 'standalone'
-    	? []
-    	: [
-    		{ name: 'ClusterClientComponent', path: '../../ClusterClientComponent' },
-    		{ name: 'ClusterServerComponent', path: '../../ClusterServerComponent' },
-    		{ name: 'HttpComponent', path: '../../HttpComponent' }
-    	];
+process.env.ENV === 'standalone'
+	? []
+	: [
+		{ name: 'ClusterClientComponent', path: '../../ClusterClientComponent' },
+		{ name: 'ClusterServerComponent', path: '../../ClusterServerComponent' },
+		{ name: 'HttpComponent', path: '../../HttpComponent' }
+	];
 var defaultConfig = [
 	{ name: 'ServerNetworkEvents', path: '../server/ServerNetworkEvents' },
 

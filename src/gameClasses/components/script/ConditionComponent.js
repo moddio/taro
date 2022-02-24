@@ -38,11 +38,11 @@ var ConditionComponent = IgeEntity.extend({
 			if (leftVar == undefined) {
 				leftVar = !!leftVar;
 			}
-			if (typeof leftVar != 'object') {
+			if (typeof leftVar !== 'object') {
 				var leftVar = JSON.stringify(leftVar);
 			}
 
-			if (typeof rightVar != 'object') {
+			if (typeof rightVar !== 'object') {
 				var rightVar = JSON.stringify(rightVar);
 			}
 
