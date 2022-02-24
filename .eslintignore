@@ -1,10 +1,18 @@
-# Don't lint minified files.
-*.min.js
-
-# Don't lint minified libs.
-src/lib/
-src/pixi/pixi-legacy.js
-
-# Compiled files.
+# Compiled build
+build/
 src/game.js
 client.js
+
+# Minified files
+*.min.js
+src/lib/
+
+# Libraries
+matter.js
+three*.js
+engine/components/physics/box2d/dists/*
+src/pixi/pixi-legacy.js
+engine/components/editor/vendor/jsRender.js
+
+# Files not worth linting at this point in time
+engine/components/network/socket.io/client/socket.io.js

@@ -67,9 +67,6 @@
         "IgeViewport": "writable"
     },
     "rules": {
-        // Alternatives to eval should be used.
-        "no-eval": 1,
-
         // } else {}
         "brace-style": 1,
 
@@ -120,6 +117,8 @@
         "array-callback-return": 0,
         "no-prototype-builtins": 0,
         "no-case-declarations": 0,
-        "no-labels": 0
+        "no-labels": 0,
+        "no-eval": 0, // Alternatives to eval should be used. However, this is not a change that needs to be made now.
+        "no-extend-native": 0
      }
 }

@@ -16,7 +16,8 @@
     "debug": "cross-env ENV=standalone node --inspect server/ige.js -g ./src",
     "dev:lint": "eslint . --ext .js,.ts --fix",
     "dev:lint:ts": "eslint . --ext .ts --fix",
-    "ci:lint:ts": "eslint . --ext .ts"
+    "ci:lint:ts": "eslint . --ext .ts",
+    "ci:lint:js": "eslint . --ext .js"
   },
   "repository": {
     "type": "git",
