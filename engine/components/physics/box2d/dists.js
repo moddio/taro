@@ -265,8 +265,8 @@ var dists = {
 						entityA.body,
 						entityB.body
 					);
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = planck.WeldJoint(
 						{
 							frequencyHz: 0, // The mass-spring-damper frequency in Hertz. Rotation only. Disable softness with a value of 0.
@@ -836,8 +836,8 @@ var dists = {
 
 					joint_def.localAnchorA.Set(anchorA.x / self._scaleRatio, anchorA.y / self._scaleRatio); // item anchor
 					joint_def.localAnchorB.Set(anchorB.x / self._scaleRatio, -anchorB.y / self._scaleRatio); // unit anchor
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = new box2dweb.Dynamics.Joints.b2WeldJointDef();
 					joint_def.Initialize(
 						entityA.body,
@@ -1195,8 +1195,8 @@ var dists = {
 
 					joint_def.localAnchorA.Set(anchorA.x / self._scaleRatio, anchorA.y / self._scaleRatio); // item anchor
 					joint_def.localAnchorB.Set(anchorB.x / self._scaleRatio, -anchorB.y / self._scaleRatio); // unit anchor
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = new box2dninja.Dynamics.Joints.b2WeldJointDef();
 					joint_def.Initialize(
 						entityA.body,
@@ -1601,8 +1601,8 @@ var dists = {
 
 					joint_def.localAnchorA.Set(anchorA.x / self._scaleRatio, anchorA.y / self._scaleRatio); // item anchor
 					joint_def.localAnchorB.Set(anchorB.x / self._scaleRatio, -anchorB.y / self._scaleRatio); // unit anchor
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = new box2dts.b2WeldJointDef();
 					joint_def.collideConnected = false;
 					joint_def.Initialize(
@@ -1970,8 +1970,8 @@ var dists = {
 
 					joint_def.localAnchorA.Set(anchorA.x / self._scaleRatio, anchorA.y / self._scaleRatio); // item anchor
 					joint_def.localAnchorB.Set(anchorB.x / self._scaleRatio, -anchorB.y / self._scaleRatio); // unit anchor
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = new this.native.b2WeldJointDef();
 
 					joint_def.Initialize(
@@ -2354,8 +2354,8 @@ var dists = {
 
 					joint_def.localAnchorA.Set(anchorA.x / aBody.width, anchorA.y / aBody.height);
 					joint_def.localAnchorB.Set(anchorB.x / bBody.width, anchorB.y / bBody.height);
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = new box2dts.b2WeldJointDef();
 
 					joint_def.Initialize(
@@ -2737,8 +2737,8 @@ var dists = {
 
 					joint_def.localAnchorA.Set(anchorA.x / self._scaleRatio, anchorA.y / self._scaleRatio); // item anchor
 					joint_def.localAnchorB.Set(anchorB.x / self._scaleRatio, -anchorB.y / self._scaleRatio); // unit anchor
-				} else // weld joint
-				{
+				} else {
+					// weld joint
 					var joint_def = new box2dts.b2WeldJointDef();
 
 					joint_def.Initialize(

@@ -729,12 +729,12 @@
 		var dp = point.dot(line);
 		// If the point is beyond the start of the line, it is in the
 		// left voronoi region.
-		if (dp < 0) { return LEFT_VORONOI_REGION; }
+		if (dp < 0) return LEFT_VORONOI_REGION;
 		// If the point is beyond the end of the line, it is in the
 		// right voronoi region.
-		else if (dp > len2) { return RIGHT_VORONOI_REGION; }
+		else if (dp > len2) return RIGHT_VORONOI_REGION;
 		// Otherwise, it's in the middle one.
-		else { return MIDDLE_VORONOI_REGION; }
+		else return MIDDLE_VORONOI_REGION;
 	}
 	// Constants for Voronoi regions
 	/**

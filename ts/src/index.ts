@@ -1,7 +1,7 @@
 const Game = IgeClass.extend({
     classId: `Game`,
 
-    init (App: typeof Client, options?: object) {
+    init (App: typeof Client, options?: Record<string, unknown>) {
         // Create the engine
         ige = new IgeEngine(options);
         console.log(`ige initialized`, ige.isClient, ige.isServer); // debug?
