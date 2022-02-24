@@ -255,7 +255,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
+					if (sourceString && patternString && typeof sourceString === 'string' && typeof patternString === 'string') {
 						returnValue = sourceString.includes(patternString);
 					}
 					break;
@@ -1286,7 +1286,7 @@ var VariableComponent = IgeEntity.extend({
 				case 'getItemTypeOfItem':
 					if (entity && entity._stats) {
 						returnValue = entity._stats.itemTypeId;
-					} else if (typeof entity == 'string') {
+					} else if (typeof entity === 'string') {
 						// if itemTypeOfItem is key of unit
 						returnValue = entity;
 					}
@@ -1396,7 +1396,7 @@ var VariableComponent = IgeEntity.extend({
 
 					if (unit && unit._category == 'unit') {
 						returnValue = unit._stats.type;
-					} else if (typeof unit == 'string') {
+					} else if (typeof unit === 'string') {
 						// if unitTypeOfUnit is key of unit
 						returnValue = unit;
 					} else {
@@ -1616,7 +1616,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
+					if (sourceString && patternString && typeof sourceString === 'string' && typeof patternString === 'string') {
 						returnValue = sourceString.startsWith(patternString);
 					}
 					break;
@@ -1624,7 +1624,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
+					if (sourceString && patternString && typeof sourceString === 'string' && typeof patternString === 'string') {
 						returnValue = sourceString.endsWith(patternString);
 					}
 					break;
@@ -1633,7 +1633,7 @@ var VariableComponent = IgeEntity.extend({
 					var matchString = self.getValue(text.matchString, vars);
 					var newString = self.getValue(text.newString, vars);
 
-					if (sourceString && matchString && newString && typeof sourceString == 'string' && typeof matchString == 'string' && typeof newString == 'string') {
+					if (sourceString && matchString && newString && typeof sourceString === 'string' && typeof matchString === 'string' && typeof newString === 'string') {
 						returnValue = sourceString.split(matchString).join(newString);
 					}
 					break;
@@ -1874,7 +1874,7 @@ var VariableComponent = IgeEntity.extend({
 		// For debugging purpose. if type of returnValue is object, it can sometimes cause TypeError: Converting circular structure to JSON
 		if (ige.isServer) {
 			var output = returnValue;
-			if (typeof returnValue == 'object' && returnValue && returnValue._category) {
+			if (typeof returnValue === 'object' && returnValue && returnValue._category) {
 				output = returnValue._category;
 			}
 		}
@@ -1888,7 +1888,7 @@ var VariableComponent = IgeEntity.extend({
 		if (items == undefined)
 			return;
 
-		if ((items && items.constructor != Array) || typeof items == 'number') {
+		if ((items && items.constructor != Array) || typeof items === 'number') {
 			var solution = this.getValue(items, vars);
 			return parseFloat(solution);
 		}
@@ -2006,7 +2006,7 @@ var VariableComponent = IgeEntity.extend({
 		// if a developer is connected, send
 		if (ige.isServer && (ige.server.developerClientId || process.env.ENV === 'standalone' || process.env.ENV == 'standalone-remote')) {
 			// only show 'object' string if env variable is object
-			if (typeof data.params.newValue == 'object') {
+			if (typeof data.params.newValue === 'object') {
 				self.devLogs[data.params.variableName] = `object ${(data.params.newValue._stats) ? `(${data.params.newValue._category}): ${data.params.newValue._stats.name}` : ''}`;
 			} else {
 				// otherwise, show the actual value

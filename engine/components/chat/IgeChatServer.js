@@ -180,7 +180,7 @@ var IgeChatServer = {
 		var room;
 
 		// prevent non-string or non-unicode (e.g. emoji) from being broadcasted as it can disconnect all connected clients
-		if (typeof msg.text != 'string' || self.regexUnicode.test(msg.text) == true) {
+		if (typeof msg.text !== 'string' || self.regexUnicode.test(msg.text) == true) {
 			return;
 		}
 
@@ -207,7 +207,7 @@ var IgeChatServer = {
 				});
 			}
 
-			if (msg.roomId && typeof msg.roomId == 'string' || typeof msg.roomId == 'number') {
+			if (msg.roomId && typeof msg.roomId === 'string' || typeof msg.roomId === 'number') {
 				room = self._rooms[msg.roomId];
 				if (room) {
 					if (room.users.indexOf(clientId) > -1) {

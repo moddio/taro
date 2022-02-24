@@ -416,7 +416,7 @@ var dists = {
 				if (entity._category == 'debris' && entity._stats.name == 'car')
 					console.log(entity._translate, entity.width(), entity.height());
 				var collider = new self.crash.Box(new self.crash.Vector(entity._translate.x, entity._translate.y), entity.width(), entity.height());
-				if (typeof PIXI != 'undefined') {
+				if (typeof PIXI !== 'undefined') {
 					var graphics = new PIXI.Graphics();
 
 					graphics.beginFill(0xFF0000);
@@ -2001,7 +2001,7 @@ var dists = {
 			// component.b2AABB = box2dweb.Collision.b2AABB; // added by Jaeyun for world collision detection for raycast bullets
 			// console.log(box2DJS);
 
-			if (typeof box2DJS != 'function') return;
+			if (typeof box2DJS !== 'function') return;
 			box2DJS().then(function (box2D) {
 				component.b2Color = box2D.b2Color;
 				component.b2Vec2 = box2D.b2Vec2;

@@ -548,7 +548,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				var tempBod = self._world.getBodyList();
 
 				// iterate through every physics body
-				while (tempBod && typeof tempBod.getNext == 'function') {
+				while (tempBod && typeof tempBod.getNext === 'function') {
 					// Check if the body is awake && not static
 					if (tempBod.m_type !== 'static' && tempBod.isAwake()) {
 						entity = tempBod._entity;

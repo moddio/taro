@@ -438,7 +438,7 @@ var Player = IgeEntity.extend({
 				if (ige.isClient) {
 					if (attrName === 'name') {
 						// update here
-						if (typeof refreshUserName == 'function') {
+						if (typeof refreshUserName === 'function') {
 							refreshUserName(newValue);
 						}
 					}

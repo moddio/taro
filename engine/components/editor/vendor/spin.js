@@ -6,10 +6,10 @@
  */
 (function (root, factory) {
 	/* CommonJS */
-	if (typeof exports == 'object') module.exports = factory();
+	if (typeof exports === 'object') module.exports = factory();
 
 	/* AMD module */
-	else if (typeof define == 'function' && define.amd) define(factory);
+	else if (typeof define === 'function' && define.amd) define(factory);
 
 	/* Browser global */
 	else root.Spinner = factory();
@@ -129,7 +129,7 @@
    * Returns the line color from the given string or array.
    */
 	function getColor (color, idx) {
-		return typeof color == 'string' ? color : color[idx % color.length];
+		return typeof color === 'string' ? color : color[idx % color.length];
 	}
 
 	// Built-in defaults
@@ -156,7 +156,7 @@
 
 	/** The constructor */
 	function Spinner (o) {
-		if (typeof this == 'undefined') return new Spinner(o);
+		if (typeof this === 'undefined') return new Spinner(o);
 		this.opts = merge(o || {}, Spinner.defaults, defaults);
 	}
 

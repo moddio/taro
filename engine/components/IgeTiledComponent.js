@@ -94,7 +94,7 @@ var IgeTiledComponent = IgeClass.extend({
 
 					maps[i] = new mapClass(data.tilewidth, data.tileheight);
 
-					if (typeof maps[i].tileWidth == 'function') {
+					if (typeof maps[i].tileWidth === 'function') {
 						maps[i].tileWidth(data.tilewidth)
 							.tileHeight(data.tilewidth)
 							.depth(i);

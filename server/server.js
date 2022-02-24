@@ -148,7 +148,7 @@ var Server = IgeClass.extend({
 		// for debugging reasons
 		global.isServer = ige.isServer;
 
-		if (typeof HttpComponent != 'undefined') {
+		if (typeof HttpComponent !== 'undefined') {
 			ige.addComponent(HttpComponent);
 		}
 		console.log('cluster.isMaster', cluster.isMaster);
@@ -159,11 +159,11 @@ var Server = IgeClass.extend({
 				self.startWebServer();
 				self.start();
 				self.startGame();
-			} else if (typeof ClusterServerComponent != 'undefined') {
+			} else if (typeof ClusterServerComponent !== 'undefined') {
 				ige.addComponent(ClusterServerComponent);
 			}
 		} else {
-			if (typeof ClusterClientComponent != 'undefined') {
+			if (typeof ClusterClientComponent !== 'undefined') {
 				ige.addComponent(ClusterClientComponent); // backend component will retrieve "start" command from BE
 			}
 

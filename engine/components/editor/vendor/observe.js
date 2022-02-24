@@ -150,7 +150,7 @@
 	var pathRegExp = new RegExp(`^${path}$`);
 
 	function isPathValid (s) {
-		if (typeof s != 'string')
+		if (typeof s !== 'string')
 			return false;
 		s = s.trim();
 
@@ -454,7 +454,7 @@
 
 	var runningMicrotaskCheckpoint = false;
 
-	var hasDebugForceFullDelivery = typeof Object.deliverAllChangeRecords == 'function';
+	var hasDebugForceFullDelivery = typeof Object.deliverAllChangeRecords === 'function';
 
 	global.Platform = global.Platform || {};
 

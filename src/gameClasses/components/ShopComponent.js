@@ -793,7 +793,7 @@ var ShopComponent = IgeEntity.extend({
 		var isDismissible = ige.game.data.shops[self.currentType] && ige.game.data.shops[self.currentType].dismissible != undefined ? ige.game.data.shops[self.currentType].dismissible : true;
 		var shopItemsKeysUsingCoins = [];
 		for (var key in shopItems) {
-			if (typeof shopItems[key].price == 'object' && shopItems[key].price.coins != undefined && shopItems[key].price.coins > 0) {
+			if (typeof shopItems[key].price === 'object' && shopItems[key].price.coins != undefined && shopItems[key].price.coins > 0) {
 				shopItemsKeysUsingCoins.push(key);
 			}
 		}

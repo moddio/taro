@@ -2,69 +2,16 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "es6": true,
-        "node": true
+        "node": true,
+        "es2021": true
     },
     "extends": [
-        "standard",
-        "eslint:recommended"
+        "eslint:recommended",
+        "standard"
     ],
     "parser": "@babel/eslint-parser",
     "parserOptions": {
         "requireConfigFile": false
-    },
-    "globals": {
-        "process": "writable",
-        "module": "writable",
-        "ige": "writable",
-        "$":"writable",
-        "window":"writable",
-        "IgeEntityBox2d": "writable",
-        "Item": "writable",
-        "FloatingText": "writable",
-        "localStorage": "writable",
-        "IgeArray": "writable",
-        "IgeBase": "writable",
-        "IgeBaseScene": "writable",
-        "IgeCamera": "writable",
-        "IgeCellSheet": "writable",
-        "IgeClass": "writable",
-        "IgeCollisionMap2d": "writable",
-        "IgeDummyCanvas": "writable",
-        "IgeDummyContext": "writable",
-        "IgeEngine": "writable",
-        "IgeEntity": "writable",
-        "IgeEventingClass": "writable",
-        "IgeFilters": "writable",
-        "IgeFontEntity": "writable",
-        "IgeFontSheet": "writable",
-        "IgeFSM": "writable",
-        "IgeInterval": "writable",
-        "IgeMap2d": "writable",
-        "IgeMapStack2d": "writable",
-        "IgeMatrix2d": "writable",
-        "IgeObject": "writable",
-        "IgeParticle": "writable",
-        "IgeParticleEmitter": "writable",
-        "IgePathFinder": "writable",
-        "IgePathNode": "writable",
-        "IgePoint2d": "writable",
-        "IgePoint3d": "writable",
-        "IgePoly2d": "writable",
-        "IgeQuest": "writable",
-        "IgeRect": "writable",
-        "IgeScene2d": "writable",
-        "IgeSceneGraph": "writable",
-        "IgeSpriteSheet": "writable",
-        "IgeTexture": "writable",
-        "IgeTextureAtlas": "writable",
-        "IgeTextureMap": "writable",
-        "IgeTileMap2d": "writable",
-        "IgeTimeout": "writable",
-        "IgeTween": "writable",
-        "IgeUiElement": "writable",
-        "IgeUiEntity": "writable",
-        "IgeViewport": "writable"
     },
     "rules": {
         // } else {}
@@ -77,7 +24,6 @@
         // Semicolons and singlequotes should always be used.
         "semi": [2, "always"],
         "quotes": [2, "single"], // Backticks preferrably?
-
 
         // Use templating strings with backticks whenever possible.
         "prefer-template": 1,

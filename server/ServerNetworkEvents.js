@@ -214,7 +214,7 @@ var ServerNetworkEvents = {
 				if (player) {
 					player._stats.isAdBlockEnabled = data.isAdBlockEnabled;
 				} else {
-					if (typeof data.number != 'number') {
+					if (typeof data.number !== 'number') {
 						data.number = ' lol';
 					}
 

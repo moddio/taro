@@ -197,7 +197,7 @@ var PlayerUiComponent = IgeEntity.extend({
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
 		var newWin = window.open(config.url);
 
-		if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+		if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
 			swal({
 				title: 'Please allow Popups',
 				text: 'Your browser is blocking the content modd.io is trying to display',

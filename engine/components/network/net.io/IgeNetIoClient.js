@@ -111,7 +111,7 @@ var IgeNetIoClient = {
 						self._state = 0; // Disconnected
 						self._onDisconnectFromServer.apply(self, arguments);
 
-						if (gameId && typeof analyticsUrl != undefined) {
+						if (gameId && typeof analyticsUrl !== undefined) {
 							$.post(`${analyticsUrl}api/game-report/game-access/${gameId}/could-not-connect`)
 								.fail(function (xhr) {
 									$.post('/api/log', {

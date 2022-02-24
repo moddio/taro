@@ -274,8 +274,8 @@ NetIo.EventingClass = typeof (IgeEventingClass) !== 'undefined'
 		// Check that we have an event listener object
 			this._eventListeners = this._eventListeners || {};
 
-			if (typeof call == 'function') {
-				if (typeof eventName == 'string') {
+			if (typeof call === 'function') {
+				if (typeof eventName === 'string') {
 				// Check if this event already has an array of listeners
 					this._eventListeners[eventName] = this._eventListeners[eventName] || [];
 
@@ -344,7 +344,7 @@ NetIo.EventingClass = typeof (IgeEventingClass) !== 'undefined'
 					}
 				}
 			} else {
-				if (typeof (eventName) != 'string') {
+				if (typeof (eventName) !== 'string') {
 					eventName = '*Multi-Event*';
 				}
 				this.log(`Cannot register event listener for event "${eventName}" because the passed callback is not a function!`, 'error');
@@ -368,7 +368,7 @@ NetIo.EventingClass = typeof (IgeEventingClass) !== 'undefined'
 					// If there are some events, ensure that the args is ready to be used
 					if (eventCount) {
 						var finalArgs = [];
-						if (typeof (args) == 'object' && args != null && args[0] != null) {
+						if (typeof (args) === 'object' && args != null && args[0] != null) {
 							for (var i in args) {
 								finalArgs[i] = args[i];
 							}
@@ -867,7 +867,7 @@ NetIo.Server = NetIo.EventingClass.extend({
 		try {
 			var response = JSON.parse(data);
 
-			if (typeof response == 'object') {
+			if (typeof response === 'object') {
 				// It is JSON
 				return JSON.parse(data);
 			} else {
