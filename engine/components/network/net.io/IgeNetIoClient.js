@@ -42,6 +42,7 @@ var IgeNetIoClient = {
 			var sortedServers = [server];
 			var ignoreServerIds = [server.id];
 
+			/* eslint-disable-next-line no-cond-assign */
 			while (server = ige.client.getBestServer(ignoreServerIds)) {
 				ignoreServerIds.push(server.id);
 				sortedServers.push(server);

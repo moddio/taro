@@ -1649,6 +1649,7 @@ var IgeEngine = IgeEntity.extend({
 	 * want to disable the trace for.
 	 */
 	traceSetOff: function (object, propName) {
+		// eslint-disable-next-line accessor-pairs
 		Object.defineProperty(object, propName, { set: function (val) { this.___igeTraceCurrentVal[propName] = val; } });
 	},
 
