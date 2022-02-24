@@ -54,7 +54,7 @@ var ServerNetworkEvents = {
 			ige.clusterClient.emit("clientDisconnect", client._id)
 		}
 
-		delete client;
+		// delete client; // This doesn't work, for the record.
 
 		if (player) {
 			player.remove()
