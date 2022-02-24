@@ -1728,8 +1728,8 @@ var ActionComponent = IgeEntity.extend({
 									rotate: unit._rotate.z
 								};
 								unit.pickUpItem(itemData);
-							} else // error log
-							{
+							} else {
+								// Error lolg
 								if (unit == undefined || unit._category != 'unit')
 									ige.script.errorLog('unit doesn\'t exist');
 								// else
@@ -1744,8 +1744,8 @@ var ActionComponent = IgeEntity.extend({
 						slotIndex = slotIndex - 1;
 						if (unit) {
 							unit.changeItem(slotIndex);
-						} else // error log
-						{
+						} else {
+							// Error log
 							if (unit == undefined || unit._category != 'unit')
 								ige.script.errorLog('unit doesn\'t exist');
 						}
@@ -1777,8 +1777,8 @@ var ActionComponent = IgeEntity.extend({
 						// pickup ownerLess items
 						if (unit && unit._category == 'unit' && item && item._category === 'item' && !item.getOwnerUnit()) {
 							unit.pickUpItem(item);
-						} else // error log
-						{
+						} else {
+							// Error log
 							if (unit == undefined || unit._category != 'unit')
 								ige.script.errorLog('unit doesn\'t exist');
 						}
@@ -2362,9 +2362,7 @@ var ActionComponent = IgeEntity.extend({
 								//     entity.rotateBy(0, 0, -rotateDiff);
 								// }
 								entity.rotateTo(0, 0, newFacingAngle);
-							}
-							// &&
-							else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {
+							} else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {
 								if (entity._category === 'item') {
 									console.log(newFacingAngle);
 								}

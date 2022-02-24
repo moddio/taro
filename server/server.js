@@ -174,8 +174,8 @@ var Server = IgeClass.extend({
 					self.ip = ip;
 					self.start();
 				});
-			} else // use 127.0.0.1 if dev env
-			{
+			} else {
+				// use 127.0.0.1 if dev env
 				self.ip = '127.0.0.1';
 				self.start();
 			}

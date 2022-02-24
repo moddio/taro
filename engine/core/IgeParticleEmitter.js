@@ -675,8 +675,8 @@ var IgeParticleEmitter = IgeUiEntity.extend({
 				}
 			}
 
-			if (this._emitOnce) // if quality has been fulfilled, and we're suppose to emit only once
-			{
+			if (this._emitOnce) {
+				// if quality has been fulfilled, and we're suppose to emit only once
 				// ige.devLog("stopping!!")
 				this.stop();
 				this._emitOnce = false;

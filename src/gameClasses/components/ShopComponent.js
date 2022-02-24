@@ -603,16 +603,16 @@ var ShopComponent = IgeEntity.extend({
 				}
 			}
 			$('.shop-sidebar').html(keyList).show();
-		} else if (self.shopType == 'item') // general items right now they're just items, but we need to fix this
-		{
+		} else if (self.shopType == 'item') {
+			// general items right now they're just items, but we need to fix this
 			$('.shop-sidebar').hide();
-		} else if (self.shopType == 'unit') // non existent :()
-		{
+		} else if (self.shopType == 'unit') {
+			// non existent :()
 			$('.shop-sidebar').hide();
 		}
 
-		if (self.shopType == 'unitSkins' || self.shopType == 'itemSkins') // skins
-		{
+		if (self.shopType == 'unitSkins' || self.shopType == 'itemSkins') {
+			// skins
 			$.ajax({
 				url: `/api/game/${ige.game.data.defaultData.parentGame || ige.client.server.gameId}/shop`,
 				data: {
@@ -804,6 +804,8 @@ var ShopComponent = IgeEntity.extend({
 		// display items tab iff there's item to be sold
 		if (shopItemsKeys.length > 0) {
 			$('[id=item]').show();
+			if (!selectedTab) {
+				// if default selectedTab wasn't assigned, assign it as items
 				selectedTab = 'items';
 			}
 		} else {
@@ -813,8 +815,8 @@ var ShopComponent = IgeEntity.extend({
 		// display units tab iff there's item to be sold
 		if (shopUnitsKeys.length > 0) {
 			$('[id=unit]').show();
-			if (!selectedTab) // if default selectedTab wasn't assigned, assign it as items
-			{
+			if (!selectedTab) {
+				// if default selectedTab wasn't assigned, assign it as items
 				selectedTab = 'units';
 			}
 		} else {
@@ -999,9 +1001,7 @@ var ShopComponent = IgeEntity.extend({
 					var btnLabel = self.shopBtnLabel(shopUnit, playerTypeAttribute);
 					button.append(btnLabel);
 
-					if ((shopUnit.hideIfUnaffordable && !isUnitAffordable) || (shopUnit.hideIfRequirementNotMet && !requirementsSatisfied)) {
-
-					} else {
+					if (!((shopUnit.hideIfUnaffordable && !isUnitAffordable) || (shopUnit.hideIfRequirementNotMet && !requirementsSatisfied))) {
 						modalBody.append($('<div/>', {
 							class: 'col-sm-3 align-bottom',
 							style: 'margin-bottom: 30px;'

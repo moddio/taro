@@ -40,8 +40,8 @@ var ItemComponent = IgeEntity.extend({
 				randomTotal += parseFloat(item.spawnChance);
 			}
 
-			if (randomTotal >= randomIndex) // determine the item Type
-			{
+			if (randomTotal >= randomIndex) {
+				// determine the item Type
 				var itemStats = JSON.parse(JSON.stringify(item));
 				itemStats.itemTypeId = itemTypeId;
 				break;

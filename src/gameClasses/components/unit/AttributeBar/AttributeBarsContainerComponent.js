@@ -57,6 +57,7 @@ var AttributeBarsContainerComponent = IgeEntity.extend({
 			return true;
 		}
 
+		/* eslint-disable-next-line for-direction */
 		for (var i = 0; i > attributesBeingRendered.length; i++) {
 			if (visibleAttributeIds.indexOf(attributesBeingRendered[i]) === -1) {
 				return true;
@@ -159,17 +160,11 @@ var AttributeBarsContainerComponent = IgeEntity.extend({
 			var shouldRender = false;
 
 			// if all firendly players can see the attribute bar
-			if (isVisibleValue === 'unitBarFriendly') {
-				shouldRender = ownerPlayer.isFriendlyTo(myPlayer);
-			}
+			if (isVisibleValue === 'unitBarFriendly') shouldRender = ownerPlayer.isFriendlyTo(myPlayer);
 			// if all neutral players can see the attribute bar
-			else if (isVisibleValue === 'unitBarNeutral') {
-				shouldRender = ownerPlayer.isNeutralTo(myPlayer);
-			}
+			else if (isVisibleValue === 'unitBarNeutral') shouldRender = ownerPlayer.isNeutralTo(myPlayer);
 			// if all firendly players can see the attribute bar
-			else if (isVisibleValue === 'unitBarHostile') {
-				shouldRender = ownerPlayer.isHostileTo(myPlayer, true);
-			}
+			else if (isVisibleValue === 'unitBarHostile') shouldRender = ownerPlayer.isHostileTo(myPlayer, true);
 
 			if (shouldRender) {
 				return true;

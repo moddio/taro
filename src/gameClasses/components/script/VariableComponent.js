@@ -98,8 +98,8 @@ var VariableComponent = IgeEntity.extend({
 		// if boolean, string, undefined, etc... return.
 		if (typeof text !== 'object') {
 			returnValue = text;
-		} else if (text && text.function == undefined && text.x != undefined && text.y != undefined) // if point! (x, y)
-		{
+		} else if (text && text.function == undefined && text.x != undefined && text.y != undefined) {
+			// if point! (x, y)
 			returnValue = {
 				x: self.getValue(text.x, vars),
 				y: self.getValue(text.y, vars)
@@ -2008,8 +2008,8 @@ var VariableComponent = IgeEntity.extend({
 			// only show 'object' string if env variable is object
 			if (typeof data.params.newValue == 'object') {
 				self.devLogs[data.params.variableName] = `object ${(data.params.newValue._stats) ? `(${data.params.newValue._category}): ${data.params.newValue._stats.name}` : ''}`;
-			} else // otherwise, show the actual value
-			{
+			} else {
+				// otherwise, show the actual value
 				self.devLogs[data.params.variableName] = data.params.newValue;
 			}
 		} else if (ige.isClient) {

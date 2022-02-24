@@ -530,8 +530,8 @@ var IgeNetIoClient = {
 					// add the new snapshot into empty array
 					if (ige.snapshots.length == 0) {
 						ige.snapshots.push([newSnapshotTimeStamp, obj]);
-					} // if not empty, add it as ascending order based on timestamp
-					else {
+					} else {
+						// if not empty, add it as ascending order based on timestamp
 						var i = 0;
 						while (ige.snapshots[i] && ige.snapshots[i][0] < newSnapshotTimeStamp) {
 							i++;

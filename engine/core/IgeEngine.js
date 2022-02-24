@@ -591,9 +591,7 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	debug: function (eventName) {
-		if (this._debugEvents[eventName] === true || this._debugEvents[eventName] === ige._frames) {
-			debugger;
-		}
+		if (this._debugEvents[eventName] === true || this._debugEvents[eventName] === ige._frames) debugger;
 	},
 
 	debugEventOn: function (eventName) {
