@@ -1,5 +1,4 @@
 {
-    "root": true,
     "env": {
         "browser": true,
         "commonjs": true,
@@ -7,12 +6,12 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "standard",
+        "eslint:recommended"
     ],
-    "parser": "@typescript-eslint/parser",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
-        "project": ["./tsconfig.json"]
+        "requireConfigFile": false
     },
     "globals": {
         "process": "writable",
@@ -67,9 +66,6 @@
         "IgeUiEntity": "writable",
         "IgeViewport": "writable"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
     "rules": {
         // Alternatives to eval should be used.
         "no-eval": 1,
@@ -124,9 +120,6 @@
         "array-callback-return": 0,
         "no-prototype-builtins": 0,
         "no-case-declarations": 0,
-        "use-isnan": 0,
-
-        "no-trailing-spaces": "error",
-        "@typescript-eslint/no-var-requires": "off"
-    }
+        "no-labels": 0
+     }
 }

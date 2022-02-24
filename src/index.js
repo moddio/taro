@@ -17,4 +17,4 @@ if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') 
 } else {
 	var game = new Game(Client);
 }
-//# sourceMappingURL=index.js.map
+// # sourceMappingURL=index.js.map
