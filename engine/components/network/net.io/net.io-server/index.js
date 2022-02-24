@@ -661,7 +661,7 @@ NetIo.Server = NetIo.EventingClass.extend({
 		socket._decode = self._decode;
 		socket._remoteAddress = ws._socket.remoteAddress;
 		// socket._fromPingService = request.headers[PING_SERVICE_HEADER];
-		
+
 		// extracting user from token and adding it in _token.
 		// if token doesnot exist in request close the socket.
 
@@ -689,7 +689,7 @@ NetIo.Server = NetIo.EventingClass.extend({
 		self._sockets.push(socket);
 		self._socketsById[socket.id] = socket;
 
-		console.log("1. Client", socket.id,"connected (net.io-server index.js)")
+		console.log('1. Client', socket.id, 'connected (net.io-server index.js)');
 
 		// Register a listener so that if the socket disconnects,
 		// we can remove it from the active socket lookups

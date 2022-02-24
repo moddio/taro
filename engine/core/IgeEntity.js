@@ -5127,7 +5127,6 @@ var IgeEntity = IgeObject.extend({
 		) {
 			if (this.nextPhysicsFrame) {
 				if (this.prevPhysicsFrame) {
-					
 					// interpolate using prev/next physics key frames provided by physicsComponent
 					x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
@@ -5135,7 +5134,6 @@ var IgeEntity = IgeObject.extend({
 					if (this == ige.client.selectedUnit) {
 						rotate = this.interpolateValue(this.prevPhysicsFrame[1][2], this.nextPhysicsFrame[1][2], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					}
-
 				} else {
 					// unit is teleporting
 					x = this.nextPhysicsFrame[1][0];

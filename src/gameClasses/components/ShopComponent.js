@@ -276,8 +276,7 @@ var ShopComponent = IgeEntity.extend({
 							'	 <div class="d-flex justify-content-center action-button-container">';
 						if (purchasable.soldForSocialShare) {
 							html += self.getTwitterBtnHtml(purchasable);
-						}
-						else {
+						} else {
 							html += `		 <button class="btn btn-sm btn-outline-success btn-purchase-purchasable" id="${purchasable._id}"` +
 								`			 data-purchasabled="${purchasable.name}" data-price="${purchasable.price}">` +
 								'			 <div class="d-flex">' +

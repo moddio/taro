@@ -282,7 +282,6 @@ var Server = IgeClass.extend({
 		}
 
 		app.get('/', (req, res) => {
-
 			const videoChatEnabled = ige.game.data && ige.game.data.defaultData && ige.game.data.defaultData.enableVideoChat ? ige.game.data.defaultData.enableVideoChat : false;
 			const game = {
 				_id: global.standaloneGame.defaultData._id,

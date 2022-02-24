@@ -471,16 +471,16 @@ var IgeNetIoServer = {
 			return player._stats.controlledBy == 'human';
 		}).length;
 
-		var clientRejectReason = []
-		
+		var clientRejectReason = [];
+
 		if (this._acceptConnections != true)
-			clientRejectReason.push('server not accepting connections')
-		
+			clientRejectReason.push('server not accepting connections');
+
 		if (playerCount > ige.server.maxPlayers)
-			clientRejectReason.push('server is full')
-		
+			clientRejectReason.push('server is full');
+
 		if (playerIsBanned)
-			clientRejectReason.push('player ',socket._remoteAddress,' is banned')
+			clientRejectReason.push('player ', socket._remoteAddress, ' is banned');
 
 		if (clientRejectReason.length == 0) {
 			// Check if any listener cancels this

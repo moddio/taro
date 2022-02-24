@@ -1484,7 +1484,7 @@ var VariableComponent = IgeEntity.extend({
 					var unit = ige.variable.getValue(text.unit, vars);
 					var data = unit.getPersistentData('unit');
 					if (data) {
-						returnValue = JSON.stringify(data)
+						returnValue = JSON.stringify(data);
 					}
 					break;
 
@@ -1492,21 +1492,21 @@ var VariableComponent = IgeEntity.extend({
 					var player = ige.variable.getValue(text.player, vars);
 					var data = player.getPersistentData('player');
 					if (data) {
-						returnValue = JSON.stringify(data)
+						returnValue = JSON.stringify(data);
 					}
 					break;
 
 				case 'getPlayerId':
 					var player = ige.variable.getValue(text.player, vars);
 					if (player) {
-						returnValue = player.id()
+						returnValue = player.id();
 					}
 					break;
 
 				case 'getUnitId':
 					var unit = ige.variable.getValue(text.unit, vars);
 					if (unit) {
-						returnValue = unit.id()
+						returnValue = unit.id();
 					}
 					break;
 
@@ -1580,7 +1580,7 @@ var VariableComponent = IgeEntity.extend({
 						} catch (err) {
 							console.error(err);
 						}
-						array.splice(index,1)
+						array.splice(index, 1);
 						returnValue = JSON.stringify(array);
 					}
 					break;

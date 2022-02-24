@@ -1122,7 +1122,7 @@ var Unit = IgeEntityBox2d.extend({
 			gluedIndex: 0,
 			color: color
 		});
-		self.unitNameLabel._pixiText._style._fontWeight = 599; //recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
+		self.unitNameLabel._pixiText._style._fontWeight = 599; // recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
 
 		this._pixiContainer.addChild(self.unitNameLabel._pixiText);
 	},
