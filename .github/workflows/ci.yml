@@ -25,6 +25,9 @@ jobs:
       - name: Install Packages
         run: npm ci
 
+      - name: Compile TypeScript
+        run: npm run tsc
+
       - name: Build
         run: npm run build:git
 
