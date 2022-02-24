@@ -13,6 +13,7 @@ three*.js
 engine/components/physics/box2d/dists/*
 src/pixi/pixi-legacy.js
 engine/components/editor/vendor/jsRender.js
+engine/components/physics/cannon/lib_cannon.js
 
 # Files not worth linting at this point in time
 engine/components/network/socket.io/client/socket.io.js
