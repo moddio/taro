@@ -1,3 +1,3 @@
 declare class Client extends IgeClass {
-    constructor (options?: Record<string, unknown>);
+	constructor (options?: Record<string, unknown>);
 }

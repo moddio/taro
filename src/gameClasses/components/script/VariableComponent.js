@@ -736,12 +736,12 @@ var VariableComponent = IgeEntity.extend({
 					break;
 
 				case 'getLastAttackingItem':
-				 	var id = ige.game.lastAttackingItemId;
-				 	item = ige.$(id);
+					var id = ige.game.lastAttackingItemId;
+					item = ige.$(id);
 					if (item && item._category == 'item') {
 						returnValue = item;
 					}
-			 		break;
+					break;
 
 				case 'lastUsedItem':
 				case 'getLastUsedItem': // will be deprecated soon
@@ -1252,7 +1252,7 @@ var VariableComponent = IgeEntity.extend({
 					if (item) {
 						returnValue = item._stats.name;
 					}
-          			break;
+					break;
 
 				case 'getItemDescription':
 					var item = self.getValue(text.item, vars);

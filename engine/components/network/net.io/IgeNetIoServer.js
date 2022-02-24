@@ -449,7 +449,7 @@ var IgeNetIoServer = {
    * @param {Object} socket The client socket object.
    * @private
    */
-	 _onClientConnect: function (socket) {
+	_onClientConnect: function (socket) {
 		var self = this;
 
 		var remoteAddress = socket._remoteAddress;

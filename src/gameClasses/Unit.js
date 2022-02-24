@@ -1266,14 +1266,12 @@ var Unit = IgeEntityBox2d.extend({
 			var targetsAffected = damageData.targetsAffected;
 			if (
 				sourcePlayer && targetPlayer && sourcePlayer != targetPlayer &&
-                (
-                	targetsAffected == undefined || // attacks everything
+					(targetsAffected == undefined || // attacks everything
                     (targetsAffected.constructor === Array && targetsAffected.length == 0) || // attacks everything
                     targetsAffected.includes('everything') || // attacks everything - obsolete, but included for backward compatibility
                     (targetsAffected.includes('hostile') && sourcePlayer.isHostileTo(targetPlayer)) ||
                     (targetsAffected.includes('friendly') && sourcePlayer.isFriendlyTo(targetPlayer)) ||
-                    (targetsAffected.includes('neutral') && sourcePlayer.isNeutralTo(targetPlayer))
-                )
+                    (targetsAffected.includes('neutral') && sourcePlayer.isNeutralTo(targetPlayer)))
 			) {
 				isVulnerable = true;
 			}
@@ -1757,11 +1755,10 @@ var Unit = IgeEntityBox2d.extend({
 					if (
 						( // either unit is AI unit that is currently moving
 							ownerPlayer._stats.controlledBy != 'human' && self.isMoving
-						) ||
-                        ( // or human player's unit that's "following cursor"
-                        	ownerPlayer._stats.controlledBy == 'human' && self._stats.controls &&
+						) || ( // or human player's unit that's "following cursor"
+							ownerPlayer._stats.controlledBy == 'human' && self._stats.controls &&
                             self._stats.controls.movementControlScheme == 'followCursor' && self.distanceToTarget > this.width()
-                        )
+						)
 					) {
 						if (self.angleToTarget != undefined && !isNaN(self.angleToTarget)) {
 							vector = {

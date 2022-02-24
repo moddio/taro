@@ -568,7 +568,7 @@ NetIo.Server = NetIo.EventingClass.extend({
 			response.end();
 		});
 		this._socketServerHttp = new this._websocket.Server({
-		    server: this._httpServer
+			server: this._httpServer
 		});
 		// this._socketServerHttp = new this._websocket.WebSocketServer({
 		// 	server: this._httpServer
@@ -615,7 +615,7 @@ NetIo.Server = NetIo.EventingClass.extend({
 				response.end();
 			});
 			this._socketServerHttps = new this._websocket.Server({
-			    server: this._httpsServer
+				server: this._httpsServer
 			});
 			// this._socketServerHttps = new this._websocket.WebSocketServer({
 			// 	server: this._httpsServer

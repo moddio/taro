@@ -66,12 +66,9 @@
 		if (!animations[name]) {
 			sheet.insertRule(
 				`@${pre}keyframes ${name}{` +
-        `0%{opacity:${z}}${
-        	start}%{opacity:${alpha}}${
-        	start + 0.01}%{opacity:1}${
-        	(start + trail) % 100}%{opacity:${alpha}}` +
-        `100%{opacity:${z}}` +
-        '}', sheet.cssRules.length);
+				`0%{opacity:${z}}${start}%{opacity:${alpha}}${start + 0.01}%{opacity:1}${(start + trail) % 100}%{opacity:${alpha}}` +
+				`100%{opacity:${z}}` +
+			'}', sheet.cssRules.length);
 
 			animations[name] = 1;
 		}
@@ -303,7 +300,7 @@
 			}
 
 			var margin = `${-(o.width + o.length) * 2}px`;
-				 var g = css(grp(), { position: 'absolute', top: margin, left: margin });
+			var g = css(grp(), { position: 'absolute', top: margin, left: margin });
 			var i;
 
 			function seg (i, dx, filter) {

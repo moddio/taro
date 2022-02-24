@@ -72,7 +72,7 @@
 
         // Indents should be tabs.
         // Hint: Ctrl + Shift + Z will atuomatically change your indentation in VSCode.
-        "indent": [1, "tab", { "SwitchCase": 1 }],
+        "indent": [2, "tab", { "SwitchCase": 1 }],
 
         // Semicolons and singlequotes should always be used.
         "semi": [2, "always"],
@@ -101,7 +101,6 @@
         "camelcase": 0,
         "no-sequences": 0,
         "no-tabs": 0,
-        "no-mixed-spaces-and-tabs": 0,
 
         "prefer-regex-literals": 0,
         "no-useless-escape": 0,

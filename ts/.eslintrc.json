@@ -19,7 +19,8 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/indent": ["error", 4, { "SwitchCase": 1 }],
+        "@typescript-eslint/indent": [2, "tab", { "SwitchCase": 1 }],
+        "no-tabs": 0,
         "@typescript-eslint/semi": [2, "always"],
         "@typescript-eslint/quotes": [2, "backtick", "avoid-escape"],
         "no-use-before-define": 0,

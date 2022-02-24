@@ -47,9 +47,9 @@ var ActionComponent = IgeEntity.extend({
 							// if variable has default field then it will be returned when variable's value is undefined
 							if (
 								newValue === undefined &&
-                                				action.value &&
-                                				action.value.function === 'undefinedValue' &&
-                                				ige.game.data.variables[action.variableName].hasOwnProperty('default')
+								action.value &&
+								action.value.function === 'undefinedValue' &&
+								ige.game.data.variables[action.variableName].hasOwnProperty('default')
 							) {
 								ige.game.data.variables[action.variableName].default = undefined;
 							}
@@ -171,11 +171,11 @@ var ActionComponent = IgeEntity.extend({
 						}
 
 						ige.server.request.post({
-						    url: url,
-						    form: obj
+							url: url,
+							form: obj
 						}, function optionalCallback (err, httpResponse, body) {
 							if (err) {
-							    return console.error('upload failed:', err);
+								return console.error('upload failed:', err);
 							}
 
 							try {
