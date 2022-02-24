@@ -65,7 +65,8 @@ var ActionComponent = IgeEntity.extend({
 
 						break;
 
-					case 'setTimeOut': // execute actions after timeout
+					case 'setTimeOut': {
+						// execute actions after timeout
 
 						// const use for creating new instance of variable every time.
 						const setTimeOutActions = JSON.parse(JSON.stringify(action.actions));
@@ -74,9 +75,9 @@ var ActionComponent = IgeEntity.extend({
 							self.run(actions, vars);
 						}, action.duration, setTimeOutActions);
 						break;
+					}
 
-					case 'repeat':
-					{
+					case 'repeat': {
 						var count = ige.variable.getValue(action.count, vars);
 						var repeatActions = ige.variable.getValue(action.actions, vars);
 
@@ -2011,8 +2012,7 @@ var ActionComponent = IgeEntity.extend({
 						break;
 
 					case 'createEntityForPlayerAtPositionWithDimensions':
-					case 'createEntityAtPositionWithDimensions':
-
+					case 'createEntityAtPositionWithDimensions': {
 						let isSandbox = typeof mode === 'string' && mode === 'sandbox';
 						let entityType = ige.variable.getValue(action.entityType, vars);
 						let entityToCreate = ige.variable.getValue(action.entity, vars);
@@ -2107,6 +2107,7 @@ var ActionComponent = IgeEntity.extend({
 							}
 						}
 						break;
+					}
 					case 'setEntityDepth':
 						var entity = ige.variable.getValue(action.entity, vars);
 						var depth = ige.variable.getValue(action.depth, vars);

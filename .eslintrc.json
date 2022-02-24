@@ -60,7 +60,6 @@
         "no-redeclare": 0,
         "array-callback-return": 0,
         "no-prototype-builtins": 0,
-        "no-case-declarations": 0,
         "no-eval": 0, // Alternatives to eval should be used. However, this is not a change that needs to be made now.
         "no-extend-native": 0,
         "node/no-callback-literal": 0, // Should be fixed later when engine has proper error handling.
