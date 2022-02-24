@@ -34,7 +34,6 @@
         "no-use-before-define": 0,
         "no-unused-vars": 0,
         "no-unused-expressions": 0,
-        "no-void": 0,
         "prefer-const": 0,
 
         // Unnecessary.

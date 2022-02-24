@@ -875,7 +875,7 @@
 			}, {
 				key: 'updateObject',
 				value: function updateObject (object) {
-					var AABB = void 0;
+					var AABB = undefined;
 					if (this.calculatePIXI) {
 						var box = object.getLocalBounds();
 						AABB = object[this.AABB] = {
