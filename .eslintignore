@@ -1,5 +1,6 @@
 # Compiled build
 build/
+src/index.js
 src/game.js
 client.js
 
