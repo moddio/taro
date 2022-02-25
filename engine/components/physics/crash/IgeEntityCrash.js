@@ -252,7 +252,7 @@
 		if(Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
 			// console.log(`unit ${this._id} velocity currently: `, this._velocity);
 			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
-			var damping = 5;
+			var damping = 2;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 

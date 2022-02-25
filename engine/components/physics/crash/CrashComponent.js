@@ -24,6 +24,17 @@ var PhysicsComponent = IgeEventingClass.extend({
 			return item;
 		};
 		this.totalBodiesCreated = 0;
+
+		var listener = function(a, b, res, cancel) {
+			console.log("Oh my, we crashed!", a.data);
+			a.pos.x = a.lastPos.x;
+			a.pos.y = a.lastPos.y;
+			a.data.entity._translate.x = a.lastPos.x;
+			a.data.entity._translate.y = a.lastPos.y;
+			a.data.entity._velocity.x = 0;
+			a.data.entity._velocity.y = 0;
+		}
+		this.crash.onCollision(listener);
 	},
 
 	createWorld: function () {
@@ -61,13 +72,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x;
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId, entity: entity });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
 			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
-			crashBody = new this.crash.Box(new this.crash.Vector(x, y), width, height, false, { igeId: igeId });
+			crashBody = new this.crash.Box(new this.crash.Vector(x, y), width, height, false, { igeId: igeId, entity: entity });
+			this.crash.testAll(crashBody);
 		}
 		else {
 			console.log('body shape is wrong');
