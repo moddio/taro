@@ -256,8 +256,8 @@
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 
-			this._translate.x = this.body.fixtures[0].shape.data.pos.x;
-			this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+			this._translate.x = this.body.fixtures[0].shape.data.pos.x - (this.body.fixtures[0].shape.data.data.entity._bounds2d.x / 2);
+			this._translate.y = this.body.fixtures[0].shape.data.pos.y - (this.body.fixtures[0].shape.data.data.entity._bounds2d.y / 2);
 		}
 	},
 
