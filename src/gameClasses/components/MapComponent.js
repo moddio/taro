@@ -168,7 +168,6 @@ var MapComponent = IgeEntity.extend({
 				var data = regions[regionName];
 				if (data) {
 					data.id = regionName;
-					console.log(data);
 					new Region({ data: data });
 				}
 			}

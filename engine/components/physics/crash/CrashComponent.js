@@ -132,9 +132,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	update: function () {
 		this.crash.check();
-		for (var collider of this.crash.all()) {
-			console.log(collider.data.igeId);
-		}
 	},
 
 	/* setLinearVelocity: function () {
