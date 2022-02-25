@@ -40,9 +40,10 @@ var igePhysicsConfig = {
 		crash: [
 			['csap', 'CrashComponent', './components/physics/crash/CrashComponent.js'],
 			['csap', 'IgeEntityPhysics', './components/physics/crash/IgeEntityCrash.js'],
-			// ['csap', 'rbush', './components/physics/crash/rbush.js', 'rbush'],
-			['csap', 'sat', './components/physics/crash/sat.js', 'sat'],
-			['csap', 'crash', './components/physics/crash/crash.js', 'crash']
+			['csap', 'quickselect', './components/physics/crash/crashDependencies/quickselect.js'],
+			['csap', 'rbush', './components/physics/crash/crashDependencies/rbush.js', 'rbush'],
+			['csap', 'sat', './components/physics/crash/crashDependencies/sat.js', 'sat'],
+			['csap', 'crash', './components/physics/crash/crashDependencies/crash.js', 'crash']
 		]
 	},
 
@@ -64,6 +65,9 @@ var igePhysicsConfig = {
 	loadPhysicsGameClasses: function () {
 		this.loadFiles(this.gameClasses);
 	},
+
+	// I don't think the server needs to be loading crash dependencies if we have them as npm packages.
+	// Should test removing the 's' from those item[0] strings.
 
 	loadFiles: function (physicsFiles) {
 		var arr = physicsFiles;

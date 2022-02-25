@@ -26,14 +26,15 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalBodiesCreated = 0;
 
 		var listener = function(a, b, res, cancel) {
-			console.log("Oh my, we crashed!", a.data);
+			console.log('Oh my, we crashed!', a.data);
 			a.pos.x = a.lastPos.x;
 			a.pos.y = a.lastPos.y;
 			a.data.entity._translate.x = a.lastPos.x;
 			a.data.entity._translate.y = a.lastPos.y;
 			a.data.entity._velocity.x = 0;
 			a.data.entity._velocity.y = 0;
-		}
+		};
+
 		this.crash.onCollision(listener);
 	},
 
@@ -55,9 +56,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @return {b2Body}
 	 */
 	createBody: function (entity, body, isLossTolerant) {
-		// console.log('Entity: ', entity);
-		console.log('Body fixtures: ', body.fixtures);
-
 		if (entity.body) { return; }
 		// console.log('CRASH BODY CREATION');
 		this.totalBodiesCreated++;
@@ -108,11 +106,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 		return crashBody;
 	},
 
-	destroyBody: function (entity, body) {
+	destroyBody: function (body, entity = null) {
 		// I think we need this in case we're destroying a body not linked to an entity
-		if (body || (entity && entity.body)) {
-			this.crash.remove(entity.body.fixtures[0].shape.data);
-			entity.body = null;
+		if (body.fixtures || (entity && entity.body)) {
+			this.crash.remove(body.fixtures[0].shape.data);
+			body = null;
 		} else {
 			console.log('failed to destroy body - body doesn\'t exist.');
 		}
@@ -129,11 +127,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	start: function () {
 		this.crash.checkAll();
-		console.log('start');
+		console.log('CrashComponent.start()');
 	},
 
 	update: function () {
 		this.crash.check();
+		for (var collider of this.crash.all()) {
+			console.log(collider.data.igeId);
+		}
 	},
 
 	/* setLinearVelocity: function () {

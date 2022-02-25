@@ -847,7 +847,9 @@
 			// destroy items which are spriteOnly or with none body immediately
 			this.destroy();
 		} else {
-			this.queueAction({ type: 'destroy' });
+			// this.queueAction({ type: 'destroy' });
+			// testing new CrashComponent destroyBody with just body passed and default entity = null
+			ige.physics.destroyBody(this.body);
 		}
 		if (ige.isClient) {
 			this.clearAllPointers();
