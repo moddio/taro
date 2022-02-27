@@ -1752,6 +1752,18 @@ var VariableComponent = IgeEntity.extend({
 					}
 
 					break;
+					
+				case 'numberOfUnitsInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'unit').length;
+					} else {
+						returnValue = 0;
+					}
+					break;
 
 				case 'allPlayers':
 					returnValue = ige.$$('player');
@@ -1768,6 +1780,31 @@ var VariableComponent = IgeEntity.extend({
 				case 'allItems':
 					returnValue = ige.$$('item');
 					break;
+					
+				case 'allItemsInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'item');
+					} else {
+						returnValue = [];
+					}
+
+					break;
+					
+				case 'numberOfItemsInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'item').length;
+					} else {
+						returnValue = 0;
+					}
+					break;
 
 				case 'allDebris':
 					returnValue = ige.$$('debris');
@@ -1775,6 +1812,31 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'allProjectiles':
 					returnValue = ige.$$('projectile');
+					break;
+					
+				case 'allProjectilesInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'projectile');
+					} else {
+						returnValue = [];
+					}
+
+					break;
+					
+				case 'numberOfProjectilesInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'projectile').length;
+					} else {
+						returnValue = 0;
+					}
 					break;
 
 				/* entity */
