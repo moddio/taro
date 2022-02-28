@@ -278,7 +278,7 @@ var IgeCamera = IgeEntity.extend({
 
 				this._translate.x = destinationX;
 				this._translate.y = destinationY;
-			}
+			 }
 		}
 
 		// Check if we are tracking the rotation values of a target

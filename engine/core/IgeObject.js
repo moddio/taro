@@ -1919,10 +1919,15 @@ var IgeObject = IgeEventingClass.extend({
 		switch (i) {
 			case '_id':
 				return { _id: obj[i] };
+				break;
+
 			case '_parent':
 				return { _parent: obj[i] };
+				break;
+
 			case '_children':
 				return { _children: obj[i] };
+				break;
 		}
 		return undefined;
 	},

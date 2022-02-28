@@ -1,20 +1,19 @@
 {
     "compilerOptions": {
-        "target": "ES6",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "rootDir": "ts",
+        "module": "None",
+        "target": "es5",
+        "sourceMap": true,
         "outDir": ".",
+        "rootDir": "ts",
         "typeRoots": [
             "node_modules/@types",
-            "ts/typings"
+            "ts/types"
         ],
         "types": [
             "node"
-        ],
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "strictNullChecks": true
+        ]
     },
-    "exclude": ["node_modules"]
+    "exclude": [
+        "node_modules"
+    ]
 }

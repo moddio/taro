@@ -96,7 +96,7 @@ var IgeInitPixi = IgeClass.extend({
 			self.resizeQueuedAt = ige._currentTime;
 		});
 
-		if (typeof ga !== 'undefined' && ige.env != 'local') {
+		if (typeof ga != 'undefined' && ige.env != 'local') {
 			var renderingEngine = 'canvas';
 			if (this.app.renderer.context.gl) {
 				renderingEngine = `webgl-${this.app.renderer.context.webGLVersion}`;

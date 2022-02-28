@@ -258,7 +258,7 @@ THREE.ShaderExtras = {
 			aspect: { type: 'f', value: 1.0 },
 			aperture: { type: 'f', value: 0.025 },
 			maxblur: { type: 'f', value: 1.0 }
-		},
+			  },
 
 		vertexShader: [
 
@@ -1204,7 +1204,7 @@ THREE.ShaderExtras = {
 
 			'float rcpDirMin = 1.0 / ( min( abs( dir.x ), abs( dir.y ) ) + dirReduce );',
 			'dir = min( vec2( FXAA_SPAN_MAX,  FXAA_SPAN_MAX),',
-			'max( vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),',
+					  'max( vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),',
 			'dir * rcpDirMin)) * resolution;',
 
 			'vec3 rgbA = 0.5 * (',

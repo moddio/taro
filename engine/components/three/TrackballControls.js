@@ -53,7 +53,7 @@ THREE.TrackballControls = function (object, domElement) {
 	// methods
 
 	this.handleEvent = function (event) {
-		if (typeof this[event.type] === 'function') {
+		if (typeof this[event.type] == 'function') {
 			this[event.type](event);
 		}
 	};
@@ -240,7 +240,9 @@ THREE.TrackballControls = function (object, domElement) {
 			_keyPressed = false;
 		}
 
-		if (_state === STATE.ROTATE && !_this.noRotate) {
+		if (_state === STATE.NONE) {
+
+		} else if (_state === STATE.ROTATE && !_this.noRotate) {
 			_rotateEnd = _this.getMouseProjectionOnBall(event.clientX, event.clientY);
 		} else if (_state === STATE.ZOOM && !_this.noZoom) {
 			_zoomEnd = _this.getMouseOnScreen(event.clientX, event.clientY);

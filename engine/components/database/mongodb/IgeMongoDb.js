@@ -194,8 +194,6 @@ var IgeMongoDb = {
 			if (!err) {
 				// Got the collection (or err)
 				tempCollection.find(json, function (err, tempCursor) {
-					if (err) console.log(err);
-
 					// Got the result cursor (or err)
 					tempCursor.toArray(function (err, results) {
 						var i;
@@ -304,8 +302,6 @@ var IgeMongoDb = {
 					// Got the result cursor (or err)
 					if (!err) {
 						tempCursor.toArray(function (err, results) {
-							if (err) console.log(err);
-
 							var i;
 
 							if (results) {

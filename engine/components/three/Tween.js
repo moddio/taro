@@ -249,7 +249,7 @@ TWEEN.Easing.Quartic.EaseIn = function (k) {
 };
 
 TWEEN.Easing.Quartic.EaseOut = function (k) {
-	return -(--k * k * k * k - 1);
+	 return -(--k * k * k * k - 1);
 };
 
 TWEEN.Easing.Quartic.EaseInOut = function (k) {

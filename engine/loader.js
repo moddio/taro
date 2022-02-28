@@ -28,7 +28,7 @@ window.igeLoader = (function () {
 			self.coreConfigReady();
 		};
 		ccScript.addEventListener('error', function () {
-			throw new Error(`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
+			throw (`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
 		}, true);
 
 		document.getElementsByTagName('head')[0].appendChild(ccScript);
@@ -45,12 +45,12 @@ window.igeLoader = (function () {
 				self.clientConfigReady();
 			};
 			ccScript.addEventListener('error', function () {
-				throw new Error('ERROR LOADING ClientConfig.js - does it exist?');
+				throw ('ERROR LOADING ClientConfig.js - does it exist?');
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(ccScript);
 		} else {
-			throw new Error('ERROR READING igeCoreConfig object - was it specified in CoreConfig.js?');
+			throw ('ERROR READING igeCoreConfig object - was it specified in CoreConfig.js?');
 		}
 	};
 
@@ -86,7 +86,7 @@ window.igeLoader = (function () {
 			};
 
 			script.addEventListener('error', function () {
-				throw new Error(`ERROR LOADING ${url} - does it exist?`);
+				throw (`ERROR LOADING ${url} - does it exist?`);
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(script);

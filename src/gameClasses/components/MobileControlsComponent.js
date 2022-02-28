@@ -310,11 +310,18 @@ var MobileControlsComponent = IgeEntity.extend({
 					},
 					onEnd: () => {
 						var unit = ige.client.myPlayer.getSelectedUnit();
-						if (moveStick._isUp) self.upReleased();
-						if (moveStick._isLeft) self.leftReleased();
-						if (moveStick._isDown) self.downReleased();
-						if (moveStick._isRight) self.rightReleased();
-
+						if (moveStick._isUp) {
+					      self.upReleased();
+						}
+						if (moveStick._isLeft) {
+					      self.leftReleased();
+						}
+						if (moveStick._isDown) {
+					      self.downReleased();
+						}
+						if (moveStick._isRight) {
+					      self.rightReleased();
+						}
 						moveStick._isUp = false;
 						moveStick._isDown = false;
 						moveStick._isLeft = false;
@@ -507,7 +514,7 @@ class Joystick extends PIXI.Container {
 	constructor (opts) {
 		super();
 
-		this.innerAlphaStandby = 0.5;
+	  this.innerAlphaStandby = 0.5;
 
 		this.settings = new JoystickSettings();
 
@@ -644,12 +651,10 @@ class Joystick extends PIXI.Container {
 				}
 				that.inner.position = centerPoint;
 				power = that.getPower(centerPoint);
-
-				if (that.settings.onChange) {
+		  if (that.settings.onChange) {
 					that.settings.onChange({ angle, direction, power });
 				}
-
-				return;
+		  return;
 			}
 
 			if (sideY == 0) {
@@ -665,11 +670,9 @@ class Joystick extends PIXI.Container {
 
 				that.inner.position = centerPoint;
 				power = that.getPower(centerPoint);
-
-				if (that.settings.onChange) {
+		  if (that.settings.onChange) {
 					that.settings.onChange({ angle, direction, power });
-				}
-
+		  }
 				return;
 			}
 

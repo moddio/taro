@@ -98,8 +98,8 @@ var VariableComponent = IgeEntity.extend({
 		// if boolean, string, undefined, etc... return.
 		if (typeof text !== 'object') {
 			returnValue = text;
-		} else if (text && text.function == undefined && text.x != undefined && text.y != undefined) {
-			// if point! (x, y)
+		} else if (text && text.function == undefined && text.x != undefined && text.y != undefined) // if point! (x, y)
+		{
 			returnValue = {
 				x: self.getValue(text.x, vars),
 				y: self.getValue(text.y, vars)
@@ -255,7 +255,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString && typeof sourceString === 'string' && typeof patternString === 'string') {
+					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
 						returnValue = sourceString.includes(patternString);
 					}
 					break;
@@ -736,12 +736,12 @@ var VariableComponent = IgeEntity.extend({
 					break;
 
 				case 'getLastAttackingItem':
-					var id = ige.game.lastAttackingItemId;
-					item = ige.$(id);
+				 	var id = ige.game.lastAttackingItemId;
+				 	item = ige.$(id);
 					if (item && item._category == 'item') {
 						returnValue = item;
 					}
-					break;
+			 		break;
 
 				case 'lastUsedItem':
 				case 'getLastUsedItem': // will be deprecated soon
@@ -1252,7 +1252,7 @@ var VariableComponent = IgeEntity.extend({
 					if (item) {
 						returnValue = item._stats.name;
 					}
-					break;
+          			break;
 
 				case 'getItemDescription':
 					var item = self.getValue(text.item, vars);
@@ -1286,7 +1286,7 @@ var VariableComponent = IgeEntity.extend({
 				case 'getItemTypeOfItem':
 					if (entity && entity._stats) {
 						returnValue = entity._stats.itemTypeId;
-					} else if (typeof entity === 'string') {
+					} else if (typeof entity == 'string') {
 						// if itemTypeOfItem is key of unit
 						returnValue = entity;
 					}
@@ -1396,7 +1396,7 @@ var VariableComponent = IgeEntity.extend({
 
 					if (unit && unit._category == 'unit') {
 						returnValue = unit._stats.type;
-					} else if (typeof unit === 'string') {
+					} else if (typeof unit == 'string') {
 						// if unitTypeOfUnit is key of unit
 						returnValue = unit;
 					} else {
@@ -1484,7 +1484,7 @@ var VariableComponent = IgeEntity.extend({
 					var unit = ige.variable.getValue(text.unit, vars);
 					var data = unit.getPersistentData('unit');
 					if (data) {
-						returnValue = JSON.stringify(data);
+						returnValue = JSON.stringify(data)
 					}
 					break;
 
@@ -1492,21 +1492,21 @@ var VariableComponent = IgeEntity.extend({
 					var player = ige.variable.getValue(text.player, vars);
 					var data = player.getPersistentData('player');
 					if (data) {
-						returnValue = JSON.stringify(data);
+						returnValue = JSON.stringify(data)
 					}
 					break;
 
 				case 'getPlayerId':
 					var player = ige.variable.getValue(text.player, vars);
 					if (player) {
-						returnValue = player.id();
+						returnValue = player.id()
 					}
 					break;
 
 				case 'getUnitId':
 					var unit = ige.variable.getValue(text.unit, vars);
 					if (unit) {
-						returnValue = unit.id();
+						returnValue = unit.id()
 					}
 					break;
 
@@ -1580,7 +1580,7 @@ var VariableComponent = IgeEntity.extend({
 						} catch (err) {
 							console.error(err);
 						}
-						array.splice(index, 1);
+						array.splice(index,1)
 						returnValue = JSON.stringify(array);
 					}
 					break;
@@ -1616,7 +1616,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString && typeof sourceString === 'string' && typeof patternString === 'string') {
+					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
 						returnValue = sourceString.startsWith(patternString);
 					}
 					break;
@@ -1624,7 +1624,7 @@ var VariableComponent = IgeEntity.extend({
 					var sourceString = self.getValue(text.sourceString, vars);
 					var patternString = self.getValue(text.patternString, vars);
 
-					if (sourceString && patternString && typeof sourceString === 'string' && typeof patternString === 'string') {
+					if (sourceString && patternString && typeof sourceString == 'string' && typeof patternString == 'string') {
 						returnValue = sourceString.endsWith(patternString);
 					}
 					break;
@@ -1633,7 +1633,7 @@ var VariableComponent = IgeEntity.extend({
 					var matchString = self.getValue(text.matchString, vars);
 					var newString = self.getValue(text.newString, vars);
 
-					if (sourceString && matchString && newString && typeof sourceString === 'string' && typeof matchString === 'string' && typeof newString === 'string') {
+					if (sourceString && matchString && newString && typeof sourceString == 'string' && typeof matchString == 'string' && typeof newString == 'string') {
 						returnValue = sourceString.split(matchString).join(newString);
 					}
 					break;
@@ -1874,7 +1874,7 @@ var VariableComponent = IgeEntity.extend({
 		// For debugging purpose. if type of returnValue is object, it can sometimes cause TypeError: Converting circular structure to JSON
 		if (ige.isServer) {
 			var output = returnValue;
-			if (typeof returnValue === 'object' && returnValue && returnValue._category) {
+			if (typeof returnValue == 'object' && returnValue && returnValue._category) {
 				output = returnValue._category;
 			}
 		}
@@ -1888,7 +1888,7 @@ var VariableComponent = IgeEntity.extend({
 		if (items == undefined)
 			return;
 
-		if ((items && items.constructor != Array) || typeof items === 'number') {
+		if ((items && items.constructor != Array) || typeof items == 'number') {
 			var solution = this.getValue(items, vars);
 			return parseFloat(solution);
 		}
@@ -1996,8 +1996,9 @@ var VariableComponent = IgeEntity.extend({
 
 			params.newValue = newValue;
 			this.updateDevConsole({ type: 'setVariable', params: params });
+		} else if (ige.isClient) {
+
 		}
-		// else if (ige.isClient) {}
 	},
 
 	// update dev console table w/ latest setValue data
@@ -2006,10 +2007,10 @@ var VariableComponent = IgeEntity.extend({
 		// if a developer is connected, send
 		if (ige.isServer && (ige.server.developerClientId || process.env.ENV === 'standalone' || process.env.ENV == 'standalone-remote')) {
 			// only show 'object' string if env variable is object
-			if (typeof data.params.newValue === 'object') {
+			if (typeof data.params.newValue == 'object') {
 				self.devLogs[data.params.variableName] = `object ${(data.params.newValue._stats) ? `(${data.params.newValue._category}): ${data.params.newValue._stats.name}` : ''}`;
-			} else {
-				// otherwise, show the actual value
+			} else // otherwise, show the actual value
+			{
 				self.devLogs[data.params.variableName] = data.params.newValue;
 			}
 		} else if (ige.isClient) {

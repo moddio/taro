@@ -74,15 +74,15 @@ if (process.env.ENV == 'dev') {
 	IgeNode = require('./IgeNode');
 	var igeNode = new IgeNode();
 
-	if (cluster.isMaster) {
-		// master cluster!
+	if (cluster.isMaster) // master cluster!
+	{
 		// Fork workers.
 		var debug = process.execArgv.indexOf('--debug') !== -1;
 		cluster.setupMaster({
 			execArgv: process.execArgv.filter(function (s) { return s !== '--debug'; })
 		});
-	} else {
-		// slave workers! ;-;
+	} else // slave workers! ;-;
+	{
 		// Workers can share any TCP connection
 		// In this case it is an HTTP server
 		// Include the control class

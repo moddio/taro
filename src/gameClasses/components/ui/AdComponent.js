@@ -42,7 +42,7 @@ var AdComponent = IgeEntity.extend({
 					return;
 				}
 				$('#disable-ads-be-our-patron').show();
-				if (typeof aipPlayer !== 'undefined') {
+				if (typeof aipPlayer != 'undefined') {
 					adplayer = new aipPlayer({
 						AD_WIDTH: 960,
 						AD_HEIGHT: 540,
@@ -81,7 +81,9 @@ var AdComponent = IgeEntity.extend({
 	},
 
 	showAnchorTag: function () {
-		// if (noAds) {}
+		if (noAds) {
+
+		}
 	}
 
 });

@@ -307,7 +307,7 @@ var ClientNetworkEvents = {
 		var gameSlug = data.gameSlug;
 		var friend = null;
 
-		if (typeof allFriends !== 'undefined') {
+		if (typeof allFriends != 'undefined') {
 			for (var i in allFriends) {
 				var friendObj = allFriends[i];
 

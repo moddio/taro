@@ -9,31 +9,18 @@ jobs:
   nodejs:
     name: Node.js
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14, 16]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Node.js ${{ matrix.node-version }}
+      - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14
 
       - name: Install Packages
         run: npm ci
 
-      - name: Compile TypeScript
-        run: npm run tsc
-
-      - name: Build
+      - name: Build Project
         run: npm run build:git
-
-      # This is currently disabled until the repository is ready to start enforcing linting checks for JS.
-      # - name: Lint (JS)
-      #   run: npm run ci:lint:js
-
-      - name: Lint (TS)
-        run: npm run ci:lint:ts

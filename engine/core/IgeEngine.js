@@ -591,7 +591,9 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	debug: function (eventName) {
-		if (this._debugEvents[eventName] === true || this._debugEvents[eventName] === ige._frames) debugger;
+		if (this._debugEvents[eventName] === true || this._debugEvents[eventName] === ige._frames) {
+			debugger;
+		}
 	},
 
 	debugEventOn: function (eventName) {
@@ -1626,8 +1628,12 @@ var IgeEngine = IgeEntity.extend({
 			},
 			set: function (val) {
 				if (callbackEvaluator) {
-					if (callbackEvaluator(val)) debugger;
-				} else debugger;
+					if (callbackEvaluator(val)) {
+						debugger;
+					}
+				} else {
+					debugger;
+				}
 
 				obj.___igeTraceCurrentVal[propName] = val;
 				obj.___igeTraceCount++;
@@ -1649,7 +1655,6 @@ var IgeEngine = IgeEntity.extend({
 	 * want to disable the trace for.
 	 */
 	traceSetOff: function (object, propName) {
-		// eslint-disable-next-line accessor-pairs
 		Object.defineProperty(object, propName, { set: function (val) { this.___igeTraceCurrentVal[propName] = val; } });
 	},
 
@@ -1761,7 +1766,7 @@ var IgeEngine = IgeEntity.extend({
 		// console.log("increment time", this._currentTime, now, this._timeScaleLastTimestamp, (now - this._timeScaleLastTimestamp))
 		this._currentTime = (now + this.timeDiscrepancy) * this._timeScale;
 		this.renderTime = this._currentTime - 100;
-
+		
 		// this.incrementCount++;
 		// if (now - this._aSecondAgo > 1000) {
 		// 	console.log((this._currentTime - this.lastIncrementAt), this.incrementCount, (this._currentTime - this.lastIncrementAt) / this.incrementCount)

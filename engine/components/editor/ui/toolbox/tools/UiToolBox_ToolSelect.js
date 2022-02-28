@@ -69,7 +69,9 @@ var UiToolBox_ToolSelect = IgeEventingClass.extend({
 				var classArr = ige.editor._selectedObjectClassList;
 				var i;
 
-				// for (i = 0; i < classArr.length; i++) {}
+				for (i = 0; i < classArr.length; i++) {
+
+				}
 
 				var body = $('body');
 				var width = body.width();

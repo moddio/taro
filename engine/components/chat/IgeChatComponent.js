@@ -128,8 +128,8 @@ var IgeChatComponent = IgeEventingClass.extend({
 					$(msgDiv).find('.author').text(player._stats.name);
 					$(msgDiv).find('.msg').text(msgData.text);
 				}
-			} else {
-				// system message
+			} else // system message
+			{
 				msgDiv = $('<div/>', {
 					style: 'color: yellow'
 				});

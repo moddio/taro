@@ -1,4 +1,4 @@
-(function () { function r (e, n, t) { function o (i, f) { if (!n[i]) { if (!e[i]) { var c = typeof require === 'function' && require; if (!f && c) return c(i, !0); if (u) return u(i, !0); var a = new Error(`Cannot find module '${i}'`); throw a.code = 'MODULE_NOT_FOUND', a; } var p = n[i] = { exports: {} }; e[i][0].call(p.exports, function (r) { var n = e[i][1][r]; return o(n || r); }, p, p.exports, r, e, n, t); } return n[i].exports; } for (var u = typeof require === 'function' && require, i = 0; i < t.length; i++)o(t[i]); return o; } return r; })()({
+(function () { function r (e, n, t) { function o (i, f) { if (!n[i]) { if (!e[i]) { var c = typeof require == 'function' && require; if (!f && c) return c(i, !0); if (u) return u(i, !0); var a = new Error(`Cannot find module '${i}'`); throw a.code = 'MODULE_NOT_FOUND', a; } var p = n[i] = { exports: {} }; e[i][0].call(p.exports, function (r) { var n = e[i][1][r]; return o(n || r); }, p, p.exports, r, e, n, t); } return n[i].exports; } for (var u = typeof require == 'function' && require, i = 0; i < t.length; i++)o(t[i]); return o; } return r; })()({
 	1: [function (require, module, exports) {
 		'use strict';
 
@@ -123,7 +123,7 @@
 			}, {
 				key: 'calcUnderflowX',
 				value: function calcUnderflowX () {
-					var x = undefined;
+					var x = void 0;
 					switch (this.underflowX) {
 						case -1:
 							x = 0;
@@ -139,7 +139,7 @@
 			}, {
 				key: 'calcUnderflowY',
 				value: function calcUnderflowY () {
-					var y = undefined;
+					var y = void 0;
 					switch (this.underflowY) {
 						case -1:
 							y = 0;
@@ -159,7 +159,7 @@
 						return;
 					}
 
-					var oob = undefined;
+					var oob = void 0;
 					var decelerate = this.parent.plugins.decelerate;
 					if (decelerate && (decelerate.x || decelerate.y)) {
 						if (decelerate.x && decelerate.percentChangeX === decelerate.friction || decelerate.y && decelerate.percentChangeY === decelerate.friction) {
@@ -380,7 +380,7 @@
 					var original = { x: this.parent.x, y: this.parent.y };
 					var decelerate = this.parent.plugins.decelerate || {};
 					if (this.left !== null || this.right !== null) {
-						var moved = undefined;
+						var moved = void 0;
 						if (this.parent.screenWorldWidth < this.parent.screenWidth) {
 							if (!this.noUnderflow) {
 								switch (this.underflowX) {
@@ -424,7 +424,7 @@
 						}
 					}
 					if (this.top !== null || this.bottom !== null) {
-						var _moved = undefined;
+						var _moved = void 0;
 						if (this.parent.screenWorldHeight < this.parent.screenHeight) {
 							if (!this.noUnderflow) {
 								switch (this.underflowY) {
@@ -621,7 +621,7 @@
 						return;
 					}
 
-					var moved = undefined;
+					var moved = void 0;
 					if (this.x) {
 						this.parent.x += this.x * elapsed;
 						this.x *= this.percentChangeX;
@@ -1247,7 +1247,7 @@
 							second.last = { x: x, y: y, data: e.data };
 						}
 						if (last) {
-							var oldPoint = undefined;
+							var oldPoint = void 0;
 							var point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 };
 							if (!this.center) {
 								oldPoint = this.parent.toLocal(point);
@@ -1532,7 +1532,7 @@
 						return;
 					}
 
-					var oldCenter = undefined;
+					var oldCenter = void 0;
 					if (!this.center && !this.noMove) {
 						oldCenter = this.parent.center;
 					}
@@ -1692,9 +1692,9 @@
 					} else {
 						var snapping = this.snapping;
 						snapping.time += elapsed;
-						var finished = undefined;
-						var x = undefined;
-						var y = undefined;
+						var finished = void 0;
+						var x = void 0;
+						var y = void 0;
 						if (snapping.time > this.time) {
 							finished = true;
 							x = this.startX + this.deltaX;
@@ -2104,7 +2104,7 @@
 						this.clickedAvailable = false;
 					}
 
-					var stop = undefined;
+					var stop = void 0;
 					var _iteratorNormalCompletion3 = true;
 					var _didIteratorError3 = false;
 					var _iteratorError3 = undefined;
@@ -2164,7 +2164,7 @@
 						return;
 					}
 
-					var stop = undefined;
+					var stop = void 0;
 					var _iteratorNormalCompletion4 = true;
 					var _didIteratorError4 = false;
 					var _iteratorError4 = undefined;
@@ -2228,7 +2228,7 @@
 						}
 					}
 
-					var stop = undefined;
+					var stop = void 0;
 					var _iteratorNormalCompletion5 = true;
 					var _didIteratorError5 = false;
 					var _iteratorError5 = undefined;
@@ -2300,7 +2300,7 @@
 					// only handle wheel events where the mouse is over the viewport
 					var point = this.toLocal(this.getPointerPosition(e));
 					if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom) {
-						var result = undefined;
+						var result = void 0;
 						var _iteratorNormalCompletion6 = true;
 						var _didIteratorError6 = false;
 						var _iteratorError6 = undefined;
@@ -2387,8 +2387,8 @@
                  * @return {Viewport} this
                  */
 				value: function moveCenter () /* x, y | PIXI.Point */ {
-					var x = undefined;
-					var y = undefined;
+					var x = void 0;
+					var y = void 0;
 					if (!isNaN(arguments[0])) {
 						x = arguments[0];
 						y = arguments[1];
@@ -2440,7 +2440,7 @@
 					var scaleY = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 					var noClamp = arguments[3];
 
-					var save = undefined;
+					var save = void 0;
 					if (center) {
 						save = this.center;
 					}
@@ -2477,7 +2477,7 @@
 					var scaleX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 					var noClamp = arguments[3];
 
-					var save = undefined;
+					var save = void 0;
 					if (center) {
 						save = this.center;
 					}
@@ -2508,7 +2508,7 @@
 			}, {
 				key: 'fitWorld',
 				value: function fitWorld (center) {
-					var save = undefined;
+					var save = void 0;
 					if (center) {
 						save = this.center;
 					}
@@ -2542,7 +2542,7 @@
 			}, {
 				key: 'fit',
 				value: function fit (center, width, height) {
-					var save = undefined;
+					var save = void 0;
 					if (center) {
 						save = this.center;
 					}
@@ -2575,7 +2575,7 @@
 			}, {
 				key: 'zoomPercent',
 				value: function zoomPercent (percent, center) {
-					var save = undefined;
+					var save = void 0;
 					if (center) {
 						save = this.center;
 					}
@@ -3506,7 +3506,7 @@
 					if (this.smoothing) {
 						var point = this.smoothingCenter;
 						var change = this.smoothing;
-						var oldPoint = undefined;
+						var oldPoint = void 0;
 						if (!this.center) {
 							oldPoint = this.parent.toLocal(point);
 						}
@@ -3553,7 +3553,7 @@
 						this.smoothingCount = 0;
 						this.smoothingCenter = point;
 					} else {
-						var oldPoint = undefined;
+						var oldPoint = void 0;
 						if (!this.center) {
 							oldPoint = this.parent.toLocal(point);
 						}
@@ -3797,19 +3797,19 @@
 					}
 				},
 				easeInBack: function (t, b, c, d, s) {
-					if (s === undefined) {
+					if (s === void 0) {
 						s = 1.70158;
 					}
 					return c * (t /= d) * t * ((s + 1) * t - s) + b;
 				},
 				easeOutBack: function (t, b, c, d, s) {
-					if (s === undefined) {
+					if (s === void 0) {
 						s = 1.70158;
 					}
 					return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
 				},
 				easeInOutBack: function (t, b, c, d, s) {
-					if (s === undefined) {
+					if (s === void 0) {
 						s = 1.70158;
 					}
 					if ((t /= d / 2) < 1) {

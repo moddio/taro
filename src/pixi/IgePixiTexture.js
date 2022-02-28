@@ -2,7 +2,7 @@ var IgePixiTexture = IgeClass.extend({
 	classId: 'IgePixiTexture',
 	componentId: 'pixitexture',
 	init: function (entity) {
-		if (typeof arguments[0] === 'string') {
+		if (typeof arguments[0] == 'string') {
 			this._stats = {
 				url: arguments[0],
 				columns: arguments[1],

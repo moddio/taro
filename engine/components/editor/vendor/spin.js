@@ -6,14 +6,15 @@
  */
 (function (root, factory) {
 	/* CommonJS */
-	if (typeof exports === 'object') module.exports = factory();
+	if (typeof exports == 'object') module.exports = factory();
 
 	/* AMD module */
-	else if (typeof define === 'function' && define.amd) define(factory);
+	else if (typeof define == 'function' && define.amd) define(factory);
 
 	/* Browser global */
 	else root.Spinner = factory();
-}(this, function () {
+}
+(this, function () {
 	'use strict';
 
 	var prefixes = ['webkit', 'Moz', 'ms', 'O']; /* Vendor prefixes */
@@ -66,9 +67,12 @@
 		if (!animations[name]) {
 			sheet.insertRule(
 				`@${pre}keyframes ${name}{` +
-				`0%{opacity:${z}}${start}%{opacity:${alpha}}${start + 0.01}%{opacity:1}${(start + trail) % 100}%{opacity:${alpha}}` +
-				`100%{opacity:${z}}` +
-			'}', sheet.cssRules.length);
+        `0%{opacity:${z}}${
+        	start}%{opacity:${alpha}}${
+        	start + 0.01}%{opacity:1}${
+        	(start + trail) % 100}%{opacity:${alpha}}` +
+        `100%{opacity:${z}}` +
+        '}', sheet.cssRules.length);
 
 			animations[name] = 1;
 		}
@@ -129,7 +133,7 @@
    * Returns the line color from the given string or array.
    */
 	function getColor (color, idx) {
-		return typeof color === 'string' ? color : color[idx % color.length];
+		return typeof color == 'string' ? color : color[idx % color.length];
 	}
 
 	// Built-in defaults
@@ -156,7 +160,7 @@
 
 	/** The constructor */
 	function Spinner (o) {
-		if (typeof this === 'undefined') return new Spinner(o);
+		if (typeof this == 'undefined') return new Spinner(o);
 		this.opts = merge(o || {}, Spinner.defaults, defaults);
 	}
 
@@ -300,7 +304,7 @@
 			}
 
 			var margin = `${-(o.width + o.length) * 2}px`;
-			var g = css(grp(), { position: 'absolute', top: margin, left: margin });
+				 var g = css(grp(), { position: 'absolute', top: margin, left: margin });
 			var i;
 
 			function seg (i, dx, filter) {

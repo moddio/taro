@@ -90,7 +90,6 @@
 		}
 
 		try {
-			/* eslint-disable-next-line no-new-func */
 			var f = new Function('', 'return true;');
 			return f();
 		} catch (ex) {
@@ -122,9 +121,7 @@
 		if (numberIsNaN(left) && numberIsNaN(right))
 			return true;
 
-		return true;
-		// return left !== left && right !== right;
-		// (false && false) === true ???
+		return left !== left && right !== right;
 	}
 
 	var createObject = ('__proto__' in {})
@@ -150,7 +147,7 @@
 	var pathRegExp = new RegExp(`^${path}$`);
 
 	function isPathValid (s) {
-		if (typeof s !== 'string')
+		if (typeof s != 'string')
 			return false;
 		s = s.trim();
 
@@ -251,8 +248,6 @@
 			pathString += accessors[i];
 
 			str += `  return ${pathString};\nelse\n  return undefined;`;
-
-			/* eslint-disable-next-line no-new-func */
 			return new Function('obj', str);
 		},
 
@@ -291,7 +286,6 @@
 	}
 
 	function objectIsEmpty (object) {
-		/* eslint-disable-next-line no-unreachable-loop */
 		for (var prop in object)
 			return false;
 		return true;
@@ -454,7 +448,7 @@
 
 	var runningMicrotaskCheckpoint = false;
 
-	var hasDebugForceFullDelivery = typeof Object.deliverAllChangeRecords === 'function';
+	var hasDebugForceFullDelivery = typeof Object.deliverAllChangeRecords == 'function';
 
 	global.Platform = global.Platform || {};
 

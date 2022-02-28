@@ -69,60 +69,60 @@ var IgeClass = (function () {
             if (this._classId == 'IgeEntity') return;
             */
 
-		// if (igeConfig.debug._enabled) {
-		// 	var indent = '';
-		// 	var stack;
-		// 	var thisId;
+		if (false && igeConfig.debug._enabled) {
+			var indent = '';
+			var stack;
+			var thisId;
 
-		// 	if (typeof (this._id) !== 'undefined') {
-		// 		thisId = `:${this._id}`;
-		// 	} else {
-		// 		thisId = '';
-		// 	}
+			if (typeof (this._id) !== 'undefined') {
+				thisId = `:${this._id}`;
+			} else {
+				thisId = '';
+			}
 
-		// 	type = type || 'log';
+			type = type || 'log';
 
-		// 	if (obj !== undefined) {
-		// 		console.warn(obj);
-		// 	}
+			if (obj !== undefined) {
+				console.warn(obj);
+			}
 
-		// 	if (type === 'warning' || type === 'error') {
-		// 		if (igeConfig.debug._stacks) {
-		// 			if (igeConfig.debug._node) {
-		// 				if (console.trace) {
-		// 					Error.stackTraceLimit = Infinity;
-		// 					// console.log("ERROR: ip/port is already being used by other server")
-		// 					console.log('ERROR: ', text);
-		// 					ige.server.kill('ERROR: ip/port is already being used by other server');
-		// 					console.trace();
-		// 				} else {
-		// 					stack = new Error().stack;
-		// 					console.log(color.magenta('Stack:'), color.red(stack));
-		// 					console.log('Stack:', stack);
-		// 				}
-		// 			} else {
-		// 				if (typeof (printStackTrace) === 'function') {
-		// 					console.log('Stack:', printStackTrace().join('\n ---- '));
-		// 				}
-		// 			}
-		// 		}
-		// 	}
+			if (type === 'warning' || type === 'error') {
+				if (igeConfig.debug._stacks) {
+					if (igeConfig.debug._node) {
+						if (console.trace) {
+							Error.stackTraceLimit = Infinity;
+							// console.log("ERROR: ip/port is already being used by other server")
+							console.log('ERROR: ', text);
+							ige.server.kill('ERROR: ip/port is already being used by other server');
+							console.trace();
+						} else {
+							stack = new Error().stack;
+							console.log(color.magenta('Stack:'), color.red(stack));
+							console.log('Stack:', stack);
+						}
+					} else {
+						if (typeof (printStackTrace) === 'function') {
+							console.log('Stack:', printStackTrace().join('\n ---- '));
+						}
+					}
+				}
+			}
 
-		// 	if (type === 'error') {
-		// 		if (typeof (ige) !== 'undefined') {
-		// 			console.log(`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ` + 'Error encountered, stopping engine to prevent console spamming...');
-		// 			ige.stop();
-		// 		}
+			if (type === 'error') {
+				if (typeof (ige) !== 'undefined') {
+					console.log(`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ` + 'Error encountered, stopping engine to prevent console spamming...');
+					ige.stop();
+				}
 
-		// 		if (igeConfig.debug._throwErrors) {
-		// 			throw (`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ${text}`);
-		// 		} else {
-		// 			console.log(`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ${text}`);
-		// 		}
-		// 	} else {
-		// 		console.log(`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ${text}`);
-		// 	}
-		// }
+				if (igeConfig.debug._throwErrors) {
+					throw (`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ${text}`);
+				} else {
+					console.log(`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ${text}`);
+				}
+			} else {
+				console.log(`${indent}IGE *${type}* [${this._classId || this.prototype._classId}${thisId}] : ${text}`);
+			}
+		}
 
 		return this;
 	};
@@ -317,13 +317,13 @@ var IgeClass = (function () {
 		// Check that the class has been assigned a classId and bug out if not
 		if (!prop.classId) {
 			console.log(prop);
-			throw new Error('Cannot create a new class without giving the class a classId property!');
+			throw ('Cannot create a new class without giving the class a classId property!');
 		}
 
 		// Check that the classId is not already in use
 		if (igeClassStore[prop.classId]) {
 			// This classId has already been used, bug out
-			throw new Error(`Cannot create class with classId "${prop.classId}" because a class with that ID has already been created!`);
+			throw (`Cannot create class with classId "${prop.classId}" because a class with that ID has already been created!`);
 		}
 
 		// Instantiate a base class (but only create the instance,
@@ -409,7 +409,6 @@ var IgeClass = (function () {
 		IgeClass.prototype.constructor = IgeClass;
 
 		// And make this class extensible
-		/* eslint-disable-next-line no-caller */
 		IgeClass.extend = arguments.callee;
 
 		// Add log capability

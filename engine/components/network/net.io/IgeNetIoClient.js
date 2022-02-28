@@ -42,7 +42,6 @@ var IgeNetIoClient = {
 			var sortedServers = [server];
 			var ignoreServerIds = [server.id];
 
-			/* eslint-disable-next-line no-cond-assign */
 			while (server = ige.client.getBestServer(ignoreServerIds)) {
 				ignoreServerIds.push(server.id);
 				sortedServers.push(server);
@@ -111,7 +110,7 @@ var IgeNetIoClient = {
 						self._state = 0; // Disconnected
 						self._onDisconnectFromServer.apply(self, arguments);
 
-						if (gameId && typeof analyticsUrl !== undefined) {
+						if (gameId && typeof analyticsUrl != undefined) {
 							$.post(`${analyticsUrl}api/game-report/game-access/${gameId}/could-not-connect`)
 								.fail(function (xhr) {
 									$.post('/api/log', {
@@ -531,8 +530,8 @@ var IgeNetIoClient = {
 					// add the new snapshot into empty array
 					if (ige.snapshots.length == 0) {
 						ige.snapshots.push([newSnapshotTimeStamp, obj]);
-					} else {
-						// if not empty, add it as ascending order based on timestamp
+					} // if not empty, add it as ascending order based on timestamp
+					else {
 						var i = 0;
 						while (ige.snapshots[i] && ige.snapshots[i][0] < newSnapshotTimeStamp) {
 							i++;

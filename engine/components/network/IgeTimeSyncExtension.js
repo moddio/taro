@@ -70,6 +70,7 @@ var IgeTimeSyncExtension = {
 
 	// // speed up or slow down ige.timeScale depending on discrepancy between client & server's time.
 	timeSync: function (serverTime) {
+
 		var latency = Math.floor(Date.now() - this.lastTimeSyncSentAt); // ping (round trip)
 		// this.latency = latency;
 		// this.latencyHistory.push(this.latency)
@@ -97,8 +98,7 @@ var IgeTimeSyncExtension = {
 
 	getMedian: function (arr) {
 		const mid = Math.floor(arr.length / 2);
-		const nums = [...arr].sort((a, b) => a - b);
-
+		  const nums = [...arr].sort((a, b) => a - b);
 		return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
 	}
 };

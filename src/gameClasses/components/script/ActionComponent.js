@@ -47,9 +47,9 @@ var ActionComponent = IgeEntity.extend({
 							// if variable has default field then it will be returned when variable's value is undefined
 							if (
 								newValue === undefined &&
-								action.value &&
-								action.value.function === 'undefinedValue' &&
-								ige.game.data.variables[action.variableName].hasOwnProperty('default')
+                                				action.value &&
+                                				action.value.function === 'undefinedValue' &&
+                                				ige.game.data.variables[action.variableName].hasOwnProperty('default')
 							) {
 								ige.game.data.variables[action.variableName].default = undefined;
 							}
@@ -65,8 +65,7 @@ var ActionComponent = IgeEntity.extend({
 
 						break;
 
-					case 'setTimeOut': {
-						// execute actions after timeout
+					case 'setTimeOut': // execute actions after timeout
 
 						// const use for creating new instance of variable every time.
 						const setTimeOutActions = JSON.parse(JSON.stringify(action.actions));
@@ -75,9 +74,9 @@ var ActionComponent = IgeEntity.extend({
 							self.run(actions, vars);
 						}, action.duration, setTimeOutActions);
 						break;
-					}
 
-					case 'repeat': {
+					case 'repeat':
+					{
 						var count = ige.variable.getValue(action.count, vars);
 						var repeatActions = ige.variable.getValue(action.actions, vars);
 
@@ -172,23 +171,23 @@ var ActionComponent = IgeEntity.extend({
 						}
 
 						ige.server.request.post({
-							url: url,
-							form: obj
+						    url: url,
+						    form: obj
 						}, function optionalCallback (err, httpResponse, body) {
 							if (err) {
-								return console.error('upload failed:', err);
+							    return console.error('upload failed:', err);
 							}
 
 							try {
 								var res = JSON.parse(body);
 								var newValue = res.response;
-								params.newValue = newValue;
+								params['newValue'] = newValue;
 
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = newValue;
 								}
 							} catch (err) {
-								console.error(err);
+								console.error(err)
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = 'error';
 								}
@@ -220,7 +219,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'setPlayerAttribute':
 
 						var attrId = ige.variable.getValue(action.attribute, vars);
-						var player = entity;
+						var player = entity;						
 						if (player && player._category == 'player' && player._stats.attributes) {
 							var attribute = player._stats.attributes[attrId];
 							if (attribute != undefined) {
@@ -571,7 +570,7 @@ var ActionComponent = IgeEntity.extend({
 							}, player._stats.clientId);
 						}
 						break;
-
+						
 					case 'showMenu':
 						var player = ige.variable.getValue(action.player, vars);
 						if (player && player._stats) {
@@ -967,12 +966,15 @@ var ActionComponent = IgeEntity.extend({
 						if (!vars) vars = {};
 						vars.break = true;
 						return 'break';
+						break;
 
 					case 'continue':
 						return 'continue';
+						break;
 
 					case 'return':
 						return 'return';
+						break;
 
 					case 'endGame':
 						ige.server.kill('end game called');
@@ -1209,7 +1211,7 @@ var ActionComponent = IgeEntity.extend({
 						if (item && item._category === 'item' && item._stats.type === 'weapon' && !isNaN(newAmmo)) {
 							item.streamUpdateData([{ quantity: newAmmo }]);
 						}
-						break;
+
 					case 'dropItem':
 						var entity = ige.variable.getValue(action.entity, vars);
 
@@ -1453,6 +1455,7 @@ var ActionComponent = IgeEntity.extend({
 							]);
 						}
 						break;
+						'';
 					case 'makeUnitVisibleToFriendlyPlayers':
 						if (entity && entity._category == 'unit') {
 							entity.streamUpdateData([
@@ -1729,8 +1732,8 @@ var ActionComponent = IgeEntity.extend({
 									rotate: unit._rotate.z
 								};
 								unit.pickUpItem(itemData);
-							} else {
-								// Error lolg
+							} else // error log
+							{
 								if (unit == undefined || unit._category != 'unit')
 									ige.script.errorLog('unit doesn\'t exist');
 								// else
@@ -1745,8 +1748,8 @@ var ActionComponent = IgeEntity.extend({
 						slotIndex = slotIndex - 1;
 						if (unit) {
 							unit.changeItem(slotIndex);
-						} else {
-							// Error log
+						} else // error log
+						{
 							if (unit == undefined || unit._category != 'unit')
 								ige.script.errorLog('unit doesn\'t exist');
 						}
@@ -1778,8 +1781,8 @@ var ActionComponent = IgeEntity.extend({
 						// pickup ownerLess items
 						if (unit && unit._category == 'unit' && item && item._category === 'item' && !item.getOwnerUnit()) {
 							unit.pickUpItem(item);
-						} else {
-							// Error log
+						} else // error log
+						{
 							if (unit == undefined || unit._category != 'unit')
 								ige.script.errorLog('unit doesn\'t exist');
 						}
@@ -2012,7 +2015,8 @@ var ActionComponent = IgeEntity.extend({
 						break;
 
 					case 'createEntityForPlayerAtPositionWithDimensions':
-					case 'createEntityAtPositionWithDimensions': {
+					case 'createEntityAtPositionWithDimensions':
+
 						let isSandbox = typeof mode === 'string' && mode === 'sandbox';
 						let entityType = ige.variable.getValue(action.entityType, vars);
 						let entityToCreate = ige.variable.getValue(action.entity, vars);
@@ -2107,7 +2111,6 @@ var ActionComponent = IgeEntity.extend({
 							}
 						}
 						break;
-					}
 					case 'setEntityDepth':
 						var entity = ige.variable.getValue(action.entity, vars);
 						var depth = ige.variable.getValue(action.depth, vars);
@@ -2229,11 +2232,11 @@ var ActionComponent = IgeEntity.extend({
 							entity.addAttributeBuff(attrId, value, time, true); // update attribute, and check for attribute becoming 0
 						}
 						break;
-
+					
 					case 'removeAllAttributeBuffs':
-						var unit = ige.variable.getValue(action.unit, vars);
-						if (unit && unit._stats && unit._stats.buffs) {
-							for (var i = 0; i < unit._stats.buffs.length; i++) {
+						var unit = ige.variable.getValue(action.unit, vars)
+						if(unit && unit._stats && unit._stats.buffs){
+							for(var i = 0; i < unit._stats.buffs.length; i++){
 								unit._stats.buffs[i].timeLimit = 0;
 							}
 						}
@@ -2242,7 +2245,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'moveEntity':
 						var position = ige.variable.getValue(action.position, vars);
 						var entity = ige.variable.getValue(action.entity, vars);
-
+						
 						if (position && entity && ['unit', 'item', 'projectile'].includes(entity._category)) {
 							entity.teleportTo(position.x, position.y, entity._rotate.z);
 						}
@@ -2252,7 +2255,7 @@ var ActionComponent = IgeEntity.extend({
 						var entity = ige.variable.getValue(action.entity, vars);
 
 						if (this._category == 'item' && this._stats.name == 'Floaty') {
-							console.trace();
+							console.trace()
 						}
 
 						if (entity && self.entityCategories.indexOf(entity._category) > -1) {
@@ -2363,7 +2366,9 @@ var ActionComponent = IgeEntity.extend({
 								//     entity.rotateBy(0, 0, -rotateDiff);
 								// }
 								entity.rotateTo(0, 0, newFacingAngle);
-							} else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {
+							}
+							// &&
+							else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {
 								if (entity._category === 'item') {
 									console.log(newFacingAngle);
 								}

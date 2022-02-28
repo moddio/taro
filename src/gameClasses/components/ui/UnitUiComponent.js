@@ -105,7 +105,7 @@ var UnitUiComponent = IgeEntity.extend({
 			} else {
 				if (attr.decimalPlaces != undefined && attr.decimalPlaces != null) {
 					var decimalPlace = parseInt(attr.decimalPlaces);
-					if (!isNaN(decimalPlace)) {
+					if (decimalPlace != NaN) {
 						attr.value = parseFloat(attr.value).toFixed(decimalPlace);
 					} else {
 						attr.value = parseFloat(attr.value).toFixed(2);

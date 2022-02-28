@@ -130,13 +130,13 @@ var IgeUiTooltip = IgeUiElement.extend({
 				child.unMount();
 				child.destroy();
 			});
-			if (typeof (val) === 'string') {
+			if (typeof (val) == 'string') {
 				this.textBox.mount(this);
 				this.textBox.height(this._bounds2d.y);
 				this.textBox.top(0);
 				// Set the text of the font entity to the value
 				this.fontEntityText.text(this._value);
-			} else if (typeof (val) === 'object' && typeof (val[0] == 'string') && typeof (val[1] == 'string')) {
+			} else if (typeof (val) == 'object' && typeof (val[0] == 'string') && typeof (val[1] == 'string')) {
 				this.titleBox.mount(this);
 				this.textBox.mount(this);
 				this.textBox.height(this._bounds2d.y - this.titleBox._bounds2d.y);
@@ -144,7 +144,7 @@ var IgeUiTooltip = IgeUiElement.extend({
 				// title + text
 				this.fontEntityTitle.text(val[0]);
 				this.fontEntityText.text(val[1]);
-			} else if (typeof (val) === 'object') {
+			} else if (typeof (val) == 'object') {
 				val.mount(this);
 			}
 			this.updateUiChildren();

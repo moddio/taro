@@ -40,8 +40,8 @@ var ItemComponent = IgeEntity.extend({
 				randomTotal += parseFloat(item.spawnChance);
 			}
 
-			if (randomTotal >= randomIndex) {
-				// determine the item Type
+			if (randomTotal >= randomIndex) // determine the item Type
+			{
 				var itemStats = JSON.parse(JSON.stringify(item));
 				itemStats.itemTypeId = itemTypeId;
 				break;
@@ -109,7 +109,6 @@ var ItemComponent = IgeEntity.extend({
 
 								case 'ammoSize':
 									itemStats.ammo = parseInt(itemStats.ammo * (1 + buffValue)); // fill ammo to the weapon's new max ammo capacity
-									break;
 								case 'ammoTotal':
 								case 'reloadRate':
 								case 'fireRate':
@@ -123,7 +122,7 @@ var ItemComponent = IgeEntity.extend({
 									if (!itemStats.isGun) {
 										buffValue = buffValue * 3;
 									}
-									break;
+
 								case 'bulletDistance':
 								case 'recoilForce':
 								case 'movementSpeed':
