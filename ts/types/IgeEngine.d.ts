@@ -1,10 +1,25 @@
 declare class IgeEngine extends IgeClass {
 
+	_renderFrames: number;
+	_tickStart: number;
+	_renderLatency: number;
+
     isClient: boolean;
     isServer: boolean;
 
-    client: any; // TODO proper types
-    server: any;
+    client: Client;
+    server: Client;
 
-    constructor(options: object);
+	network: IgeNetworkComponent;
+
+	input: IgeInputComponent;
+
+	gameLoopTickHasExecuted: boolean;
+
+	constructor(options: object);
+
+	createFrontBuffer (autoSize: boolean, dontScale?: boolean): void
+	engineStep (): void;
+
+	$ (item: number | string | object): any;
 }
