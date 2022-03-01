@@ -68,8 +68,8 @@ var igeClientConfig = {
 
 		/* Phaser */
 		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',
-		'phaser/Game.js',
-		'phaser/Test.js',
+		'renderer/phaser/Game.js',
+		'renderer/phaser/Test.js',
 
 		'/client.js',
 		'/index.js'
