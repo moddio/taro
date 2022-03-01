@@ -126,7 +126,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 		// console.log("collidesWith", this._category, filterCategoryBits, collidesWith, body)
 
-		this.box2dBody(body, isLossTolerant);
+		this.physicsBody(body, isLossTolerant);
 		// if (this._category === 'item') {
 		//     this.previousState = this._stats && this._stats.states && this._stats.states[this._stats.stateId] || {};
 		//     console.log('setting previous sate', this.previousState);
@@ -205,7 +205,7 @@ var IgeEntityPhysics = IgeEntity.extend({
      * @param def
      * @return {*}
      */
-	box2dBody: function (def, isLossTolerant) {
+	 physicsBody: function (def, isLossTolerant) {
 		if (def) {
 			this.bodyDef = def;
 			// console.trace()

@@ -26,13 +26,18 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalBodiesCreated = 0;
 
 		var listener = function(a, b, res, cancel) {
-			console.log('Oh my, we crashed!', a.data);
-			a.pos.x = a.lastPos.x;
-			a.pos.y = a.lastPos.y;
-			a.data.entity._translate.x = a.lastPos.x;
-			a.data.entity._translate.y = a.lastPos.y;
-			a.data.entity._velocity.x = 0;
-			a.data.entity._velocity.y = 0;
+			if (b.data.entity._category != 'region') {
+				console.log('Oh my, we crashed!', a.data);
+				a.pos.x = a.lastPos.x;
+				a.pos.y = a.lastPos.y;
+				a.data.entity._translate.x = a.lastPos.x;
+				a.data.entity._translate.y = a.lastPos.y;
+				a.data.entity._velocity.x = 0;
+				a.data.entity._velocity.y = 0;
+			}
+			else {
+				console.log('enter region', b.data.entity)
+			}
 		};
 
 		this.crash.onCollision(listener);

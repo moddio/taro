@@ -49,13 +49,13 @@ var igePhysicsConfig = {
 
 	gameClasses: [
 		['csap', 'Unit', '../src/gameClasses/Unit.js'],
+		['csap', 'MapComponent', '../src/gameClasses/components/MapComponent.js'],
 		['csap', 'Region', '../src/gameClasses/Region.js'],
 		['csap', 'Item', '../src/gameClasses/Item.js'],
 		['csap', 'Projectile', '../src/gameClasses/Projectile.js'],
 		['csap', 'Particle', '../src/gameClasses/Particle.js'],
 		['csap', 'Debris', '../src/gameClasses/Debris.js'],
-		['csap', 'Sensor', '../src/gameClasses/Sensor.js'],
-		['csap', 'MapComponent', '../src/gameClasses/components/MapComponent.js']
+		['csap', 'Sensor', '../src/gameClasses/Sensor.js']
 	],
 
 	loadSelectPhysics: function (physicsChoice) {

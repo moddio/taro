@@ -12,7 +12,7 @@ var Region = IgeEntityPhysics.extend({
 		this.id(entityIdFromServer);
 		var self = this;
 		var regionName = typeof data.id === 'string' ? data.id : null;
-
+		
 		if (data && regionName) {
 			self._stats = data;
 
@@ -112,7 +112,7 @@ var Region = IgeEntityPhysics.extend({
 			// shapeData.x = regionCordinates.x;
 			// shapeData.y = regionCordinates.y;
 			this._stats.currentBody.fixtures[0].shape.data = shapeData;
-			this.box2dBody(this._stats.currentBody);
+			this.physicsBody(this._stats.currentBody);
 		}
 
 		if (this.regionUi) {
