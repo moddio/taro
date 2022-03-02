@@ -111,6 +111,9 @@ var Client = IgeClass.extend({
 
         //	ige.addComponent(IgeEditorComponent);
         ige.addComponent(IgeInitPixi);
+
+		ige.phaser = new PhaserRenderer();
+
         self.startIgeEngine()
 
         //register error log modal btn;

@@ -16,6 +16,9 @@ declare class IgeEngine extends IgeClass {
 
 	gameLoopTickHasExecuted: boolean;
 
+	pixi: IgeInitPixi;
+	phaser: PhaserRenderer;
+
 	constructor(options: object);
 
 	createFrontBuffer (autoSize: boolean, dontScale?: boolean): void

@@ -1,23 +1,8 @@
-class PhaserRenderer implements Renderer {
+class PhaserRenderer {
 
 	private game: Phaser.Game;
 
-	private initialWindowWidth = 800;
-	private initialWindowHeight = 600;
-	private currentZoomValue = 0;
-
-	// TODO box2dDebug
-	// TODO world
-
-	// TODO
-	private isUpdateLayersOrderQueued = false;
-
-	// TODO
-	private resizeCount = 0;
-
-	constructor (
-		private client: Client
-	) {
+	constructor () {
 
 		const forceCanvas = JSON.parse(
 			localStorage.getItem('forceCanvas')
@@ -27,8 +12,8 @@ class PhaserRenderer implements Renderer {
 			type: forceCanvas[gameId] ?
 				Phaser.CANVAS : Phaser.AUTO,
 			scale: {
-				width: this.initialWindowWidth,
-				height: this.initialWindowHeight,
+				width: ige.pixi.initialWindowWidth,
+				height: ige.pixi.initialWindowHeight,
 				parent: 'game-div',
 				mode: Phaser.Scale.ScaleModes.RESIZE
 			},
@@ -42,9 +27,5 @@ class PhaserRenderer implements Renderer {
 				MobileControlsScene
 			]
 		});
-		this.game.canvas.id = 'igeFrontBuffer';
-
-		// TODO check if necessary
-		ige.createFrontBuffer(true);
 	}
 }
