@@ -3160,14 +3160,21 @@ var IgeEntity = IgeObject.extend({
      */
 	translateTo: function (x, y) {
 		if (x !== undefined && y !== undefined) {
+			// console.log('non-crash translate', this._translate)
 			if (this._translate) {
 				this._translate.x = x;
 				this._translate.y = y;
 			}
 
 			if (ige.physics && ige.physics.engine == 'CRASH') {
-				x += this.width() / 2;
-				y += this.height() / 2;
+				//console.log('crash translate to', this.body.fixtures[0].shape.data)
+				//this.body.fixtures[0].shape.data.moveTo(x, y);
+				x -= this.width() / 2;
+				y -= this.height() / 2;
+				this.body.fixtures[0].shape.data.pos.x = x;
+				this.body.fixtures[0].shape.data.pos.y = y;
+				//this._translate.x = this.body.fixtures[0].shape.data.pos.x 
+				//this._translate.y = this.body.fixtures[0].shape.data.pos.y 
 			}
 
 			// ensure this entity is created at its latest position to the new clients. (instead of spawnPosition)

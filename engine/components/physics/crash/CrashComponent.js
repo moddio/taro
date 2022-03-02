@@ -26,8 +26,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalBodiesCreated = 0;
 
 		var listener = function(a, b, res, cancel) {
+			// console.log(res, cancel)
+			// console.log(a, b)
+			console.log('player', a.pos.x, a.pos.y);
 			if (b.data.entity._category != 'region') {
-				console.log('Oh my, we crashed!', a.data);
+				console.log('Oh my, we crashed!'/*, a.data*/);
 				a.pos.x = a.lastPos.x;
 				a.pos.y = a.lastPos.y;
 				a.data.entity._translate.x = a.lastPos.x;
@@ -36,7 +39,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				a.data.entity._velocity.y = 0;
 			}
 			else {
-				console.log('enter region', b.data.entity)
+				console.log('enter region', b.data.entity.key)
 			}
 		};
 
@@ -81,10 +84,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
-			console.log('width and height', width, height)
+			console.log('width and height', width, height, x, y, entity)
 			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
 			crashBody = new this.crash.Box(new this.crash.Vector(x /*+ (width / 2)*/, y /*+ (height / 2)*/), width, height, false, { igeId: igeId, entity: entity });
-			this.crash.testAll(crashBody);
+			// console.log('entity', entity._category)
+			// if (entity._category === 'unit') this.crash.testAll(crashBody);
 		}
 		else {
 			console.log('body shape is wrong');
