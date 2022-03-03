@@ -3169,10 +3169,10 @@ var IgeEntity = IgeObject.extend({
 			if (ige.physics && ige.physics.engine == 'CRASH') {
 				//console.log('crash translate to', this.body.fixtures[0].shape.data)
 				//this.body.fixtures[0].shape.data.moveTo(x, y);
-				x -= this.width() / 2;
-				y -= this.height() / 2;
-				this.body.fixtures[0].shape.data.pos.x = x;
-				this.body.fixtures[0].shape.data.pos.y = y;
+				//x -= this.width() / 2;
+				//y -= this.height() / 2;
+				//this.body.fixtures[0].shape.data.pos.x = x;
+				//this.body.fixtures[0].shape.data.pos.y = y;
 				//this._translate.x = this.body.fixtures[0].shape.data.pos.x 
 				//this._translate.y = this.body.fixtures[0].shape.data.pos.y 
 			}

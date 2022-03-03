@@ -39,7 +39,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				a.data.entity._velocity.y = 0;
 			}
 			else {
-				console.log('enter region', b.data.entity.key)
+				console.log('enter region', b.data.entity._stats.id)
 			}
 		};
 
@@ -89,6 +89,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 			crashBody = new this.crash.Box(new this.crash.Vector(x /*+ (width / 2)*/, y /*+ (height / 2)*/), width, height, false, { igeId: igeId, entity: entity });
 			// console.log('entity', entity._category)
 			// if (entity._category === 'unit') this.crash.testAll(crashBody);
+			console.log(entity._stats.id);
+			//if (entity._stats.id === 'trees region') console.log('trees region'); //this.crash.testAll(crashBody);
 		}
 		else {
 			console.log('body shape is wrong');

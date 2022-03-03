@@ -47,6 +47,8 @@ var Region = IgeEntityPhysics.extend({
 
 			var regionDimension = self._stats.default;
 
+			self._translate.x = regionDimension.x// + (regionDimension.width / 2);
+			self._translate.y = regionDimension.y// + (regionDimension.height / 2);
 			self.updateBody({
 				translate: { x: regionDimension.x + (regionDimension.width / 2), y: regionDimension.y + (regionDimension.height / 2) }
 			});
