@@ -1151,6 +1151,25 @@ var ActionComponent = IgeEntity.extend({
 						ige.network.send('createFloatingText', { position: position, text: text });
 						break;
 
+						/* UnitGroup */
+
+						case 'addUnitToUnitGroup':
+							var unit = ige.variable.getValue(action.unit, vars);
+							var unitGroup = ige.variable.getValue(action.unitGroup, vars);
+							if( unit && unitGroup){
+								unitGroup.push(unit);
+							}
+	
+							break;
+	
+						case 'removeUnitFromUnitGroup':
+							var unit = ige.variable.getValue(action.unit, vars);
+							var unitGroup = ige.variable.getValue(action.unitGroup, vars);
+							if( unit && unitGroup){
+								unitGroup = unitGroup.filter(el => el != unit);
+							}
+							break;
+							
 						/* Item */
 
 					case 'startUsingItem':
