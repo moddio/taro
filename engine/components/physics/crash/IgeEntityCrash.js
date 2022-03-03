@@ -40,6 +40,9 @@
 			this.jointsAttached = {};
 			this.isOutOfBounds = false;
 		} */
+		if (ige.isServer && ige.physics) {
+			this.translateTo = this._translateTo;
+		}
 
 		this._actionQueue = [];
 
@@ -572,7 +575,8 @@
 		if (isNaN(x) || isNaN(y)) {
 			return;
 		}
-		this._translateToProto(x, y);
+		// this._translateToProto(x, y);
+		
 
 		if (ige.isServer) {
 			if (this.body) {
@@ -600,7 +604,7 @@
 	// loss tolerent
 	translateToLT: function (x, y) {
 		if (this.body) {
-			if (ige.physics.engine == 'crash') {
+			if (ige.physics.engine == 'CRASH') {
 				var position = {
 					x: x,
 					y: y
@@ -612,8 +616,9 @@
 				};
 			}
 
-			this.body.setPosition(position);
-			this.body.setAwake(true);
+			// this.body.setPosition(position);
+			// this.body.setAwake(true);
+
 		}
 	},
 
@@ -862,6 +867,12 @@
 		this.destroyBody();
 		IgeEntity.prototype.destroy.call(this);
 		delete this._actionQueue;
+	},
+
+	translateCollider: function () {
+		console.trace();
+		console.log('moveTo');
+		this.body.fixtures[0].shape.data.moveTo(this._translate.x, this._translate.y);
 	}
 });
 

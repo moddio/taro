@@ -3166,16 +3166,9 @@ var IgeEntity = IgeObject.extend({
 				this._translate.y = y;
 			}
 
-			if (ige.physics && ige.physics.engine == 'CRASH') {
-				//console.log('crash translate to', this.body.fixtures[0].shape.data)
-				//this.body.fixtures[0].shape.data.moveTo(x, y);
-				//x -= this.width() / 2;
-				//y -= this.height() / 2;
-				//this.body.fixtures[0].shape.data.pos.x = x;
-				//this.body.fixtures[0].shape.data.pos.y = y;
-				//this._translate.x = this.body.fixtures[0].shape.data.pos.x 
-				//this._translate.y = this.body.fixtures[0].shape.data.pos.y 
-			}
+			// if (ige.physics && ige.physics.engine == 'CRASH') {
+
+			// }
 
 			// ensure this entity is created at its latest position to the new clients. (instead of spawnPosition)
 			// this.defaultData.translate = this._translate;
@@ -3216,6 +3209,11 @@ var IgeEntity = IgeObject.extend({
 		if (ige.isServer) {
 			ige.network.send('teleport', { entityId: this.id(), position: [x, y] });
 			this.clientStreamedPosition = undefined;
+			//////////////////////////////////////////
+			if (ige.physics && ige.physics.engine == 'CRASH') {
+				this.translateCollider();
+			}
+			///////////////////////////////////////////
 		} else if (ige.isClient) {
 			this.lastServerStreamedPosition = undefined;
 			if (this.body) {
