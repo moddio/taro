@@ -49,6 +49,7 @@
 		if (ige.isClient) {
 			self.addComponent(IgePixiTexture);
 			self.addComponent(IgePixiAnimation);
+			self.addComponent(IgePixiCollider);
 		}
 	},
 
