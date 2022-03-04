@@ -9,6 +9,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create (): void {
+		ige.client.phaserLoaded.resolve();
 
 	}
 

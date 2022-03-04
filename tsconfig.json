@@ -12,9 +12,10 @@
         ],
         "types": [
             "node",
+			"jquery",
             "Phaser"
         ]
-    },
+	},
     "exclude": [
         "node_modules"
     ]

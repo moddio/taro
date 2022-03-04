@@ -4,5 +4,7 @@ declare class Client extends IgeClass {
 	selectedUnit: IgeEntity;
 	entityUpdateQueue: Record<string, UpdateData[]>;
 
+	phaserLoaded: JQueryDeferred<void>;
+
 	constructor(options?: object);
 }

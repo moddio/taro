@@ -46,6 +46,7 @@ var Client = IgeClass.extend({
 
         self.igeEngineStarted = $.Deferred();
         self.mapLoaded = $.Deferred();
+        self.phaserLoaded = $.Deferred();
         self.mapRenderEnabled = true;
         self.unitRenderEnabled = true;
         self.itemRenderEnabled = true;
@@ -112,8 +113,6 @@ var Client = IgeClass.extend({
         //	ige.addComponent(IgeEditorComponent);
         ige.addComponent(IgeInitPixi);
 
-		ige.phaser = new PhaserRenderer();
-
         self.startIgeEngine()
 
         //register error log modal btn;
@@ -178,6 +177,8 @@ var Client = IgeClass.extend({
 
                         ige.map.load(gameMap);
 
+						ige.phaser = new PhaserRenderer();
+
                         var baseTilesize = 64;
                         var tilesizeRatio = baseTilesize / ige.game.data.map.tilewidth;
                         ige.physics.tilesizeRatio(tilesizeRatio)
@@ -187,7 +188,7 @@ var Client = IgeClass.extend({
                             $('#loading-container').addClass('slider-out');
                         }, 4000);
 
-                        $.when(self.mapLoaded)
+                        $.when(self.mapLoaded, self.phaserLoaded)
                             .done(function () {
 
                                 ige.mapEditor.scanMapLayers()
@@ -525,6 +526,8 @@ var Client = IgeClass.extend({
                     ige.map.load(ige.game.data.map);
                 });
 
+			ige.phaser = new PhaserRenderer();
+
             if (mode === 'play' && ige.game.data.defaultData.enableMiniMap) {
                 $('#leaderboard').css({
                     top: '190px'
@@ -559,7 +562,7 @@ var Client = IgeClass.extend({
             }
             ige.addComponent(VariableComponent);
 
-            $.when(self.mapLoaded).done(function () {
+            $.when(self.mapLoaded, self.phaserLoaded).done(function () {
 
                 var zoom = 1000
                 if (ige.game.data.settings.camera && ige.game.data.settings.camera.zoom && ige.game.data.settings.camera.zoom.default) {
