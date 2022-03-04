@@ -869,10 +869,10 @@
 		delete this._actionQueue;
 	},
 
-	translateCollider: function () {
-		console.trace();
+	translateCollider: function (x, y) {
+		// console.trace();
 		console.log('moveTo');
-		this.body.fixtures[0].shape.data.moveTo(this._translate.x, this._translate.y);
+		this.body.fixtures[0].shape.data.moveTo(x, y);
 	}
 });
 

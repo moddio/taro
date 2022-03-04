@@ -28,7 +28,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var listener = function(a, b, res, cancel) {
 			// console.log(res, cancel)
 			// console.log(a, b)
-			console.log('player', a.pos.x, a.pos.y);
+			// console.log('player', a.pos.x, a.pos.y);
 			if (b.data.entity._category != 'region') {
 				console.log('Oh my, we crashed!'/*, a.data*/);
 				a.pos.x = a.lastPos.x;
