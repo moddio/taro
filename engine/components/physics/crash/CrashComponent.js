@@ -28,8 +28,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var listener = function(a, b, res, cancel) {
 			// console.log(res, cancel)
 			// console.log(a, b)
-			console.log('player', a.pos.x, a.pos.y);
-			if (b.data.entity._category != 'region') {
+			// console.log('player', a.pos.x, a.pos.y);
+			if (b.data.entity._category == 'unit') {
 				console.log('Oh my, we crashed!'/*, a.data*/);
 				a.pos.x = a.lastPos.x;
 				a.pos.y = a.lastPos.y;
@@ -38,9 +38,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 				a.data.entity._velocity.x = 0;
 				a.data.entity._velocity.y = 0;
 			}
-			else {
+			/* else {
 				console.log('enter region', b.data.entity._stats.id)
-			}
+			} */
 		};
 
 		var contactDetails = function (a, b, res, cancel) {
@@ -94,20 +94,20 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var igeId = body.fixtures[0].igeId;
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x / 2;
-			console.log('radius', radius)
+			// console.log('radius', radius)
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
 			crashBody = new this.crash.Circle(new this.crash.Vector(x + (radius / 2), y + (radius / 2)), radius, false, { igeId: igeId, entity: entity });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
-			console.log('width and height', width, height, x, y, entity)
+			// console.log('width and height', width, height, x, y, entity)
 			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
 			crashBody = new this.crash.Box(new this.crash.Vector(x /*+ (width / 2)*/, y /*+ (height / 2)*/), width, height, false, { igeId: igeId, entity: entity });
 			// console.log('entity', entity._category)
 			// if (entity._category === 'unit') this.crash.testAll(crashBody);
-			console.log(entity._stats.id);
-			//if (entity._stats.id === 'trees region') console.log('trees region'); //this.crash.testAll(crashBody);
+			// console.log(entity._stats.id);
+			// if (entity._stats.id === 'trees region') console.log('trees region'); //this.crash.testAll(crashBody);
 		}
 		else {
 			console.log('body shape is wrong');
@@ -158,6 +158,22 @@ var PhysicsComponent = IgeEventingClass.extend({
 	start: function () {
 		this.crash.checkAll();
 		console.log('CrashComponent.start()');
+
+		if (!this._active) {
+			this._active = true;
+
+			/*if (!this._networkDebugMode) {
+				if (this._mode === 0) {
+					// Add the box2d behaviour to the ige
+					// console.log('starting box2d', this._entity.id(), this._entity._category);
+					// this._entity.addBehaviour('box2dStep', this._behaviour);
+				} else {
+					// this._intervalTimer = setInterval(this._behaviour, 1000 / 60);
+					// console.log('b2d start');
+					// this._intervalTimer = setInterval(this._behaviour, ige._tickDelta);
+				}
+			}*/
+		}
 	},
 
 	update: function () {

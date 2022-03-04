@@ -35,10 +35,8 @@ var TriggerComponent = IgeEntity.extend({
 
 	// Listen for when contact's begin
 	_beginContactCallback: function (contact) {
-		console.log(contact);
 		var entityA = contact.m_fixtureA.m_body._entity;
 		var entityB = contact.m_fixtureB.m_body._entity;
-		console.log(entityA, entityB);
 		if (!entityA || !entityB)
 			return;
 
