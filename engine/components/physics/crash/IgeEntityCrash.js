@@ -266,9 +266,8 @@
 
 	destroyBody: function () {
 		// IgeEntityBox2d.prototype.log('destroyBody');
-
 		if (ige.physics) {
-			ige.physics.destroyBody(this, this.body);
+			ige.physics.destroyBody(this.body, this);
 		}
 		// ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
 	},
@@ -576,7 +575,6 @@
 			return;
 		}
 		// this._translateToProto(x, y);
-		
 
 		if (ige.isServer) {
 			if (this.body) {
@@ -603,6 +601,8 @@
 
 	// loss tolerent
 	translateToLT: function (x, y) {
+		// strange console log, player translated to different pos every frame
+		// console.log('crash translate to', x, y)
 		if (this.body) {
 			if (ige.physics.engine == 'CRASH') {
 				var position = {
@@ -791,6 +791,7 @@
 	},
 
 	processBox2dQueue: function (ctx) {
+		// will we use action queue in crash or not??
 		// process box2d only when box2d world is unlocked
 		if (ige.physics && ige.physics._active && ige.physics._world) {
 			if (this.body) {
@@ -798,7 +799,7 @@
 				// return;
 				while (this._actionQueue && this._actionQueue.length > 0) {
 					var action = this._actionQueue.shift();
-
+					console.log('action type', action.type)
 					x++;
 					if (x > 1000) {
 						console.log('igeEntityBox2d processBox2dQueue running over 1000 times', action.type, this._category, this._stats.name, 'id:', this.id());

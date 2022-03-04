@@ -180,6 +180,9 @@ var Projectile = IgeEntityPhysics.extend({
 	destroy: function () {
 		this.playEffect('destroy');
 		IgeEntityPhysics.prototype.destroy.call(this);
+		if (ige.physics && ige.physics.engine == 'CRASH') {
+			this.destroyBody();
+		}
 	}
 });
 
