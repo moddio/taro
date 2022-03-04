@@ -18,9 +18,18 @@ var GameScene = /** @class */ (function (_super) {
     function GameScene() {
         return _super.call(this, { key: 'Game' }) || this;
     }
+    GameScene.prototype.init = function () {
+        // TODO move to css once pixi is gone
+        // phaser canvas adjustments
+        var canvas = this.game.canvas;
+        canvas.style.position = 'fixed';
+        canvas.style.opacity = '0.5';
+        canvas.style.backgroundColor = 'transparent';
+    };
     GameScene.prototype.preload = function () {
     };
     GameScene.prototype.create = function () {
+        ige.client.phaserLoaded.resolve();
     };
     GameScene.prototype.update = function (time, delta) {
     };

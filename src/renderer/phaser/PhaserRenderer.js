@@ -12,8 +12,8 @@ var PhaserRenderer = /** @class */ (function () {
             },
             render: {
                 pixelArt: true,
-                transparent: false,
-                mipmapFilter: 'NEAREST',
+                transparent: !false,
+                mipmapFilter: 'NEAREST'
             },
             scene: [
                 GameScene,
