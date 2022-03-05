@@ -24,6 +24,12 @@ var PhysicsComponent = IgeEventingClass.extend({
 			return item;
 		};
 		this.totalBodiesCreated = 0;
+		this._entity = entity;
+		this.physicsTickDuration = 0;
+		this.avgPhysicsTickDuration = 0;
+		this.lastSecondAt = Date.now();
+		this.totalTimeElapsed = 0;
+		this.totalDisplacement = 0;
 
 		var listener = function(a, b, res, cancel) {
 			// console.log(res, cancel)
@@ -177,7 +183,19 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	update: function () {
+		let timeStart = ige.now;
 		this.crash.check();
+		ige._physicsFrames++;
+		// get stats for dev panel
+		var timeEnd = Date.now();
+		this.physicsTickDuration += timeEnd - timeStart;
+		if (timeEnd - this.lastSecondAt > 1000) {
+			this.lastSecondAt = timeEnd;
+			this.avgPhysicsTickDuration = this.physicsTickDuration / ige._fpsRate;
+			this.totalDisplacement = 0;
+			this.totalTimeElapsed = 0;
+			this.physicsTickDuration = 0;
+		}
 	},
 
 	/* setLinearVelocity: function () {

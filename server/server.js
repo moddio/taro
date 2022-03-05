@@ -852,6 +852,59 @@ var Server = IgeClass.extend({
 		//temprorary for testing crash engine
 		else {
 			ige.physics.getInfo();
+			// var jointCount = 0;
+			// var jointList = ige.physics._world && ige.physics._world.getJointList();
+			// while (jointList) {
+			// 	jointCount++;
+			// 	jointList = jointList.getNext();
+			// }
+			var returnData = {
+				clientCount: Object.keys(ige.network._socketById).length,
+				entityCount: {
+					player: ige.$$('player').filter(function (player) {
+						return player._stats.controlledBy == 'human';
+					}).length,
+					unit: ige.$$('unit').length,
+					item: ige.$$('item').length,
+					debris: ige.$$('debris').length,
+					projectile: ige.$$('projectile').length,
+					sensor: ige.$$('sensor').length,
+					region: ige.$$('region').length
+				},
+				bandwidth: self.bandwidthUsage,
+				heapUsed: process.memoryUsage().heapUsed / 1024 / 1024,
+				currentTime: ige._currentTime,
+				physics: {
+					engine: ige.physics.engine,
+					bodyCount: ige.physics._world.m_bodyCount,
+					contactCount: ige.physics._world.m_contactCount,
+					jointCount: ige.physics._world.m_jointCount,
+					stepDuration: ige.physics.avgPhysicsTickDuration.toFixed(2),
+					stepsPerSecond: ige._physicsFPS,
+					totalBodiesCreated: ige.physics.totalBodiesCreated
+				},
+				etc: {
+					totalPlayersCreated: ige.server.totalPlayersCreated,
+					totalUnitsCreated: ige.server.totalUnitsCreated,
+					totalItemsCreated: ige.server.totalItemsCreated,
+					totalProjectilesCreated: ige.server.totalProjectilesCreated,
+					totalWallsCreated: ige.server.totalWallsCreated
+				},
+				cpu: cpuDelta,
+				lastSnapshotLength: JSON.stringify(ige.server.lastSnapshot).length
+			};
+
+			self.bandwidthUsage = {
+				unit: 0,
+				debris: 0,
+				item: 0,
+				player: 0,
+				projectile: 0,
+				region: 0,
+				sensor: 0
+			};
+
+			return returnData;
 		}
 	}
 });
