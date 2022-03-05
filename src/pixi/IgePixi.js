@@ -256,7 +256,7 @@ var IgeInitPixi = IgeClass.extend({
 						// Check if the deathCallBack was set
 						if (entity._deathCallBack) {
 							entity._deathCallBack.apply(entity);
-							delete entity._deathCallback;
+							delete entity._deathCallBack;
 						}
 						entity.destroy();
 					}

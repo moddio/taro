@@ -919,6 +919,11 @@ div#dev-console-table {
   -ms-user-select: none;
 }
 
-#play-game-button, #backpack-wrapper {
+#play-game-button, #backpack-wrapper, #game-div > #stats {
   z-index: 9999;
+}
+
+#game-div > #stats {
+  right: 15px !important;
+  top: 10px;
 }

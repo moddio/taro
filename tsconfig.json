@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "None",
+        "target": "es5",
+        "sourceMap": true,
+        "outDir": ".",
+        "rootDir": "ts",
+        "typeRoots": [
+            "node_modules/@types",
+            "ts/types"
+        ],
+        "types": [
+            "node"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

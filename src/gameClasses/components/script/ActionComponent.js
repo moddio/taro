@@ -162,32 +162,36 @@ var ActionComponent = IgeEntity.extend({
 						var obj = ige.variable.getValue(action.string, vars);
 						var url = ige.variable.getValue(action.url, vars);
 						var varName = ige.variable.getValue(action.varName, vars);
-						try{
+
+						try {
 							obj = JSON.parse(obj);
-						} catch {
+						} catch (err) {
 							console.error(err);
 							return;
 						}
+
 						ige.server.request.post({
-						    url:url,
-						    form: obj}, function optionalCallback(err, httpResponse, body) {
+						    url: url,
+						    form: obj
+						}, function optionalCallback (err, httpResponse, body) {
 							if (err) {
 							    return console.error('upload failed:', err);
 							}
-							try{
+
+							try {
 								var res = JSON.parse(body);
 								var newValue = res.response;
 								params['newValue'] = newValue;
+
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = newValue;
-								};
-							} catch(err) {
+								}
+							} catch (err) {
 								console.error(err)
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = 'error';
-								};
+								}
 							}
-							
 						});
 
 						break;
