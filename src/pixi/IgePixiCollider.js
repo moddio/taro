@@ -40,6 +40,20 @@ var IgePixiCollider = IgeClass.extend({
 		collider.endFill();
 
 		collider.zIndex = 10;
+
+		// testing offset
+		if (this._entity.bodyDef.type == 'dynamic') {
+			collider.lineStyle(2, 0x00FFFF, 0.7)
+				.beginFill(0x00FFFF, 0.3)
+				.drawRect(
+					0,
+					0,
+					dimensions.width,
+					dimensions.height
+				)
+				.endFill();
+		}
+
 		return collider;
 	}
 });

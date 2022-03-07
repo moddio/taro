@@ -658,19 +658,25 @@ var IgeEntity = IgeObject.extend({
 		this._pixiTexture = texture;
 		this._pixiContainer.addChild(texture);
 
-		//new stuff
-		var collider = new IgePixiCollider(this);
-		collider = collider.drawCollider();
-		this._pixiCollider = collider;
-		this._pixiContainer.addChild(collider);
-		///////
-
 		if (defaultData) {
 			this._pixiContainer.x = defaultData.translate.x;
 			this._pixiContainer.y = defaultData.translate.y;
 			this._pixiTexture.rotation = defaultData.rotate;
+		}
+		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+	},
+
+	drawCrashCollider: function (defaultData) {
+		var collider = new IgePixiCollider(this);
+		collider = collider.drawCollider();
+		this._pixiCollider = collider;
+		this._pixiContainer.addChild (collider);
+
+		if (defaultData) {
+			this._pixiContainer.x = defaultData.translate.x;
+			this._pixiContainer.y = defaultData.translate.y;
 			// new
-			this._pixiCollider.rotation = defaultData.rotate;
+			//this._pixiCollider.rotation = defaultData.rotate;
 		}
 		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
 	},

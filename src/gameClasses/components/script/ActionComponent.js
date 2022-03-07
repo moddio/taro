@@ -219,7 +219,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'setPlayerAttribute':
 
 						var attrId = ige.variable.getValue(action.attribute, vars);
-						var player = entity;						
+						var player = entity;
 						if (player && player._category == 'player' && player._stats.attributes) {
 							var attribute = player._stats.attributes[attrId];
 							if (attribute != undefined) {
@@ -570,7 +570,7 @@ var ActionComponent = IgeEntity.extend({
 							}, player._stats.clientId);
 						}
 						break;
-						
+
 					case 'showMenu':
 						var player = ige.variable.getValue(action.player, vars);
 						if (player && player._stats) {
@@ -1000,8 +1000,10 @@ var ActionComponent = IgeEntity.extend({
 									}
 								}
 							);
+							console.log(data);
 							var unit = player.createUnit(data);
 							ige.game.lastCreatedUnitId = unit.id();
+							console.log(unit);
 						} else {
 							ige.script.errorLog('cannot create unit. parameters are spawnPosition:', spawnPosition, ' player:', !!player, ' unitTypeId:', unitTypeId);
 							if (!player) invalidParameters.push('player');
@@ -2083,6 +2085,7 @@ var ActionComponent = IgeEntity.extend({
 									width: width,
 									scaleDimensions: true
 								});
+								console.log(data);
 
 								if (isSandbox) {
 									createdEntity = new Unit(data);
@@ -2245,7 +2248,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'moveEntity':
 						var position = ige.variable.getValue(action.position, vars);
 						var entity = ige.variable.getValue(action.entity, vars);
-						
+
 						if (position && entity && ['unit', 'item', 'projectile'].includes(entity._category)) {
 							entity.teleportTo(position.x, position.y, entity._rotate.z);
 						}
