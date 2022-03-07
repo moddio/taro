@@ -24,12 +24,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 			return item;
 		};
 		this.totalBodiesCreated = 0;
-		this._entity = entity;
 		this.physicsTickDuration = 0;
-		this.avgPhysicsTickDuration = 0;
 		this.lastSecondAt = Date.now();
-		this.totalTimeElapsed = 0;
 		this.totalDisplacement = 0;
+		this.totalTimeElapsed = 0;
+		this.avgPhysicsTickDuration = 0;
 
 		var listener = function(a, b, res, cancel) {
 			// console.log(res, cancel)
@@ -97,23 +96,24 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
+		// console.log(entity);
 		var igeId = body.fixtures[0].igeId;
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x / 2;
 			// console.log('radius', radius)
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = new this.crash.Circle(new this.crash.Vector(x + (radius / 2), y + (radius / 2)), radius, false, { igeId: igeId, entity: entity });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId, entity: entity });
+
+			// console.log(crashBody);
+			// later check if added to .__moved()
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
 			// console.log('width and height', width, height, x, y, entity)
-			// entity.fixtures[0].shape.data = this.crash.Box(new this.crash.Vector(x, y), width, height, true, { igeId: igeId });
-			crashBody = new this.crash.Box(new this.crash.Vector(x /*+ (width / 2)*/, y /*+ (height / 2)*/), width, height, false, { igeId: igeId, entity: entity });
-			// console.log('entity', entity._category)
-			// if (entity._category === 'unit') this.crash.testAll(crashBody);
-			// console.log(entity._stats.id);
-			// if (entity._stats.id === 'trees region') console.log('trees region'); //this.crash.testAll(crashBody);
+			crashBody = new this.crash.Box(new this.crash.Vector(x , y), width, height, false, { igeId: igeId, entity: entity });
+			crashBody.sat.setOffset ({x: -(width / 2), y: -(height / 2)});
+			crashBody.sat.rotate (entity._rotate.z);
 		}
 		else {
 			console.log('body shape is wrong');
@@ -158,7 +158,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	contactListener: function (cb1, cb2) {
-		
+
 	},
 
 	start: function () {
@@ -186,16 +186,19 @@ var PhysicsComponent = IgeEventingClass.extend({
 		let timeStart = ige.now;
 		this.crash.check();
 		ige._physicsFrames++;
-		// get stats for dev panel
+
+		// Get stats for dev panel;
 		var timeEnd = Date.now();
 		this.physicsTickDuration += timeEnd - timeStart;
+
 		if (timeEnd - this.lastSecondAt > 1000) {
 			this.lastSecondAt = timeEnd;
 			this.avgPhysicsTickDuration = this.physicsTickDuration / ige._fpsRate;
 			this.totalDisplacement = 0;
-			this.totalTimeElapsed = 0;
+			this.totalTimeElapsed =  0;
 			this.physicsTickDuration = 0;
 		}
+
 	},
 
 	/* setLinearVelocity: function () {

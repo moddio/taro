@@ -12,7 +12,7 @@ var Region = IgeEntityPhysics.extend({
 		this.id(entityIdFromServer);
 		var self = this;
 		var regionName = typeof data.id === 'string' ? data.id : null;
-		
+
 		if (data && regionName) {
 			self._stats = data;
 
@@ -47,11 +47,15 @@ var Region = IgeEntityPhysics.extend({
 
 			var regionDimension = self._stats.default;
 
-			self._translate.x = regionDimension.x// + (regionDimension.width / 2);
-			self._translate.y = regionDimension.y// + (regionDimension.height / 2);
+			self._translate.x = regionDimension.x; // + (regionDimension.width / 2);
+			self._translate.y = regionDimension.y; // + (regionDimension.height / 2);
 			self.updateBody({
 				translate: { x: regionDimension.x + (regionDimension.width / 2), y: regionDimension.y + (regionDimension.height / 2) }
 			});
+			// if (ige.isClient) {
+			// 	this._pixiContainer = new PIXI.Container();
+			// 	this.drawCrashCollider(regionDimension);
+			// }
 
 			if (ige.isServer) {
 				self.streamMode(1);

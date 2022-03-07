@@ -465,6 +465,7 @@ var Item = IgeEntityPhysics.extend({
 								unitAttributes: this._stats.damage.unitAttributes,
 								playerAttributes: this._stats.damage.playerAttributes
 							};
+							// console.log(hitbox);                                              //////////Hitbox log
 
 							entities = ige.physics.getBodiesInRegion(hitbox);
 

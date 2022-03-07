@@ -852,12 +852,6 @@ var Server = IgeClass.extend({
 		//temprorary for testing crash engine
 		else {
 			ige.physics.getInfo();
-			// var jointCount = 0;
-			// var jointList = ige.physics._world && ige.physics._world.getJointList();
-			// while (jointList) {
-			// 	jointCount++;
-			// 	jointList = jointList.getNext();
-			// }
 			var returnData = {
 				clientCount: Object.keys(ige.network._socketById).length,
 				entityCount: {
@@ -904,7 +898,11 @@ var Server = IgeClass.extend({
 				sensor: 0
 			};
 
+<<<<<<< HEAD
 			return returnData;
+=======
+			return returnData;d
+>>>>>>> 7216ba668948e2e403fc20532ec5f08dbb54fec6
 		}
 	}
 });
