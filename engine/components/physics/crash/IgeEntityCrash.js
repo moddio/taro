@@ -603,9 +603,12 @@
 	// loss tolerent
 	translateToLT: function (x, y) {
 		// strange console log, player translated to different pos every frame
-		// console.log('crash translate to', x, y)
 		if (this.body) {
 			if (ige.physics.engine == 'CRASH') {
+				if (this._hasMoved) {
+					// console.log('crash translate to', x, y)
+					this.translateCollider(x, y);
+				}
 				var position = {
 					x: x,
 					y: y
@@ -872,8 +875,7 @@
 	},
 
 	translateCollider: function (x, y) {
-		// console.trace();
-		console.log('moveTo');
+		// console.log('moveTo');
 		this.body.fixtures[0].shape.data.moveTo(x, y);
 	}
 });
