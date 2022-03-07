@@ -43,11 +43,26 @@ var GameScene = /** @class */ (function (_super) {
         });
     };
     GameScene.prototype.loadEntity = function (key, data) {
+        var _this = this;
         var cellSheet = data.cellSheet;
         if (!cellSheet) { // skip if no cell sheet data
             return;
         }
         this.load.image(key, cellSheet.url);
+        if (cellSheet.rowCount === 1 && // skip if not a spritesheet
+            cellSheet.columnCount === 1) {
+            return;
+        }
+        this.load.once("filecomplete-image-".concat(key), function () {
+            // create spritesheet
+            var texture = _this.textures.get(key);
+            var width = texture.source[0].width;
+            var height = texture.source[0].height;
+            Phaser.Textures.Parsers.SpriteSheet(texture, 0, 0, 0, width, height, {
+                frameWidth: width / cellSheet.columnCount,
+                frameHeight: height / cellSheet.rowCount,
+            });
+        });
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();

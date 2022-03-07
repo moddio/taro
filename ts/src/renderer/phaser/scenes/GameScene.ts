@@ -43,6 +43,27 @@ class GameScene extends Phaser.Scene {
 		}
 
 		this.load.image(key, cellSheet.url);
+
+		if (cellSheet.rowCount === 1 && // skip if not a spritesheet
+			cellSheet.columnCount === 1) {
+			return;
+		}
+
+		this.load.once(`filecomplete-image-${key}`, () => {
+
+			// create spritesheet
+			const texture = this.textures.get(key);
+			const width = texture.source[0].width;
+			const height = texture.source[0].height;
+			Phaser.Textures.Parsers.SpriteSheet(
+				texture,
+				0, 0, 0, width, height,
+				{
+					frameWidth: width / cellSheet.columnCount,
+					frameHeight: height / cellSheet.rowCount,
+				}
+			);
+		});
 	}
 
 	create (): void {
