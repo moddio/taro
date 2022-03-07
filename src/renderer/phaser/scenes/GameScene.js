@@ -27,6 +27,27 @@ var GameScene = /** @class */ (function (_super) {
         canvas.style.backgroundColor = 'transparent';
     };
     GameScene.prototype.preload = function () {
+        var _this = this;
+        var data = ige.game.data;
+        for (var type in data.unitTypes) {
+            this.loadEntity("unit/".concat(type), data.unitTypes[type]);
+        }
+        for (var type in data.projectileTypes) {
+            this.loadEntity("projectile/".concat(type), data.projectileTypes[type]);
+        }
+        for (var type in data.itemTypes) {
+            this.loadEntity("item/".concat(type), data.itemTypes[type]);
+        }
+        data.map.tilesets.forEach(function (tileset) {
+            _this.load.image("tiles/".concat(tileset.name), tileset.image);
+        });
+    };
+    GameScene.prototype.loadEntity = function (key, data) {
+        var cellSheet = data.cellSheet;
+        if (!cellSheet) { // skip if no cell sheet data
+            return;
+        }
+        this.load.image(key, cellSheet.url);
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();

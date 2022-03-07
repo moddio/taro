@@ -16,6 +16,8 @@ declare class IgeEngine extends IgeClass {
 
 	gameLoopTickHasExecuted: boolean;
 
+	game: GameComponent;
+
 	pixi: IgeInitPixi;
 	phaser: PhaserRenderer;
 
