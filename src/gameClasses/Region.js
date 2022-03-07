@@ -52,10 +52,10 @@ var Region = IgeEntityPhysics.extend({
 			self.updateBody({
 				translate: { x: regionDimension.x + (regionDimension.width / 2), y: regionDimension.y + (regionDimension.height / 2) }
 			});
-			if (ige.isClient) {
-				this._pixiContainer = new PIXI.Container();
-				this.drawCrashCollider(regionDimension);
-			}
+			// if (ige.isClient) {
+			// 	this._pixiContainer = new PIXI.Container();
+			// 	this.drawCrashCollider(regionDimension);
+			// }
 
 			if (ige.isServer) {
 				self.streamMode(1);
