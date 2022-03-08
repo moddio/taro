@@ -116,7 +116,10 @@
 		},
 
 		insert: function (item) {
-			if (item) this._insert(item, this.data.height - 1);
+			if (item) {
+				this._insert(item, this.data.height - 1);
+				console.log('rbush insert...', item.data.entity._category, item.data.igeId, item.data.uid);
+			}
 			return this;
 		},
 

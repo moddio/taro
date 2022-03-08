@@ -65,6 +65,7 @@
 
 		if (body.type === 'none' || body.type === 'spriteOnly') {
 			self.destroyBody();
+			this.body = body;
 			return;
 		}
 
@@ -253,7 +254,7 @@
 	_behaviourCrash: function () {
 		// update position based on its velocity, collision, and damping
 
-		if(Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
+		if ((Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) && this.body.type != 'spriteOnly') {
 			// console.log(`unit ${this._id} velocity currently: `, this._velocity);
 			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
 			var damping = 2;
@@ -604,25 +605,10 @@
 	translateToLT: function (x, y) {
 		// strange console log, player translated to different pos every frame
 		if (this.body) {
-			if (ige.physics.engine == 'CRASH') {
-				if (this._hasMoved) {
-					// console.log('crash translate to', x, y)
-					this.translateCollider(x, y);
-				}
-				var position = {
-					x: x,
-					y: y
-				};
-			} else {
-				var position = {
-					x: x / this._b2dRef._scaleRatio,
-					y: y / this._b2dRef._scaleRatio
-				};
+			if (this._hasMoved && this.body.type != 'spriteOnly') {
+				// console.log('crash translate to', x, y)
+				this.translateCollider(x, y);
 			}
-
-			// this.body.setPosition(position);
-			// this.body.setAwake(true);
-
 		}
 	},
 
@@ -658,16 +644,7 @@
 
 		body = this._stats.currentBody;
 		if (ige.isServer && body && body.type !== 'none' && body.type !== 'spriteOnly') {
-			// Check if the entity has a box2d body attached
-			// and if so, is it updating or not
-			if ((ige.physics._world && ige.physics._world.isLocked()) || this.body == undefined) {
-				this.queueAction({
-					type: 'rotateTo',
-					angle: z
-				});
-			} else {
-				this.rotateToLT(z);
-			}
+			this.rotateToLT(z);
 		}
 
 		return this;
@@ -676,8 +653,7 @@
 	rotateToLT: function (angle) {
 		if (this.body) {
 			// console.log("this.body", this.body)
-			this.body.setAngle(angle);
-			this.body.setAwake(true);
+			this.rotateCollider(angle);
 		}
 	},
 
@@ -877,6 +853,10 @@
 	translateCollider: function (x, y) {
 		// console.log('moveTo');
 		this.body.fixtures[0].shape.data.moveTo(x, y);
+	},
+
+	rotateCollider: function (angle) {
+		this.body.fixtures[0].shape.data.rotate(angle);
 	}
 });
 

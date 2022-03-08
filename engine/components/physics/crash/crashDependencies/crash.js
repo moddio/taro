@@ -17,7 +17,7 @@
 	if (typeof define === 'function' && define.amd) {
 		define(['RBush', 'SAT'], factory);
 	} else if (typeof exports === 'object') {
-		global.Crash = factory(require('rbush'), require('sat'));
+		global.Crash = factory(rbush, require('sat'));
 	} else {
 		window.Crash = factory(rbush, SAT);
 		Crash = window.Crash;

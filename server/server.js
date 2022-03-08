@@ -898,7 +898,7 @@ var Server = IgeClass.extend({
 				sensor: 0
 			};
 
-			return returnData;d
+			return returnData;
 		}
 	}
 });
