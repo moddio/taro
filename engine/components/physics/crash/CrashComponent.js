@@ -113,7 +113,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log('width and height', width, height, x, y, entity)
 			crashBody = new this.crash.Box(new this.crash.Vector(x , y), width, height, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
 			crashBody.sat.setOffset ({x: -(width / 2), y: -(height / 2)});
-			crashBody.sat.rotate (entity._rotate.z);
+			console.log('angle', entity._rotate.z, entity)
+			crashBody.sat.setAngle  (entity._rotate.z);
 		}
 		else {
 			console.log('body shape is wrong');
