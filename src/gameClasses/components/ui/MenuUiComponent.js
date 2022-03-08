@@ -187,7 +187,7 @@ var MenuUiComponent = IgeEntity.extend({
 				$('#server-list').attr('size', 1);
 			});
 
-			if(playButtonClick){
+		
 				playButtonClick.addEventListener('connectPlayer', function () {
 					if (this.innerText.includes('Connection Failed')) {
 						var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
@@ -214,8 +214,8 @@ var MenuUiComponent = IgeEntity.extend({
 					}
 					$('#play-game-button-wrapper').addClass('d-none-important');
 				});
-			}
-			if(!playButtonClick){
+			
+
 				$('#play-game-button').on('click', function () {
 					if (this.innerText.includes('Connection Failed')) {
 						var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
@@ -243,7 +243,7 @@ var MenuUiComponent = IgeEntity.extend({
 					$('#play-game-button-wrapper').addClass('d-none-important');
 				});
 
-			}
+			
 
 
 
