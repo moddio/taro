@@ -22,7 +22,8 @@ var IgePixiFloatingText = IgeEntity.extend({
 			fontFamily: 'Verdana',
 			fontSize: 16,
 			fontWeight: 'bold' || config.shouldBeBold,
-			fill: config.color
+			fill: config.color,
+			align: 'center'
 		};
 		if (ige.game.data.settings.addStrokeToNameAndAttributes === undefined || ige.game.data.settings.addStrokeToNameAndAttributes) {
 			textStyleConfig.stroke = 'black';

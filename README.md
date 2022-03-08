@@ -19,7 +19,7 @@
 <h3><a href="http://beta.modd.io/play/two-houses">Demo</a></h3>
 <br>
 
-## What's included in the box
+## What's included in the box.
 - Box2D Physics
 - Netcode using UWS and LZ-string compression
 - Inventory & item system
