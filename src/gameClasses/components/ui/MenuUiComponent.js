@@ -184,7 +184,7 @@ var MenuUiComponent = IgeEntity.extend({
 			$('#server-list').on('click', function () {
 				$('#server-list').attr('size', 1);
 			});
-			playButtonClick.addEventListener('connectPlayer', function () {
+			$('#play-game-button').on('click', function () {
 				if (this.innerText.includes('Connection Failed')) {
 					var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
 					$('#server-list').attr('size', serverLength);
