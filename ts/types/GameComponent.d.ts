@@ -3,7 +3,13 @@ interface EntityData {
 		columnCount: number;
 		rowCount: number;
 		url: string;
-	}
+	},
+	animations: Record<string, {
+		frames: number[];
+		framesPerSecond: number;
+		loopCount: number;
+		name: string;
+	}>
 }
 
 declare class GameComponent extends IgeEntity {

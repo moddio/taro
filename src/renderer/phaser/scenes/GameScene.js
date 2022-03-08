@@ -62,10 +62,35 @@ var GameScene = /** @class */ (function (_super) {
                 frameWidth: width / cellSheet.columnCount,
                 frameHeight: height / cellSheet.rowCount,
             });
+            // add animations
+            for (var animationsKey in data.animations) {
+                var animation = data.animations[animationsKey];
+                var frames_1 = animation.frames;
+                // skip if it's an empty animation
+                if (frames_1.length === 1 && frames_1[0] === 1) {
+                    continue;
+                }
+                var animationFrames = [];
+                for (var i = 0; i < frames_1.length; i++) {
+                    // correction for 0-based indexing
+                    animationFrames.push(frames_1[i] - 1);
+                }
+                _this.anims.create({
+                    key: "".concat(key, "/").concat(animation.name),
+                    frames: _this.anims.generateFrameNumbers(key, {
+                        frames: animationFrames
+                    }),
+                    frameRate: animation.framesPerSecond || 15,
+                    repeat: (animation.loopCount - 1) // correction for loop/repeat values
+                });
+            }
         });
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();
+        console.log(this.textures);
+        this.add.sprite(100, 100, 'projectile/explosion')
+            .play('projectile/explosion/default');
     };
     GameScene.prototype.update = function (time, delta) {
     };
