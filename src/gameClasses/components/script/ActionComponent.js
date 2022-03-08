@@ -2369,6 +2369,7 @@ var ActionComponent = IgeEntity.extend({
 								//     entity.rotateBy(0, 0, -rotateDiff);
 								// }
 								entity.rotateTo(0, 0, newFacingAngle);
+								console.log('rotating')
 							}
 							// &&
 							else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {

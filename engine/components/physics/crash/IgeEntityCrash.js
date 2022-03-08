@@ -42,6 +42,7 @@
 		} */
 		if (ige.isServer && ige.physics) {
 			this.translateTo = this._translateTo;
+			this.rotateBy = this._rotateBy;
 		}
 
 		this._actionQueue = [];
@@ -658,16 +659,19 @@
 
 		body = this._stats.currentBody;
 		if (ige.isServer && body && body.type !== 'none' && body.type !== 'spriteOnly') {
+			this.body.fixtures[0].shape.data.sat.setAngle  (entity._rotate.z);
+			console.log('angle', this._rotate.z)
 			// Check if the entity has a box2d body attached
 			// and if so, is it updating or not
-			if ((ige.physics._world && ige.physics._world.isLocked()) || this.body == undefined) {
+
+			/*if ((ige.physics._world && ige.physics._world.isLocked()) || this.body == undefined) {
 				this.queueAction({
 					type: 'rotateTo',
 					angle: z
 				});
 			} else {
 				this.rotateToLT(z);
-			}
+			}*/
 		}
 
 		return this;
