@@ -113,7 +113,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log('width and height', width, height, x, y, entity)
 			crashBody = new this.crash.Box(new this.crash.Vector(x , y), width, height, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
 			crashBody.sat.setOffset ({x: -(width / 2), y: -(height / 2)});
-			console.log('angle', entity._rotate.z, entity)
+			// console.log('angle', entity._rotate.z, entity)
 			crashBody.sat.setAngle  (entity._rotate.z);
 		}
 		else {
@@ -127,7 +127,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// Add the body to the world with the passed fixture
 		entity.body.fixtures[0].shape.data = crashBody;
 
-		console.log('crash insert...', crashBody.data.entity._category, crashBody.data.igeId, crashBody.data.uid);
+		// console.log('crash insert...', crashBody.data.entity._category, crashBody.data.igeId, crashBody.data.uid);
 		this.crash.insert(entity.body.fixtures[0].shape.data);
 
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
@@ -137,7 +137,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			entity._velocity.x = info.x;
 			entity._velocity.y = info.y;
 		};
-		entity.addBehaviour('crash behaviour', entity._behaviourCrash, false);
+		if (body.type != 'static') entity.addBehaviour('crash behaviour', entity._behaviourCrash, false);
 
 		// return entity.fixtures[0].shape.data;
 		return crashBody;

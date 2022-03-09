@@ -254,11 +254,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 	_behaviourCrash: function () {
 		// update position based on its velocity, collision, and damping
-
+		console.log('behavior');
 		if ((Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) && this.body.type != 'spriteOnly') {
 			// console.log(`unit ${this._id} velocity currently: `, this._velocity);
 			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
 			var damping = 2;
+			if (this._category === 'projectile') damping = 1;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 
@@ -865,7 +866,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 	translateCollider: function (x, y) {
 		// console.log('moveTo');
-		this.body.fixtures[0].shape.data.moveTo(x, y);
+		// this.body.fixtures[0].shape.data.moveTo(x, y);
 	},
 
 	rotateCollider: function (angle) {
