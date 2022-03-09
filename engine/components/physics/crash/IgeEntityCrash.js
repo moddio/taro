@@ -254,7 +254,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 	_behaviourCrash: function () {
 		// update position based on its velocity, collision, and damping
-		console.log('behavior');
+		// console.log('behavior');
 		if ((Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) && this.body.type != 'spriteOnly') {
 			// console.log(`unit ${this._id} velocity currently: `, this._velocity);
 			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
