@@ -867,7 +867,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			// console.log(Object.getPrototypeOf(this.body.fixtures[0].shape.data).rotate);
 			this.body.fixtures[0].shape.data.rotate(angle);
 			// var sat = this.body.fixtures[0].shape.data.sat;
-			console.log(angle);
+			// console.log(angle);
 			// var data = { calcPoints: [], points: [], offset: sat.offset };
 			// for (var i = 0; i < sat.points.length; i++) {
 			// 	data.calcPoints.push(sat.calcPoints[i]);

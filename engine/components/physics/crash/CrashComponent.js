@@ -40,13 +40,17 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log(a, b)
 			// console.log('player', a.pos.x, a.pos.y);
 			if (b.data.entity._category != 'region') {
-				console.log('Oh my, we crashed!'/*, a.data*/);
-				a.pos.x = a.lastPos.x;
-				a.pos.y = a.lastPos.y;
-				a.data.entity._translate.x = a.lastPos.x;
-				a.data.entity._translate.y = a.lastPos.y;
-				a.data.entity._velocity.x = 0;
-				a.data.entity._velocity.y = 0;
+				console.log('Oh my, we crashed!', res/*, a.data*/);
+
+				a.pos.x -= res.overlapV.x;
+				a.pos.y -= res.overlapV.y;
+				a.data.entity._translate.x = a.pos.x;
+				a.data.entity._translate.y = a.pos.y;
+				//a.data.entity._velocity.x = 0;
+				//a.data.entity._velocity.y = 0;
+			}
+			else if (b.data.entity._category === 'sensor') {
+				console.log('sensor');
 			}
 			/* else {
 				console.log('enter region', b.data.entity._stats.id)
@@ -97,6 +101,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
 		var type = body.fixtures[0].shape.type;
 		// console.log(body.fixtures[0].shape.type);
+		if (entity._category === "sensor") console.log('sensor', entity);
 
 		var crashBody;
 		var x = entity._translate.x;
@@ -115,11 +120,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
-			console.log('width and height', width, height, x, y, entity)
+			// console.log('width and height', width, height, x, y, entity)
 			crashBody = new this.crash.Box(new this.crash.Vector(x , y), width, height, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
 			if (entity._category != 'wall') {
 				crashBody.sat.setOffset(new this.crash.Vector(-(width / 2), -(height / 2)));
-				console.log('angle', entity._rotate.z, entity);
+				// console.log('angle', entity._rotate.z, entity);
 				crashBody.sat.setAngle(entity._rotate.z);
 			}
 		}
