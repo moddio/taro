@@ -866,20 +866,20 @@ var IgeEntityPhysics = IgeEntity.extend({
 		if (this.body.fixtures[0].shape.type != 'circle') {
 			// console.log(Object.getPrototypeOf(this.body.fixtures[0].shape.data).rotate);
 			this.body.fixtures[0].shape.data.rotate(angle);
-			var sat = this.body.fixtures[0].shape.data.sat;
+			// var sat = this.body.fixtures[0].shape.data.sat;
 			console.log(angle);
-			var data = { calcPoints: [], points: [], offset: sat.offset };
-			for (var i = 0; i < sat.points.length; i++) {
-				data.calcPoints.push(sat.calcPoints[i]);
-				data.points.push(sat.points[i]);
-			}
-			console.log(data.offset);
-			for (i = 0; i < sat.points.length; i++) {
-				console.log(sat);
-				console.log('calcPoint: ', data.calcPoints[i]);
-				console.log('atan2 calcPoint: ', Math.atan2(data.calcPoints[i].y, data.calcPoints[i].x));
+			// var data = { calcPoints: [], points: [], offset: sat.offset };
+			// for (var i = 0; i < sat.points.length; i++) {
+			// 	data.calcPoints.push(sat.calcPoints[i]);
+			// 	data.points.push(sat.points[i]);
+			// }
+			// console.log(data.offset);
+			// for (i = 0; i < sat.points.length; i++) {
+			// 	console.log(sat);
+			// 	console.log('calcPoint: ', data.calcPoints[i]);
+			// 	console.log('atan2 calcPoint: ', Math.atan2(data.calcPoints[i].y, data.calcPoints[i].x));
 
-			}
+			// }
 		}
 	}
 });
