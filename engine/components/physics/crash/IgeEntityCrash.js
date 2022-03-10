@@ -865,9 +865,9 @@ var IgeEntityPhysics = IgeEntity.extend({
 	rotateCollider: function (angle) {
 		if (this.body.fixtures[0].shape.type != 'circle') {
 			// console.log(Object.getPrototypeOf(this.body.fixtures[0].shape.data).rotate);
-			this.body.fixtures[0].shape.data.rotate(angle);
+			this.body.fixtures[0].shape.data.rotate(angle * -1);
 			// var sat = this.body.fixtures[0].shape.data.sat;
-			// console.log(angle);
+			console.log(angle);
 			// var data = { calcPoints: [], points: [], offset: sat.offset };
 			// for (var i = 0; i < sat.points.length; i++) {
 			// 	data.calcPoints.push(sat.calcPoints[i]);

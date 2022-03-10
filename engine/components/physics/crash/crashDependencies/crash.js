@@ -204,7 +204,7 @@
 			case 'polygon':
 				return this.updateAABBPolygon(collider);
 			case 'box':
-				return this.updateAABBBox(collider);
+				return this.updateAABBPolygon(collider);
 			case 'circle':
 				return this.updateAABBCircle(collider);
 			case 'point':
