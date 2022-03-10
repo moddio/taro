@@ -17,7 +17,7 @@
 	if (typeof define === 'function' && define.amd) {
 		define(['RBush', 'SAT'], factory);
 	} else if (typeof exports === 'object') {
-		global.Crash = factory(rbush, require('sat'));
+		global.Crash = factory(rbush, sat); //this is changed
 	} else {
 		window.Crash = factory(rbush, SAT);
 		Crash = window.Crash;
@@ -492,7 +492,14 @@
 			return this;
 		};
 
-		Crash.extend(Box, Collider);
+		Crash.extend(Box, Collider); // moved this above new proto
+
+		Box.prototype.rotate = function (angle) { // added this
+			this.sat.rotate(angle);
+			this.moved();
+
+			return this;
+		};
 	};
 
 	return Crash;

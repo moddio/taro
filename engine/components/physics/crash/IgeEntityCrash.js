@@ -41,7 +41,14 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.isOutOfBounds = false;
 		} */
 		if (ige.isServer && ige.physics) {
+			this._translateToProto = this.translateTo;
+			this._translateByProto = this.translateBy;
+			this._rotateToProto = this.rotateTo;
+			this._rotateByProto = this.rotateBy;
+			// Take over the transform methods
 			this.translateTo = this._translateTo;
+			this.translateBy = this._translateBy;
+			this.rotateTo = this._rotateTo;
 			this.rotateBy = this._rotateBy;
 		}
 
@@ -605,11 +612,9 @@ var IgeEntityPhysics = IgeEntity.extend({
 	// loss tolerent
 	translateToLT: function (x, y) {
 		// strange console log, player translated to different pos every frame
-		if (this.body) {
-			if (this._hasMoved && this.body.type != 'spriteOnly') {
-				// console.log('crash translate to', x, y)
-				this.translateCollider(x, y);
-			}
+		if (this._hasMoved && this.body.type != 'spriteOnly') {
+			// console.log('crash translate to', x, y)
+			this.translateCollider(x, y);
 		}
 	},
 
@@ -644,20 +649,8 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this._rotateToProto(x, y, z);
 
 		body = this._stats.currentBody;
-		if (ige.isServer && body && body.type !== 'none' && body.type !== 'spriteOnly') {
-			this.body.fixtures[0].shape.data.sat.setAngle  (entity._rotate.z);
-			console.log('angle', this._rotate.z)
-			// Check if the entity has a box2d body attached
-			// and if so, is it updating or not
-
-			/*if ((ige.physics._world && ige.physics._world.isLocked()) || this.body == undefined) {
-				this.queueAction({
-					type: 'rotateTo',
-					angle: z
-				});
-			} else {
-				this.rotateToLT(z);
-			}*/
+		if (ige.isServer && this._hasMoved && body && body.type !== 'none' && body.type !== 'spriteOnly') {
+			this.rotateToLT(z);
 		}
 
 		return this;
@@ -869,7 +862,24 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	rotateCollider: function (angle) {
-		this.body.fixtures[0].shape.data.rotate(angle);
+		if (this.body.fixtures[0].shape.type != 'circle') {
+			// console.log(Object.getPrototypeOf(this.body.fixtures[0].shape.data).rotate);
+			this.body.fixtures[0].shape.data.rotate(angle);
+			var sat = this.body.fixtures[0].shape.data.sat;
+			console.log(angle);
+			var data = { calcPoints: [], points: [], offset: sat.offset };
+			for (var i = 0; i < sat.points.length; i++) {
+				data.calcPoints.push(sat.calcPoints[i]);
+				data.points.push(sat.points[i]);
+			}
+			console.log(data.offset);
+			for (i = 0; i < sat.points.length; i++) {
+				console.log(sat);
+				console.log('calcPoint: ', data.calcPoints[i]);
+				console.log('atan2 calcPoint: ', Math.atan2(data.calcPoints[i].y, data.calcPoints[i].x));
+
+			}
+		}
 	}
 });
 

@@ -23,6 +23,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 			return item;
 		};
+
+		this.crash.SAT = Crash.SAT;
+		this.crash.Vector = Crash.SAT.Vector;
+
+		console.log(this.crash);
 		this.totalBodiesCreated = 0;
 		this.physicsTickDuration = 0;
 		this.lastSecondAt = Date.now();
@@ -34,8 +39,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log(res, cancel)
 			// console.log(a, b)
 			// console.log('player', a.pos.x, a.pos.y);
+			// if (a.data.entity.body.type != 'static')
 			if (b.data.entity._category == 'unit') {
-				console.log('Oh my, we crashed!'/*, a.data*/);
+				console.log('Oh my, we crashed!', b.data.igeId);
 				a.pos.x = a.lastPos.x;
 				a.pos.y = a.lastPos.y;
 				a.data.entity._translate.x = a.lastPos.x;
@@ -102,7 +108,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			var radius = entity._bounds2d.x / 2;
 			// console.log('radius', radius)
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId, entity: entity });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
 
 			// console.log(crashBody);
 			// later check if added to .__moved()
@@ -112,9 +118,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 			var height = entity._bounds2d.y;
 			// console.log('width and height', width, height, x, y, entity)
 			crashBody = new this.crash.Box(new this.crash.Vector(x , y), width, height, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
-			crashBody.sat.setOffset ({x: -(width / 2), y: -(height / 2)});
-			console.log('angle', entity._rotate.z, entity)
-			crashBody.sat.setAngle  (entity._rotate.z);
+			crashBody.sat.setOffset(new this.crash.Vector(-(width / 2), -(height / 2)));
+			console.log('angle', entity._rotate.z, entity);
+			crashBody.sat.setAngle(entity._rotate.z);
 		}
 		else {
 			console.log('body shape is wrong');

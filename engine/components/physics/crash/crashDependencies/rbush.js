@@ -155,6 +155,7 @@
 						node.children.splice(index, 1);
 						path.push(node);
 						this._condense(path);
+						console.log('rbush remove...', item.data.entity._category, item.data.igeId, item.data.uid);
 						return this;
 					}
 				}
