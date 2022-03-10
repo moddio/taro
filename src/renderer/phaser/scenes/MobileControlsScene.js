@@ -19,11 +19,12 @@ var MobileControlsScene = /** @class */ (function (_super) {
         return _super.call(this, { key: 'MobileControls' }) || this;
     }
     MobileControlsScene.prototype.create = function () {
-        this.mobileControls.zIndex = 10;
+        /*this.mobileControls.zIndex = 10;
+
         // make the mobileControls container fit to width and anchored to bottom
         this.mobileControls.y = window.innerHeight - 540;
-        var scaleToFit = window.innerWidth / 960;
-        this.mobileControls.scale.set(scaleToFit, scaleToFit);
+        const scaleToFit = window.innerWidth / 960;
+        this.mobileControls.scale.set(scaleToFit, scaleToFit);*/
     };
     return MobileControlsScene;
 }(Phaser.Scene));
