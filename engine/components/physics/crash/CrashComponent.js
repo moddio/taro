@@ -117,6 +117,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log(crashBody);
 			// later check if added to .__moved()
 		}
+		else if (entity._category == 'wall') {
+			var width = entity._bounds2d.x;
+			var height = entity._bounds2d.y;
+
+			var pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
+			crashBody = new this.crash.Box(pos, width, height, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
+		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
