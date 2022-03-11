@@ -7,7 +7,7 @@
         "rootDir": "ts",
         "typeRoots": [
             "node_modules/@types",
-            "node_module/phaser/types",
+            "node_modules/phaser/types",
             "ts/types"
         ],
         "types": [
