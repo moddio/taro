@@ -831,7 +831,6 @@
      */
 	function testPolygonCircle (polygon, circle, response) {
 		// Get the position of the circle relative to the polygon.
-		console.log('yeeeee');
 		var circlePos = T_VECTORS.pop().copy(circle.pos).add(circle.offset).sub(polygon.pos);
 		var radius = circle.r;
 		var radius2 = radius * radius;

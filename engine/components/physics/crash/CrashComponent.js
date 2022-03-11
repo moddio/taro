@@ -40,7 +40,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log(a, b)
 			// console.log('player', a.pos.x, a.pos.y);
 			if (b.data.entity._category != 'region') {
-				console.log('Oh my, we crashed!', res/*, a.data*/);
+				//console.log('Oh my, we crashed!', res/*, a.data*/);
 
 				a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
 				a.data.entity._translate.x = a.pos.x;
