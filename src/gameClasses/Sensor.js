@@ -65,7 +65,12 @@ var Sensor = IgeEntityPhysics.extend({
 		var ownerUnit = this.getOwnerUnit();
 		if (ownerUnit) {
 			if (this.body) {
-				this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y); // keep sensor following its owner unit
+				if (ige.physics.engine === 'CRASH') {
+					this.body.fixtures[0].shape.data.moveTo(ownerUnit._translate.x, ownerUnit._translate.y);
+					this._translate.x = this.body.fixtures[0].shape.data.pos.x;
+					this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+				}
+				else this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y); // keep sensor following its owner unit
 			}
 		} else {
 			// destroy ownerless sensors

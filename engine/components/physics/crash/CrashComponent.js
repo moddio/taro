@@ -39,7 +39,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// console.log(res, cancel)
 			// console.log(a, b)
 			// console.log('player', a.pos.x, a.pos.y);
-			if (b.data.entity._category != 'region') {
+			if (b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
 				//console.log('Oh my, we crashed!', res/*, a.data*/);
 
 				a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
@@ -49,9 +49,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 				a.data.entity._velocity.x = 0;
 				a.data.entity._velocity.y = 0;
 			}
-			else if (b.data.entity._category === 'sensor') {
+			/*else if (b.data.entity._category === 'sensor') {
 				console.log('sensor');
-			}
+			}*/
 			/* else {
 				console.log('enter region', b.data.entity._stats.id)
 			} */
@@ -101,7 +101,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
 		var type = body.fixtures[0].shape.type;
 		// console.log(body.fixtures[0].shape.type);
-		if (entity._category === "sensor") console.log('sensor', entity);
 
 		var crashBody;
 		var x = entity._translate.x;
