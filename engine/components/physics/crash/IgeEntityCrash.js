@@ -859,7 +859,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 	translateCollider: function (x, y) {
 		// console.log('moveTo');
-		// this.body.fixtures[0].shape.data.moveTo(x, y);
+		this.body.fixtures[0].shape.data.moveTo(x, y);
 	},
 
 	rotateCollider: function (angle) {

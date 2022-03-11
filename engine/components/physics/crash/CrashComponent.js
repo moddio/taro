@@ -52,8 +52,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 			/*else if (b.data.entity._category === 'sensor') {
 				console.log('sensor');
 			}*/
-			/* else {
-				console.log('enter region', b.data.entity._stats.id)
+			/*else {
+				console.log('enter region player pos', a.pos.x, a.pos.y)
 			} */
 		};
 
@@ -72,9 +72,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 			});
 		};
 
+		this.crash.onCollision(listener);
 		this.crash.onCollision(contactDetails);
 
-		this.crash.onCollision(listener);
 	},
 
 	createWorld: function () {
