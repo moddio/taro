@@ -585,7 +585,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		if (isNaN(x) || isNaN(y)) {
 			return;
 		}
-		// this._translateToProto(x, y);
+		this._translateToProto(x, y);
 
 		if (ige.isServer) {
 			if (this.body) {
@@ -614,7 +614,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	translateToLT: function (x, y) {
 		// strange console log, player translated to different pos every frame
 		if (this._hasMoved && this.body.type != 'spriteOnly') {
-			// console.log('crash translate to', x, y)
+			// console.log('crash translate to', x, y);
 			this.translateColliderTo(x, y);
 		}
 	},
@@ -623,11 +623,10 @@ var IgeEntityPhysics = IgeEntity.extend({
 	 * Takes over translateBy calls and processes box2d movement as well.
 	 * @param x
 	 * @param y
-	 * @param z
 	 * @private
 	 */
 	_translateBy: function (x, y, z) {
-		this._translateTo(this._translate.x + x, this._translate.y + y, this._translate.z + z, 'translateBy');
+		this._translateTo(this._translate.x + x, this._translate.y + y);
 	},
 
 	// loss tolerant

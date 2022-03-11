@@ -37,10 +37,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.avgPhysicsTickDuration = 0;
 
 		var listener = function(a, b, res, cancel) {
-			if (a.data.entity.body.type == 'static' || a.data.entity._category == 'item' || a.data.entity._category == 'sensor') return;
-			// console.log(res, cancel)
-			// console.log(a, b)
-			// console.log('player', a.pos.x, a.pos.y);
+			if (a.data.entity._category != 'unit') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
 				if (b.data.entity.body.type == 'static') {
 					//console.log('Oh my, we crashed!', res/*, a.data*/);
@@ -54,16 +51,16 @@ var PhysicsComponent = IgeEventingClass.extend({
 				} else if (b.data.entity._category == 'unit') {
 					// scale the vector to 1/2
 					console.log(res);
-					var halfOverlapVB = res.overlapV.clone();
+					var halfOverlapVB = res.overlapV.clone().scale(0.5);
 					var halfOverlapVA = halfOverlapVB.clone().reverse();
 
 					console.log(a.data.igeId, b.data.igeId);
 					// remember this overlapV is defined as if 'a' is the acting body
 					// so we subtract from 'a' and add to 'b'
 					// added 'moveByVec' to crash. It adds a vector to Collider.pos
-					a.moveByVec(halfOverlapVA);
-					b.moveByVec(halfOverlapVB);
+
 					console.log(res);
+
 					console.log(halfOverlapVA);
 					console.log(halfOverlapVB);
 
@@ -72,8 +69,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 					// a.data.entity._translate.y = a.pos.y;
 					// b.data.entity._translate.x = b.pos.x;
 					// b.data.entity._translate.y = b.pos.y;
-					a.data.entity.translateTo(a.pos.x, a.pos.y);
-					b.data.entity.translateTo(b.pos.x, b.pos.y);
+					a.data.entity.translateBy(halfOverlapVA.x, halfOverlapVA.y);
+					b.data.entity.translateBy(halfOverlapVB.x, halfOverlapVB.y);
 
 					// zero the velocities for now
 					// this will change when we add mass/force
