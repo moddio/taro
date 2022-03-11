@@ -1,5 +1,8 @@
 class GameScene extends Phaser.Scene {
 
+	// TODO remove
+	controls: Phaser.Cameras.Controls.FixedKeyControl;
+
 	constructor() {
 		super({ key: 'Game' });
 	}
@@ -32,6 +35,8 @@ class GameScene extends Phaser.Scene {
 		data.map.tilesets.forEach((tileset) => {
 			this.load.image(`tiles/${tileset.name}`, tileset.image);
 		});
+
+		this.load.tilemapTiledJSON('map', data.map);
 	}
 
 	loadEntity (key: string, data: EntityData): void {
@@ -96,13 +101,37 @@ class GameScene extends Phaser.Scene {
 	create (): void {
 		ige.client.phaserLoaded.resolve();
 
-		console.log(this.textures);
+		const map = this.make.tilemap({ key: 'map' });
+		const data = ige.game.data;
+		data.map.tilesets.forEach((tileset) => {
+			map.addTilesetImage(tileset.name, `tiles/${tileset.name}`);
+		});
+		data.map.layers.forEach((layer) => {
+			if (layer.type !== 'tilelayer') {
+				return;
+			}
+			console.log(layer.name);
+			map.createLayer(layer.name, map.tilesets[0], 0, 0);
+		});
 
-		this.add.sprite(100, 100, 'projectile/explosion')
-			.play('projectile/explosion/default');
+		this.cameras.main.centerOn(
+			map.width * map.tileWidth / 2,
+			map.height * map.tileHeight / 2
+		);
+		this.cameras.main.zoom = this.scale.width / 800;
+
+		const cursors = this.input.keyboard.createCursorKeys();
+		this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
+			camera: this.cameras.main,
+			left: cursors.left,
+			right: cursors.right,
+			up: cursors.up,
+			down: cursors.down,
+			speed: 0.5
+		});
 	}
 
 	update (time: number, delta: number): void {
-
+		this.controls.update(delta);
 	}
 }

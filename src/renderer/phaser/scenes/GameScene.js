@@ -41,6 +41,7 @@ var GameScene = /** @class */ (function (_super) {
         data.map.tilesets.forEach(function (tileset) {
             _this.load.image("tiles/".concat(tileset.name), tileset.image);
         });
+        this.load.tilemapTiledJSON('map', data.map);
     };
     GameScene.prototype.loadEntity = function (key, data) {
         var _this = this;
@@ -88,11 +89,32 @@ var GameScene = /** @class */ (function (_super) {
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();
-        console.log(this.textures);
-        this.add.sprite(100, 100, 'projectile/explosion')
-            .play('projectile/explosion/default');
+        var map = this.make.tilemap({ key: 'map' });
+        var data = ige.game.data;
+        data.map.tilesets.forEach(function (tileset) {
+            map.addTilesetImage(tileset.name, "tiles/".concat(tileset.name));
+        });
+        data.map.layers.forEach(function (layer) {
+            if (layer.type !== 'tilelayer') {
+                return;
+            }
+            console.log(layer.name);
+            map.createLayer(layer.name, map.tilesets[0], 0, 0);
+        });
+        this.cameras.main.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
+        this.cameras.main.zoom = this.scale.width / 800;
+        var cursors = this.input.keyboard.createCursorKeys();
+        this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
+            camera: this.cameras.main,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            speed: 0.5
+        });
     };
     GameScene.prototype.update = function (time, delta) {
+        this.controls.update(delta);
     };
     return GameScene;
 }(Phaser.Scene));

@@ -20,6 +20,11 @@ declare class GameComponent extends IgeEntity {
 				image: string;
 				name: string;
 			}[];
+			layers: {
+				data: number[];
+				name: string;
+				type: 'tilelayer' | 'objectgroup';
+			}[];
 		};
 		unitTypes: Record<string, EntityData>;
 		projectileTypes: Record<string, EntityData>;
