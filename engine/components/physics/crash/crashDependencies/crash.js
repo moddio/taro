@@ -291,6 +291,7 @@
 		for (var i = 0, len = possible.length; i < len; i++) {
 			var b = possible[i];
 			var str = this.getTestString(a.type, b.type);
+
 			res.clear();
 
 			if (SAT[str](a.sat, b.sat, res)) {
@@ -425,6 +426,19 @@
 		Collider.prototype.moveBy = Collider.prototype.move = function (x, y) {
 			this.sat.pos.x += x;
 			this.sat.pos.y += y;
+			this.moved();
+
+			return this;
+		};
+
+		/**
+		 * adding this method to allow Vectors and
+		 * their methods
+		 * @param {Vector} vector
+		 * @return {*} for chaining
+		 */
+		Collider.prototype.moveByVec = Collider.prototype.moveByVec = function (vector) {
+			this.sat.pos.add(vector);
 			this.moved();
 
 			return this;

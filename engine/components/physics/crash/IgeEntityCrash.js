@@ -615,7 +615,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// strange console log, player translated to different pos every frame
 		if (this._hasMoved && this.body.type != 'spriteOnly') {
 			// console.log('crash translate to', x, y)
-			this.translateCollider(x, y);
+			this.translateColliderTo(x, y);
 		}
 	},
 
@@ -857,7 +857,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		delete this._actionQueue;
 	},
 
-	translateCollider: function (x, y) {
+	translateColliderTo: function (x, y) {
 		// console.log('moveTo');
 		this.body.fixtures[0].shape.data.moveTo(x, y);
 	},

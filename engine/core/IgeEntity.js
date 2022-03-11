@@ -3180,7 +3180,7 @@ var IgeEntity = IgeObject.extend({
 			// console.log('non-crash translate', this._translate)
 			/* if (ige.physics && ige.physics.engine == 'CRASH') {
 				console.log('crash translate');
-				this.translateCollider(x, y);
+				this.translateColliderTo(x, y);
 			} */
 			if (this._translate) {
 				this._translate.x = x;
@@ -3233,7 +3233,7 @@ var IgeEntity = IgeObject.extend({
 			this.clientStreamedPosition = undefined;
 			//////////////////////////////////////////
 			if (ige.physics && ige.physics.engine == 'CRASH') {
-				this.translateCollider(x, y);
+				this.translateColliderTo(x, y);
 			}
 			///////////////////////////////////////////
 		} else if (ige.isClient) {

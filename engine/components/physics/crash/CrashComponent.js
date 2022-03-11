@@ -26,6 +26,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 		this.crash.SAT = Crash.SAT;
 		this.crash.Vector = Crash.SAT.Vector;
+		this.crash.Response = Crash.SAT.Response;
 
 		console.log(this.crash);
 		this.totalBodiesCreated = 0;
@@ -36,20 +37,55 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.avgPhysicsTickDuration = 0;
 
 		var listener = function(a, b, res, cancel) {
+			if (a.data.entity.body.type == 'static' || a.data.entity._category == 'item' || a.data.entity._category == 'sensor') return;
 			// console.log(res, cancel)
 			// console.log(a, b)
 			// console.log('player', a.pos.x, a.pos.y);
-			if (b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
-				//console.log('Oh my, we crashed!', res/*, a.data*/);
+			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
+				if (b.data.entity.body.type == 'static') {
+					//console.log('Oh my, we crashed!', res/*, a.data*/);
 
-				a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
-				a.data.entity._translate.x = a.pos.x;
-				a.data.entity._translate.y = a.pos.y;
+					a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
+					a.data.entity._translate.x = a.pos.x;
+					a.data.entity._translate.y = a.pos.y;
 
-				a.data.entity._velocity.x = 0;
-				a.data.entity._velocity.y = 0;
+					a.data.entity._velocity.x = 0;
+					a.data.entity._velocity.y = 0;
+				} else if (b.data.entity._category == 'unit') {
+					// scale the vector to 1/2
+					console.log(res);
+					var halfOverlapVB = res.overlapV.clone();
+					var halfOverlapVA = halfOverlapVB.clone().reverse();
+
+					console.log(a.data.igeId, b.data.igeId);
+					// remember this overlapV is defined as if 'a' is the acting body
+					// so we subtract from 'a' and add to 'b'
+					// added 'moveByVec' to crash. It adds a vector to Collider.pos
+					a.moveByVec(halfOverlapVA);
+					b.moveByVec(halfOverlapVB);
+					console.log(res);
+					console.log(halfOverlapVA);
+					console.log(halfOverlapVB);
+
+					// communicate this translation to the entities
+					// a.data.entity._translate.x = a.pos.x;
+					// a.data.entity._translate.y = a.pos.y;
+					// b.data.entity._translate.x = b.pos.x;
+					// b.data.entity._translate.y = b.pos.y;
+					a.data.entity.translateTo(a.pos.x, a.pos.y);
+					b.data.entity.translateTo(b.pos.x, b.pos.y);
+
+					// zero the velocities for now
+					// this will change when we add mass/force
+					a.data.entity._velocity.x = 0;
+					a.data.entity._velocity.y = 0;
+
+					b.data.entity._velocity.x = 0;
+					a.data.entity._velocity.y = 0;
+				}
 			}
-			/*else if (b.data.entity._category === 'sensor') {
+
+			/*else if (b.data.entity._category == 'sensor') {
 				console.log('sensor');
 			}*/
 			/*else {
@@ -126,6 +162,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
+			console.log('bounds2d: ', width, height);
+			console.log('methods: ', entity.width(), entity.height());
 			// console.log('width and height', width, height, x, y, entity)
 			// var points = [
 			// 	new this.crash.Vector(0,0),
