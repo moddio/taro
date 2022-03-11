@@ -59,11 +59,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 					// so we subtract from 'a' and add to 'b'
 					// added 'moveByVec' to crash. It adds a vector to Collider.pos
 
-					console.log(res);
-
-					console.log(halfOverlapVA);
-					console.log(halfOverlapVB);
-
 					// communicate this translation to the entities
 					// a.data.entity._translate.x = a.pos.x;
 					// a.data.entity._translate.y = a.pos.y;
@@ -159,8 +154,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
-			console.log('bounds2d: ', width, height);
-			console.log('methods: ', entity.width(), entity.height());
+
 			// console.log('width and height', width, height, x, y, entity)
 			// var points = [
 			// 	new this.crash.Vector(0,0),
