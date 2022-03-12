@@ -36,6 +36,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.avgPhysicsTickDuration = 0;
 
+		const ANGLE_MINIMUM = Math.PI / 24;
+
 		var listener = function(a, b, res, cancel) {
 			if (a.data.entity._category != 'unit') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
@@ -50,11 +52,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 					a.data.entity._velocity.y = 0;
 				} else if (b.data.entity._category == 'unit') {
 					// scale the vector to 1/2
-					console.log(res);
+					// console.log(res);
 					var halfOverlapVB = res.overlapV.clone().scale(0.5);
 					var halfOverlapVA = halfOverlapVB.clone().reverse();
 
-					console.log(a.data.igeId, b.data.igeId);
+					// console.log(a.data.igeId, b.data.igeId);
 					// remember this overlapV is defined as if 'a' is the acting body
 					// so we subtract from 'a' and add to 'b'
 					// added 'moveByVec' to crash. It adds a vector to Collider.pos
@@ -64,8 +66,17 @@ var PhysicsComponent = IgeEventingClass.extend({
 					// a.data.entity._translate.y = a.pos.y;
 					// b.data.entity._translate.x = b.pos.x;
 					// b.data.entity._translate.y = b.pos.y;
-					a.data.entity.translateBy(halfOverlapVA.x, halfOverlapVA.y);
-					b.data.entity.translateBy(halfOverlapVB.x, halfOverlapVB.y);
+
+					console.log(res.overlapN);
+					var appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
+					console.log('Math.abs(Math.PI % appliedAngle): ', Math.abs((Math.PI * 2) % appliedAngle));
+					if (Math.abs(appliedAngle) >= ANGLE_MINIMUM && Math.abs((Math.PI * 2) % appliedAngle) !== 0) {
+						a.data.entity.translateBy(halfOverlapVA.x, halfOverlapVA.y);
+						b.data.entity.translateBy(halfOverlapVB.x, halfOverlapVB.y);
+						b.data.entity.rotateTo(0, 0, Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2));
+						console.log('applying angle to... ', b.data.igeId);
+					}
+					console.log(Math.atan2(res.overlapN.y, res.overlapN.x));
 
 					// zero the velocities for now
 					// this will change when we add mass/force
@@ -73,7 +84,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 					a.data.entity._velocity.y = 0;
 
 					b.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
+					b.data.entity._velocity.y = 0;
 				}
 			}
 
@@ -119,8 +130,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * Creates a Box2d body and attaches it to an IGE entity
 	 * based on the supplied body definition.
 	 * @param {IgeEntity} entity
-	 * @param {Object} body
-	 * @return {b2Body}
+	 * @param {Object} body the body definition
+	 * @return {Collider}
 	 */
 	createBody: function (entity, body, isLossTolerant) {
 		if (entity.body) { return; }
@@ -224,18 +235,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 		if (!this._active) {
 			this._active = true;
-
-			/*if (!this._networkDebugMode) {
-				if (this._mode === 0) {
-					// Add the box2d behaviour to the ige
-					// console.log('starting box2d', this._entity.id(), this._entity._category);
-					// this._entity.addBehaviour('box2dStep', this._behaviour);
-				} else {
-					// this._intervalTimer = setInterval(this._behaviour, 1000 / 60);
-					// console.log('b2d start');
-					// this._intervalTimer = setInterval(this._behaviour, ige._tickDelta);
-				}
-			}*/
 		}
 	},
 
@@ -258,15 +257,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	},
 
-	/* setLinearVelocity: function () {
-		console.log ('set linear velocity run');
-	}, */
-
 	staticsFromMap: function (mapLayer, callback) {
-		// No idea what this does so we're going to comment it out
-		// if (mapLayer == undefined) {
-		// 	ige.server.unpublish('PhysicsComponent#51');
-		// }
 
 		if (mapLayer.map) {
 			var tileWidth = ige.scaleMapDetails.tileWidth || mapLayer.tileWidth();
@@ -340,6 +331,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @return {*}
 	 */
 	 scaleRatio: function (val) {
+		 // we need this method for Item.js to work so
+		 // keeping it as get/set but always 1 for get.
+		 // leaving set functionality for testing
+		this._scaleRatio = 1;
+
 		if (val !== undefined) {
 			this._scaleRatio = val;
 			return this._entity;

@@ -649,7 +649,8 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this._rotateToProto(x, y, z);
 
 		body = this._stats.currentBody;
-		if (ige.isServer && this._hasMoved && body && body.type !== 'none' && body.type !== 'spriteOnly') {
+		// we have to take this._hasMoved out of the conditional to apply rotations on another body
+		if (ige.isServer && body && body.type !== 'none' && body.type !== 'spriteOnly') {
 			this.rotateToLT(z);
 		}
 
