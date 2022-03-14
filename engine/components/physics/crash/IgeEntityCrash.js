@@ -52,7 +52,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.rotateBy = this._rotateBy;
 		}
 
-		this._actionQueue = [];
+		// this._actionQueue = [];
 
 		if (ige.isClient) {
 			self.addComponent(IgePixiTexture);
@@ -303,7 +303,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}
 	},
 
-	on: function () {
+	//on: function () {
 		// if (arguments.length === 3) {
 		// 	var evName = arguments[0];
 		// 	var target = arguments[1];
@@ -358,73 +358,60 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// } else {
 		// 	IgeEntity.prototype.on.apply(this, arguments);
 		// }
-	},
+	//},
 
-	off: function () {
+	/*off: function () {
 		if (arguments.length === 3) {
 
 		} else {
 			IgeEntity.prototype.off.apply(this, arguments);
 		}
-	},
+	},*/
 
 	// move entity in front of the unit, and then create joint between them
-	attachTo: function (entityB, anchorA, anchorB) {
+	/*attachTo: function (entityB, anchorA, anchorB) {
 		// Check if the entity has a box2d body attached
 		// and if so, is it updating or not
 		for (entityId in this.jointsAttached) {
 			this.detachEntity(entityId);
 		}
 		var self = this;
-		ige.physics.queueAction({
+		/*ige.physics.queueAction({
 			type: 'createJoint',
 			entityA: self,
 			entityB: entityB,
 			anchorA: anchorA,
 			anchorB: anchorB
-		});
-	},
+		});*/
+	//},
 
 	detachEntity: function (entityId) {
-		var attachedEntity = ige.$(entityId);
-		if (entityId && attachedEntity) {
+		console.log('detach entity is not working now')
+		/*var attachedEntity = ige.$(entityId);
+		if (entityId && attachedEntity) {*/
 			// IgeEntityBox2d.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
 
-			ige.physics.queueAction({
+			/*ige.physics.queueAction({
 				type: 'destroyJoint',
 				entityA: this,
 				entityB: attachedEntity
 			});
-		}
+		}*/
 	},
 	applyTorque: function (torque) {
-		if (ige.physics._world.isLocked() || this.body == undefined) {
-			this.queueAction({
+		console.log('apply torque is disabled for now')
+		//if (ige.physics._world.isLocked() || this.body == undefined) {
+			/*this.queueAction({
 				type: 'applyTorque',
 				torque: torque
-			});
-		} else {
-			this.applyTorqueLT(torque);
-		}
+			});*/
+		/*} else {
+			//this.applyTorqueLT(torque);
+		}*/
 	},
 
 	setLinearVelocity: function (x, y, z, isLossTolerant) {
-		// if body doesn't exist yet, queue
-		// console.log("3. locked", ige.physics._world.isLocked(), "body",  this.body != undefined, isLossTolerant);
-		if ((/*!ige.physics._world.isLocked() &&*/this.body != undefined) || isLossTolerant) {
-			this.setLinearVelocityLT(x, y);
-		} else {
-			// console.log("4. queue setLinearVelocity", x, y);
-			this.queueAction({
-				type: 'setLinearVelocity',
-				x: x,
-				y: y
-			});
-		}
-	},
-
-	setLinearVelocityLT: function (x, y) {
-		try {
+		if ((this.body != undefined)) {
 			ige.physicsTickCount++;
 			if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
 				// client side's predicted physics is weaker than the server's, so buff it up!
@@ -434,82 +421,31 @@ var IgeEntityPhysics = IgeEntity.extend({
 				// }
 				this.body.setLinearVelocity(new IgePoint3d(x, y, 0));
 			}
-		} catch (e) {
-			console.log(`igeEntityCrash.js: setLinearVelocityLT ${e}`);
-		}
+		} 
 	},
 
 	// lossless applyForce
 	applyForce: function (x, y) {
+		console.log('apply force is disabled for now')
 		// if body doesn't exist yet, queue
-		if (!ige.physics) return;
+		/*if (!ige.physics) return;
 
 		if (!ige.physics._world.isLocked() && this.body != undefined) {
-			this.applyForceLT(x, y);
-		} else {
-			this.queueAction({
-				type: 'applyForce',
-				x: x,
-				y: y
-			});
-		}
-	},
-
-	// loss tolerant applyForce
-	applyForceLT: function (x, y) {
-		// ige.devLog("applyForce", x, y)
-
-		try {
-			if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
-				var thrustVector = new ige.physics.b2Vec2(x, y);
-				this.body.applyForce(thrustVector, this.body.getWorldCenter());
-			}
-		} catch (e) {
-			console.log(e);
-			// IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
-		}
+			//this.applyForceLT(x, y);
+		} */
 	},
 
 	// lossless applyForce
 	applyImpulse: function (x, y) {
+		console.log('apply impulse is disabled for now')
 		// if body doesn't exist yet, queue
 
-		if (!ige.physics._world.isLocked() && this.body != undefined) {
+		/*if (!ige.physics._world.isLocked() && this.body != undefined) {
 			this.applyImpulseLT(x, y);
-		} else {
-			this.queueAction({
-				type: 'applyImpulse',
-				x: x,
-				y: y
-			});
-		}
+		}*/
 	},
 
-	// loss tolerant applyForce
-	applyImpulseLT: function (x, y) {
-		// ige.devLog("applyForce", x, y)
-
-		try {
-			if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
-				var thrustVector = new ige.physics.b2Vec2(x, y);
-				this.body.applyLinearImpulse(thrustVector, this.body.getWorldCenter());
-			}
-		} catch (e) {
-			console.log(e);
-			// IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
-		}
-	},
-
-	applyTorqueLT: function (torque) {
-		try {
-			if (!isNaN(torque)) {
-				this.body.applyTorque(torque);
-			}
-		} catch (e) {
-			// IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
-		}
-	},
-	_setupContactListeners: function () {
+	/*_setupContactListeners: function () {
 		var self = this;
 
 		ige.physics.contactListener(
@@ -532,7 +468,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				}
 			}
 		);
-	},
+	},*/
 
 	// _checkContact: function (contact, arr) {
 	// 	var self = this;
@@ -587,34 +523,14 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 		if (ige.isServer) {
 			if (this.body) {
-				if ((ige.physics._world && !ige.physics._world.isLocked())) {
-					this.translateToLT(x, y);
-				} else {
-					this.queueAction({
-						type: 'translateTo',
-						x: x,
-						y: y
-					});
+				if (this._hasMoved && this.body.type != 'spriteOnly') {
+					// console.log('crash translate to', x, y);
+					this.translateColliderTo(x, y);
 				}
-			} else {
-				this.queueAction({
-					type: 'translateTo',
-					x: x,
-					y: y
-				});
-			}
+			} 
 		}
 
 		return this;
-	},
-
-	// loss tolerent
-	translateToLT: function (x, y) {
-		// strange console log, player translated to different pos every frame
-		if (this._hasMoved && this.body.type != 'spriteOnly') {
-			// console.log('crash translate to', x, y);
-			this.translateColliderTo(x, y);
-		}
 	},
 
 	/**
@@ -627,10 +543,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this._translateTo(this._translate.x + x, this._translate.y + y);
 	},
 
-	// loss tolerant
-	translateByLT: function (x, y, z) {
-		this.translateToLT(this._translate.x + x, this._translate.y + y, this._translate.z + z);
-	},
 	/**
 	 * Takes over translateTo calls and processes box2d movement as well.
 	 * @param x
@@ -649,17 +561,13 @@ var IgeEntityPhysics = IgeEntity.extend({
 		body = this._stats.currentBody;
 		// we have to take this._hasMoved out of the conditional to apply rotations on another body
 		if (ige.isServer && body && body.type !== 'none' && body.type !== 'spriteOnly') {
-			this.rotateToLT(z);
+			if (this.body) {
+				// console.log("this.body", this.body)
+				this.rotateCollider(z);
+			}
 		}
 
 		return this;
-	},
-
-	rotateToLT: function (angle) {
-		if (this.body) {
-			// console.log("this.body", this.body)
-			this.rotateCollider(angle);
-		}
 	},
 
 	_scaleTexture: function () {
@@ -686,7 +594,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// }
 	},
 
-	_scaleBox2dBody: function (scale) {
+	/*_scaleBox2dBody: function (scale) {
 		var self = this;
 		var body = this._stats.currentBody;
 
@@ -713,7 +621,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 		body.fixtures[0].shape.data = shapeData;
 		self.updateBody();
-	},
+	},*/
 
 	/**
 	 * Takes over translateBy calls and processes box2d movement as well.
@@ -734,7 +642,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	 * @param ctx
 	 * @private
 	 */
-	_update: function (ctx) {
+	/*_update: function (ctx) {
 		// Call the original method
 		this._updateProto(ctx);
 
@@ -742,87 +650,20 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this._rotateTo(this._rotate.x, this._rotate.y, this._rotate.z);
 
 		// IgeEntity.prototype.update.call(this, ctx);
-	},
+	},*/
 
 	/**
 	 * If true, disabled box2d debug shape drawing for this entity.
 	 * @param {Boolean} val
 	 */
-	box2dNoDebug: function (val) {
+	/*box2dNoDebug: function (val) {
 		if (val !== undefined) {
 			this._box2dNoDebug = val;
 			return this;
 		}
 
 		return this._box2dNoDebug;
-	},
-
-	queueAction: function (action) {
-		// IgeEntityBox2d.prototype.log("queueAction: " +this._category + " " + this._stats.name+" " + action.type + " " +this._category + " "+this.id())
-
-		// prevent 'applyForce' causing memoryleak by overloading actionQueue
-		// this means if there's too many actions queued, chances are, applyForce will be ignored ;-;
-		// however, regardless of queueSize, translateTo and destroy will always be queued
-		if (this._actionQueue && (this._actionQueue.length < 10 || action.type == 'destroy' || action.type == 'translateTo')) {
-			console.log('action', action);
-			// if we're sending translateTo before previously queued translateTo was processed, then replace the last translatedTo with the newest coordinates.
-			var previousAction = this._actionQueue[this._actionQueue.length - 1];
-			if (action.type == 'translateTo' && previousAction && previousAction.type == 'translateTo') {
-				this._actionQueue[this._actionQueue.length - 1] == action;
-			} else {
-				this._actionQueue.push(action);
-			}
-		}
-	},
-
-	processBox2dQueue: function (ctx) {
-		// will we use action queue in crash or not??
-		// process box2d only when box2d world is unlocked
-		if (ige.physics && ige.physics._active && ige.physics._world) {
-			if (this.body) {
-				var x = 0;
-				// return;
-				while (this._actionQueue && this._actionQueue.length > 0) {
-					var action = this._actionQueue.shift();
-					console.log('action type', action.type)
-					x++;
-					if (x > 1000) {
-						console.log('igeEntityBox2d processBox2dQueue running over 1000 times', action.type, this._category, this._stats.name, 'id:', this.id());
-					}
-
-					switch (action.type) {
-						case 'rotateTo':
-							this.rotateToLT(action.angle);
-							break;
-
-						case 'translateTo':
-							this.translateToLT(action.x, action.y);
-							break;
-
-						case 'applyForce':
-							this.applyForceLT(action.x, action.y);
-							break;
-
-						case 'applyImpulse':
-							this.applyImpulseLT(action.x, action.y);
-							break;
-
-						case 'applyTorque':
-							this.applyTorque(action.torque);
-							break;
-
-						case 'setLinearVelocity':
-							this.setLinearVelocityLT(action.x, action.y);
-							break;
-
-						case 'destroy':
-							this.destroy();
-							break;
-					}
-				}
-			}
-		}
-	},
+	},*/
 
 	remove: function () {
 		// if (this.body) {
@@ -852,7 +693,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this._alive = false;
 		this.destroyBody();
 		IgeEntity.prototype.destroy.call(this);
-		delete this._actionQueue;
+		// delete this._actionQueue;
 	},
 
 	translateColliderTo: function (x, y) {
@@ -861,7 +702,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	rotateCollider: function (angle) {
-		if (this.body.fixtures[0].shape.type != 'circle') {
+		if (this.body.fixtures[0].shape.data && this.body.fixtures[0].shape.type != 'circle') {
 			// console.log(Object.getPrototypeOf(this.body.fixtures[0].shape.data).rotate);
 			this.body.fixtures[0].shape.data.rotate(angle * -1);
 			// var sat = this.body.fixtures[0].shape.data.sat;

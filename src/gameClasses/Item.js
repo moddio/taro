@@ -1005,7 +1005,9 @@ var Item = IgeEntityPhysics.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	// what does this do? - Jaeyun

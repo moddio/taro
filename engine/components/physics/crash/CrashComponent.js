@@ -376,9 +376,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 		return entities;
 	},
 
-	queueAction: function (action) {
+	/*queueAction: function (action) {
 		this._actionQueue.push(action);
-	}
+	}*/
 });
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = PhysicsComponent; }

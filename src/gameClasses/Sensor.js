@@ -76,7 +76,9 @@ var Sensor = IgeEntityPhysics.extend({
 			// destroy ownerless sensors
 			this.remove();
 		}
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	}
 });
 

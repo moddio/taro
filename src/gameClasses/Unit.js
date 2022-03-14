@@ -1877,7 +1877,9 @@ var Unit = IgeEntityPhysics.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+				this.processBox2dQueue();
+			}
 	},
 
 	destroy: function () {
