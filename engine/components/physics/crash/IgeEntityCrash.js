@@ -369,7 +369,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},*/
 
 	// move entity in front of the unit, and then create joint between them
-	/*attachTo: function (entityB, anchorA, anchorB) {
+	attachTo: function (entityB, anchorA, anchorB) {
 		// Check if the entity has a box2d body attached
 		// and if so, is it updating or not
 		for (entityId in this.jointsAttached) {
@@ -383,7 +383,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			anchorA: anchorA,
 			anchorB: anchorB
 		});*/
-	//},
+	},
 
 	detachEntity: function (entityId) {
 		console.log('detach entity is not working now')
