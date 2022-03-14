@@ -18,6 +18,8 @@ class GameScene extends Phaser.Scene {
 
 	preload (): void {
 
+		this.load.crossOrigin = 'anonymous';
+
 		const data = ige.game.data;
 
 		for (let type in data.unitTypes) {
