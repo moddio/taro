@@ -43,7 +43,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		};
 
 		var listener = function(a, b, res, cancel) {
-			if (a.data.entity._category != 'unit') return;
+			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
 				if (b.data.entity.body.type == 'static') {
 					//console.log('Oh my, we crashed!', res/*, a.data*/);
@@ -152,7 +152,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
-		// console.log(entity);
+		// console.log('entity', entity);
 		var igeId = body.fixtures[0].igeId;
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x / 2;
