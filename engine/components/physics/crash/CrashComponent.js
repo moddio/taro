@@ -36,7 +36,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.avgPhysicsTickDuration = 0;
 
-		const ANGLE_MINIMUM = Math.PI / 24;
+		// const ANGLE_MINIMUM = Math.PI / 6;
 
 		const round = function(num) {
 			return Math.floor(num * 1000) / 1000;
@@ -71,18 +71,19 @@ var PhysicsComponent = IgeEventingClass.extend({
 					// b.data.entity._translate.x = b.pos.x;
 					// b.data.entity._translate.y = b.pos.y;
 
-					console.log('Overlap normal from A: ', res.overlapN);
+					// console.log('Overlap normal from A: ', res.overlapN);
 
 					var appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
-					console.log('appliedAngle: ', appliedAngle);
-					console.log('Math.PI % Math.abs(appliedAngle): ', round((Math.PI * 2) % Math.abs(appliedAngle)));
-					if (Math.abs(appliedAngle) >= ANGLE_MINIMUM && (Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
+					// console.log('appliedAngle: ', appliedAngle);
+					// console.log('Math.PI % Math.abs(appliedAngle): ', round((Math.PI * 2) % Math.abs(appliedAngle)));
+					// Math.abs(appliedAngle) >= ANGLE_MINIMUM && 
+					if ((Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
 						a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
 						b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
-						b.data.entity.rotateTo(0, 0, Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2));
-						console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
+						b.data.entity.rotateTo(0, 0, -(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)));
+						// console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
 					} else {
-						console.log('Not applying this angle to b... ', round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
+						// console.log('Not applying this angle to b... ', round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
 					}
 
 
