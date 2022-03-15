@@ -127,15 +127,16 @@ class GameScene extends Phaser.Scene {
 			map.createLayer(layer.name, map.tilesets[0], 0, 0);
 		});
 
-		this.cameras.main.centerOn(
+		const camera = this.cameras.main;
+		camera.centerOn(
 			map.width * map.tileWidth / 2,
 			map.height * map.tileHeight / 2
 		);
-		this.cameras.main.zoom = this.scale.width / 800;
+		camera.zoom = this.scale.width / 800;
 
 		const cursors = this.input.keyboard.createCursorKeys();
 		this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
-			camera: this.cameras.main,
+			camera,
 			left: cursors.left,
 			right: cursors.right,
 			up: cursors.up,

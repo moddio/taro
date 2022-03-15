@@ -108,11 +108,12 @@ var GameScene = /** @class */ (function (_super) {
             console.log(layer.name);
             map.createLayer(layer.name, map.tilesets[0], 0, 0);
         });
-        this.cameras.main.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
-        this.cameras.main.zoom = this.scale.width / 800;
+        var camera = this.cameras.main;
+        camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
+        camera.zoom = this.scale.width / 800;
         var cursors = this.input.keyboard.createCursorKeys();
         this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
-            camera: this.cameras.main,
+            camera: camera,
             left: cursors.left,
             right: cursors.right,
             up: cursors.up,

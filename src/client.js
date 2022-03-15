@@ -430,8 +430,6 @@ var Client = IgeEventingClass.extend({
 
     setZoom: function (zoom) {
 
-		this.emit('zoom', zoom);
-
         // on mobile increase default zoom by 25%
         if (ige.mobileControls.isMobile) {
             zoom *= 0.75; // visible area less 25%
@@ -450,10 +448,11 @@ var Client = IgeEventingClass.extend({
         // var buffer = 0;
         if (ige.client.resolutionQuality === 'low') {
             viewArea.width = viewArea.width * 0.5;
-            viewArea.height = viewArea.height * 0.5;;
+            viewArea.height = viewArea.height * 0.5;
         }
 
-    },
+		this.emit('zoom', zoom);
+	},
 
     initEngine: function () {
         var self = this;
