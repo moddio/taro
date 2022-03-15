@@ -190,21 +190,48 @@ var PlayerUiComponent = IgeEntity.extend({
 		self.pressedButton = false;
 	},
 
-	// open a modal with custom content rendered in it
+	// open a website with provided link
 	openWebsite: function (config) {
 		var self = this;
 
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
-		var newWin = window.open(config.url);
-
-		if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+		
+		try {
 			swal({
-				title: 'Please allow Popups',
-				text: 'Your browser is blocking the content modd.io is trying to display',
-				imageWidth: 300,
-				imageUrl: '/assets/images/enable-popup.gif',
-				imageClass: 'rounded border'
-			});
+				title: "Popup!",
+				text: `the game wants you to open ${config.url}`,
+				showConfirmButton: true, showCancelButton: true,
+				type: "warning",
+				confirmButtonText: "Go",
+				cancelButtonText: "Don't Go"
+			}).then(result => {
+				
+				if(result.isConfirmed) {
+					var newWin = window.open(config.url)
+
+					if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+						swal({
+							title: 'Please allow Popups',
+							text: 'Your browser is blocking the content modd.io is trying to display',
+							imageWidth: 300,
+							imageUrl: '/assets/images/enable-popup.gif',
+							imageClass: 'rounded border'
+						});
+					}
+				}
+			})
+		} catch(err) {
+			// swal doesn't work in localhost so we use confirm() instead
+			
+			const allowed = confirm(`Popup!\nthe game wants you to open ${config.url}`)
+			
+			if(allowed) {
+				var newWin = window.open(config.url)
+				
+				if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+					alert("Please allow Popups\n\nYour browser is blocking the content modd.io is trying to display");
+				}
+			}
 		}
 	},
 	showWebsiteModal: function (config) {
