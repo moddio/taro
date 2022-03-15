@@ -153,13 +153,13 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
-		// console.log('entity', entity);
-		var igeId = body.fixtures[0].igeId;
+		console.log('entity', entity);
+		// var igeId = body.fixtures[0].igeId;
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x / 2;
 			// console.log('radius', radius)
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { /*igeId: igeId,*/ entity: entity, uid: Math.floor(Math.random() * 100) });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { entity: entity });
 
 			// console.log(crashBody);
 			// later check if added to .__moved()
@@ -169,7 +169,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			var height = entity._bounds2d.y;
 
 			var pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
-			crashBody = new this.crash.Box(pos, width, height, false, { /*igeId: igeId,*/ entity: entity, uid: Math.floor(Math.random() * 100) });
+			crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
@@ -190,7 +190,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				new this.crash.Vector(0 - (width / 2), (height / 2)),
 				new this.crash.Vector(0 - (width / 2), 0 - (height / 2))
 			];
-			crashBody = new this.crash.Polygon(new this.crash.Vector(x, y), points, false, { /*igeId: igeId,*/ entity: entity, uid: Math.floor(Math.random() * 100) });
+			crashBody = new this.crash.Polygon(new this.crash.Vector(x, y), points, false, { entity: entity });
 			crashBody.sat.setAngle(entity._rotate.z);
 		}
 		else {
@@ -202,10 +202,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// crashBody._entity = entity;
 		entity.body = body;
 		// Add the body to the world with the passed fixture
-		entity.body.fixtures[0].shape.data = crashBody;
+		// entity.body.fixtures[0].shape.data = crashBody;
+		entity.crashBody = crashBody;
 
 		// console.log('crash insert...', crashBody.data.entity._category, crashBody.data.igeId, crashBody.data.uid);
-		this.crash.insert(entity.body.fixtures[0].shape.data);
+		this.crash.insert(crashBody);
 
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
 		// entity.body._velocity = {x: 0, y: 0};
@@ -222,8 +223,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	destroyBody: function (body, entity = null) {
 		// I think we need this in case we're destroying a body not linked to an entity
-		if (body.fixtures || (entity && entity.body)) {
-			this.crash.remove(body.fixtures[0].shape.data);
+		if (body.fixtures || (entity && entity.body) || (entity && entity.crashBody)) {
+			this.crash.remove(entity.crashBody);
 		} else {
 			console.log('failed to destroy body - body doesn\'t exist.');
 		}
@@ -359,7 +360,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// this is a bad hack to not crash server on melee swing.
 			regionCollider = new this.crash.Circle(new this.crash.Vector(region.x, region.y), region.width);
 		} else {
-			regionCollider = region.body.fixtures[0].shape.data;
+			regionCollider = region.entity.crashBody;
 		}
 
 		var entities = [];
@@ -367,7 +368,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var collider;
 
 		for (collider of foundColliders) {
-			var entity = ige.$(collider.data.igeId);
+			var entity = collider.data.entity //ige.$(collider.data.igeId);
 			if (entity) {
 				entities.push(entity);
 			}

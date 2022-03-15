@@ -66,9 +66,9 @@ var Sensor = IgeEntityPhysics.extend({
 		if (ownerUnit) {
 			if (this.body) {
 				if (ige.physics.engine === 'CRASH') {
-					this.body.fixtures[0].shape.data.moveTo(ownerUnit._translate.x, ownerUnit._translate.y);
-					this._translate.x = this.body.fixtures[0].shape.data.pos.x;
-					this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+					this.crashBody.moveTo(ownerUnit._translate.x, ownerUnit._translate.y);
+					this._translate.x = this.crashBody.pos.x;
+					this._translate.y = this.crashBody.pos.y;
 				}
 				else this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y); // keep sensor following its owner unit
 			}

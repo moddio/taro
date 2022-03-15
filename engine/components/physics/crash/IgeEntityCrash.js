@@ -16,30 +16,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}
 
 		// Check if crash is enabled in the engine
-		/* if (ige.isServer && ige.physics) {
-			if (!this._b2dRef._networkDebugMode) {
-				// Store the existing transform methods
-				this._translateToProto = this.translateTo;
-				this._translateByProto = this.translateBy;
-				this._rotateToProto = this.rotateTo;
-				this._rotateByProto = this.rotateBy;
-				// Take over the transform methods
-				this.translateTo = this._translateTo;
-				this.translateBy = this._translateBy;
-				this.rotateTo = this._rotateTo;
-				this.rotateBy = this._rotateBy;
-			} else {
-				this._translateToProto = function () { };
-				this._translateByProto = function () { };
-				this._rotateToProto = function () { };
-				this._rotateByProto = function () { };
-				this._updateProto = this.update;
-				// Make sure box2d is kept up to date by the engine
-				// this.update = this._update;
-			}
-			this.jointsAttached = {};
-			this.isOutOfBounds = false;
-		} */
 		if (ige.isServer && ige.physics) {
 			this._translateToProto = this.translateTo;
 			this._translateByProto = this.translateBy;
@@ -122,7 +98,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				},
 				shape: {
 					type: (body.fixtures && body.fixtures[0] && body.fixtures[0].shape && body.fixtures[0].shape.type) ? body.fixtures[0].shape.type : 'rectangle',
-					data: (body.fixtures && body.fixtures[0] && body.fixtures[0].shape && body.fixtures[0].shape.data) ? body.fixtures[0].shape.data : undefined
+					// data: (body.fixtures && body.fixtures[0] && body.fixtures[0].shape && body.fixtures[0].shape.data) ? body.fixtures[0].shape.data : undefined
 				},
 				igeId: this.id() // in box2dbody, add reference to this entity
 			}]
@@ -227,14 +203,14 @@ var IgeEntityPhysics = IgeEntity.extend({
 	_behaviourCrash: function () {
 		// update position based on its velocity, collision, and damping
 		if ((Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) && this.body.type != 'spriteOnly') {
-			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
+			this.crashBody.move(this._velocity.x, this._velocity.y);
 			var damping = this.body.linearDamping;
 			if (damping === 0) damping = 1;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 
-			this._translate.x = this.body.fixtures[0].shape.data.pos.x;
-			this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+			this._translate.x = this.crashBody.pos.x;
+			this._translate.y = this.crashBody.pos.y;
 		}
 	},
 
@@ -457,7 +433,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this.destroy();
 
 		if (this.body) {
-			ige.physics.destroyBody(this.body);
+			ige.physics.destroyBody(this.body, this);
 		}
 
 		if (ige.isClient) {
@@ -477,12 +453,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	translateColliderTo: function (x, y) {
-		this.body.fixtures[0].shape.data.moveTo(x, y);
+		this.crashBody.moveTo(x, y);
 	},
 
 	rotateCollider: function (angle) {
-		if (this.body.fixtures[0].shape.data && this.body.fixtures[0].shape.type != 'circle') {
-			this.body.fixtures[0].shape.data.rotate(angle * -1);
+		if (this.crashBody && this.body.fixtures[0].shape.type != 'circle') {
+			this.crashBody.rotate(angle * -1);
 		}
 	}
 });
