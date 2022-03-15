@@ -1,4 +1,4 @@
-declare class Client extends IgeClass {
+declare class Client extends IgeEventingClass {
 
 	myPlayer: IgeEntity;
 	selectedUnit: IgeEntity;

@@ -19,15 +19,22 @@ var GameScene = /** @class */ (function (_super) {
         return _super.call(this, { key: 'Game' }) || this;
     }
     GameScene.prototype.init = function () {
+        var _this = this;
         // TODO move to css once pixi is gone
         // phaser canvas adjustments
         var canvas = this.game.canvas;
         canvas.style.position = 'fixed';
         canvas.style.opacity = '0.5';
         canvas.style.backgroundColor = 'transparent';
+        canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+        ige.client.on('zoom', function (height) {
+            console.log('GameScene zoom event', height); // TODO remove
+            _this.cameras.main.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;
+        this.load.crossOrigin = 'anonymous';
         var data = ige.game.data;
         for (var type in data.unitTypes) {
             this.loadEntity("unit/".concat(type), data.unitTypes[type]);

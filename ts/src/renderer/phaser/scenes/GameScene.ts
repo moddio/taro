@@ -15,6 +15,16 @@ class GameScene extends Phaser.Scene {
 		canvas.style.opacity = '0.5';
 		canvas.style.backgroundColor = 'transparent';
 		canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+
+		ige.client.on('zoom', (height: number) => {
+			console.log('GameScene zoom event', height); // TODO remove
+
+			this.cameras.main.zoomTo(
+				this.scale.height / height,
+				1000,
+				Phaser.Math.Easing.Quadratic.Out
+			);
+		});
 	}
 
 	preload (): void {

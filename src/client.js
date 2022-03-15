@@ -16,7 +16,7 @@ var statsPanels = {};
 //     showMiniMap = true;
 // }
 
-var Client = IgeClass.extend({
+var Client = IgeEventingClass.extend({
     classId: 'Client',
 
     init: function () {
@@ -429,6 +429,8 @@ var Client = IgeClass.extend({
     },
 
     setZoom: function (zoom) {
+
+		this.emit('zoom', zoom);
 
         // on mobile increase default zoom by 25%
         if (ige.mobileControls.isMobile) {
