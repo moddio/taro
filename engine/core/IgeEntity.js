@@ -126,7 +126,16 @@ var IgeEntity = IgeObject.extend({
 
 		var newState = (self._stats.states && self._stats.states[stateId]) || {};
 		if (newState && newState.body) {
+
+			/*
+			* if state is 'unselected' newState.body = 'none'
+				will evaluate to currentBody = undefined
+
+			*/
 			self._stats.currentBody = self._stats.bodies[newState.body];
+			// if (ige.isSever && ige.physics.engine == 'CRASH') {
+			// 	self._stats.currentBody = self._stats.bodies[newState.body] ? self._stats.bodies[newState.body] : 'none';
+			// }
 		}
 
 		// console.log("setState", stateId, "new body", (newState)?newState.body:"null")
@@ -666,20 +675,20 @@ var IgeEntity = IgeObject.extend({
 		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
 	},
 
-	drawCrashCollider: function (defaultData) {
-		var collider = new IgePixiCollider(this);
-		collider = collider.drawCollider();
-		this._pixiCollider = collider;
-		this._pixiContainer.addChild (collider);
+	// drawCrashCollider: function (defaultData) {
+	// 	var collider = new IgePixiCollider(this);
+	// 	collider = collider.drawCollider();
+	// 	this._pixiCollider = collider;
+	// 	this._pixiContainer.addChild(collider);
 
-		if (defaultData) {
-			this._pixiContainer.x = defaultData.translate.x;
-			this._pixiContainer.y = defaultData.translate.y;
-			// new
-			//this._pixiCollider.rotation = defaultData.rotate;
-		}
-		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
-	},
+	// 	if (defaultData) {
+	// 		this._pixiContainer.x = defaultData.translate.x;
+	// 		this._pixiContainer.y = defaultData.translate.y;
+	// 		// new
+	// 		//this._pixiCollider.rotation = defaultData.rotate;
+	// 	}
+	// 	ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+	// },
 
 	/**
      * Set the object's width to the number of tile width's specified.

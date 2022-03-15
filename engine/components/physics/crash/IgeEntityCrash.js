@@ -40,7 +40,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.jointsAttached = {};
 			this.isOutOfBounds = false;
 		} */
-		/*if (ige.isServer && ige.physics) {
+		if (ige.isServer && ige.physics) {
 			this._translateToProto = this.translateTo;
 			this._translateByProto = this.translateBy;
 			this._rotateToProto = this.rotateTo;
@@ -50,12 +50,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.translateBy = this._translateBy;
 			this.rotateTo = this._rotateTo;
 			this.rotateBy = this._rotateBy;
-		}*/
+		}
 
 		if (ige.isClient) {
 			self.addComponent(IgePixiTexture);
 			self.addComponent(IgePixiAnimation);
-			self.addComponent(IgePixiCollider);
+			// self.addComponent(IgePixiCollider);
 		}
 	},
 
@@ -347,7 +347,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				if (this._hasMoved && this.body.type != 'spriteOnly') {
 					this.translateColliderTo(x, y);
 				}
-			} 
+			}
 		}
 
 		return this;

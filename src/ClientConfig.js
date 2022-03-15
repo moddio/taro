@@ -61,7 +61,7 @@ var igeClientConfig = {
 		'pixi/IgePixi.js',
 		'pixi/IgePixiMap.js',
 		'pixi/IgePixiTexture.js',
-		'pixi/IgePixiCollider.js',
+		// 'pixi/IgePixiCollider.js',
 		'pixi/IgePixiAnimation.js',
 		'pixi/IgePixiFloatingText.js',
 		'pixi/IgePixiChatBubble.js',
