@@ -16,30 +16,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}
 
 		// Check if crash is enabled in the engine
-		/* if (ige.isServer && ige.physics) {
-			if (!this._b2dRef._networkDebugMode) {
-				// Store the existing transform methods
-				this._translateToProto = this.translateTo;
-				this._translateByProto = this.translateBy;
-				this._rotateToProto = this.rotateTo;
-				this._rotateByProto = this.rotateBy;
-				// Take over the transform methods
-				this.translateTo = this._translateTo;
-				this.translateBy = this._translateBy;
-				this.rotateTo = this._rotateTo;
-				this.rotateBy = this._rotateBy;
-			} else {
-				this._translateToProto = function () { };
-				this._translateByProto = function () { };
-				this._rotateToProto = function () { };
-				this._rotateByProto = function () { };
-				this._updateProto = this.update;
-				// Make sure box2d is kept up to date by the engine
-				// this.update = this._update;
-			}
-			this.jointsAttached = {};
-			this.isOutOfBounds = false;
-		} */
 		if (ige.isServer && ige.physics) {
 			this._translateToProto = this.translateTo;
 			this._translateByProto = this.translateBy;
@@ -128,7 +104,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 				},
 				shape: {
 					type: (body.fixtures && body.fixtures[0] && body.fixtures[0].shape && body.fixtures[0].shape.type) ? body.fixtures[0].shape.type : 'rectangle',
-					data: (body.fixtures && body.fixtures[0] && body.fixtures[0].shape && body.fixtures[0].shape.data) ? body.fixtures[0].shape.data : undefined
+					// data: (body.fixtures && body.fixtures[0] && body.fixtures[0].shape && body.fixtures[0].shape.data) ? body.fixtures[0].shape.data : undefined
 				},
 				igeId: this.id() // in box2dbody, add reference to this entity
 			}]
