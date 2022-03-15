@@ -159,7 +159,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			var radius = entity._bounds2d.x / 2;
 			// console.log('radius', radius)
 			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
-			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
+			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { /*igeId: igeId,*/ entity: entity, uid: Math.floor(Math.random() * 100) });
 
 			// console.log(crashBody);
 			// later check if added to .__moved()
@@ -169,7 +169,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			var height = entity._bounds2d.y;
 
 			var pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
-			crashBody = new this.crash.Box(pos, width, height, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
+			crashBody = new this.crash.Box(pos, width, height, false, { /*igeId: igeId,*/ entity: entity, uid: Math.floor(Math.random() * 100) });
 		}
 		else if (type === 'rectangle') {
 			var width = entity._bounds2d.x;
@@ -190,7 +190,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				new this.crash.Vector(0 - (width / 2), (height / 2)),
 				new this.crash.Vector(0 - (width / 2), 0 - (height / 2))
 			];
-			crashBody = new this.crash.Polygon(new this.crash.Vector(x, y), points, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
+			crashBody = new this.crash.Polygon(new this.crash.Vector(x, y), points, false, { /*igeId: igeId,*/ entity: entity, uid: Math.floor(Math.random() * 100) });
 			crashBody.sat.setAngle(entity._rotate.z);
 		}
 		else {

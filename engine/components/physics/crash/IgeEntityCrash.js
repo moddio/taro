@@ -40,7 +40,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.jointsAttached = {};
 			this.isOutOfBounds = false;
 		} */
-		if (ige.isServer && ige.physics) {
+		/*if (ige.isServer && ige.physics) {
 			this._translateToProto = this.translateTo;
 			this._translateByProto = this.translateBy;
 			this._rotateToProto = this.rotateTo;
@@ -50,9 +50,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.translateBy = this._translateBy;
 			this.rotateTo = this._rotateTo;
 			this.rotateBy = this._rotateBy;
-		}
-
-		// this._actionQueue = [];
+		}*/
 
 		if (ige.isClient) {
 			self.addComponent(IgePixiTexture);
@@ -215,43 +213,10 @@ var IgeEntityPhysics = IgeEntity.extend({
 		if (def) {
 			this.bodyDef = def;
 
-			// def object example
-			/* {
-				type: 'dynamic',
-				linearDamping: 0,
-				angularDamping: 0,
-				allowSleep: false,
-				bullet: true,
-				fixedRotation: true,
-				affectedByGravity: true,
-				fixtures: [
-				  {
-					density: 0,
-					friction: 0,
-					restitution: 0,
-					isSensor: true,
-					filter: [Object],
-					shape: [Object],
-					igeId: '23b8f525'
-				  }
-				]
-			  } */
-
-			// console.log('crash body', def);
-
 			// Check that the crash component exists
 			if (ige.physics && !this.body) {
-				// if (isLossTolerant) {
-					// crash havent createBody, so we need write it for crash
 					ige.physics.createBody(this, def, isLossTolerant);
-				/* } else {
-					this.destroyBody();
-					// will we use queueAction?
-					ige.physics.queueAction({ type: 'createBody', entity: this, def: def });
-				} */
-			} else {
-				// IgeEntityBox2d.prototype.log('You are trying to create a box2d entity but you have not added the box2d component to the ige instance!', 'error');
-			}
+			} 
 
 			return this;
 		}
@@ -274,14 +239,13 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	destroyBody: function () {
-		// IgeEntityBox2d.prototype.log('destroyBody');
 		if (ige.physics) {
 			ige.physics.destroyBody(this.body, this);
 		}
-		// ige.physics && ige.physics.queueAction({ type: 'destroyBody', entity: this, body: this.body });
 	},
+
 	/**
-	 * Gets / sets the box2d body's gravitic value. If set to false,
+	 * Gets / sets the crash body's gravitic value. If set to false,
 	 * this entity will not be affected by gravity. If set to true it
 	 * will be affected by gravity.
 	 * @param {Boolean=} val True to allow gravity to affect this entity.
@@ -303,108 +267,27 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}
 	},
 
-	//on: function () {
-		// if (arguments.length === 3) {
-		// 	var evName = arguments[0];
-		// 	var target = arguments[1];
-		// 	var callback = arguments[2];
-		// 	var type;
-
-		// 	switch (target.substr(0, 1)) {
-		// 		case '#':
-		// 			type = 0;
-		// 			break;
-
-		// 		case '.':
-		// 			type = 1;
-		// 			break;
-		// 	}
-
-		// 	target = target.substr(1, target.length - 1);
-
-		// 	switch (evName) {
-		// 		case 'collisionStart':
-		// 			this._collisionStartListeners = this._collisionStartListeners || [];
-		// 			this._collisionStartListeners.push({
-		// 				type: type,
-		// 				target: target,
-		// 				callback: callback
-		// 			});
-
-		// 			if (!this._contactListener) {
-		// 				// Setup contact listener
-		// 				this._contactListener = this._setupContactListeners();
-		// 			}
-		// 			break;
-
-		// 		case 'collisionEnd':
-		// 			this._collisionEndListeners = this._collisionEndListeners || [];
-		// 			this._collisionEndListeners.push({
-		// 				type: type,
-		// 				target: target,
-		// 				callback: callback
-		// 			});
-
-		// 			if (!this._contactListener) {
-		// 				// Setup contact listener
-		// 				this._contactListener = this._setupContactListeners();
-		// 			}
-		// 			break;
-
-		// 		default:
-		// 			// IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
-		// 			break;
-		// 	}
-		// } else {
-		// 	IgeEntity.prototype.on.apply(this, arguments);
-		// }
-	//},
-
-	/*off: function () {
-		if (arguments.length === 3) {
-
-		} else {
-			IgeEntity.prototype.off.apply(this, arguments);
-		}
-	},*/
-
 	// move entity in front of the unit, and then create joint between them
 	attachTo: function (entityB, anchorA, anchorB) {
+		console.log('attach entity is not working now')
 		// Check if the entity has a box2d body attached
 		// and if so, is it updating or not
 		for (entityId in this.jointsAttached) {
 			this.detachEntity(entityId);
 		}
 		var self = this;
-		/*ige.physics.queueAction({
-			type: 'createJoint',
-			entityA: self,
-			entityB: entityB,
-			anchorA: anchorA,
-			anchorB: anchorB
-		});*/
 	},
 
 	detachEntity: function (entityId) {
 		console.log('detach entity is not working now')
 		/*var attachedEntity = ige.$(entityId);
-		if (entityId && attachedEntity) {*/
-			// IgeEntityBox2d.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
-
-			/*ige.physics.queueAction({
-				type: 'destroyJoint',
-				entityA: this,
-				entityB: attachedEntity
-			});
+		if (entityId && attachedEntity) {
 		}*/
 	},
+
 	applyTorque: function (torque) {
 		console.log('apply torque is disabled for now')
 		//if (ige.physics._world.isLocked() || this.body == undefined) {
-			/*this.queueAction({
-				type: 'applyTorque',
-				torque: torque
-			});*/
 		/*} else {
 			//this.applyTorqueLT(torque);
 		}*/
@@ -445,68 +328,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}*/
 	},
 
-	/*_setupContactListeners: function () {
-		var self = this;
-
-		ige.physics.contactListener(
-			// Listen for when contact's begin
-			function (contact) {
-				// Loop the collision listeners and check for a match
-				var arr = self._collisionStartListeners;
-
-				if (arr) {
-					self._checkContact(contact, arr);
-				}
-			},
-			// Listen for when contact's end
-			function (contact) {
-				// Loop the collision listeners and check for a match
-				var arr = self._collisionEndListeners;
-
-				if (arr) {
-					self._checkContact(contact, arr);
-				}
-			}
-		);
-	},*/
-
-	// _checkContact: function (contact, arr) {
-	// 	var self = this;
-	// 	var arrCount = arr.length;
-	// 	var otherEntity;
-	// 	var listener;
-	// 	var i;
-
-	// 	if (contact.igeEntityA()._id === self._id) {
-	// 		otherEntity = contact.igeEntityB();
-	// 	} else if (contact.igeEntityB()._id === self._id) {
-	// 		otherEntity = contact.igeEntityA();
-	// 	} else {
-	// 		// This contact has nothing to do with us
-	// 		return;
-	// 	}
-
-	// 	for (i = 0; i < arrCount; i++) {
-	// 		listener = arr[i];
-
-	// 		if (listener.type === 0) {
-	// 			// Listener target is an id
-	// 			if (otherEntity._id === listener.target) {
-	// 				// Contact with target established, fire callback
-	// 				listener.callback(contact);
-	// 			}
-	// 		}
-
-	// 		if (arr[i].type === 1) {
-	// 			// Listener target is a category
-	// 			if (otherEntity._category === listener.target) {
-	// 				// Contact with target established, fire callback
-	// 				listener.callback(contact);
-	// 			}
-	// 		}
-	// 	}
-	// },
-
 	/**
 	 * Takes over translateTo calls and processes box2d movement as well.
 	 * @param x
@@ -524,7 +345,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		if (ige.isServer) {
 			if (this.body) {
 				if (this._hasMoved && this.body.type != 'spriteOnly') {
-					// console.log('crash translate to', x, y);
 					this.translateColliderTo(x, y);
 				}
 			} 
@@ -534,7 +354,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-	 * Takes over translateBy calls and processes box2d movement as well.
+	 * Takes over translateBy calls and processes crash movement as well.
 	 * @param x
 	 * @param y
 	 * @private
@@ -544,7 +364,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-	 * Takes over translateTo calls and processes box2d movement as well.
+	 * Takes over translateTo calls and processes crash movement as well.
 	 * @param x
 	 * @param y
 	 * @param z
@@ -562,7 +382,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// we have to take this._hasMoved out of the conditional to apply rotations on another body
 		if (ige.isServer && body && body.type !== 'none' && body.type !== 'spriteOnly') {
 			if (this.body) {
-				// console.log("this.body", this.body)
 				this.rotateCollider(z);
 			}
 		}
@@ -581,7 +400,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		if (currentState && this._stats.bodies) {
 			body = this._stats.bodies[currentState.body];
 		}
-		// console.log(self._stats.name,'->',self._stats.scale)
 		var newWidth = (body && body.width || 1) * (self._stats.scale);
 		var newHeight = (body && body.height || 1) * (self._stats.scale);
 
@@ -594,35 +412,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// }
 	},
 
-	/*_scaleBox2dBody: function (scale) {
-		var self = this;
-		var body = this._stats.currentBody;
-
-		if (!body) {
-			return;
-		}
-
-		var shapeType = body.fixtures[0].shape && body.fixtures[0].shape.type || 'rectangle';
-		var shapeData = {};
-
-		switch (shapeType) {
-			case 'circle': {
-				var normalizer = 0.5;
-				shapeData.radius = body.width * (scale) * normalizer;
-				break;
-			}
-			case 'rectangle': {
-				var normalizer = 0.45;
-				shapeData.width = body.width * (scale) * normalizer;
-				shapeData.height = body.height * (scale) * normalizer;
-				break;
-			}
-		}
-
-		body.fixtures[0].shape.data = shapeData;
-		self.updateBody();
-	},*/
-
 	/**
 	 * Takes over translateBy calls and processes box2d movement as well.
 	 * @param x
@@ -632,8 +421,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 	 */
 	_rotateBy: function (x, y, z) {
 		this._rotateTo(this._rotate.x + x, this._rotate.y + y, this._rotate.z + z);
-		// this.body.setAngle(this._rotate.z + z);
-		// this.body.setAwake(true);
 	},
 
 	/**
@@ -666,13 +453,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},*/
 
 	remove: function () {
-		// if (this.body) {
-		//     this.queueAction({ type: "destroy" });
-		// }
-		// else {
-		//     this.destroy();
-		// }
-
 		this._isBeingRemoved = true;
 		this.destroy();
 
@@ -697,28 +477,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	translateColliderTo: function (x, y) {
-		// console.log('moveTo');
 		this.body.fixtures[0].shape.data.moveTo(x, y);
 	},
 
 	rotateCollider: function (angle) {
 		if (this.body.fixtures[0].shape.data && this.body.fixtures[0].shape.type != 'circle') {
-			// console.log(Object.getPrototypeOf(this.body.fixtures[0].shape.data).rotate);
 			this.body.fixtures[0].shape.data.rotate(angle * -1);
-			// var sat = this.body.fixtures[0].shape.data.sat;
-			// console.log(angle);
-			// var data = { calcPoints: [], points: [], offset: sat.offset };
-			// for (var i = 0; i < sat.points.length; i++) {
-			// 	data.calcPoints.push(sat.calcPoints[i]);
-			// 	data.points.push(sat.points[i]);
-			// }
-			// console.log(data.offset);
-			// for (i = 0; i < sat.points.length; i++) {
-			// 	console.log(sat);
-			// 	console.log('calcPoint: ', data.calcPoints[i]);
-			// 	console.log('atan2 calcPoint: ', Math.atan2(data.calcPoints[i].y, data.calcPoints[i].x));
-
-			// }
 		}
 	}
 });
