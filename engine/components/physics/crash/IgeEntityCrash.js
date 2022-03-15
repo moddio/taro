@@ -65,14 +65,20 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// console.log("updatebody", defaultData, this._stats.currentBody.type)
 
 		body = this._stats.currentBody;
-		if (!body) {
-			return;
-		}
+		// if (!body) {
+		// 	return;
+		// }
+		if (this.crashBody) {
+			if (body == undefined || body.type === 'spriteOnly') {
+				self.destroyBody();
+				this.body = body;
+				return;
+			}
 
-		if (body.type === 'none' || body.type === 'spriteOnly') {
-			self.destroyBody();
-			this.body = body;
-			return;
+			else if (body.type == 'dynamic') {
+				this.crashAwake(true);
+				this.crashBody.update();
+			}
 		}
 
 		this.width(parseFloat(body.width) * this._scale.x);
@@ -182,21 +188,21 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	/**
-	 * Gets / sets the box2d body's active flag which determines
+	 * Gets / sets the crash colliders's awake flag which determines
 	 * if it will be included as part of the physics simulation
 	 * or not.
-	 * @param {Boolean=} val Set to true to include the body in
+	 * @param {Boolean=} val Set to true to include the collider in
 	 * the physics simulation or false for it to be ignored.
 	 * @return {*}
 	 */
-	box2dActive: function (val) {
-		if (this.body) {
+	crashAwake: function (val) {
+		if (ige.physics && this.crashBody) {
 			if (val !== undefined) {
-				this.body.setActive(val);
+				this.crashBody.awake = val;
 				return this;
 			}
 
-			return this.body.isActive();
+			return this.crashBody.awake;
 		}
 
 		return this;
@@ -214,9 +220,9 @@ var IgeEntityPhysics = IgeEntity.extend({
 			this.bodyDef = def;
 
 			// Check that the crash component exists
-			if (ige.physics && !this.body) {
-					ige.physics.createBody(this, def, isLossTolerant);
-			} 
+			if (ige.physics && !this.crashBody) {
+				ige.physics.createBody(this, def, isLossTolerant);
+			}
 
 			return this;
 		}
@@ -226,21 +232,22 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 	_behaviourCrash: function () {
 		// update position based on its velocity, collision, and damping
-		if ((Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) && this.body.type != 'spriteOnly') {
-			this.body.fixtures[0].shape.data.move(this._velocity.x, this._velocity.y);
+		if (Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
+			this.crashBody.move(this._velocity.x, this._velocity.y);
 			var damping = this.body.linearDamping;
 			if (damping === 0) damping = 1;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 
-			this._translate.x = this.body.fixtures[0].shape.data.pos.x;
-			this._translate.y = this.body.fixtures[0].shape.data.pos.y;
+			this._translate.x = this.crashBody.pos.x;
+			this._translate.y = this.crashBody.pos.y;
 		}
 	},
 
 	destroyBody: function () {
 		if (ige.physics) {
-			ige.physics.destroyBody(this.body, this);
+			ige.physics.destroyBody(this.crashBody, this);
+			this.crashAwake(false);
 		}
 	},
 
@@ -456,10 +463,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this._isBeingRemoved = true;
 		this.destroy();
 
-		if (this.body) {
-			ige.physics.destroyBody(this.body);
-		}
-
 		if (ige.isClient) {
 			this.clearAllPointers();
 		}
@@ -477,12 +480,12 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	translateColliderTo: function (x, y) {
-		this.body.fixtures[0].shape.data.moveTo(x, y);
+		this.crashBody.moveTo(x, y);
 	},
 
 	rotateCollider: function (angle) {
-		if (this.body.fixtures[0].shape.data && this.body.fixtures[0].shape.type != 'circle') {
-			this.body.fixtures[0].shape.data.rotate(angle * -1);
+		if (this.crashBody && this.body.fixtures[0].shape.type != 'circle') {
+			this.crashBody.rotate(angle * -1);
 		}
 	}
 });

@@ -357,6 +357,9 @@
 			this.lastPos = this.pos.clone();
 			this.lastCheckedPos = this.pos.clone();
 			this.aabb = {};
+			//
+			// adding support for awake flag
+			this.awake = true;
 
 			crash.updateAABB(this);
 
@@ -367,9 +370,10 @@
 			return this;
 		};
 
-		Collider.prototype.insert = function () {
-			crash.insert(this);
-
+		Collider.prototype.insert = function () {			//HERE
+			if (this.awake) {
+				crash.insert(this);
+			}
 			return this;
 		};
 
@@ -377,27 +381,30 @@
 			this.sat.setAngle(angle);
 		};
 
-		Collider.prototype.remove = function () {
+		Collider.prototype.remove = function () {			//Not sure if we should consider awake for removes.
 			crash.remove(this);
 
 			return this;
 		};
 
-		Collider.prototype.update = function () {
-			crash.update(this);
-
+		Collider.prototype.update = function () {			//HERE
+			if (this.awake) {
+				crash.update(this);
+			}
 			return this;
 		};
 
-		Collider.prototype.updateAABB = function () {
-			crash.updateAABB(this);
-
+		Collider.prototype.updateAABB = function () {			//HERE
+			if (this.awake) {
+				crash.updateAABB(this);
+			}
 			return this;
 		};
 
-		Collider.prototype.moved = function () {
-			crash.moved(this);
-
+		Collider.prototype.moved = function () {			//HERE
+			if (this.awake) {
+				crash.moved(this);
+			}
 			return this;
 		};
 

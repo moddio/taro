@@ -202,10 +202,11 @@ var PhysicsComponent = IgeEventingClass.extend({
 		// crashBody._entity = entity;
 		entity.body = body;
 		// Add the body to the world with the passed fixture
-		entity.body.fixtures[0].shape.data = crashBody;
+		// entity.body.fixtures[0].shape.data = crashBody;
+		entity.crashBody = crashBody;
 
 		// console.log('crash insert...', crashBody.data.entity._category, crashBody.data.igeId, crashBody.data.uid);
-		this.crash.insert(entity.body.fixtures[0].shape.data);
+		this.crash.insert(crashBody);
 
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
 		// entity.body._velocity = {x: 0, y: 0};
@@ -220,10 +221,10 @@ var PhysicsComponent = IgeEventingClass.extend({
 		return crashBody;
 	},
 
-	destroyBody: function (body, entity = null) {
+	destroyBody: function (collider, entity = null) {
 		// I think we need this in case we're destroying a body not linked to an entity
-		if (body.fixtures || (entity && entity.body)) {
-			this.crash.remove(body.fixtures[0].shape.data);
+		if (collider || (entity && entity.body)) {
+			this.crash.remove(collider);
 		} else {
 			console.log('failed to destroy body - body doesn\'t exist.');
 		}
