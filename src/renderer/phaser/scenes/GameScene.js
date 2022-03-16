@@ -27,9 +27,19 @@ var GameScene = /** @class */ (function (_super) {
         canvas.style.opacity = '0.5';
         canvas.style.backgroundColor = 'transparent';
         canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+        var camera = this.cameras.main;
+        this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
+            console.log(Phaser.Scale.Events.RESIZE, // TODO remove
+            gameSize, baseSize, displaySize, previousWidth, previousHeight);
+            camera.zoom *= gameSize.height / previousHeight;
+            /*camera.centerOn(
+                camera.scrollX + (gameSize.width - previousWidth) / 2,
+                camera.scrollY + (gameSize.height - previousHeight) / 2
+            );*/
+        });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            _this.cameras.main.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
+            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
         });
     };
     GameScene.prototype.preload = function () {
