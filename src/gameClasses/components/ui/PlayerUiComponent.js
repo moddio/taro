@@ -206,7 +206,7 @@ var PlayerUiComponent = IgeEntity.extend({
 				cancelButtonText: "Don't Go"
 			}).then(result => {
 				
-				if(result.isConfirmed) {
+				if(result.value) {
 					var newWin = window.open(config.url)
 
 					if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
