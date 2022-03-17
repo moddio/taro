@@ -52,7 +52,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 
 			else if (body.type == 'dynamic') {
-				this.crashAwake(true);
+				this.crashActive(true);
 				this.crashBody.update();
 			}
 		}
@@ -171,7 +171,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	 * the physics simulation or false for it to be ignored.
 	 * @return {*}
 	 */
-	crashAwake: function (val) {
+	crashActive: function (val) {
 		if (ige.physics && this.crashBody) {
 			if (val !== undefined) {
 				this.crashBody.awake = val;
@@ -222,8 +222,8 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 	destroyBody: function () {
 		if (ige.physics) {
-			ige.physics.destroyBody(this.crashBody, this);
-			this.crashAwake(false);
+			ige.physics.destroyBody(this.crashBody);
+			this.crashActive(false);
 		}
 	},
 

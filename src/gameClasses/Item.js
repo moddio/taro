@@ -96,6 +96,7 @@ var Item = IgeEntityPhysics.extend({
 
 		if (ige.isServer) {
 			if (this._stats.stateId == 'dropped') {
+				console.log('item is dropping', this)
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1);

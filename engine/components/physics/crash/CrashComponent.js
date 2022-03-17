@@ -153,7 +153,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
-		console.log('entity', entity);
+		console.log('creating body', x, y);
 		// var igeId = body.fixtures[0].igeId;
 		if (type === 'circle') {
 			var radius = entity._bounds2d.x / 2;
@@ -221,9 +221,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 		return crashBody;
 	},
 
-	destroyBody: function (collider, entity = null) {
+	destroyBody: function (collider) {
 		// I think we need this in case we're destroying a body not linked to an entity
-		if (collider || (entity && entity.body)) {
+		if (collider) {
 			this.crash.remove(collider);
 		} else {
 			console.log('failed to destroy body - body doesn\'t exist.');
@@ -356,7 +356,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	getBodiesInRegion: function (region) {
 		var regionCollider;
-		if (!region.body) {
+		if (!region.crashBody) {
 			// this is a bad hack to not crash server on melee swing.
 			regionCollider = new this.crash.Circle(new this.crash.Vector(region.x, region.y), region.width);
 		} else {
