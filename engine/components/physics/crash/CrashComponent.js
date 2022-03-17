@@ -142,36 +142,28 @@ var PhysicsComponent = IgeEventingClass.extend({
 	 * @param {Object} body the body definition
 	 * @return {Collider}
 	 */
-	createBody: function (entity, body, isLossTolerant) {
-		if (entity.body) { return; }
-		// console.log('CRASH BODY CREATION');
+	createBody: function (entity, bodyDef) {
+		if (entity.crashBody) { return; }
+
 		this.totalBodiesCreated++;
-		// body.fixtures.length is 1 for all objects in my game, can sometimes it be more then 1?
-		var type = body.fixtures[0].shape.type;
-		// console.log(body.fixtures[0].shape.type);
+		var shapeType = bodyDef.fixtures[0].shape.type;
 
 		var crashBody;
 		var x = entity._translate.x;
 		var y = entity._translate.y;
-		console.log('creating body', x, y);
-		// var igeId = body.fixtures[0].igeId;
-		if (type === 'circle') {
+		//console.log('creating body', x, y);
+		if (shapeType === 'circle') {
 			var radius = entity._bounds2d.x / 2;
-			// console.log('radius', radius)
-			// entity.fixtures[0].shape.data = this.crash.Circle(new this.crash.Vector(x, y), radius, true, { igeId: igeId });
 			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { entity: entity });
-
-			// console.log(crashBody);
 			// later check if added to .__moved()
 		}
 		else if (entity._category == 'wall') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
-
 			var pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
 			crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
 		}
-		else if (type === 'rectangle') {
+		else if (shapeType === 'rectangle') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
 
@@ -195,29 +187,24 @@ var PhysicsComponent = IgeEventingClass.extend({
 		}
 		else {
 			console.log('body shape is wrong');
-			// added return here
 			return;
 		}
-		// Store the entity that is linked to self body
-		// crashBody._entity = entity;
-		entity.body = body;
+
+		entity.body = bodyDef;
 		// Add the body to the world with the passed fixture
 		// entity.body.fixtures[0].shape.data = crashBody;
 		entity.crashBody = crashBody;
 
-		// console.log('crash insert...', crashBody.data.entity._category, crashBody.data.igeId, crashBody.data.uid);
 		this.crash.insert(crashBody);
 
 		// temporary movement logic, we should add functions like setLinearVelocity for our crash bodies somewhere
 		// entity.body._velocity = {x: 0, y: 0};
 		entity.body.setLinearVelocity = function (info) {
-			// console.log('set linear velocity run', info);
 			entity._velocity.x = info.x;
 			entity._velocity.y = info.y;
 		};
-		if (body.type != 'static') entity.addBehaviour('crash behaviour', entity._behaviourCrash, false);
+		if (bodyDef.type != 'static') entity.addBehaviour('crash behaviour', entity._behaviourCrash, false);
 
-		// return entity.fixtures[0].shape.data;
 		return crashBody;
 	},
 

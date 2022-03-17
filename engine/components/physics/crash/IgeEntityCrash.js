@@ -197,7 +197,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 
 			// Check that the crash component exists
 			if (ige.physics && !this.crashBody) {
-				ige.physics.createBody(this, def, isLossTolerant);
+				ige.physics.createBody(this, def);
 			}
 
 			return this;
