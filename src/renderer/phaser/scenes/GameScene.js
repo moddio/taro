@@ -41,6 +41,10 @@ var GameScene = /** @class */ (function (_super) {
             console.log('GameScene zoom event', height); // TODO remove
             camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
         });
+        ige.client.on('create-unit', function (unit) {
+            console.log('create-unit', unit); // TODO remove
+            new PhaserUnit(_this, unit);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;

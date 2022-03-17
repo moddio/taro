@@ -45,6 +45,11 @@ class GameScene extends Phaser.Scene {
 				Phaser.Math.Easing.Quadratic.Out
 			);
 		});
+
+		ige.client.on('create-unit', (unit: Unit) => {
+			console.log('create-unit', unit); // TODO remove
+			new PhaserUnit(this, unit);
+		});
 	}
 
 	preload (): void {

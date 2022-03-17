@@ -75,6 +75,8 @@ var Unit = IgeEntityBox2d.extend({
 			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
 			self.mount(ige.pixi.world);
 			this.transformPixiEntity(this._translate.x, this._translate.y);
+
+			ige.client.emit('create-unit', this);
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
@@ -1881,4 +1883,6 @@ var Unit = IgeEntityBox2d.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Unit; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Unit;
+}
