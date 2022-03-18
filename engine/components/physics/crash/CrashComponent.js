@@ -148,16 +148,43 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	addBorder: function (borderWidth, w, h, x, y) {
-		var entity = {
+
+		/*var wallEntity = new IgeObject();
+		wallEntity._category = 'wall',
+		wallEntity.body = {
+				type: 'static',
+				fixtures: [{
+					filter: {
+						// i am
+						filterCategoryBits: 0x0001,
+						// i collide with everything except other walls
+						filterMaskBits: 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020
+					},
+				}]
+			};*/
+		var wallEntity = {
 			_category: 'wall',
+			_stats: true,
 			body: {
-				type: 'static'
+				type: 'static',
+				fixtures: [{
+					filter: {
+						// i am
+						filterCategoryBits: 0x0001,
+						// i collide with everything except other walls
+						filterMaskBits: 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020
+					},
+				}]
+			},
+			id: function () {
+				return 'border';
 			}
-		}
+		};
+
 		var width = ige.map.data.width * 64 * w + borderWidth;
 		var height = ige.map.data.height * 64 * h + borderWidth;
 		var pos = new this.crash.Vector(x, y);
-		crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
+		crashBody = new this.crash.Box(pos, width, height, false, { entity: wallEntity });
 		this.crash.insert(crashBody)
 	},
 
