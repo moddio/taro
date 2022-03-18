@@ -18,6 +18,9 @@ var PhaserUnit = /** @class */ (function (_super) {
     function PhaserUnit(scene, unit) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
+        var key = "unit/".concat(unit._stats.type);
+        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
         return _this;
@@ -30,8 +33,12 @@ var PhaserUnit = /** @class */ (function (_super) {
             return;
         }
         var container = unit._pixiContainer;
+        var texture = unit._pixiTexture;
+        var sprite = this.sprite;
         this.x = container.x;
         this.y = container.y;
+        sprite.rotation = texture.rotation;
+        sprite.setScale(texture.scale.x, texture.scale.y);
     };
     return PhaserUnit;
 }(Phaser.GameObjects.Container));
