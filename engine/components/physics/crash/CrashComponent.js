@@ -7,6 +7,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	componentId: 'physics',
 
 	init: function (entity, options) {
+		this._entity = entity;
 		// Check that the engine has not already started
 		// as this will mess everything up if it has
 		this.engine = 'CRASH';
@@ -133,6 +134,14 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this._world.m_contacts = [];
 		this._world.m_joints = [];
 		this._world.isLocked = function () { return false; };
+	},
+
+	sleep: function () {
+		return this._entity;
+	},
+
+	tilesizeRatio: function (foo) {
+		return this._entity;
 	},
 
 	/**

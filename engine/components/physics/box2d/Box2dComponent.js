@@ -9,7 +9,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	init: function (entity, options) {
 		// Check that the engine has not already started
 		// as this will mess everything up if it has
-		if (ige._state !== 0) {
+		if (ige._state != 0) {
 			console.log('Cannot add box2d physics component to the ige instance once the engine has started!', 'error');
 		}
 

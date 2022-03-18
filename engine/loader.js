@@ -82,12 +82,17 @@ window.igeLoader = (function () {
 		this.loadNext();
 	};
 
-	IgeLoader.prototype.loadPhysicsConfig = function (physicsEngine, callback) {
+	IgeLoader.prototype.loadPhysicsConfig = function (clientPhysicsEngine, serverPhysicsEngine, callback) {
 		// this.fileList should be empty after loadNext runs the first time
 		// but lets show it and comment it out
 		// this._fileList = [];
 		this.callback = callback;
-		this._physicsList = igePhysicsConfig.igePhysicsChoices[physicsEngine];
+		// ternary to create an empty array if we are passed physicsEngine = ''
+		this._physicsList = igePhysicsConfig.igePhysicsChoices[clientPhysicsEngine] ?
+			igePhysicsConfig.igePhysicsChoices[clientPhysicsEngine] :
+			// we need to have an IgeEntityPhysics class no matter what
+			[igePhysicsConfig.igePhysicsChoices[serverPhysicsEngine][1]];
+
 		this._physicsGameClasses = igePhysicsConfig.gameClasses;
 		for (i = 0; i < this._physicsList.length; i++) {
 			// Check that the file should be loaded on the client
@@ -124,7 +129,6 @@ window.igeLoader = (function () {
 			document.getElementsByTagName('head')[0].appendChild(script);
 			console.log(url);
 		} else {
-			console.log('loading completed');
 			if (typeof this.callback === 'function') {
 				this.callback();
 			}
