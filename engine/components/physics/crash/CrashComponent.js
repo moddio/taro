@@ -2,7 +2,7 @@
  * The engine's crash component class.
  */
 
-var PhysicsComponent = IgeEventingClass.extend({
+const PhysicsComponent = IgeEventingClass.extend({
 	classId: 'PhysicsComponent',
 	componentId: 'physics',
 
@@ -36,13 +36,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.avgPhysicsTickDuration = 0;
 
-		// const ANGLE_MINIMUM = Math.PI / 6;
-
-		const round = function(num) {
-			return Math.floor(num * 1000) / 1000;
-		};
-
-		var listener = function(a, b, res, cancel) {
+		const listener = function(a, b, res, cancel) {
 			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
 				if (b.data.entity.body.type == 'static') {
@@ -57,8 +51,8 @@ var PhysicsComponent = IgeEventingClass.extend({
 				} else if (b.data.entity._category == 'unit') {
 					// scale the vector to 1/2
 					// console.log(res);
-					var halfOverlapVB = res.overlapV.clone().scale(0.5);
-					var halfOverlapVA = halfOverlapVB.clone().reverse();
+					const halfOverlapVB = res.overlapV.clone().scale(0.5);
+					const halfOverlapVA = halfOverlapVB.clone().reverse();
 
 					// console.log(a.data.igeId, b.data.igeId);
 					// remember this overlapV is defined as if 'a' is the acting body
@@ -73,7 +67,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 					// console.log('Overlap normal from A: ', res.overlapN);
 
-					var appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
+					const appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
 					// console.log('appliedAngle: ', appliedAngle);
 					// console.log('Math.PI % Math.abs(appliedAngle): ', round((Math.PI * 2) % Math.abs(appliedAngle)));
 					// Math.abs(appliedAngle) >= ANGLE_MINIMUM && 
@@ -105,7 +99,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			} */
 		};
 
-		var contactDetails = function (a, b, res, cancel) {
+		const contactDetails = function (a, b, res, cancel) {
 			ige.trigger._beginContactCallback({
 				m_fixtureA: {
 					m_body: {
@@ -138,9 +132,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 	addBorders: function () {
 		console.log('map boundaries', ige.map.data.width, ige.map.data.height)
-		var borderWidth = 100;
-		var mapWidth = ige.map.data.width * 64;
-		var mapHeight = ige.map.data.height * 64;
+		const borderWidth = 100;
+		const mapWidth = ige.map.data.width * 64;
+		const mapHeight = ige.map.data.height * 64;
 		this.addBorder(borderWidth, 1, 0, 0, -borderWidth);
 		this.addBorder(borderWidth, 0, 1, mapWidth, 0);
 		this.addBorder(borderWidth, 1, 0, -borderWidth, mapHeight);
@@ -148,21 +142,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	addBorder: function (borderWidth, w, h, x, y) {
-
-		/*var wallEntity = new IgeObject();
-		wallEntity._category = 'wall',
-		wallEntity.body = {
-				type: 'static',
-				fixtures: [{
-					filter: {
-						// i am
-						filterCategoryBits: 0x0001,
-						// i collide with everything except other walls
-						filterMaskBits: 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020
-					},
-				}]
-			};*/
-		var wallEntity = {
+		const wallEntity = {
 			_category: 'wall',
 			_stats: true,
 			body: {
@@ -181,9 +161,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 			}
 		};
 
-		var width = ige.map.data.width * 64 * w + borderWidth;
-		var height = ige.map.data.height * 64 * h + borderWidth;
-		var pos = new this.crash.Vector(x, y);
+		const width = ige.map.data.width * 64 * w + borderWidth;
+		const height = ige.map.data.height * 64 * h + borderWidth;
+		const pos = new this.crash.Vector(x, y);
 		crashBody = new this.crash.Box(pos, width, height, false, { entity: wallEntity });
 		this.crash.insert(crashBody)
 	},
@@ -199,27 +179,27 @@ var PhysicsComponent = IgeEventingClass.extend({
 		if (entity.crashBody) { return; }
 
 		this.totalBodiesCreated++;
-		var shapeType = bodyDef.fixtures[0].shape.type;
+		const shapeType = bodyDef.fixtures[0].shape.type;
 
-		var crashBody;
-		var x = entity._translate.x;
-		var y = entity._translate.y;
+		let crashBody;
+		const x = entity._translate.x;
+		const y = entity._translate.y;
 		//console.log('creating body', x, y);
 		if (shapeType === 'circle') {
-			var radius = entity._bounds2d.x / 2;
+			const radius = entity._bounds2d.x / 2;
 			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { entity: entity });
 			// later check if added to .__moved()
 		}
 		else if (entity._category == 'wall') {
-			var width = entity._bounds2d.x;
-			var height = entity._bounds2d.y;
+			const width = entity._bounds2d.x;
+			const height = entity._bounds2d.y;
 			// console.log('wall width', width)
-			var pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
+			const pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
 			crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
 		}
 		else if (shapeType === 'rectangle') {
-			var width = entity._bounds2d.x;
-			var height = entity._bounds2d.y;
+			const width = entity._bounds2d.x;
+			const height = entity._bounds2d.y;
 
 			// console.log('width and height', width, height, x, y, entity)
 			// var points = [
@@ -230,7 +210,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			// ];
 			// crashBody = new this.crash.Polygon(new this.crash.Vector(x - (width / 2) , y - (height / 2)), points, false, { igeId: igeId, entity: entity, uid: Math.floor(Math.random() * 100) });
 			// crashBody.sat.setAngle(entity._rotate.z);
-			var points = [
+			const points = [
 				new this.crash.Vector((width / 2), 0 - (height / 2)),
 				new this.crash.Vector((width / 2), (height / 2)),
 				new this.crash.Vector(0 - (width / 2), (height / 2)),
@@ -295,7 +275,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		ige._physicsFrames++;
 
 		// Get stats for dev panel;
-		var timeEnd = Date.now();
+		const timeEnd = Date.now();
 		this.physicsTickDuration += timeEnd - timeStart;
 
 		if (timeEnd - this.lastSecondAt > 1000) {
@@ -311,9 +291,9 @@ var PhysicsComponent = IgeEventingClass.extend({
 	staticsFromMap: function (mapLayer, callback) {
 
 		if (mapLayer.map) {
-			var tileWidth = ige.scaleMapDetails.tileWidth || mapLayer.tileWidth();
-			var tileHeight = ige.scaleMapDetails.tileHeight || mapLayer.tileHeight();
-			var rectArray; var rectCount; var rect;
+			const tileWidth = ige.scaleMapDetails.tileWidth || mapLayer.tileWidth();
+			const tileHeight = ige.scaleMapDetails.tileHeight || mapLayer.tileHeight();
+			let rectArray; let rectCount; let rect;
 
 			// Get the array of rectangle bounds based on the map's data
 			rectArray = mapLayer.scanRects(callback);
@@ -322,7 +302,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 			while (rectCount--) {
 				rect = rectArray[rectCount];
 
-				var defaultData = {
+				const defaultData = {
 					translate: {
 						x: rect.x * tileWidth,
 						y: rect.y * tileHeight
@@ -330,7 +310,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 				};
 
 				// we can chain these methods because they return the entity
-				var wall = new IgeEntityPhysics(defaultData)
+				const wall = new IgeEntityPhysics(defaultData)
 					.width(rect.width * tileWidth)
 					.height(rect.height * tileHeight)
 					.drawBounds(false)
@@ -396,7 +376,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	getBodiesInRegion: function (region) {
-		var regionCollider;
+		let regionCollider;
 		if (!region.crashBody) {
 			// this is a bad hack to not crash server on melee swing.
 			regionCollider = new this.crash.Circle(new this.crash.Vector(region.x, region.y), region.width);
@@ -404,12 +384,12 @@ var PhysicsComponent = IgeEventingClass.extend({
 			regionCollider = region.entity.crashBody;
 		}
 
-		var entities = [];
-		var foundColliders = this.crash.search(regionCollider);
-		var collider;
+		const entities = [];
+		const foundColliders = this.crash.search(regionCollider);
+		let collider;
 
 		for (collider of foundColliders) {
-			var entity = collider.data.entity //ige.$(collider.data.igeId);
+			const entity = collider.data.entity //ige.$(collider.data.igeId);
 			if (entity) {
 				entities.push(entity);
 			}

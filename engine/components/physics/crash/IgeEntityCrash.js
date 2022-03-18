@@ -1,12 +1,12 @@
 /**
  * Creates a new entity with crash integration.
  */
-var IgeEntityPhysics = IgeEntity.extend({
+const IgeEntityPhysics = IgeEntity.extend({
 	classId: 'IgeEntityPhysics',
 
 	init: function (defaultData = {}) {
 		IgeEntity.prototype.init.call(this, defaultData);
-		var self = this;
+		const self = this;
 
 		// this._b2dRef = ige.physics;
 
@@ -36,7 +36,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	updateBody: function (defaultData, isLossTolerant) {
-		var self = this;
+		const self = this;
 
 		// console.log("updatebody", defaultData, this._stats.currentBody.type)
 
@@ -60,7 +60,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		this.width(parseFloat(body.width) * this._scale.x);
 		this.height(parseFloat(body.height) * this._scale.y);
 
-		var filterCategoryBits = 0x0002;
+		let filterCategoryBits = 0x0002;
 		if (this._category === 'units') {
 			filterCategoryBits = 0x0002;
 		} else if (this._category === 'debris') {
@@ -75,7 +75,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 			filterCategoryBits = 0x0040;
 		}
 
-		var collidesWith = body.collidesWith || {};
+		const collidesWith = body.collidesWith || {};
 		// this mask bit are hex so it wonnt incremented by power of 2
 		var body = {
 			type: body.type || 'dynamic',
@@ -119,7 +119,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// }
 		// if initialTranform variable's provided, then transform this entity immediately after body creation
 		if (defaultData) {
-			var rotate = defaultData.rotate;
+			const rotate = defaultData.rotate;
 
 			// immediately apply rotate.z if facingAngle is assigned
 			if (!isNaN(rotate)) {
@@ -131,8 +131,8 @@ var IgeEntityPhysics = IgeEntity.extend({
 			}
 
 			if (defaultData.translate) {
-				var x = defaultData.translate.x;
-				var y = defaultData.translate.y;
+				const x = defaultData.translate.x;
+				const y = defaultData.translate.y;
 
 				// immediately translate entity if position is assigned
 				if (!isNaN(x) && !isNaN(y)) {
@@ -210,7 +210,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		// update position based on its velocity, collision, and damping
 		if (Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
 			this.crashBody.move(this._velocity.x, this._velocity.y);
-			var damping = this.body.linearDamping;
+			let damping = this.bodyDef.linearDamping;
 			if (damping === 0) damping = 1;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
@@ -258,7 +258,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 		for (entityId in this.jointsAttached) {
 			this.detachEntity(entityId);
 		}
-		var self = this;
+		// var self = this;
 	},
 
 	detachEntity: function (entityId) {
@@ -373,18 +373,18 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	_scaleTexture: function () {
-		var self = this;
-		var currentState = this._stats.states && this._stats.states[this._stats.stateId] || { body: 'none' };
-		var body = {};
+		const self = this;
+		let currentState = this._stats.states && this._stats.states[this._stats.stateId] || { body: 'none' };
+		let body = {};
 		if (!currentState) {
-			var defaultStateId = self.getDefaultStateId();
+			const defaultStateId = self.getDefaultStateId();
 			currentState = self._stats.states && self._stats.states[defaultStateId] || { body: 'none' };
 		}
 		if (currentState && this._stats.bodies) {
 			body = this._stats.bodies[currentState.body];
 		}
-		var newWidth = (body && body.width || 1) * (self._stats.scale);
-		var newHeight = (body && body.height || 1) * (self._stats.scale);
+		const newWidth = (body && body.width || 1) * (self._stats.scale);
+		const newHeight = (body && body.height || 1) * (self._stats.scale);
 
 		self.width(newWidth, false);
 		self.height(newHeight, false);
@@ -460,7 +460,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	rotateCollider: function (angle) {
-		if (this.crashBody && this.body.fixtures[0].shape.type != 'circle') {
+		if (this.crashBody && this.bodyDef.fixtures[0].shape.type != 'circle') {
 			this.crashBody.rotate(angle * -1);
 		}
 	}
