@@ -122,7 +122,6 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 		this.crash.onCollision(listener);
 		this.crash.onCollision(contactDetails);
-
 	},
 
 	createWorld: function () {
@@ -133,6 +132,33 @@ var PhysicsComponent = IgeEventingClass.extend({
 		this._world.m_contacts = [];
 		this._world.m_joints = [];
 		this._world.isLocked = function () { return false; };
+
+		//console.log('map boundaries', ige.map.data.width, ige.map.data.height)
+	},
+
+	addBorders: function () {
+		console.log('map boundaries', ige.map.data.width, ige.map.data.height)
+		var borderWidth = 100;
+		var mapWidth = ige.map.data.width * 64;
+		var mapHeight = ige.map.data.height * 64;
+		this.addBorder(borderWidth, 1, 0, 0, -borderWidth);
+		this.addBorder(borderWidth, 0, 1, mapWidth, 0);
+		this.addBorder(borderWidth, 1, 0, -borderWidth, mapHeight);
+		this.addBorder(borderWidth, 0, 1, -borderWidth, -borderWidth);
+	},
+
+	addBorder: function (borderWidth, w, h, x, y) {
+		var entity = {
+			_category: 'wall',
+			body: {
+				type: 'static'
+			}
+		}
+		var width = ige.map.data.width * 64 * w + borderWidth;
+		var height = ige.map.data.height * 64 * h + borderWidth;
+		var pos = new this.crash.Vector(x, y);
+		crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
+		this.crash.insert(crashBody)
 	},
 
 	/**
@@ -160,6 +186,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 		else if (entity._category == 'wall') {
 			var width = entity._bounds2d.x;
 			var height = entity._bounds2d.y;
+			// console.log('wall width', width)
 			var pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
 			crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
 		}
