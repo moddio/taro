@@ -596,7 +596,7 @@ var VariableComponent = IgeEntity.extend({
 					var value = self.getValue(text.value, vars);
 					var parsedValue = parseFloat(value);
 
-					if (parsedValue && !isNaN(parsedValue)) {
+					if (!isNaN(parsedValue)) {
 						returnValue = parsedValue;
 					}
 
