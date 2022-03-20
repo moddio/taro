@@ -37,7 +37,8 @@ const Client = IgeClass.extend({
 		this.texturesLoaded = $.Deferred();
 		this.mapLoaded = $.Deferred();
 
-		this.miniMapLoaded = $.Deferred(); // well are we using it
+		// after rewrite then testing, this obviously stayed 'pending' so lets comment it out for now
+		// this.miniMapLoaded = $.Deferred(); // well are we using it
 
 		this.mapRenderEnabled = true; // check where we use this
 		this.unitRenderEnabled = true; // check where we use this
@@ -172,6 +173,53 @@ const Client = IgeClass.extend({
 				// console.log('loading removed'); // not necessary in production
 				$('#loading-container').addClass('slider-out');
 			}, 2000);
+
+			// let's try getting our server here
+			//
+			// if our url vars contained a serverId we are adding it to params
+			// ADDING check for engine start resolved
+			$.when(this.igeEngineStarted).done(() => {
+				const params = this.getUrlVars();
+				this.serverFound = false;
+
+				if (!window.isStandalone) {
+					//
+					this.servers = this.getServersArray();
+				}
+				// undefined if our params did not have a serverId
+				this.preSelectedServerId = params.serverId;
+
+				if (this.preSelectedServerId) {
+					//
+					for (let serverObj of this.servers) {
+						//
+						// old comment => 'preselected server found! (via direct url)'
+						if (serverObj.id == this.preSelectedServerId) {
+							//
+							console.log('pre-selected server found. connecting...'); // prod console log
+
+							this.serverFound = true;
+							this.server = serverObj;
+							break;
+						}
+					}
+				}
+
+				if (!this.server) {
+					//
+					// if we didn't provide server, we search for the best one
+					const bestServer = this.getBestServer();
+
+					if (bestServer) {
+						//
+						this.server = bestServer;
+						this.serverFound = true;
+					}
+				}
+
+				$('#server-list').val(this.server.id);
+				console.log(`best server selected: ${this.server, this.server.id}`);
+			});
 		}
 	},
 
@@ -215,6 +263,7 @@ const Client = IgeClass.extend({
 			}
 
 			ige.addComponent(MapComponent);
+			ige.addComponent(RegionManager);
 
 			ige.menuUi.clipImageForShop();
 			ige.scaleMap(gameData.map);
@@ -261,6 +310,9 @@ const Client = IgeClass.extend({
 			// don't really know if this needs to be inside this
 			ige.addComponent(VariableComponent);
 
+			// so let's try calling startIgeEngine here.
+			// depends on physics loading
+			this.startIgeEngine();
 		});
 
 		//this doesn't depend on physics config
@@ -449,7 +501,9 @@ const Client = IgeClass.extend({
 						console.error('mode was not == to "sandbox" or "play"');
 					}
 
-					ige.addComponent(RegionManager);
+					// this is crashing client
+					// getRegionById trace from MapComponent x2 IgePixiMap
+					// ige.addComponent(RegionManager);
 
 					// old comment => 'Create the UI scene'
 					this.uiScene = new IgeScene2d()
@@ -497,7 +551,7 @@ const Client = IgeClass.extend({
 		let firstChoice = null; // old comment => 'server which has max players and is under 80% capacity
 		let secondChoice = null;
 
-		const validServers = self.servers.filter((server) => {
+		const validServers = this.servers.filter((server) => {
 			return !ignoreServerIds || ignoreServerIds.indexOf(server.id) == -1;
 		});
 
@@ -806,56 +860,56 @@ const Client = IgeClass.extend({
 	},
 
 	// not much here except definitions
-	defineNetworkEvents: () => {
+	defineNetworkEvents: function () {
 		//
-		ige.network.define('makePlayerSelectUnit', self._onMakePlayerSelectUnit);
-		ige.network.define('makePlayerCameraTrackUnit', self._onMakePlayerCameraTrackUnit);
-		ige.network.define('changePlayerCameraPanSpeed', self._onChangePlayerCameraPanSpeed);
+		ige.network.define('makePlayerSelectUnit', this._onMakePlayerSelectUnit);
+		ige.network.define('makePlayerCameraTrackUnit', this._onMakePlayerCameraTrackUnit);
+		ige.network.define('changePlayerCameraPanSpeed', this._onChangePlayerCameraPanSpeed);
 
-		ige.network.define('hideUnitFromPlayer', self._onHideUnitFromPlayer);
-		ige.network.define('showUnitFromPlayer', self._onShowUnitFromPlayer);
-		ige.network.define('hideUnitNameLabelFromPlayer', self._onHideUnitNameLabelFromPlayer);
-		ige.network.define('showUnitNameLabelFromPlayer', self._onShowUnitNameLabelFromPlayer);
+		ige.network.define('hideUnitFromPlayer', this._onHideUnitFromPlayer);
+		ige.network.define('showUnitFromPlayer', this._onShowUnitFromPlayer);
+		ige.network.define('hideUnitNameLabelFromPlayer', this._onHideUnitNameLabelFromPlayer);
+		ige.network.define('showUnitNameLabelFromPlayer', this._onShowUnitNameLabelFromPlayer);
 
-		ige.network.define('updateAllEntities', self._onUpdateAllEntities);
-		ige.network.define('teleport', self._onTeleport);
+		ige.network.define('updateAllEntities', this._onUpdateAllEntities);
+		ige.network.define('teleport', this._onTeleport);
 
-		ige.network.define('updateEntityAttribute', self._onUpdateEntityAttribute);
+		ige.network.define('updateEntityAttribute', this._onUpdateEntityAttribute);
 
-		ige.network.define('updateUiText', self._onUpdateUiText);
-		ige.network.define('updateUiTextForTime', self._onUpdateUiTextForTime);
+		ige.network.define('updateUiText', this._onUpdateUiText);
+		ige.network.define('updateUiTextForTime', this._onUpdateUiTextForTime);
 
-		ige.network.define('alertHighscore', self._onAlertHighscore);
+		ige.network.define('alertHighscore', this._onAlertHighscore);
 
-		ige.network.define('item', self._onItem);
+		ige.network.define('item', this._onItem);
 
-		ige.network.define('clientDisconnect', self._onClientDisconnect);
+		ige.network.define('clientDisconnect', this._onClientDisconnect);
 
-		ige.network.define('ui', self._onUi);
-		ige.network.define('playAd', self._onPlayAd);
-		ige.network.define('buySkin', self._onBuySkin);
-		ige.network.define('videoChat', self._onVideoChat);
+		ige.network.define('ui', this._onUi);
+		ige.network.define('playAd', this._onPlayAd);
+		ige.network.define('buySkin', this._onBuySkin);
+		ige.network.define('videoChat', this._onVideoChat);
 
-		ige.network.define('devLogs', self._onDevLogs);
-		ige.network.define('errorLogs', self._onErrorLogs);
+		ige.network.define('devLogs', this._onDevLogs);
+		ige.network.define('errorLogs', this._onErrorLogs);
 
-		ige.network.define('sound', self._onSound);
-		ige.network.define('particle', self._onParticle);
-		ige.network.define('camera', self._onCamera);
+		ige.network.define('sound', this._onSound);
+		ige.network.define('particle', this._onParticle);
+		ige.network.define('camera', this._onCamera);
 
-		ige.network.define('gameSuggestion', self._onGameSuggestion);
-		ige.network.define('minimap', self._onMinimapEvent);
+		ige.network.define('gameSuggestion', this._onGameSuggestion);
+		ige.network.define('minimap', this._onMinimapEvent);
 
-		ige.network.define('createFloatingText', self._onCreateFloatingText)
+		ige.network.define('createFloatingText', this._onCreateFloatingText)
 
-		ige.network.define('openShop', self._onOpenShop);
-		ige.network.define('openDialogue', self._onOpenDialogue);
-		ige.network.define('closeDialogue', self._onCloseDialogue);
+		ige.network.define('openShop', this._onOpenShop);
+		ige.network.define('openDialogue', this._onOpenDialogue);
+		ige.network.define('closeDialogue', this._onCloseDialogue);
 
-		ige.network.define('setOwner', self._setOwner);
-		ige.network.define('userJoinedGame', self._onUserJoinedGame);
+		ige.network.define('setOwner', this._setOwner);
+		ige.network.define('userJoinedGame', this._onUserJoinedGame);
 
-		ige.network.define('trade', self._onTrade);
+		ige.network.define('trade', this._onTrade);
 	},
 
 	//
@@ -950,7 +1004,7 @@ const Client = IgeClass.extend({
 			//
 			setTimeout(() => {
 				//
-				this.lowFPSInterval = setInverval(() => {
+				this.lowFPSInterval = setInterval(() => {
 					//
 					if (this.resolutionQuality != 'low' && ige._renderFPS < 40) { // do we still use this?
 						//
