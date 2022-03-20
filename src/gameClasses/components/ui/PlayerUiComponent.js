@@ -453,7 +453,29 @@ var PlayerUiComponent = IgeEntity.extend({
 				option: optionId
 			});
 		}
-	}
+	},
+	addButton: function (data) {
+		if(data && typeof data.button == 'object') {
+			var button = document.createElement('button');
+			var { text, customID, type, height, width, x, y } = data.button;
+			button.id = `${customID ?? "default"}`;
+			button.className = `btn btn-${type ?? "secondary"}`;
+			button.onclick = () => {
+				ige.network.send('playerButtonClick', {
+					buttonId: button.id
+				})
+			};
+			button.innerText = text;
+			$(button).css({
+				"height": `${height}px`,
+				"width": `${width}px`,
+				"position": "absolute",
+				"top": `${y}`,
+				"left": `${x}`
+			});
+			document.getElementById("game-div").appendChild(button);
+		};
+	},
 });
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = PlayerUiComponent; }
