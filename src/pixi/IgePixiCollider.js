@@ -40,6 +40,14 @@ var IgePixiCollider = IgeClass.extend({
 		collider.endFill();
 
 		collider.zIndex = 10;
+		if (formattedData.shape != 'circle') {
+			collider.lineStyle(2, 0xFF00FF, 0.9)
+				.moveTo(0 - dimensions.width / 2, 0)
+				.lineTo(dimensions.width / 2, 0)
+				.lineStyle(2, 0x00FF00, 0.9)
+				.moveTo(0, 0 - dimensions.height / 2)
+				.lineTo(0, dimensions.height / 2);
+		}
 
 		// // testing offset
 		// if (this._entity.bodyDef.type == 'dynamic') {

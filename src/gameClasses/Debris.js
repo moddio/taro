@@ -132,7 +132,9 @@ var Debris = IgeEntityPhysics.extend({
 	 * @param ctx The canvas context to render to.
 	 */
 	_behaviour: function (ctx) {
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	tick: function (ctx) {

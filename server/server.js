@@ -520,6 +520,10 @@ var Server = IgeClass.extend({
 
 						let map = ige.scaleMap(_.cloneDeep(ige.game.data.map));
 						ige.map.load(map);
+						
+						if (ige.physics.engine === 'CRASH') {
+							ige.physics.addBorders();
+						}
 
 						ige.game.start();
 
@@ -898,11 +902,7 @@ var Server = IgeClass.extend({
 				sensor: 0
 			};
 
-<<<<<<< HEAD
 			return returnData;
-=======
-			return returnData;d
->>>>>>> 7216ba668948e2e403fc20532ec5f08dbb54fec6
 		}
 	}
 });

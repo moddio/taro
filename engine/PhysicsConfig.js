@@ -41,8 +41,8 @@ var igePhysicsConfig = {
 			['csap', 'CrashComponent', './components/physics/crash/CrashComponent.js'],
 			['csap', 'IgeEntityPhysics', './components/physics/crash/IgeEntityCrash.js'],
 			['csap', 'quickselect', './components/physics/crash/crashDependencies/quickselect.js'],
-			['csap', 'rbush', './components/physics/crash/crashDependencies/rbush.js', 'rbush'],
-			['csap', 'sat', './components/physics/crash/crashDependencies/sat.js', 'sat'],
+			['csap', 'rbush', './components/physics/crash/crashDependencies/rbush.js'],
+			['csap', 'sat', './components/physics/crash/crashDependencies/sat.js'],
 			['csap', 'crash', './components/physics/crash/crashDependencies/crash.js', 'crash']
 		]
 	},

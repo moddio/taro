@@ -1000,10 +1000,9 @@ var ActionComponent = IgeEntity.extend({
 									}
 								}
 							);
-							console.log(data);
+
 							var unit = player.createUnit(data);
 							ige.game.lastCreatedUnitId = unit.id();
-							console.log(unit);
 						} else {
 							ige.script.errorLog('cannot create unit. parameters are spawnPosition:', spawnPosition, ' player:', !!player, ' unitTypeId:', unitTypeId);
 							if (!player) invalidParameters.push('player');
@@ -2085,7 +2084,6 @@ var ActionComponent = IgeEntity.extend({
 									width: width,
 									scaleDimensions: true
 								});
-								console.log(data);
 
 								if (isSandbox) {
 									createdEntity = new Unit(data);
@@ -2369,6 +2367,7 @@ var ActionComponent = IgeEntity.extend({
 								//     entity.rotateBy(0, 0, -rotateDiff);
 								// }
 								entity.rotateTo(0, 0, newFacingAngle);
+								console.log('rotating')
 							}
 							// &&
 							else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {

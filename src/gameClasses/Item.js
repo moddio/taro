@@ -96,6 +96,7 @@ var Item = IgeEntityPhysics.extend({
 
 		if (ige.isServer) {
 			if (this._stats.stateId == 'dropped') {
+				console.log('item is dropping', this)
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1);
@@ -1005,7 +1006,9 @@ var Item = IgeEntityPhysics.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	// what does this do? - Jaeyun

@@ -241,7 +241,7 @@ var TriggerComponent = IgeEntity.extend({
 		fire trigger and run all of the corresponding script(s)
 	*/
 	fire: function (triggerName, triggeredBy) {
-		// console.log("trigger fire", triggerName, triggeredBy)
+		// if (triggerName === 'projectileTouchesWall') console.log("trigger fire", triggerName, triggeredBy)
 
 		if (ige.isServer || (ige.isClient && ige.physics)) {
 			let scriptIds = this.triggeredScripts[triggerName]

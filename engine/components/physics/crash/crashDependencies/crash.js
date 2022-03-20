@@ -17,7 +17,7 @@
 	if (typeof define === 'function' && define.amd) {
 		define(['RBush', 'SAT'], factory);
 	} else if (typeof exports === 'object') {
-		global.Crash = factory(require('rbush'), require('sat'));
+		global.Crash = factory(rbush, sat); //this is changed
 	} else {
 		window.Crash = factory(rbush, SAT);
 		Crash = window.Crash;
@@ -291,6 +291,7 @@
 		for (var i = 0, len = possible.length; i < len; i++) {
 			var b = possible[i];
 			var str = this.getTestString(a.type, b.type);
+
 			res.clear();
 
 			if (SAT[str](a.sat, b.sat, res)) {
@@ -356,6 +357,9 @@
 			this.lastPos = this.pos.clone();
 			this.lastCheckedPos = this.pos.clone();
 			this.aabb = {};
+			//
+			// adding support for awake flag
+			this.awake = true;
 
 			crash.updateAABB(this);
 
@@ -366,9 +370,10 @@
 			return this;
 		};
 
-		Collider.prototype.insert = function () {
-			crash.insert(this);
-
+		Collider.prototype.insert = function () {			//HERE
+			if (this.awake) {
+				crash.insert(this);
+			}
 			return this;
 		};
 
@@ -376,27 +381,30 @@
 			this.sat.setAngle(angle);
 		};
 
-		Collider.prototype.remove = function () {
+		Collider.prototype.remove = function () {			//Not sure if we should consider awake for removes.
 			crash.remove(this);
 
 			return this;
 		};
 
-		Collider.prototype.update = function () {
-			crash.update(this);
-
+		Collider.prototype.update = function () {			//HERE
+			if (this.awake) {
+				crash.update(this);
+			}
 			return this;
 		};
 
-		Collider.prototype.updateAABB = function () {
-			crash.updateAABB(this);
-
+		Collider.prototype.updateAABB = function () {			//HERE
+			if (this.awake) {
+				crash.updateAABB(this);
+			}
 			return this;
 		};
 
-		Collider.prototype.moved = function () {
-			crash.moved(this);
-
+		Collider.prototype.moved = function () {			//HERE
+			if (this.awake) {
+				crash.moved(this);
+			}
 			return this;
 		};
 
@@ -425,6 +433,19 @@
 		Collider.prototype.moveBy = Collider.prototype.move = function (x, y) {
 			this.sat.pos.x += x;
 			this.sat.pos.y += y;
+			this.moved();
+
+			return this;
+		};
+
+		/**
+		 * adding this method to allow Vectors and
+		 * their methods
+		 * @param {Vector} vector
+		 * @return {*} for chaining
+		 */
+		Collider.prototype.moveByVec = Collider.prototype.moveByVec = function (vector) {
+			this.sat.pos.add(vector);
 			this.moved();
 
 			return this;
@@ -492,7 +513,14 @@
 			return this;
 		};
 
-		Crash.extend(Box, Collider);
+		Crash.extend(Box, Collider); // moved this above new proto
+
+		Box.prototype.rotate = function (angle) { // added this
+			this.sat.rotate(angle);
+			this.moved();
+
+			return this;
+		};
 	};
 
 	return Crash;

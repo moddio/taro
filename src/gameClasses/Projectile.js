@@ -112,7 +112,9 @@ var Projectile = IgeEntityPhysics.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	// apply texture based on state

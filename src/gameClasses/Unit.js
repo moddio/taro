@@ -75,7 +75,7 @@ var Unit = IgeEntityPhysics.extend({
 		if (ige.isClient) {
 			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
 			// new
-			this.drawCrashCollider(data.defaultData);
+			// this.drawCrashCollider(data.defaultData);
 			self.mount(ige.pixi.world);
 			this.transformPixiEntity(this._translate.x, this._translate.y);
 			// console.log(this._id, this._translate);
@@ -1225,6 +1225,18 @@ var Unit = IgeEntityPhysics.extend({
 					rotate: item._rotate.z
 				};
 
+				if (ige.physics.engine === 'CRASH') {
+					item.crashBody.pos.x = defaultData.translate.x;
+					item.crashBody.pos.y = defaultData.translate.y;
+					item._translate.x = defaultData.translate.x;
+					item._translate.y = defaultData.translate.y;
+					item.crashActive(true);
+					/*item._hasMoved = true;
+					item._translateTo(defaultData.translate.x, defaultData.translate.y)*/
+				}
+
+				console.log('default data', defaultData)
+
 				item.setState('dropped', defaultData);
 				item.setOwnerUnit(undefined);
 				self._stats.currentItemId = null;
@@ -1877,7 +1889,9 @@ var Unit = IgeEntityPhysics.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+				this.processBox2dQueue();
+			}
 	},
 
 	destroy: function () {
