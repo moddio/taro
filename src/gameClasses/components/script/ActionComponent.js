@@ -2586,6 +2586,17 @@ var ActionComponent = IgeEntity.extend({
 							player.loadPersistentData();
 						}
 						break;
+						
+					case 'addButtonGuiForPlayer':
+						var player = ige.variable.getValue(action.player, vars);
+						
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'addButton',
+								button: action.button
+							}, player._stats.clientId)
+						}
+						break;
 
 					case 'comment':
 						break;
