@@ -1,3 +1,6 @@
+showMiniMap = false;
+showAllLayers = false;
+curLayerPainting = 'floor';
 let mouseIsDown = false;
 $(document).mousedown(() => mouseIsDown = true).mouseup(() => mouseIsDown = false);
 
@@ -106,6 +109,7 @@ const Client = IgeClass.extend({
 
 		// add utility
 		this.implement(ClientNetworkEvents);
+		ige.addComponent(IgeInitPixi);
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
@@ -148,7 +152,6 @@ const Client = IgeClass.extend({
 			ige.game.data = game.data;
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
-			ige.addComponent(IgeInitPixi);
 			ige.addComponent(IgeNetIoComponent);
 			ige.addComponent(SoundComponent);
 
@@ -276,8 +279,9 @@ const Client = IgeClass.extend({
 			ige.client.loadGameTextures()
 				.then(() => {
 					//
-					this.texturesLoaded.resolve();
+					console.log(gameData.map);
 					ige.map.load(gameData.map);
+					this.texturesLoaded.resolve();
 				});
 
 			// still doing things only after physics load
@@ -422,6 +426,7 @@ const Client = IgeClass.extend({
 	//
 	startIgeEngine: function() {
 		//
+		var self = this;
 		$.when(this.texturesLoaded).done(() => {
 			//
 			ige.start((success) => {
@@ -458,8 +463,14 @@ const Client = IgeClass.extend({
 						.drawBounds(false)
 						.mount(ige);
 
-					// moved this up along with vp1
-					ige._selectedViewport = this.vp1;
+					// old comment => 'Create the UI scene'
+					this.uiScene = new IgeScene2d()
+						.id('uiScene')
+						.depth(1000)
+						.ignoreCamera(true)
+						.mount(this.rootScene);
+
+					ige.mobileControls.attach(this.uiScene);
 
 					// sandbox check for minimap
 					if (mode == 'sandbox') {
@@ -486,7 +497,7 @@ const Client = IgeClass.extend({
 						this.vp1.addComponent(MapPanComponent)
 							.mapPan.enabled(true);
 
-						this.vp1.addComponent(MapPanComponent)
+						this.vp2.addComponent(MapPanComponent)
 							.mapPan.enabled(true);
 
 						ige.client.vp1.drawBounds(true);
@@ -501,18 +512,8 @@ const Client = IgeClass.extend({
 						console.error('mode was not == to "sandbox" or "play"');
 					}
 
-					// this is crashing client
-					// getRegionById trace from MapComponent x2 IgePixiMap
-					// ige.addComponent(RegionManager);
-
-					// old comment => 'Create the UI scene'
-					this.uiScene = new IgeScene2d()
-						.id('uiScene')
-						.depth(1000)
-						.ignoreCamera(true)
-						.mount(this.rootScene);
-
-					ige.mobileControls.attach(this.uiScene);
+					// moved this down here
+					ige._selectedViewport = this.vp1;
 
 					this.igeEngineStarted.resolve(); // really don't know if we need to use this anymore
 				}
@@ -798,7 +799,7 @@ const Client = IgeClass.extend({
 				//
 				if (entityBeingDestroyed._category == 'unit') {
 					//
-					unitBeingDestroyed.remove();
+					entityBeingDestroyed.remove();
 					//
 				} else if ((ige.game.data.isDeveloper || // yeah idk why i did this
 							(ige.client.myPlayer &&
