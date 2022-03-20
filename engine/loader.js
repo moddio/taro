@@ -127,7 +127,6 @@ window.igeLoader = (function () {
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(script);
-			console.log(url);
 		} else {
 			if (typeof this.callback === 'function') {
 				this.callback();

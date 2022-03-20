@@ -221,7 +221,7 @@ const Client = IgeClass.extend({
 				}
 
 				$('#server-list').val(this.server.id);
-				console.log(`best server selected: ${this.server, this.server.id}`);
+				// console.log(`best server selected: ${this.server, this.server.id}`);
 			});
 		}
 	},
@@ -233,7 +233,6 @@ const Client = IgeClass.extend({
 		//
 		// let's make it easier by assigning the game data to a variable
 		const gameData = ige.game.data;
-		console.log(gameData);
 
 		if (!gameData.isDeveloper) { // .isDeveloper property seems to be outdated
 			//
@@ -252,7 +251,7 @@ const Client = IgeClass.extend({
 			// this callback fires when we have loaded all of the files
 			() => {
 				//
-				console.log('Physics engine files loaded');
+				// console.log('Physics engine files loaded');
 				this.physicsConfigLoaded.resolve();
 			}
 		);
@@ -279,7 +278,6 @@ const Client = IgeClass.extend({
 			ige.client.loadGameTextures()
 				.then(() => {
 					//
-					console.log(gameData.map);
 					ige.map.load(gameData.map);
 					this.texturesLoaded.resolve();
 				});
@@ -619,10 +617,6 @@ const Client = IgeClass.extend({
 			iterateAndAddByEntityType('unit');
 			iterateAndAddByEntityType('projectile');
 			iterateAndAddByEntityType('item');
-
-			pixiLoader.onProgress.add(() => {
-				console.log('loading a file');
-			});
 
 			pixiLoader.load((loadedResource) => {
 				//
