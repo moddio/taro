@@ -565,7 +565,8 @@ var Server = IgeClass.extend({
 		ige.network.define('playerCustomInput', self._onPlayerCustomInput);
 		ige.network.define('playerAbsoluteAngle', self._onPlayerAbsoluteAngle);
 		ige.network.define('playerDialogueSubmit', self._onPlayerDialogueSubmit);
-
+		ige.network.define('playerButtonClick', self._onPlayerButtonClick);
+		
 		ige.network.define('buyItem', self._onBuyItem);
 		ige.network.define('buyUnit', self._onBuyUnit);
 		ige.network.define('buySkin', self._onBuySkin);
