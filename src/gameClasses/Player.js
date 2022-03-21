@@ -204,6 +204,7 @@ var Player = IgeEntity.extend({
 				ige.client.myPlayer.currentFollowUnit = unit._id;
 				ige.pixi.viewport.follow(ige.pixi.trackEntityById[unit._id]);
 				// ige.client.removeOutsideEntities = true;
+				unit.emit('follow');
 			}
 		}
 	},
@@ -670,4 +671,6 @@ var Player = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Player; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Player;
+}

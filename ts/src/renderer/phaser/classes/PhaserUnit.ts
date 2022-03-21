@@ -2,6 +2,8 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 	sprite: Phaser.GameObjects.Sprite;
 
+	private followListener: EvtListener;
+
 	constructor (scene: Phaser.Scene,
 				 private unit: Unit) {
 
@@ -14,6 +16,11 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 		scene.add.existing(this);
 
+		this.followListener = unit.on('follow', () => {
+			console.log('PhaserUnit follow', unit.id()); // TODO remove
+			scene.cameras.main.startFollow(this, true, 0.05, 0.05);
+		});
+
 		scene.events.on('update', this.update, this);
 	}
 
@@ -22,6 +29,9 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 		const unit = this.unit;
 
 		if (unit._destroyed) {
+
+			unit.off('follow', this.followListener);
+			this.followListener = null;
 
 			this.scene.events.off('update', this.update, this);
 

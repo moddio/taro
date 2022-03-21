@@ -22,12 +22,18 @@ var PhaserUnit = /** @class */ (function (_super) {
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         _this.add(sprite);
         scene.add.existing(_this);
+        _this.followListener = unit.on('follow', function () {
+            console.log('PhaserUnit follow', unit.id()); // TODO remove
+            scene.cameras.main.startFollow(_this, true, 0.05, 0.05);
+        });
         scene.events.on('update', _this.update, _this);
         return _this;
     }
     PhaserUnit.prototype.update = function ( /*time: number, delta: number*/) {
         var unit = this.unit;
         if (unit._destroyed) {
+            unit.off('follow', this.followListener);
+            this.followListener = null;
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
