@@ -49,8 +49,9 @@ var Region = IgeEntityPhysics.extend({
 
 			self._translate.x = regionDimension.x; // + (regionDimension.width / 2);
 			self._translate.y = regionDimension.y; // + (regionDimension.height / 2);
+			console.log('region update body', regionDimension)
 			self.updateBody({
-				translate: { x: regionDimension.x + (regionDimension.width / 2), y: regionDimension.y + (regionDimension.height / 2) }
+				translate: { x: regionDimension.x, y: regionDimension.y}
 			});
 			// if (ige.isClient) {
 			// 	this._pixiContainer = new PIXI.Container();

@@ -445,6 +445,7 @@ var Item = IgeEntityPhysics.extend({
 						var hitboxData = this._stats.damageHitBox;
 
 						if (hitboxData) {
+							console.log(hitboxData)
 							var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
 							var hitboxPosition = {
 								x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
@@ -466,7 +467,7 @@ var Item = IgeEntityPhysics.extend({
 								unitAttributes: this._stats.damage.unitAttributes,
 								playerAttributes: this._stats.damage.playerAttributes
 							};
-							// console.log(hitbox);                                              //////////Hitbox log
+							console.log(owner._translate.x, owner._translate.y, hitbox);                                              //////////Hitbox log
 
 							entities = ige.physics.getBodiesInRegion(hitbox);
 

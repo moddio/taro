@@ -190,11 +190,10 @@ const PhysicsComponent = IgeEventingClass.extend({
 			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { entity: entity });
 			// later check if added to .__moved()
 		}
-		else if (entity._category == 'wall') {
+		else if (entity._category == 'wall' || entity._category == 'region') {
 			const width = entity._bounds2d.x;
 			const height = entity._bounds2d.y;
-			// console.log('wall width', width)
-			const pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
+			const pos = new this.crash.Vector(x, y);
 			crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
 		}
 		else if (shapeType === 'rectangle') {
