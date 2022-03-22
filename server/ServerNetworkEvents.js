@@ -781,7 +781,7 @@ var ServerNetworkEvents = {
 		}
 	},
 
-	_onPlayerButtonClick: function (data, clientId) {
+	_onCustomButtonClick: function (data, clientId) {
 		var player = ige.game.getPlayerByClientId(clientId);
 		if(player) {
 			ige.trigger.fire("playerClickButton", {
