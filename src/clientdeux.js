@@ -278,8 +278,13 @@ const Client = IgeClass.extend({
 			ige.client.loadGameTextures()
 				.then(() => {
 					//
-					ige.map.load(gameData.map);
 					this.texturesLoaded.resolve();
+				})
+				.catch((err) => {
+					console.error(err);
+				})
+				.finally(() => {
+					ige.map.load(gameData.map);
 				});
 
 			// still doing things only after physics load
@@ -331,7 +336,7 @@ const Client = IgeClass.extend({
 		// ok we will try doing these with this.igeEngineStarted.done()
 		// we can move the Deferred for mapLoaded to before engine start
 		//
-		$.when(this.igeEngineStarted).done(() => {
+		$.when(this.igeEngineStarted, this.mapLoaded).done(() => {
 			// old comment => 'center camera while loading'
 			const tileWidth = ige.scaleMapDetails.tileWidth;
 			const tileHeight = ige.scaleMapDetails.tileHeight;
@@ -385,7 +390,7 @@ const Client = IgeClass.extend({
 			// $('.modal-videochat').show(); // no
 
 			//
-			$('.modal-step-link[data-step=2').click(); // ok this is going to have to be explained
+			$('.modal-step-link[data-step=2]').click(); // ok this is going to have to be explained
 
 			if ( // big if
 				//
@@ -640,7 +645,7 @@ const Client = IgeClass.extend({
 					}
 				}
 
-				return resolve(); // i feel like this could resolve and return before things are loaded...
+				return resolve();
 			});
 		});
 	},
