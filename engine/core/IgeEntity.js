@@ -2530,6 +2530,7 @@ var IgeEntity = IgeObject.extend({
 				// ige.pixi.viewport.follow();
 				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
 					ige.pixi.viewport.removePlugin('follow');
+					this.emit('stop-follow');
 				}
 				var texture = ige.pixi.trackEntityById[entityId]._pixiTexture || ige.pixi.trackEntityById[entityId]._pixiText || ige.pixi.trackEntityById[entityId];
 				// its not instance of ige
@@ -5127,7 +5128,7 @@ var IgeEntity = IgeObject.extend({
 		) {
 			if (this.nextPhysicsFrame) {
 				if (this.prevPhysicsFrame) {
-					
+
 					// interpolate using prev/next physics key frames provided by physicsComponent
 					x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);

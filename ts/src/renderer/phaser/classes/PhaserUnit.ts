@@ -3,6 +3,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 	sprite: Phaser.GameObjects.Sprite;
 
 	private followListener: EvtListener;
+	private stopFollowListener: EvtListener;
 
 	constructor (scene: Phaser.Scene,
 				 private unit: Unit) {
@@ -21,6 +22,11 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			scene.cameras.main.startFollow(this, true, 0.05, 0.05);
 		});
 
+		this.stopFollowListener = unit.on('stop-follow', () => {
+			console.log('PhaserUnit stop-follow', unit.id()); // TODO remove
+			scene.cameras.main.stopFollow();
+		});
+
 		scene.events.on('update', this.update, this);
 	}
 
@@ -32,6 +38,9 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 			unit.off('follow', this.followListener);
 			this.followListener = null;
+
+			unit.off('stop-follow', this.stopFollowListener);
+			this.stopFollowListener = null;
 
 			this.scene.events.off('update', this.update, this);
 
