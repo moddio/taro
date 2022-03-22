@@ -40,15 +40,18 @@ const PhysicsComponent = IgeEventingClass.extend({
 			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
 				if (b.data.entity.body.type == 'static') {
-					//console.log('Oh my, we crashed!', res/*, a.data*/);
-
 					a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
 					a.data.entity._translate.x = a.pos.x;
 					a.data.entity._translate.y = a.pos.y;
-
-					a.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
-				} else if (b.data.entity._category == 'unit') {
+					/*if (a.data.entity._category == 'unit') {
+						a.data.entity._velocity.x = 0;
+						a.data.entity._velocity.y = 0;
+					}
+					else if (a.data.entity._category == 'projectile') {
+						a.data.entity._velocity.x = -a.data.entity._velocity.x;
+						a.data.entity._velocity.y = -a.data.entity._velocity.y;
+					}*/
+				} else /*if (b.data.entity._category == 'unit' || b.data.entity._category == 'projectile')*/ {
 					// scale the vector to 1/2
 					// console.log(res);
 					const halfOverlapVB = res.overlapV.clone().scale(0.5);
@@ -83,11 +86,19 @@ const PhysicsComponent = IgeEventingClass.extend({
 
 					// zero the velocities for now
 					// this will change when we add mass/force
+					/*a.data.entity._velocity.x = 0;
+					a.data.entity._velocity.y = 0;*/
+
+					b.data.entity._velocity.x += a.data.entity._velocity.x/2;
+					b.data.entity._velocity.y += a.data.entity._velocity.y/2;
+				}
+				if (a.data.entity._category == 'unit') {
 					a.data.entity._velocity.x = 0;
 					a.data.entity._velocity.y = 0;
-
-					b.data.entity._velocity.x = 0;
-					b.data.entity._velocity.y = 0;
+				}
+				else if (a.data.entity._category == 'projectile') {
+					a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
+					a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
 				}
 			}
 

@@ -210,8 +210,8 @@ const IgeEntityPhysics = IgeEntity.extend({
 		// update position based on its velocity, collision, and damping
 		if (Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
 			this.crashBody.move(this._velocity.x, this._velocity.y);
-			let damping = this.bodyDef.linearDamping;
-			if (damping === 0) damping = 1;
+			let damping = 1 + this.bodyDef.linearDamping * 0.03;
+			//if (damping === 0) damping = 1;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 
