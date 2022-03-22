@@ -258,7 +258,7 @@ var ClientNetworkEvents = {
 			case 'showCustomModal':
 				ige.playerUi.showCustomModal(data);
 				break;
-			case 'addButton':
+			case 'addCustomButton':
 				ige.playerUi.addButton(data);
 				break;
 			case 'openWebsite':
