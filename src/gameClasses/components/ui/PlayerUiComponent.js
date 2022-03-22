@@ -444,7 +444,7 @@ var PlayerUiComponent = IgeEntity.extend({
 			});
 		}
 	},
-	addButton: function (data) {
+	addCustomButton: function (data) {
 		if(data && typeof data.button == 'object') {
 			var button = document.createElement('button');
 			var { text, customID, type, height, width, x, y } = data.button;
