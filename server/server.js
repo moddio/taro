@@ -455,8 +455,6 @@ var Server = IgeClass.extend({
 				*/
 
 				// Add physics and setup physics world
-				// hacked for now:
-				// var physicsComponent = ige.game.data.defaultData.physicsEngine === 'crash' ? CrashComponent : Box2dComponent;
 				ige.addComponent(PhysicsComponent)
 					.physics.sleep(true)
 					.physics.tilesizeRatio(tilesizeRatio);
@@ -471,7 +469,6 @@ var Server = IgeClass.extend({
 
 				ige.physics.createWorld();
 				ige.physics.start();
-				console.log('Crash Component started');
 
 				// console.log("game data", game)
 				// mapComponent needs to be inside IgeStreamComponent, because debris' are created and streaming is enabled which requires IgeStreamComponent

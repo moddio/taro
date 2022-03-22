@@ -292,12 +292,13 @@ const Client = IgeClass.extend({
 					// ige.map.load could not run in tandem with texture loading
 					// we could potentially speed this up by adding a second instance of pixi loader
 					// and then delete it when finished.
-					this.loadMap(); // this runs fine here instead of in a `finally` block. Not sure it is functionally different.
+					// this.loadMap(); // this runs fine here instead of in a `finally` block. Not sure it is functionally different.
 					this.texturesLoaded.resolve();
 				})
 				.catch((err) => {
 					console.error(err);
 				});
+			this.loadMap();
 
 			// still doing things only after physics load
 			let engineTickFrameRate = 15;
