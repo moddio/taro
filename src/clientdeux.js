@@ -226,6 +226,44 @@ const Client = IgeClass.extend({
 		}
 	},
 
+	loadPhysics: function() {
+		// this will be empty string in data if no client-side physics
+		const clientPhysicsEngine = ige.game.data.defaultData.clientPhysicsEngine;
+		const serverPhysicsEngine = ige.game.data.defaultData.physicsEngine;
+
+
+		window.igeLoader.loadPhysicsConfig(
+			//
+			clientPhysicsEngine,
+			serverPhysicsEngine,
+			// this callback fires when we have loaded all of the files
+			() => {
+				//
+				// console.log('Physics engine files loaded');
+				if (clientPhysicsEngine) {
+					//
+					ige.addComponent(PhysicsComponent)
+						.physics.sleep(true);
+				}
+				// we want as little as possible in here so we can start our other loading
+				this.physicsConfigLoaded.resolve();
+			}
+		);
+	},
+
+	loadMap: function() {
+		//
+		//we need the contents of physicsConfig to progress
+		ige.addComponent(MapComponent);
+		ige.addComponent(RegionManager);
+
+		ige.menuUi.clipImageForShop();
+		ige.scaleMap(ige.game.data.map);
+
+		// IgePixiMap contains ige.client.mapLoaded.resolve();
+		ige.map.load(ige.game.data.map);
+	},
+
 	//
 	// new language for old 'initEngine' method
 	//
@@ -239,36 +277,9 @@ const Client = IgeClass.extend({
 			gameData.isDeveloper = window.isStandalone;
 		}
 
-		// this will be empty string in data if no client-side physics
-		const clientPhysicsEngine = gameData.defaultData.clientPhysicsEngine;
-		const serverPhysicsEngine = gameData.defaultData.physicsEngine;
-
-
-		window.igeLoader.loadPhysicsConfig(
-			//
-			clientPhysicsEngine,
-			serverPhysicsEngine,
-			// this callback fires when we have loaded all of the files
-			() => {
-				//
-				// console.log('Physics engine files loaded');
-				this.physicsConfigLoaded.resolve();
-			}
-		);
+		this.loadPhysics();
 
 		$.when(this.physicsConfigLoaded).done(() => {
-			//we need the contents of physicsConfig to progress
-			if (clientPhysicsEngine) {
-				//
-				ige.addComponent(PhysicsComponent)
-					.physics.sleep(true);
-			}
-
-			ige.addComponent(MapComponent);
-			ige.addComponent(RegionManager);
-
-			ige.menuUi.clipImageForShop();
-			ige.scaleMap(gameData.map);
 
 			//this is a really important async chain
 			//
@@ -278,13 +289,14 @@ const Client = IgeClass.extend({
 			ige.client.loadGameTextures()
 				.then(() => {
 					//
+					// ige.map.load could not run in tandem with texture loading
+					// we could potentially speed this up by adding a second instance of pixi loader
+					// and then delete it when finished.
+					this.loadMap(); // this runs fine here instead of in a `finally` block. Not sure it is functionally different.
 					this.texturesLoaded.resolve();
 				})
 				.catch((err) => {
 					console.error(err);
-				})
-				.finally(() => {
-					ige.map.load(gameData.map);
 				});
 
 			// still doing things only after physics load
@@ -305,17 +317,17 @@ const Client = IgeClass.extend({
 
 			ige._physicsTickRate = engineTickFrameRate;
 
-			if(gameData.isDeveloper) {
-				//
-				ige.addComponent(DevConsoleComponent);
-			}
-
 			if (ige.physics) {
 				// old comment => 'always enable CSP'
 				this.loadCSP();
 			}
 			// don't really know if this needs to be inside this
 			ige.addComponent(VariableComponent);
+
+			if(gameData.isDeveloper) {
+				//
+				ige.addComponent(DevConsoleComponent);
+			}
 
 			// so let's try calling startIgeEngine here.
 			// depends on physics loading
@@ -429,7 +441,6 @@ const Client = IgeClass.extend({
 	//
 	startIgeEngine: function() {
 		//
-		var self = this;
 		$.when(this.texturesLoaded).done(() => {
 			//
 			ige.start((success) => {
@@ -526,8 +537,6 @@ const Client = IgeClass.extend({
 
 	// purposefully leaving out sandbox/play condition for now. this should be moved to a method;
 	//
-	// WHAT CALLS THIS METHOD?
-	//
 	getServersArray: function() {
 		const serversList = [];
 		let serverOptions = $('#server-list > option').toArray(); // could this be const? idk jQ
@@ -548,8 +557,6 @@ const Client = IgeClass.extend({
 		return serversList;
 	},
 	// we never call this inside Client with a parameter. i assume its an array?
-	//
-	// WHAT CALLS THIS METHOD?
 	//
 	getBestServer: function(ignoreServerIds) {
 		let firstChoice = null; // old comment => 'server which has max players and is under 80% capacity
@@ -582,12 +589,10 @@ const Client = IgeClass.extend({
 	},
 
 	// load game textures with ige.pixi.loader
-	// this is currently the only thing required before ige.start() // lets change that
-	//
-	// WHAT CALLS THIS METHOD?
+	// this is was previously the only thing required before ige.start() // lets change that
 	//
 	loadGameTextures: function() {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			const version = 1;
 			const pixiLoader = ige.pixi.loader; // renamed this from 'resource' to 'pixiLoader'
 
@@ -649,8 +654,7 @@ const Client = IgeClass.extend({
 			});
 		});
 	},
-	//
-	// WHAT CALLS THIS METHOD?
+
 	//
 	setZoom: function(zoom) {
 		// old comment => 'on mobile increase default zoom by 25%'
@@ -664,8 +668,6 @@ const Client = IgeClass.extend({
 		// it appeared to be out of use.
 	},
 
-	//
-	// WHAT CALLS THIS METHOD?
 	//
 	connectToServer: function() {
 		// if typeof args[1] == 'function', callback(args[0])
@@ -831,8 +833,6 @@ const Client = IgeClass.extend({
 
 	//This method should be looked at...
 	//
-	// WHAT CALLS THIS METHOD?
-	//
 	loadCSP: function() {
 		//
 		ige.game.cspEnabled = !!ige.game.data.defaultData.clientSidePredictionEnabled;
@@ -848,7 +848,7 @@ const Client = IgeClass.extend({
 		ige.physics.start();
 
 		ige.addComponent(TriggerComponent);
-		ige.addComponent(VariableComponent);
+		// ige.addComponent(VariableComponent); // this appears twice
 		ige.addComponent(ScriptComponent);
 		ige.addComponent(ConditionComponent);
 		ige.addComponent(ActionComponent);
@@ -1082,8 +1082,6 @@ const Client = IgeClass.extend({
 		}
 	},
 
-	//
-	//
 	//
 	positionCamera: function(x, y) {
 		//
