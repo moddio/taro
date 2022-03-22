@@ -2587,12 +2587,12 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 						
-					case 'addButtonGuiForPlayer':
+					case 'addCustomButtonForPlayer':
 						var player = ige.variable.getValue(action.player, vars);
 						
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
-								command: 'addButton',
+								command: 'addCustomButton',
 								button: action.button
 							}, player._stats.clientId)
 						}
