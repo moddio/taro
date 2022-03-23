@@ -2,7 +2,14 @@ showMiniMap = false;
 showAllLayers = false;
 curLayerPainting = 'floor';
 let mouseIsDown = false;
-$(document).mousedown(() => mouseIsDown = true).mouseup(() => mouseIsDown = false);
+// be very careful with arrow functions.
+// arrow functions on these callbacks break mouse input
+
+$(document).mousedown(function() {
+	mouseIsDown = true;
+}).mouseup(function() {
+	mouseIsDown = false;
+});
 
 const statsPanels = {}; // will we need this?
 
