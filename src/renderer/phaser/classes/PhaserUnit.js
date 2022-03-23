@@ -30,6 +30,11 @@ var PhaserUnit = /** @class */ (function (_super) {
             console.log('PhaserUnit stop-follow', unit.id()); // TODO remove
             scene.cameras.main.stopFollow();
         });
+        _this.playAnimationListener =
+            unit.on('play-animation', function (animationId) {
+                console.log('PhaserUnit play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
+                sprite.play("".concat(key, "/").concat(animationId));
+            });
         scene.events.on('update', _this.update, _this);
         return _this;
     }
@@ -40,6 +45,8 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.followListener = null;
             unit.off('stop-follow', this.stopFollowListener);
             this.stopFollowListener = null;
+            unit.off('play-animation', this.playAnimationListener);
+            this.playAnimationListener = null;
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;

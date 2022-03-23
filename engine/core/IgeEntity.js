@@ -262,6 +262,8 @@ var IgeEntity = IgeObject.extend({
 
 			// default loop to undefined;
 			this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+
+			this.emit('play-animation', animationId);
 		}
 	},
 
