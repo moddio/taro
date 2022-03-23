@@ -7,6 +7,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 	componentId: 'physics',
 
 	init: function (entity, options) {
+		this._entity = entity;
 		// Check that the engine has not already started
 		// as this will mess everything up if it has
 		this.engine = 'CRASH';
@@ -177,6 +178,14 @@ const PhysicsComponent = IgeEventingClass.extend({
 		const pos = new this.crash.Vector(x, y);
 		crashBody = new this.crash.Box(pos, width, height, false, { entity: wallEntity });
 		this.crash.insert(crashBody)
+	},
+
+	sleep: function () {
+		return this._entity;
+	},
+
+	tilesizeRatio: function (foo) {
+		return this._entity;
 	},
 
 	/**

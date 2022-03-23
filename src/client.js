@@ -110,7 +110,6 @@ var Client = IgeClass.extend({
 
 
         self.implement(ClientNetworkEvents);
-
         //	ige.addComponent(IgeEditorComponent);
         ige.addComponent(IgeInitPixi);
         self.startIgeEngine()

@@ -67,7 +67,7 @@ var igeClientConfig = {
 		'pixi/IgePixiChatBubble.js',
 		'pixi/PixiAttributeBar.js',
 
-		'/client.js',
+		'/clientdeux.js',
 		'/index.js'
 	]
 };

@@ -150,6 +150,7 @@ var MapComponent = IgeEntity.extend({
 									.bounds2d(mapWidth, mapHeight, 0);
 							}
 							ige.client.mapLoaded.resolve();
+							delete ige.pixi.mapLoader;
 						});
 				});
 		}
