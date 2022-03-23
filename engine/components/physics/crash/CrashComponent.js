@@ -98,8 +98,13 @@ const PhysicsComponent = IgeEventingClass.extend({
 					a.data.entity._velocity.y = 0;
 				}
 				else if (a.data.entity._category == 'projectile') {
-					a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
-					a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
+					const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
+					const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
+					a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
+					a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
+
+					//a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
+					//a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
 				}
 			}
 
@@ -157,6 +162,10 @@ const PhysicsComponent = IgeEventingClass.extend({
 		const wallEntity = {
 			_category: 'wall',
 			_stats: true,
+			_velocity: {
+				x: 0,
+				y: 0
+			},
 			body: {
 				type: 'static',
 				fixtures: [{
