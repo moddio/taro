@@ -8,37 +8,34 @@ var igePhysicsConfig = {
 		* p = prototype
 		*/
 
-		// A little concerned about using the spread operator here
-		// Going with concat over spread for performance
-
 		/* Physics Libraries */
 		planck: [
-			['csap', 'Box2dComponent', './components/physics/box2d/Box2dComponent.js'],
-			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
+			['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
 			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
 			['csap', 'dists', './components/physics/box2d/dists.js'],
 			['csap', 'planck', './components/physics/box2d/dists/planck/planck.js']
 		],
 
 		box2dweb: [
-			['csap', 'Box2dComponent', './components/physics/box2d/Box2dComponent.js'],
-			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
+			['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
 			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
 			['csap', 'dists', './components/physics/box2d/dists.js'],
 			['csap', 'box2dweb', './components/physics/box2d/dists/box2dweb/lib_box2d.js', 'box2dweb'],
 			['csap', 'box2dninja', './components/physics/box2d/dists/box2dweb/box2d_ninja.js', 'box2dninja']
 		],
 
 		box2dts: [
-			['csap', 'Box2dComponent', './components/physics/box2d/Box2dComponent.js'],
-			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
+			['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
 			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
 			['csap', 'dists', './components/physics/box2d/dists.js'],
 			['csap', 'box2dts', './components/physics/box2d/dists/flyoverbox2dts/bundle.js']
 		],
 
 		crash: [
-			['csap', 'CrashComponent', './components/physics/crash/CrashComponent.js'],
+			['csap', 'PhysicsComponent', './components/physics/crash/CrashComponent.js'],
 			['csap', 'IgeEntityPhysics', './components/physics/crash/IgeEntityCrash.js'],
 			['csap', 'quickselect', './components/physics/crash/crashDependencies/quickselect.js'],
 			['csap', 'rbush', './components/physics/crash/crashDependencies/rbush.js'],

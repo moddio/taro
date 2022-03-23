@@ -7,6 +7,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 	componentId: 'physics',
 
 	init: function (entity, options) {
+		this._entity = entity;
 		// Check that the engine has not already started
 		// as this will mess everything up if it has
 		this.engine = 'CRASH';
@@ -40,15 +41,18 @@ const PhysicsComponent = IgeEventingClass.extend({
 			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
 				if (b.data.entity.body.type == 'static') {
-					//console.log('Oh my, we crashed!', res/*, a.data*/);
-
 					a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
 					a.data.entity._translate.x = a.pos.x;
 					a.data.entity._translate.y = a.pos.y;
-
-					a.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
-				} else if (b.data.entity._category == 'unit') {
+					/*if (a.data.entity._category == 'unit') {
+						a.data.entity._velocity.x = 0;
+						a.data.entity._velocity.y = 0;
+					}
+					else if (a.data.entity._category == 'projectile') {
+						a.data.entity._velocity.x = -a.data.entity._velocity.x;
+						a.data.entity._velocity.y = -a.data.entity._velocity.y;
+					}*/
+				} else /*if (b.data.entity._category == 'unit' || b.data.entity._category == 'projectile')*/ {
 					// scale the vector to 1/2
 					// console.log(res);
 					const halfOverlapVB = res.overlapV.clone().scale(0.5);
@@ -83,11 +87,19 @@ const PhysicsComponent = IgeEventingClass.extend({
 
 					// zero the velocities for now
 					// this will change when we add mass/force
+					/*a.data.entity._velocity.x = 0;
+					a.data.entity._velocity.y = 0;*/
+
+					b.data.entity._velocity.x += a.data.entity._velocity.x/2;
+					b.data.entity._velocity.y += a.data.entity._velocity.y/2;
+				}
+				if (a.data.entity._category == 'unit') {
 					a.data.entity._velocity.x = 0;
 					a.data.entity._velocity.y = 0;
-
-					b.data.entity._velocity.x = 0;
-					b.data.entity._velocity.y = 0;
+				}
+				else if (a.data.entity._category == 'projectile') {
+					a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
+					a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
 				}
 			}
 
@@ -168,6 +180,14 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.crash.insert(crashBody)
 	},
 
+	sleep: function () {
+		return this._entity;
+	},
+
+	tilesizeRatio: function (foo) {
+		return this._entity;
+	},
+
 	/**
 	 * Creates a Box2d body and attaches it to an IGE entity
 	 * based on the supplied body definition.
@@ -190,11 +210,10 @@ const PhysicsComponent = IgeEventingClass.extend({
 			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { entity: entity });
 			// later check if added to .__moved()
 		}
-		else if (entity._category == 'wall') {
+		else if (entity._category == 'wall' || entity._category == 'region') {
 			const width = entity._bounds2d.x;
 			const height = entity._bounds2d.y;
-			// console.log('wall width', width)
-			const pos = new this.crash.Vector(entity._translate.x, entity._translate.y);
+			const pos = new this.crash.Vector(x, y);
 			crashBody = new this.crash.Box(pos, width, height, false, { entity: entity });
 		}
 		else if (shapeType === 'rectangle') {

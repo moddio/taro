@@ -47,10 +47,18 @@ var Region = IgeEntityPhysics.extend({
 
 			var regionDimension = self._stats.default;
 
-			self._translate.x = regionDimension.x; // + (regionDimension.width / 2);
-			self._translate.y = regionDimension.y; // + (regionDimension.height / 2);
+			if (ige.physics && ige.physics.engine === 'CRASH') {
+				self._translate.x = regionDimension.x;
+				self._translate.y = regionDimension.y;
+			}
+			else {
+				self._translate.x = regionDimension.x + (regionDimension.width / 2);
+				self._translate.y = regionDimension.y + (regionDimension.height / 2);
+			}
+			
+	
 			self.updateBody({
-				translate: { x: regionDimension.x + (regionDimension.width / 2), y: regionDimension.y + (regionDimension.height / 2) }
+				translate: { x: self._translate.x, y: self._translate.y}
 			});
 			// if (ige.isClient) {
 			// 	this._pixiContainer = new PIXI.Container();
