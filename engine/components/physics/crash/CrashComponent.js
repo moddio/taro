@@ -29,7 +29,6 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.crash.Vector = Crash.SAT.Vector;
 		this.crash.Response = Crash.SAT.Response;
 
-		console.log(this.crash);
 		this.totalBodiesCreated = 0;
 		this.physicsTickDuration = 0;
 		this.lastSecondAt = Date.now();
@@ -155,7 +154,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	addBorders: function () {
-		console.log('map boundaries', ige.map.data.width, ige.map.data.height)
+		// console.log('map boundaries', ige.map.data.width, ige.map.data.height);
 		const borderWidth = 100;
 		const mapWidth = ige.map.data.width * 64;
 		const mapHeight = ige.map.data.height * 64;
@@ -193,7 +192,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 		const height = ige.map.data.height * 64 * h + borderWidth;
 		const pos = new this.crash.Vector(x, y);
 		crashBody = new this.crash.Box(pos, width, height, false, { entity: wallEntity });
-		this.crash.insert(crashBody)
+		this.crash.insert(crashBody);
 	},
 
 	sleep: function () {
@@ -212,7 +211,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 	 * @return {Collider}
 	 */
 	createBody: function (entity, bodyDef) {
-		if (entity.crashBody) { return; }
+		if (entity.crashBody) return;
 
 		this.totalBodiesCreated++;
 		const shapeType = bodyDef.fixtures[0].shape.type;
@@ -292,7 +291,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 	},
 
 	contactListener: function (cb1, cb2) {
-
+		return;
 	},
 
 	start: function () {
@@ -385,11 +384,11 @@ const PhysicsComponent = IgeEventingClass.extend({
 		}
 	},
 
-	// temprorary for testing crash engine
-	getInfo: function () {
-		console.log('TOTAL in rbush.all(): ', this.crash.rbush.all().length);
-		// console.log('TOTAL in crash.__moved: ', this.crash.__moved.length);
-	},
+	// // temprorary for testing crash engine
+	// getInfo: function () {
+	// 	console.log('TOTAL in rbush.all(): ', this.crash.rbush.all().length);
+	// 	// console.log('TOTAL in crash.__moved: ', this.crash.__moved.length);
+	// },
 
 	/**
 	 * Gets / sets the current engine to box2d scaling ratio.
@@ -424,7 +423,8 @@ const PhysicsComponent = IgeEventingClass.extend({
 		let collider;
 
 		for (collider of foundColliders) {
-			const entity = collider.data.entity //ige.$(collider.data.igeId);
+			const entity = collider.data.entity;
+			// ige.$(collider.data.igeId);
 			if (entity) {
 				entities.push(entity);
 			}

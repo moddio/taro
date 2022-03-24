@@ -96,7 +96,7 @@ var Item = IgeEntityPhysics.extend({
 
 		if (ige.isServer) {
 			if (this._stats.stateId == 'dropped') {
-				console.log('item is dropping', this)
+				// console.log('item is dropping', this)	// fix this
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1);
@@ -445,7 +445,7 @@ var Item = IgeEntityPhysics.extend({
 						var hitboxData = this._stats.damageHitBox;
 
 						if (hitboxData) {
-							console.log(hitboxData)
+							// console.log(hitboxData);
 							var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
 							var hitboxPosition = {
 								x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
@@ -467,7 +467,7 @@ var Item = IgeEntityPhysics.extend({
 								unitAttributes: this._stats.damage.unitAttributes,
 								playerAttributes: this._stats.damage.playerAttributes
 							};
-							console.log(owner._translate.x, owner._translate.y, hitbox);                                              //////////Hitbox log
+							// console.log(owner._translate.x, owner._translate.y, hitbox);                                              //////////Hitbox log
 
 							entities = ige.physics.getBodiesInRegion(hitbox);
 
