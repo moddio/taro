@@ -1,8 +1,8 @@
-var Unit = IgeEntityBox2d.extend({
+var Unit = IgeEntityPhysics.extend({
 	classId: 'Unit',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 
 		this.id(entityIdFromServer);
 		if (ige.isClient) {
@@ -66,6 +66,7 @@ var Unit = IgeEntityBox2d.extend({
 
 		// initialize body & texture of the unit
 		self.changeUnitType(data.type, data.defaultData);
+		// console.log(data.type, data.defaultData);
 		if (this._stats.states) {
 			var currentState = this._stats.states[this._stats.stateId];
 			var defaultAnimation = this._stats.animations[currentState.animation];
@@ -73,8 +74,11 @@ var Unit = IgeEntityBox2d.extend({
 
 		if (ige.isClient) {
 			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
+			// new
+			// this.drawCrashCollider(data.defaultData);
 			self.mount(ige.pixi.world);
 			this.transformPixiEntity(this._translate.x, this._translate.y);
+			// console.log(this._id, this._translate);
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
@@ -1221,6 +1225,18 @@ var Unit = IgeEntityBox2d.extend({
 					rotate: item._rotate.z
 				};
 
+				if (ige.physics.engine === 'CRASH') {
+					item.crashBody.pos.x = defaultData.translate.x;
+					item.crashBody.pos.y = defaultData.translate.y;
+					item._translate.x = defaultData.translate.x;
+					item._translate.y = defaultData.translate.y;
+					item.crashActive(true);
+					/*item._hasMoved = true;
+					item._translateTo(defaultData.translate.x, defaultData.translate.y)*/
+				}
+
+				console.log('default data', defaultData)
+
 				item.setState('dropped', defaultData);
 				item.setOwnerUnit(undefined);
 				self._stats.currentItemId = null;
@@ -1376,7 +1392,7 @@ var Unit = IgeEntityBox2d.extend({
 				}
 			}
 
-			IgeEntityBox2d.prototype.remove.call(this);
+			IgeEntityPhysics.prototype.remove.call(this);
 			// this.destroy()
 		}
 	},
@@ -1782,6 +1798,7 @@ var Unit = IgeEntityBox2d.extend({
 							x: self.direction.x * speed,
 							y: self.direction.y * speed
 						};
+						// console.log('unit movement 1', vector)
 					}
 				}
 
@@ -1803,9 +1820,9 @@ var Unit = IgeEntityBox2d.extend({
 				}
 
 				ige.unitBehaviourCount++; // for debugging
-
 				// apply movement if it's either human-controlled unit, or ai unit that's currently moving
 				if (self.body && vector && (vector.x != 0 || vector.y != 0)) {
+					// console.log('unit movement 2', vector);
 					if (self._stats.controls)
 						switch (self._stats.controls.movementMethod) { // velocity-based movement
 							case 'velocity':
@@ -1872,12 +1889,14 @@ var Unit = IgeEntityBox2d.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+				this.processBox2dQueue();
+			}
 	},
 
 	destroy: function () {
 		this.playEffect('destroy');
-		IgeEntityBox2d.prototype.destroy.call(this);
+		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
 
