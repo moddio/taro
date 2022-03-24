@@ -90,8 +90,15 @@ const PhysicsComponent = IgeEventingClass.extend({
 					/*a.data.entity._velocity.x = 0;
 					a.data.entity._velocity.y = 0;*/
 
-					b.data.entity._velocity.x += a.data.entity._velocity.x/2;
-					b.data.entity._velocity.y += a.data.entity._velocity.y/2;
+					const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
+					const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
+					//a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
+					//a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
+					b.data.entity._velocity.x += (speed * res.overlapN.x) * 2;
+					b.data.entity._velocity.y += (speed * res.overlapN.y) * 2;
+
+					//b.data.entity._velocity.x += a.data.entity._velocity.x/2;
+					//b.data.entity._velocity.y += a.data.entity._velocity.y/2;
 				}
 				if (a.data.entity._category == 'unit') {
 					a.data.entity._velocity.x = 0;
