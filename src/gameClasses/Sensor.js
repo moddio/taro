@@ -1,11 +1,11 @@
-var Sensor = IgeEntityBox2d.extend({
+var Sensor = IgeEntityPhysics.extend({
 	classId: 'Sensor',
 
 	init: function (ownerUnit, radius) {
 		var self = this;
 		self.category('sensor');
 		self.ownerUnitId = ownerUnit.id();
-		IgeEntityBox2d.prototype.init.call(this, {});
+		IgeEntityPhysics.prototype.init.call(this, {});
 		this.updateRadius(radius);
 		if (ige.isServer) {
 			self.mount(ige.$('baseScene'));
@@ -65,13 +65,18 @@ var Sensor = IgeEntityBox2d.extend({
 		var ownerUnit = this.getOwnerUnit();
 		if (ownerUnit) {
 			if (this.body) {
-				this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y); // keep sensor following its owner unit
+				if (ige.physics.engine === 'CRASH') {
+					this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y);
+				}
+				else this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y); // keep sensor following its owner unit
 			}
 		} else {
 			// destroy ownerless sensors
 			this.remove();
 		}
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	}
 });
 

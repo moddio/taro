@@ -33,20 +33,6 @@ var igeCoreConfig = {
 		['csap', 'IgeEntityManager', 'components/entityManager/IgeEntityManager.js'],
 		['csap', 'IgeEntityManagerComponent', 'components/IgeEntityManagerComponent.js'],
 		['csap', 'IgeEditorComponent', 'components/editor/IgeEditorComponent.js'],
-		/* Physics Libraries */
-
-		['csap', 'planck', 'components/physics/box2d/dists/planck/planck.js'],
-		['csap', 'box2dts', 'components/physics/box2d/dists/flyoverbox2dts/bundle.js'],
-		['csap', 'box2dweb', 'components/physics/box2d/dists/box2dweb/lib_box2d.js', 'box2dweb'],
-		['csap', 'box2dninja', 'components/physics/box2d/dists/box2dweb/box2d_ninja.js', 'box2dninja'],
-		['csap', 'rbush', 'components/physics/crash/rbush.js', 'rbush'],
-		['csap', 'sat', 'components/physics/crash/sat.js', 'sat'],
-		['csap', 'crash', 'components/physics/crash/crash.js', 'crash'],
-		// ['csap', 'box2DJS', 'components/physics/box2d/dists/box2dweb/231.js'],
-
-		['csap', 'dists', 'components/physics/box2d/dists.js'],
-		['csap', 'Cannon', 'components/physics/cannon/lib_cannon.js'],
-		['csap', 'IgeCannonComponent', 'components/physics/cannon/IgeCannonComponent.js'],
 		/* Network Stream */
 		['csap', 'IgeTimeSyncExtension', 'components/network/IgeTimeSyncExtension.js'],
 		['csap', 'IgeStreamComponent', 'components/network/stream/IgeStreamComponent.js'],
@@ -113,11 +99,6 @@ var igeCoreConfig = {
 		/* Audio Components */
 		['csap', 'IgeAudioComponent', 'components/audio/IgeAudioComponent.js'],
 		['csap', 'IgeAudio', 'components/audio/IgeAudio.js'],
-		/* Physics to Entity Components */
-		['csap', 'PhysicsComponent', 'components/physics/PhysicsComponent.js'],
-		['csap', 'IgeBox2dWorld', 'components/physics/box2d/IgeBox2dDebugPainter.js'],
-		['csap', 'IgeEntityBox2d', 'components/physics/box2d/IgeEntityBox2d.js'],
-		['csap', 'IgeEntityCannon', 'components/physics/cannon/IgeEntityCannon.js'],
 		/* UI Classes */
 		['csap', 'IgeUiDropDown', 'ui/IgeUiDropDown.js'],
 		['csap', 'IgeUiButton', 'ui/IgeUiButton.js'],
@@ -144,9 +125,6 @@ var igeCoreConfig = {
 		['cap', 'IgeFilters.sobel', 'filters/sobel.js'],
 		['cap', 'IgeFilters.invert', 'filters/invert.js'],
 		['cap', 'IgeFilters.glowMask', 'filters/glowMask.js'],
-		/* WebGL */
-		['cap', 'THREE', 'components/three/three.min.js'],
-		['cap', 'IgeThree', 'components/three/IgeThree.js'],
 		/* Engine Actual */
 		['csap', 'IgeEngine', 'core/IgeEngine.js']
 	]

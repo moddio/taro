@@ -1,8 +1,8 @@
 /**
  * Creates a new entity with box2d integration.
  */
-var IgeEntityBox2d = IgeEntity.extend({
-	classId: 'IgeEntityBox2d',
+var IgeEntityPhysics = IgeEntity.extend({
+	classId: 'IgeEntityPhysics',
 
 	init: function (defaultData = {}) {
 		IgeEntity.prototype.init.call(this, defaultData);
@@ -126,7 +126,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 
 		// console.log("collidesWith", this._category, filterCategoryBits, collidesWith, body)
 
-		this.box2dBody(body, isLossTolerant);
+		this.physicsBody(body, isLossTolerant);
 		// if (this._category === 'item') {
 		//     this.previousState = this._stats && this._stats.states && this._stats.states[this._stats.stateId] || {};
 		//     console.log('setting previous sate', this.previousState);
@@ -205,7 +205,7 @@ var IgeEntityBox2d = IgeEntity.extend({
      * @param def
      * @return {*}
      */
-	box2dBody: function (def, isLossTolerant) {
+	 physicsBody: function (def, isLossTolerant) {
 		if (def) {
 			this.bodyDef = def;
 			// console.trace()
@@ -219,7 +219,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 					ige.physics.queueAction({ type: 'createBody', entity: this, def: def });
 				}
 			} else {
-				// IgeEntityBox2d.prototype.log('You are trying to create a box2d entity but you have not added the box2d component to the ige instance!', 'error');
+				// IgeEntityPhysics.prototype.log('You are trying to create a box2d entity but you have not added the box2d component to the ige instance!', 'error');
 			}
 
 			return this;
@@ -229,7 +229,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 	},
 
 	destroyBody: function () {
-		IgeEntityBox2d.prototype.log('destroyBody');
+		IgeEntityPhysics.prototype.log('destroyBody');
 
 		if (this.jointsAttached) {
 			for (var entityId in this.jointsAttached) {
@@ -311,7 +311,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 					break;
 
 				default:
-					IgeEntityBox2d.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
+					IgeEntityPhysics.prototype.log(`Cannot add event listener, event type ${evName} not recognised`, 'error');
 					break;
 			}
 		} else {
@@ -347,7 +347,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 	detachEntity: function (entityId) {
 		var attachedEntity = ige.$(entityId);
 		if (entityId && attachedEntity) {
-			IgeEntityBox2d.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
+			IgeEntityPhysics.prototype.log(`detachEntity ${this._stats.name} ${attachedEntity._stats.name}`);
 
 			ige.physics.queueAction({
 				type: 'destroyJoint',
@@ -394,7 +394,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 				this.body.setLinearVelocity(new IgePoint3d(x, y, 0));
 			}
 		} catch (e) {
-			console.log(`igeEntityBox2d.js: setLinearVelocityLT ${e}`);
+			console.log(`IgeEntityBox2d.js: setLinearVelocityLT ${e}`);
 		}
 	},
 
@@ -425,7 +425,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 			}
 		} catch (e) {
 			console.log(e);
-			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
+			IgeEntityPhysics.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
 		}
 	},
 
@@ -455,7 +455,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 			}
 		} catch (e) {
 			console.log(e);
-			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
+			IgeEntityPhysics.prototype.log(`igeEntityBox2d.js: applyForce ${e}`);
 		}
 	},
 
@@ -465,7 +465,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 				this.body.applyTorque(torque);
 			}
 		} catch (e) {
-			IgeEntityBox2d.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
+			IgeEntityPhysics.prototype.log(`igeEntityBox2d.js: applyTorque ${e}`);
 		}
 	},
 	_setupContactListeners: function () {
@@ -738,7 +738,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 	},
 
 	queueAction: function (action) {
-		// IgeEntityBox2d.prototype.log("queueAction: " +this._category + " " + this._stats.name+" " + action.type + " " +this._category + " "+this.id())
+		// IgeEntityPhysics.prototype.log("queueAction: " +this._category + " " + this._stats.name+" " + action.type + " " +this._category + " "+this.id())
 
 		// prevent 'applyForce' causing memoryleak by overloading actionQueue
 		// this means if there's too many actions queued, chances are, applyForce will be ignored ;-;
@@ -765,7 +765,7 @@ var IgeEntityBox2d = IgeEntity.extend({
 
 					x++;
 					if (x > 1000) {
-						console.log('igeEntityBox2d processBox2dQueue running over 1000 times', action.type, this._category, this._stats.name, 'id:', this.id());
+						console.log('IgeEntityPhysics processBox2dQueue running over 1000 times', action.type, this._category, this._stats.name, 'id:', this.id());
 					}
 
 					switch (action.type) {
@@ -835,4 +835,4 @@ var IgeEntityBox2d = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEntityBox2d; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEntityPhysics; }

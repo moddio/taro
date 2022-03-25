@@ -126,7 +126,16 @@ var IgeEntity = IgeObject.extend({
 
 		var newState = (self._stats.states && self._stats.states[stateId]) || {};
 		if (newState && newState.body) {
+
+			/*
+			* if state is 'unselected' newState.body = 'none'
+				will evaluate to currentBody = undefined
+
+			*/
 			self._stats.currentBody = self._stats.bodies[newState.body];
+			// if (ige.isSever && ige.physics.engine == 'CRASH') {
+			// 	self._stats.currentBody = self._stats.bodies[newState.body] ? self._stats.bodies[newState.body] : 'none';
+			// }
 		}
 
 		// console.log("setState", stateId, "new body", (newState)?newState.body:"null")
@@ -657,6 +666,7 @@ var IgeEntity = IgeObject.extend({
 		this._pixiContainer._category = this._category;
 		this._pixiTexture = texture;
 		this._pixiContainer.addChild(texture);
+
 		if (defaultData) {
 			this._pixiContainer.x = defaultData.translate.x;
 			this._pixiContainer.y = defaultData.translate.y;
@@ -664,6 +674,21 @@ var IgeEntity = IgeObject.extend({
 		}
 		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
 	},
+
+	// drawCrashCollider: function (defaultData) {
+	// 	var collider = new IgePixiCollider(this);
+	// 	collider = collider.drawCollider();
+	// 	this._pixiCollider = collider;
+	// 	this._pixiContainer.addChild(collider);
+
+	// 	if (defaultData) {
+	// 		this._pixiContainer.x = defaultData.translate.x;
+	// 		this._pixiContainer.y = defaultData.translate.y;
+	// 		// new
+	// 		//this._pixiCollider.rotation = defaultData.rotate;
+	// 	}
+	// 	ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+	// },
 
 	/**
      * Set the object's width to the number of tile width's specified.
@@ -1834,6 +1859,10 @@ var IgeEntity = IgeObject.extend({
 		// if (ige.updateCount[category] == undefined)
 		// 	ige.updateCount[category] = 0;
 		// ige.updateCount[category]++;
+
+		// if (ige.physics.engine === 'CRASH' && this.body) {
+		// 	this._behaviourCrash();
+		// }
 
 		if (this._deathTime !== undefined && this._deathTime <= ige._tickStart) {
 			// Check if the deathCallBack was set
@@ -3155,15 +3184,16 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      */
 	translateTo: function (x, y) {
+		// console.log('start translate', x, y)
 		if (x !== undefined && y !== undefined) {
+			// console.log('non-crash translate', this._translate)
+			/* if (ige.physics && ige.physics.engine == 'CRASH') {
+				console.log('crash translate');
+				this.translateColliderTo(x, y);
+			} */
 			if (this._translate) {
 				this._translate.x = x;
 				this._translate.y = y;
-			}
-
-			if (ige.physics && ige.physics.engine == 'CRASH') {
-				x += this.width() / 2;
-				y += this.height() / 2;
 			}
 
 			// ensure this entity is created at its latest position to the new clients. (instead of spawnPosition)
@@ -3182,6 +3212,11 @@ var IgeEntity = IgeObject.extend({
 			if (this._pixiTexture) {
 				this._pixiTexture.rotation = z;
 			}
+			// new
+			if (this._pixiCollider) {
+				this._pixiCollider.rotation = z;
+			}
+			//
 			if (!type) {
 				entity.x = x;
 				entity.y = y;
@@ -3195,7 +3230,7 @@ var IgeEntity = IgeObject.extend({
 	},
 
 	teleportTo: function (x, y, rotate) {
-		// console.log("teleporting to ", x, y)
+		// console.log("teleporting to ", x, y);
 
 		this.translateTo(x, y);
 		if (rotate != undefined) {
@@ -3205,6 +3240,11 @@ var IgeEntity = IgeObject.extend({
 		if (ige.isServer) {
 			ige.network.send('teleport', { entityId: this.id(), position: [x, y] });
 			this.clientStreamedPosition = undefined;
+			//////////////////////////////////////////
+			if (ige.physics && ige.physics.engine == 'CRASH') {
+				this.translateColliderTo(x, y);
+			}
+			///////////////////////////////////////////
 		} else if (ige.isClient) {
 			this.lastServerStreamedPosition = undefined;
 			if (this.body) {
@@ -5127,7 +5167,6 @@ var IgeEntity = IgeObject.extend({
 		) {
 			if (this.nextPhysicsFrame) {
 				if (this.prevPhysicsFrame) {
-					
 					// interpolate using prev/next physics key frames provided by physicsComponent
 					x = this.interpolateValue(this.prevPhysicsFrame[1][0], this.nextPhysicsFrame[1][0], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);
 					y = this.interpolateValue(this.prevPhysicsFrame[1][1], this.nextPhysicsFrame[1][1], this.prevPhysicsFrame[0], ige._currentTime, this.nextPhysicsFrame[0]);

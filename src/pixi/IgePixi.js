@@ -330,6 +330,14 @@ var IgeInitPixi = IgeClass.extend({
 					}
 
 					entity.transformPixiEntity(x, y, rotate);
+					// if (entity._pixiCollider && entity.bodyDef.type != 'static' && entity.bodyDef) {
+					// 	var w_xf = entity._pixiCollider.transform.worldTransform;
+					// 	console.log(
+					// 		`World xy:  (${w_xf.tx}, ${w_xf.ty})` +
+					// 		`\nLocal x-axis slope: ${w_xf.c / w_xf.a}` +
+					// 		`\nLocal y-axis slope: ${w_xf.d / w_xf.b}`
+					// 	);
+					// }
 
 					// handle animation
 					if (entity.pixianimation) {

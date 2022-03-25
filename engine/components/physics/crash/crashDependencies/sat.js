@@ -970,6 +970,7 @@
      */
 	function testCirclePolygon (circle, polygon, response) {
 		// Test the polygon against the circle.
+
 		var result = testPolygonCircle(polygon, circle, response);
 		if (result && response) {
 			// Swap A and B in the response.
