@@ -171,6 +171,7 @@ const Client = IgeClass.extend({
 						}
 
 						for (let [key, value] of Object.entries(game.data)) {
+							//
 							data['data'][key] = value;
 						}
 
@@ -178,7 +179,6 @@ const Client = IgeClass.extend({
 					}
 				});
 			}
-			//else we get local data (lodash?)
 		});
 
 		promise.then((game) => {
@@ -215,6 +215,7 @@ const Client = IgeClass.extend({
 			// if our url vars contained a serverId we are adding it to params
 			// ADDING check for engine start resolved
 			$.when(this.igeEngineStarted).done(() => {
+				//
 				const params = this.getUrlVars();
 				this.serverFound = false;
 
@@ -326,6 +327,10 @@ const Client = IgeClass.extend({
 					// we could potentially speed this up by adding a second instance of pixi loader
 					// and then delete it when finished.
 					// this.loadMap(); // this runs fine here instead of in a `finally` block. Not sure it is functionally different.
+
+					// eventually added a temporary PIXI.Loader instance to handle map so we can load in tandem.
+					// as such, moved this.loadMap() outside of this promisified chain.
+
 					this.texturesLoaded.resolve();
 				})
 				.catch((err) => {
@@ -403,8 +408,8 @@ const Client = IgeClass.extend({
 		ige.menuUi.toggleScoreBoard();
 		ige.menuUi.toggleLeaderBoard();
 
-		// this is viewport stuff maybe we should call engine start around now
-		// ok we will try doing these with this.igeEngineStarted.done()
+		// this is viewport stuff
+		// doing these with this.igeEngineStarted.done()
 		// we can move the Deferred for mapLoaded to before engine start
 		//
 		$.when(this.igeEngineStarted, this.mapLoaded).done(() => {
@@ -415,7 +420,7 @@ const Client = IgeClass.extend({
 			ige.client.vp1.camera.translateTo(
 				(ige.map.data.width * tileWidth) / 2,
 				(ige.map.data.height * tileHeight) /2,
-				0 // lmao
+				0
 			);
 
 			ige.addComponent(AdComponent);
@@ -453,7 +458,6 @@ const Client = IgeClass.extend({
 			ige.sound.preLoadSound();
 			ige.sound.preLoadMusic();
 
-			//its almost over!
 			window.activatePlayGame = true; // is there a reason this line was repeated?
 
 			$('#play-game-button-wrapper').removeClass('d-none-important');
@@ -588,13 +592,12 @@ const Client = IgeClass.extend({
 					// moved this down here
 					ige._selectedViewport = this.vp1;
 
-					this.igeEngineStarted.resolve(); // really don't know if we need to use this anymore
+					this.igeEngineStarted.resolve();
 				}
 			});
 		});
 	},
 
-	// purposefully leaving out sandbox/play condition for now. this should be moved to a method;
 	//
 	getServersArray: function() {
 		const serversList = [];
@@ -615,7 +618,7 @@ const Client = IgeClass.extend({
 
 		return serversList;
 	},
-	// we never call this inside Client with a parameter. i assume its an array?
+	// we never call this inside Client with a parameter. I assume its an array?
 	//
 	getBestServer: function(ignoreServerIds) {
 		let firstChoice = null; // old comment => 'server which has max players and is under 80% capacity
