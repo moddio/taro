@@ -144,15 +144,41 @@ const Client = IgeClass.extend({
 		ige.addComponent(GameComponent);
 		// we're going to try and insert the fetch here
 		let promise = new Promise((resolve, reject) => {
-			$.ajax({
-				url: `${this.host}/api/game-client/${gameId}`,
-				dataType: 'json',
-				type: 'GET',
-				success: (game) => {
-					//
-					resolve(game);
-				}
-			});
+			if (gameId) {
+				$.ajax({
+					url: `${this.host}/api/game-client/${gameId}`,
+					dataType: 'json',
+					type: 'GET',
+					success: (game) => {
+						//
+						resolve(game);
+					}
+				});
+			} else {
+				$.ajax({
+					url: '/src/game.json',
+					dataType: 'json',
+					type: 'GET',
+					success: (game) => {
+						//
+						const data = { data: {} };
+
+						game.defaultData = game;
+
+						for (let [key, value] of Object.entries(game)) {
+							//
+							data['data'][key] = value;
+						}
+
+						for (let [key, value] of Object.entries(game.data)) {
+							data['data'][key] = value;
+						}
+
+						resolve(data);
+					}
+				});
+			}
+			//else we get local data (lodash?)
 		});
 
 		promise.then((game) => {
@@ -329,6 +355,31 @@ const Client = IgeClass.extend({
 				// old comment => 'always enable CSP'
 				this.loadCSP();
 			}
+
+			// added important configuration details for sandbox
+			if (mode == 'sandbox') {
+				$.when(this.mapLoaded)
+					.done(() => {
+						ige.mapEditor.scanMapLayers();
+						ige.mapEditor.drawTile();
+						ige.mapEditor.addUI();
+						ige.mapEditor.customEditor();
+
+						if (!gameData.isDeveloper) {
+							//
+							ige.mapEditor.selectEntities = false;
+						}
+
+						ige.setFps(15);
+						$('#loading-container').addClass('slider-out');
+					})
+					.fail((err) => {
+						$('#loading-container').addClass('slider-out');
+						console.error(err); // for now
+					});
+
+			}
+
 			// don't really know if this needs to be inside this
 			ige.addComponent(VariableComponent);
 
