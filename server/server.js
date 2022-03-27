@@ -462,8 +462,8 @@ var Server = IgeClass.extend({
 				if (game.data.settings) {
 					var gravity = game.data.settings.gravity;
 					if (gravity) {
-						console.log('setting gravity', gravity);
-						// ige.physics.gravity(gravity.x, gravity.y);
+						// console.log('setting gravity', gravity);
+						ige.physics.gravity(gravity.x, gravity.y);
 					}
 				}
 
