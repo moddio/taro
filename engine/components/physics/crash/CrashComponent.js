@@ -28,6 +28,10 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.crash.SAT = Crash.SAT;
 		this.crash.Vector = Crash.SAT.Vector;
 		this.crash.Response = Crash.SAT.Response;
+		this.crash.cancel = function () {
+			this.BREAK = true;
+			return false;
+		};
 
 		console.log(this.crash);
 		this.totalBodiesCreated = 0;
@@ -70,19 +74,20 @@ const PhysicsComponent = IgeEventingClass.extend({
 					// b.data.entity._translate.y = b.pos.y;
 
 					// console.log('Overlap normal from A: ', res.overlapN);
-
-					const appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
+					a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
+					b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
+					cancel();
+					// const appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
 					// console.log('appliedAngle: ', appliedAngle);
 					// console.log('Math.PI % Math.abs(appliedAngle): ', round((Math.PI * 2) % Math.abs(appliedAngle)));
-					// Math.abs(appliedAngle) >= ANGLE_MINIMUM && 
-					if ((Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
-						a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
-						b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
-						b.data.entity.rotateTo(0, 0, -(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)));
-						// console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
-					} else {
-						// console.log('Not applying this angle to b... ', round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
-					}
+					// Math.abs(appliedAngle) >= ANGLE_MINIMUM &&
+					// if ((Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
+
+					// 	b.data.entity.rotateTo(0, 0, -(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)));
+					// 	// console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
+					// } else {
+					// 	// console.log('Not applying this angle to b... ', round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
+					// }
 
 
 					// zero the velocities for now
