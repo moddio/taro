@@ -85,16 +85,10 @@ class GameScene extends Phaser.Scene {
 			return;
 		}
 
-		this.load.image(key, cellSheet.url);
-
-		if (cellSheet.rowCount === 1 && // skip if not a spritesheet
-			cellSheet.columnCount === 1) {
-			return;
-		}
-
 		this.load.once(`filecomplete-image-${key}`, () => {
 
-			// create spritesheet
+			// create spritesheet,
+			// even if it has only one sprite
 			const texture = this.textures.get(key);
 			const width = texture.source[0].width;
 			const height = texture.source[0].height;
@@ -112,13 +106,8 @@ class GameScene extends Phaser.Scene {
 
 				const animation = data.animations[animationsKey];
 				const frames = animation.frames;
-
-				// skip if it's an empty animation
-				if (frames.length === 1 && frames[0] === 1) {
-					continue;
-				}
-
 				const animationFrames: number[] = [];
+
 				for (let i = 0; i < frames.length; i++) {
 					// correction for 0-based indexing
 					animationFrames.push(frames[i] - 1);
@@ -134,6 +123,8 @@ class GameScene extends Phaser.Scene {
 				});
 			}
 		});
+
+		this.load.image(key, cellSheet.url);
 	}
 
 	create (): void {
