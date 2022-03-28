@@ -286,7 +286,7 @@
 	Crash.prototype.testAll = function (a, res) {
 		var res = res || this.RESPONSE;
 		var possible = this.search(a);
-		console.log(`Before inner for loop, B, length of Rbush.search result: ${possible.length}`);
+		// console.log(`Before inner for loop, B, length of Rbush.search result: ${possible.length}`);
 		loop:
 		for (var i = 0, len = possible.length; i < len; i++) {
 			var b = possible[i];
@@ -299,7 +299,7 @@
 				if (!this.OVERLAP_LIMIT || Math.abs(res.overlap) > this.OVERLAP_LIMIT) {
 					this.__onCollision(a, b, res);
 					if (this.BREAK) {
-						console.log('\nWE ARE CALLING Crash.cancel()\n');
+						// console.log('\nWE ARE CALLING Crash.cancel()\n');
 						break loop;
 					}
 				}
@@ -323,7 +323,7 @@
 				ALL_MOVED.push(collider);
 			}
 
-			console.log(`Crash.__moved.length inside the while loop, A: ${this.__moved.length}`);
+			// console.log(`Crash.__moved.length inside the while loop, A: ${this.__moved.length}`);
 			this.testAll(collider, res);
 			i++;
 		}
