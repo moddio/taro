@@ -217,6 +217,9 @@ const IgeEntityPhysics = IgeEntity.extend({
 
 			this._translate.x = this.crashBody.pos.x;
 			this._translate.y = this.crashBody.pos.y;
+
+			//ige.physics.crash.cancel();
+			this.crashBody.disable = false;
 		}
 	},
 
@@ -328,6 +331,7 @@ const IgeEntityPhysics = IgeEntity.extend({
 		if (ige.isServer) {
 			if (this.body) {
 				if (this._hasMoved && this.body.type != 'spriteOnly') {
+					console.log('translate collider')
 					this.translateColliderTo(x, y);
 				}
 			}

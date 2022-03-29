@@ -74,6 +74,8 @@ const PhysicsComponent = IgeEventingClass.extend({
 					// b.data.entity._translate.y = b.pos.y;
 
 					// console.log('Overlap normal from A: ', res.overlapN);
+					//a.data.entity._hasMoved = true;
+					//b.data.entity._hasMoved = true;
 					a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
 					b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
 					cancel();
@@ -95,12 +97,18 @@ const PhysicsComponent = IgeEventingClass.extend({
 					/*a.data.entity._velocity.x = 0;
 					a.data.entity._velocity.y = 0;*/
 
-					const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-					const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-					//a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
-					//a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
-					b.data.entity._velocity.x += (speed * res.overlapN.x) * 2;
-					b.data.entity._velocity.y += (speed * res.overlapN.y) * 2;
+					if (!b.disable) {
+						const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
+						const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
+						//a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
+						//a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
+						b.data.entity._velocity.x += (speed * res.overlapN.x) * 2;
+						b.data.entity._velocity.y += (speed * res.overlapN.y) * 2;
+
+						a.disable = true;
+						b.disable = true;
+					}
+
 
 					//b.data.entity._velocity.x += a.data.entity._velocity.x/2;
 					//b.data.entity._velocity.y += a.data.entity._velocity.y/2;
@@ -110,10 +118,16 @@ const PhysicsComponent = IgeEventingClass.extend({
 					a.data.entity._velocity.y = 0;
 				}
 				else if (a.data.entity._category == 'projectile') {
-					const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-					const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-					a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
-					a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
+					if (!a.disable) {
+						const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
+						const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
+						a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
+						a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
+
+						a.disable = true;
+						b.disable = true;
+					}
+					
 
 					//a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
 					//a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
