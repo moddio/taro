@@ -796,6 +796,14 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getSlotOfItem':
+					var unit = self.getValue(text.unit, vars);
+					var item = self.getValue(text.item, vars);
+					if (unit && unit._stats && item && item._stats && item._stats.ownerUnitId == unit.id()) {
+						var index = unit._stats.itemIds.indexOf(item._id);
+						if (index != -1) returnValue = index + 1;
+					}
+					break;
 				case 'getItemAtSlot':
 					var unit = self.getValue(text.unit, vars);
 					var slotIndex = self.getValue(text.slot, vars);
