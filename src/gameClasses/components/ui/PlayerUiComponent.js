@@ -157,11 +157,32 @@ var PlayerUiComponent = IgeEntity.extend({
 	},
 
 	// open a modal with custom content rendered in it
-	showCustomModal: function (config) {
+	showCustomModal: function (config, extraData) {
 		var self = this;
-
+		console.log(config, extraData)
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
-
+		
+		var playerName = extraData && extraData.playerName;
+		
+		if (config.content.indexOf('%PLAYER_NAME%') > -1 && playerName) {
+			config.content = config.content.replace(/%PLAYER_NAME%/g, playerName);
+		};
+		
+		var variables = config.content.match(new RegExp('\\$.+?\\$', 'g'));
+		
+		if (variables && variables.length) {
+			variables.forEach((variable) => {
+				var variableName = variable.split('$')[1];
+				
+				if (extraData.variables.hasOwnProperty(variableName)) {
+					var variableValue = extraData.variables[variableName];
+					
+					config.content = config.content.replace(new RegExp(`\\$${variableName}\\$`, 'g'), variableValue);
+				}
+			});
+		}
+		console.log(config, extraData)
+		
 		$('#custom-modal .content').html(config.content || '');
 
 		if (config.title) {

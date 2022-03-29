@@ -516,13 +516,22 @@ var ActionComponent = IgeEntity.extend({
 						var player = ige.variable.getValue(action.player, vars);
 						var htmlContent = ige.variable.getValue(action.htmlContent, vars) || '';
 						var modalTitle = ige.variable.getValue(action.title, vars) || '';
+						var primitiveVariables = ige.variable.getAllVariables([
+							'string',
+							'number',
+							'boolean'
+						])
 
 						if (player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'showCustomModal',
 								title: modalTitle,
 								content: htmlContent,
-								isDismissible: true
+								isDismissible: true,
+								extraData: {
+									playerName: player._stats && player._stats.name,
+									variables: primitiveVariables
+								}
 							}, player._stats.clientId);
 						}
 						break;

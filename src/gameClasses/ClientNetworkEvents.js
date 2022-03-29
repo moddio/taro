@@ -256,7 +256,7 @@ var ClientNetworkEvents = {
 				break;
 
 			case 'showCustomModal':
-				ige.playerUi.showCustomModal(data);
+				ige.playerUi.showCustomModal(data, data.extraData);
 				break;
 
 			case 'openWebsite':
