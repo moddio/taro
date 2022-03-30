@@ -41,9 +41,12 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.avgPhysicsTickDuration = 0;
 
+		let aVelVec, bVelVec;
+
 		const listener = function(a, b, res, cancel) {
 			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
+				//
 				if (b.data.entity.body.type == 'static') {
 					a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
 					a.data.entity._translate.x = a.pos.x;
@@ -57,9 +60,16 @@ const PhysicsComponent = IgeEventingClass.extend({
 						a.data.entity._velocity.y = -a.data.entity._velocity.y;
 					}*/
 				} else /*if (b.data.entity._category == 'unit' || b.data.entity._category == 'projectile')*/ {
+					//
+					// new consideration, if we are going to use entity._velocity,
+					// let's convert it to a SAT.Vector
+					aVelVec = new ige.physics.crash.Vector(a.data.entity._velocity.x, a.data.entity._velocity.y);
+					bVelVec = new ige.physics.crash.Vector(b.data.entity._velocity.x, b.data.entity._velocity.y);
 					// scale the vector to 1/2
 					// console.log(res);
-					console.log('overlap', res.overlapV)
+					console.log('overlap', res.overlapV);
+					console.log('a_Vi: ', aVelVec);
+					console.log('b_Vi: ', bVelVec);
 					// console.log('b', b)
 					const halfOverlapVB = res.overlapV.clone().scale(0.5);
 					const halfOverlapVA = halfOverlapVB.clone().reverse();
@@ -120,21 +130,30 @@ const PhysicsComponent = IgeEventingClass.extend({
 					a.data.entity._velocity.y = 0;
 				}
 				else if (a.data.entity._category == 'projectile') {
-						if (b.data.entity._category == 'projectile' || (b.data.entity._category == 'unit' && b.data.entity.body.type != 'static')) {
-							const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-							const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-							a.data.entity._velocity.x -= (speed * res.overlapN.x) //* 2;
-							a.data.entity._velocity.y -= (speed * res.overlapN.y) //* 2;
-							b.data.entity._velocity.x += (speed * res.overlapN.x) //* 2;
-							b.data.entity._velocity.y += (speed * res.overlapN.y) //* 2;
-						}
-						else {
-							const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-							const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-							a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
-							a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
-						}
-					
+					if (b.data.entity._category == 'projectile' || (b.data.entity._category == 'unit' && b.data.entity.body.type != 'static')) {
+						// const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
+						// const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
+						// a.data.entity._velocity.x -= (speed * res.overlapN.x) //* 2;
+						// a.data.entity._velocity.y -= (speed * res.overlapN.y) //* 2;
+						// b.data.entity._velocity.x += (speed * res.overlapN.x) //* 2;
+						// b.data.entity._velocity.y += (speed * res.overlapN.y) //* 2;
+						aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
+						bVelVec = bVelVec.sub(res.overlapN.clone().scale((bVelVec.dot(res.overlapN))));
+
+						console.log('a_Ve: ', aVelVec);
+						console.log('b_Ve: ', bVelVec);
+
+						a.data.entity._velocity.x = aVelVec.x;
+						a.data.entity._velocity.y = aVelVec.y;
+						b.data.entity._velocity.x = bVelVec.x;
+						b.data.entity._velocity.y = bVelVec.y;
+					}
+					else {
+						const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
+						const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
+						a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
+						a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
+					}
 
 					//a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
 					//a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;

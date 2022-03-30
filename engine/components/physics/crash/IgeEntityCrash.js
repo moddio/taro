@@ -207,7 +207,6 @@ const IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	_behaviourCrash: function () {
-		if (this._category == 'projectile') console.log (this._velocity.x, this._velocity.y)
 		// update position based on its velocity, collision, and damping
 		if (Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
 			this.crashBody.move(this._velocity.x, this._velocity.y);
