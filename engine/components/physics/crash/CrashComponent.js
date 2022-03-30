@@ -43,6 +43,33 @@ const PhysicsComponent = IgeEventingClass.extend({
 
 		let aVelVec, bVelVec;
 
+		const dyn_dyn_exitVelocities = function(aEntity, bEntity, overlapN) {
+			const normal = overlapN.clone();
+			const tangent = normal.clone().perp();
+			let temp;
+
+			let aVel = new ige.physics.crash.Vector(aEntity._velocity.x, aEntity._velocity.y);
+			let bVel = new ige.physics.crash.Vector(bEntity._velocity.x, bEntity._velocity.y);
+			temp = aVel;
+			// const aVel_n = bVel.clone().projectN(normal);
+			// const aVel_t = aVel.clone().projectN(tangent);
+
+			// const bVel_n = aVel.clone().projectN(normal);
+			// const bVel_t = bVel.clone().projectN(tangent);
+
+			// aVel = aVel_n.add(aVel_t);
+			// bVel = bVel_n.add(bVel_t);
+			// // this will save memory
+			aVel = bVel.clone().projectN(normal).add(aVel.clone().projectN(tangent));
+			bVel = temp.clone().projectN(normal).add(bVel.clone().projectN(tangent));
+
+			aEntity._velocity.x = aVel.x;
+			aEntity._velocity.y = aVel.y;
+
+			bEntity._velocity.x = bVel.x;
+			bEntity._velocity.y = bVel.y;
+		};
+
 		const listener = function(a, b, res, cancel) {
 			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
@@ -63,13 +90,13 @@ const PhysicsComponent = IgeEventingClass.extend({
 					//
 					// new consideration, if we are going to use entity._velocity,
 					// let's convert it to a SAT.Vector
-					aVelVec = new ige.physics.crash.Vector(a.data.entity._velocity.x, a.data.entity._velocity.y);
-					bVelVec = new ige.physics.crash.Vector(b.data.entity._velocity.x, b.data.entity._velocity.y);
+					// aVelVec = new ige.physics.crash.Vector(a.data.entity._velocity.x, a.data.entity._velocity.y);
+					// bVelVec = new ige.physics.crash.Vector(b.data.entity._velocity.x, b.data.entity._velocity.y);
 					// scale the vector to 1/2
 					// console.log(res);
-					console.log('overlap', res.overlapV);
-					console.log('a_Vi: ', aVelVec);
-					console.log('b_Vi: ', bVelVec);
+					// console.log('overlap', res.overlapV);
+					// console.log('a_Vi: ', aVelVec);
+					// console.log('b_Vi: ', bVelVec);
 					// console.log('b', b)
 					const halfOverlapVB = res.overlapV.clone().scale(0.5);
 					const halfOverlapVA = halfOverlapVB.clone().reverse();
@@ -137,16 +164,18 @@ const PhysicsComponent = IgeEventingClass.extend({
 						// a.data.entity._velocity.y -= (speed * res.overlapN.y) //* 2;
 						// b.data.entity._velocity.x += (speed * res.overlapN.x) //* 2;
 						// b.data.entity._velocity.y += (speed * res.overlapN.y) //* 2;
-						aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
-						bVelVec = bVelVec.sub(res.overlapN.clone().scale((bVelVec.dot(res.overlapN))));
+						// aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
+						// bVelVec = bVelVec.sub(res.overlapN.clone().scale((bVelVec.dot(res.overlapN))));
 
-						console.log('a_Ve: ', aVelVec);
-						console.log('b_Ve: ', bVelVec);
+						// console.log('a_Ve: ', aVelVec);
+						// console.log('b_Ve: ', bVelVec);
 
-						a.data.entity._velocity.x = aVelVec.x;
-						a.data.entity._velocity.y = aVelVec.y;
-						b.data.entity._velocity.x = bVelVec.x;
-						b.data.entity._velocity.y = bVelVec.y;
+						// a.data.entity._velocity.x = aVelVec.x;
+						// a.data.entity._velocity.y = aVelVec.y;
+						// b.data.entity._velocity.x = bVelVec.x;
+						// b.data.entity._velocity.y = bVelVec.y;
+
+						dyn_dyn_exitVelocities(a.data.entity, b.data.entity, res.overlapN);
 					}
 					else {
 						const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};

@@ -328,7 +328,7 @@
 			i++;
 		}
 
-		console.log(`Crash.check() loop A iterations this frame: ${i}`);
+		// console.log(`Crash.check() loop A iterations this frame: ${i}`);
 
 		for (var i = 0, len = ALL_MOVED.length; i < len; i++) {
 			ALL_MOVED[i].lastCheckedPos.copy(ALL_MOVED[i].pos);

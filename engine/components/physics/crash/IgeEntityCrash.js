@@ -331,7 +331,7 @@ const IgeEntityPhysics = IgeEntity.extend({
 		if (ige.isServer) {
 			if (this.body) {
 				if (this._hasMoved && this.body.type != 'spriteOnly') {
-					console.log('translate collider')
+					// console.log('translate collider')
 					this.translateColliderTo(x, y);
 				}
 			}
