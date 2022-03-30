@@ -1,190 +1,83 @@
-// Crash.onCollision callback format
-const listener = function(a, b, res, cancel) {
+// controller function
+const collision_controller = function(a, b, res) {
 	if (a.data.entity.body.type != 'dynamic') return;
 
-	// this should be the first check because of projectiles
-	// in the background
-	if (b.data.entity.body.type == 'static') {
-		//
-		switch(a.data.entity._category) {
-			//
-			// this priority order is subject to change
-			case ('projectile'):
-				return projectileHitsStatic();
-			case ('unit'):
-				return unitHitsStatic();
-			case ('item'):
-				return itemHitsStatic();
-			default:
-				return;
-		}
-	}
-	// for now this should only contain dynamic-dynamic collisions
-	else {
-		//
-		switch(a.data.entity._category) {
-			//
-			// this priority order is subject to change
-			case ('projectile'):
-				return projectileHitsDynamic();
-			case('unit'):
-				return unitHitsDynamic();
-			case('item'):
-				return itemHitsDynamic();
-			default:
-				return;
-		}
-	}
+	const b_type = b.data.entity.body.type;
+
+	if (b_type == 'static') return dyn_static_collision();
+	else dyn_dyn_collision();
 };
 
-const projectileHitsStatic = function() {
+////////////////////////////////////////////////////////////////
+////////////////   STATIC   ////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+// we will eventually be adding b as a param
+const dyn_static_collision = function(a, b, res) {
 	//
-	switch(b.data.entity._category) {
-		//
+	switch (b.data.entity._category) {
 		case ('unit'):
-			//resolution
-			a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
-			a.data.entity._translate.x = a.pos.x;
-			a.data.entity._translate.y = a.pos.y;
-
-			a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
-			a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
-
-			return;
-			//
 		case ('wall'):
-			//resolution
-			a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
-			a.data.entity._translate.x = a.pos.x;
-			a.data.entity._translate.y = a.pos.y;
-
-			a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
-			a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
-
-			return;
-			//
+		default:
+			dyn_static_exitPosition(a, b, res.overlapV);
+			dyn_static_exitVelocity(a.data.entity, res.overlapN);
 	}
 };
 
-const unitHitsStatic = function() {
-	//
-	switch(b.data.entity._category) {
-		//
-		case ('unit'):
-			//resolution
-			a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
-			a.data.entity._translate.x = a.pos.x;
-			a.data.entity._translate.y = a.pos.y;
-
-			a.data.entity._velocity.x = 0;
-			a.data.entity._velocity.y = 0;
-
-			return;
-			//
-		case ('wall'):
-			//resolution
-			a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
-			a.data.entity._translate.x = a.pos.x;
-			a.data.entity._translate.y = a.pos.y;
-
-			a.data.entity._velocity.x = 0;
-			a.data.entity._velocity.y = 0;
-
-			return;
-			//
-	}
+const dyn_static_exitPosition = function(a, b, overlapV) {
+	// for now expect this to be very simple
+	a.data.entity.translateTo(a.pos.x - overlapV.x, a.pos.y - overlapV.y, 0);
 };
 
-const itemHitsStatic = function() {
+const dyn_static_exitVelocity = function(a_entity, overlapN) {
 	//
-	switch(b.data.entity._category) {
-		//
-		case ('unit'):
-			//resolution
-		case ('wall'):
-			//resolution
-	}
+	let aVel = new ige.physics.crash.Vector(a_entity._velocity.x, a_entity._velocity.y);
+
+	aVel = aVel.clone().sub(aVel.projectN(overlapN).scale(2));
+
+	a_entity._velocity.x = aVel.x;
+	a_entity._velocity.y = aVel.y;
 };
 
-const projectileHitsDynamic = function() {
+////////////////////////////////////////////////////////////////
+////////////////   DYNAMIC   ///////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+const dyn_dyn_collision = function(a, b, res) {
 	//
-	switch(b.data.entity._category) {
-		//
-		case ('unit'):
-			//resolution
-			const halfOverlapVB = res.overlapV.clone().scale(0.5);
-			const halfOverlapVA = halfOverlapVB.clone().reverse();
-
-			const appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
-
-			if ((Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
-				//
-				a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
-				b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
-				b.data.entity.rotateTo(0, 0, -(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)));
-				// console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
-			}
-
-			b.data.entity._velocity.x += a.data.entity._velocity.x/2;
-			b.data.entity._velocity.y += a.data.entity._velocity.y/2;
-
-			a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
-			a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
-
-			return;
-			//
+	switch (b.data.entity._category) {
 		case ('projectile'):
-			//resolution
+		case ('unit'):
 		case ('item'):
-			//resolution
+		default:
+			dyn_dyn_exitPositions(a, b, res);
+			dyn_dyn_exitVelocities(a.data.entity, b.data.entity, res.overlapN);
 	}
 };
 
-const unitHitsDynamic = function() {
-	//
-	switch(b.data.entity._category) {
-		//
-		case ('unit'):
-			//resolution
-			const halfOverlapVB = res.overlapV.clone().scale(0.5);
-			const halfOverlapVA = halfOverlapVB.clone().reverse();
+const dyn_dyn_exitPositions = function(a, b, overlapV) {
+	const halfOverlapV = overlapV.clone().scale(0.5);
 
-			const appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
-
-			if ((Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
-				//
-				a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
-				b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
-				b.data.entity.rotateTo(0, 0, -(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)));
-				// console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
-			}
-
-			b.data.entity._velocity.x += a.data.entity._velocity.x/2;
-			b.data.entity._velocity.y += a.data.entity._velocity.y/2;
-			// this neds to change
-			a.data.entity._velocity.x = 0;
-			a.data.entity._velocity.y = 0;
-
-			return;
-			//
-		case ('projectile'):
-			//resolution
-			return;
-
-		case ('item'):
-			//resolution
-	}
+	b.data.entity._hasMoved = true;
+	a.data._entity.translateTo(a.pos.x + halfOverlapV.x, a.pos.y + halfOverlapV.y);
+	b.data._entity.translateTo(b.pos.x - halfOverlapV.x, b.pos.y - halfOverlapV.y);
 };
 
-const itemHitsDynamic = function() {
-	//
-	switch(b.data.entity._category) {
-		//
-		case ('unit'):
-			//resolution
-		case ('projectile'):
-			//resolution
-		case ('item'):
-			//resolution
-	}
+c		const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
+	const normal = overlapN.clone();
+	const tangent = normal.clone().perp();
+	let temp;
+
+	let aVel = new ige.physics.crash.Vector(a_entity._velocity.x, a_entity._velocity.y);
+	let bVel = new ige.physics.crash.Vector(b_entity._velocity.x, b_entity._velocity.y);
+	temp = aVel;
+
+	aVel = bVel.clone().projectN(normal).add(aVel.clone().projectN(tangent));
+	bVel = temp.clone().projectN(normal).add(bVel.clone().projectN(tangent));
+
+	a_entity._velocity.x = aVel.x;
+	a_entity._velocity.y = aVel.y;
+
+	b_entity._velocity.x = bVel.x;
+	b_entity._velocity.y = bVel.y;
 };
