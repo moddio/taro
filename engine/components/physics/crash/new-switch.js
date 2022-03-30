@@ -63,7 +63,7 @@ const dyn_dyn_exitPositions = function(a, b, overlapV) {
 	b.data._entity.translateTo(b.pos.x - halfOverlapV.x, b.pos.y - halfOverlapV.y);
 };
 
-c		const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
+const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
 	const normal = overlapN.clone();
 	const tangent = normal.clone().perp();
 	let temp;
