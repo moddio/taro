@@ -70,6 +70,16 @@ const PhysicsComponent = IgeEventingClass.extend({
 			bEntity._velocity.y = bVel.y;
 		};
 
+		const dyn_static_exitVelocity = function(aEntity, overlapN) {
+			let aVel = new ige.physics.crash.Vector(aEntity._velocity.x, aEntity._velocity.y);
+
+			// aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
+			aVel = aVel.clone().sub(aVel.projectN(overlapN).scale(2));
+
+			aEntity._velocity.x = aVel.x;
+			aEntity._velocity.y = aVel.y;
+		};
+
 		const listener = function(a, b, res, cancel) {
 			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
 			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
@@ -86,6 +96,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 						a.data.entity._velocity.x = -a.data.entity._velocity.x;
 						a.data.entity._velocity.y = -a.data.entity._velocity.y;
 					}*/
+					dyn_static_exitVelocity(a.data.entity, res.overlapN);
 				} else /*if (b.data.entity._category == 'unit' || b.data.entity._category == 'projectile')*/ {
 					//
 					// new consideration, if we are going to use entity._velocity,
@@ -151,51 +162,20 @@ const PhysicsComponent = IgeEventingClass.extend({
 
 					//b.data.entity._velocity.x += a.data.entity._velocity.x/2;
 					//b.data.entity._velocity.y += a.data.entity._velocity.y/2;
+					dyn_dyn_exitVelocities(a.data.entity, b.data.entity, res.overlapN);
 				}
-				if (a.data.entity._category == 'unit') {
-					a.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
-				}
-				else if (a.data.entity._category == 'projectile') {
-					if (b.data.entity._category == 'projectile' || (b.data.entity._category == 'unit' && b.data.entity.body.type != 'static')) {
-						// const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-						// const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-						// a.data.entity._velocity.x -= (speed * res.overlapN.x) //* 2;
-						// a.data.entity._velocity.y -= (speed * res.overlapN.y) //* 2;
-						// b.data.entity._velocity.x += (speed * res.overlapN.x) //* 2;
-						// b.data.entity._velocity.y += (speed * res.overlapN.y) //* 2;
-						// aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
-						// bVelVec = bVelVec.sub(res.overlapN.clone().scale((bVelVec.dot(res.overlapN))));
 
-						// console.log('a_Ve: ', aVelVec);
-						// console.log('b_Ve: ', bVelVec);
-
-						// a.data.entity._velocity.x = aVelVec.x;
-						// a.data.entity._velocity.y = aVelVec.y;
-						// b.data.entity._velocity.x = bVelVec.x;
-						// b.data.entity._velocity.y = bVelVec.y;
-
-						dyn_dyn_exitVelocities(a.data.entity, b.data.entity, res.overlapN);
-					}
-					else {
-						const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-						const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-						a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
-						a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
-					}
-
-					//a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
-					//a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
-				}
+				//a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
+				//a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
 			}
-
-			/*else if (b.data.entity._category == 'sensor') {
-				console.log('sensor');
-			}*/
-			/*else {
-				console.log('enter region player pos', a.pos.x, a.pos.y)
-			} */
 		};
+
+		/*else if (b.data.entity._category == 'sensor') {
+			console.log('sensor');
+		}*/
+		/*else {
+			console.log('enter region player pos', a.pos.x, a.pos.y)
+		} */
 
 		const contactDetails = function (a, b, res, cancel) {
 			ige.trigger._beginContactCallback({
