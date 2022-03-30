@@ -7,6 +7,8 @@ declare class IgeEntity extends IgeObject {
 	_rotate: IgePoint3d;
 	_stats: EntityStats;
 
+	_pixiText: any; // PIXI.Text
+
 	angleToTarget: number;
 	tween: TweenComponent;
 	pixianimation: IgePixiAnimation;

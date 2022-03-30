@@ -29,6 +29,9 @@ declare class GameComponent extends IgeEntity {
 		unitTypes: Record<string, EntityData>;
 		projectileTypes: Record<string, EntityData>;
 		itemTypes: Record<string, EntityData>;
-	}
+		settings: {
+			addStrokeToNameAndAttributes: boolean;
+		}
+	};
 
 }

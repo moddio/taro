@@ -5,9 +5,6 @@ var IgePixiFloatingText = IgeEntity.extend({
 	init: function (text, config) {
 		if (!config) config = {};
 
-		var depthForMyEntities = 3;
-		var depthForOtherPlayerEntities = 2;
-
 		var defaultFontSize = 12;
 		var defaultBoldValue = false;
 		var defaultMinLimit = 300;
@@ -165,4 +162,6 @@ var IgePixiFloatingText = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiFloatingText; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgePixiFloatingText;
+}

@@ -1118,6 +1118,14 @@ var Unit = IgeEntityBox2d.extend({
 		//     color = '#99FF00';
 		// }
 
+		console.log(self._stats.name, { // TODO remove
+			shouldBeBold: isMyUnit,
+			parentUnit: self.id(),
+			gluedIndex: 0,
+			color: color
+		});
+
+
 		self.unitNameLabel = new IgePixiFloatingText(self._stats.name, {
 			shouldBeBold: isMyUnit,
 			parentUnit: self.id(),
@@ -1127,6 +1135,12 @@ var Unit = IgeEntityBox2d.extend({
 		self.unitNameLabel._pixiText._style._fontWeight = 599; //recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
 
 		this._pixiContainer.addChild(self.unitNameLabel._pixiText);
+
+		this.emit('update-label', {
+			text: self._stats.name,
+			bold: isMyUnit,
+			color: color
+		});
 	},
 
 	// destroy the existing name label of this unit, and crate a new name label using unit's owner player's name.

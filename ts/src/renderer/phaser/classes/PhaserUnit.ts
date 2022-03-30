@@ -1,11 +1,14 @@
 class PhaserUnit extends Phaser.GameObjects.Container {
 
 	sprite: Phaser.GameObjects.Sprite;
+	label: Phaser.GameObjects.Text;
 
 	private followListener: EvtListener;
 	private stopFollowListener: EvtListener;
 
 	private playAnimationListener: EvtListener;
+
+	private updateLabelListener: EvtListener;
 
 	constructor (scene: Phaser.Scene,
 				 private unit: Unit) {
@@ -16,6 +19,10 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
 		this.add(sprite);
+
+		const label = this.label = scene.add.text(0, 0, 'cccccc');
+		label.setOrigin(0.5);
+		this.add(label);
 
 		scene.add.existing(this);
 
@@ -33,6 +40,26 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.on('play-animation', (animationId: string) => {
 				console.log('PhaserUnit play-animation', `${key}/${animationId}`);  // TODO remove
 				sprite.play(`${key}/${animationId}`);
+			});
+
+		this.updateLabelListener =
+			unit.on('update-label', (config: {
+				text? : string;
+				bold?: boolean;
+				color?: string;
+			}) => {
+				console.log('PhaserUnit update-label', unit.id()); // TODO remove
+
+				label.setFontFamily('Verdana');
+				label.setFontSize(16);
+				label.setFontStyle(config.bold ? 'bold' : 'normal');
+				label.setFill(config.color || '#fff');
+
+				const strokeThickness = ige.game.data.settings
+					.addStrokeToNameAndAttributes !== false ? 4 : 0;
+				label.setStroke('#000', strokeThickness);
+
+				label.setText(config.text || '');
 			});
 
 		scene.events.on('update', this.update, this);
@@ -53,6 +80,9 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.off('play-animation', this.playAnimationListener);
 			this.playAnimationListener = null;
 
+			unit.off('update-label', this.updateLabelListener);
+			this.updateLabelListener = null;
+
 			this.scene.events.off('update', this.update, this);
 
 			this.destroy();
@@ -63,11 +93,25 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 		const container = unit._pixiContainer;
 		const texture = unit._pixiTexture;
 		const sprite = this.sprite;
+		const label = this.label;
 
 		this.x = container.x;
 		this.y = container.y;
 
 		sprite.rotation = texture.rotation;
 		sprite.setScale(texture.scale.x, texture.scale.y);
+
+		label.setScale(
+			1 / ige.pixi.viewport.scale.x,
+			1 / ige.pixi.viewport.scale.y
+		);
+		label.y = -3 - sprite.height / 2
+			- 17 / ige.pixi.viewport.scale.y;
+
+		if (unit._pixiText) {
+			console.log('x', unit._pixiText.x, label.x);
+			console.log('y', unit._pixiText.y, label.y);
+		}
+
 	}
 }

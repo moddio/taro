@@ -21,6 +21,9 @@ var PhaserUnit = /** @class */ (function (_super) {
         var key = "unit/".concat(unit._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         _this.add(sprite);
+        var label = _this.label = scene.add.text(0, 0, 'cccccc');
+        label.setOrigin(0.5);
+        _this.add(label);
         scene.add.existing(_this);
         _this.followListener = unit.on('follow', function () {
             console.log('PhaserUnit follow', unit.id()); // TODO remove
@@ -35,6 +38,18 @@ var PhaserUnit = /** @class */ (function (_super) {
                 console.log('PhaserUnit play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
                 sprite.play("".concat(key, "/").concat(animationId));
             });
+        _this.updateLabelListener =
+            unit.on('update-label', function (config) {
+                console.log('PhaserUnit update-label', unit.id()); // TODO remove
+                label.setFontFamily('Verdana');
+                label.setFontSize(16);
+                label.setFontStyle(config.bold ? 'bold' : 'normal');
+                label.setFill(config.color || '#fff');
+                var strokeThickness = ige.game.data.settings
+                    .addStrokeToNameAndAttributes !== false ? 4 : 0;
+                label.setStroke('#000', strokeThickness);
+                label.setText(config.text || '');
+            });
         scene.events.on('update', _this.update, _this);
         return _this;
     }
@@ -47,6 +62,8 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.stopFollowListener = null;
             unit.off('play-animation', this.playAnimationListener);
             this.playAnimationListener = null;
+            unit.off('update-label', this.updateLabelListener);
+            this.updateLabelListener = null;
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
@@ -54,10 +71,18 @@ var PhaserUnit = /** @class */ (function (_super) {
         var container = unit._pixiContainer;
         var texture = unit._pixiTexture;
         var sprite = this.sprite;
+        var label = this.label;
         this.x = container.x;
         this.y = container.y;
         sprite.rotation = texture.rotation;
         sprite.setScale(texture.scale.x, texture.scale.y);
+        label.setScale(1 / ige.pixi.viewport.scale.x, 1 / ige.pixi.viewport.scale.y);
+        label.y = -3 - sprite.height / 2
+            - 17 / ige.pixi.viewport.scale.y;
+        if (unit._pixiText) {
+            console.log('x', unit._pixiText.x, label.x);
+            console.log('y', unit._pixiText.y, label.y);
+        }
     };
     return PhaserUnit;
 }(Phaser.GameObjects.Container));
