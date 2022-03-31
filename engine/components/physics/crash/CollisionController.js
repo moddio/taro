@@ -1,11 +1,14 @@
 // controller function
-const collision_controller = function(a, b, res) {
+const CollisionController = function(a, b, res) {
 	if (a.data.entity.body.type != 'dynamic') return;
+	// test case for now
+	if (!['unit', 'wall', 'projectile'].includes(a.data.entity._category) ||
+		!['unit', 'wall', 'projectile'].includes(b.data.entity._category)) return;
 
 	const b_type = b.data.entity.body.type;
 
-	if (b_type == 'static') return dyn_static_collision();
-	else dyn_dyn_collision();
+	if (b_type == 'static') return dyn_static_collision(a, b, res);
+	else return dyn_dyn_collision(a, b, res);
 };
 
 ////////////////////////////////////////////////////////////////
@@ -50,7 +53,7 @@ const dyn_dyn_collision = function(a, b, res) {
 		case ('unit'):
 		case ('item'):
 		default:
-			dyn_dyn_exitPositions(a, b, res);
+			dyn_dyn_exitPositions(a, b, res.overlapV);
 			dyn_dyn_exitVelocities(a.data.entity, b.data.entity, res.overlapN);
 	}
 };
@@ -59,8 +62,8 @@ const dyn_dyn_exitPositions = function(a, b, overlapV) {
 	const halfOverlapV = overlapV.clone().scale(0.5);
 
 	b.data.entity._hasMoved = true;
-	a.data._entity.translateTo(a.pos.x + halfOverlapV.x, a.pos.y + halfOverlapV.y);
-	b.data._entity.translateTo(b.pos.x - halfOverlapV.x, b.pos.y - halfOverlapV.y);
+	a.data.entity.translateTo(a.pos.x - halfOverlapV.x, a.pos.y - halfOverlapV.y);
+	b.data.entity.translateTo(b.pos.x + halfOverlapV.x, b.pos.y + halfOverlapV.y);
 };
 
 const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
@@ -81,3 +84,5 @@ const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
 	b_entity._velocity.x = bVel.x;
 	b_entity._velocity.y = bVel.y;
 };
+
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = CollisionController; }
