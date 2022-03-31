@@ -9,6 +9,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 	private playAnimationListener: EvtListener;
 
 	private updateLabelListener: EvtListener;
+	private hideLabelListener: EvtListener;
 
 	constructor (scene: Phaser.Scene,
 				 private unit: Unit) {
@@ -49,6 +50,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 				color?: string;
 			}) => {
 				console.log('PhaserUnit update-label', unit.id()); // TODO remove
+				label.visible = true;
 
 				label.setFontFamily('Verdana');
 				label.setFontSize(16);
@@ -60,6 +62,16 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 				label.setStroke('#000', strokeThickness);
 
 				label.setText(config.text || '');
+
+				label.y = -25 -
+					Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
+				label.setScale(1.25);
+			});
+
+		this.hideLabelListener =
+			unit.on('hide-label', () => {
+				console.log('PhaserUnit hide-label', unit.id()); // TODO remove
+				label.visible = false;
 			});
 
 		scene.events.on('update', this.update, this);
@@ -83,6 +95,9 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.off('update-label', this.updateLabelListener);
 			this.updateLabelListener = null;
 
+			unit.off('hide-label', this.hideLabelListener);
+			this.hideLabelListener = null;
+
 			this.scene.events.off('update', this.update, this);
 
 			this.destroy();
@@ -93,25 +108,11 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 		const container = unit._pixiContainer;
 		const texture = unit._pixiTexture;
 		const sprite = this.sprite;
-		const label = this.label;
 
 		this.x = container.x;
 		this.y = container.y;
 
 		sprite.rotation = texture.rotation;
 		sprite.setScale(texture.scale.x, texture.scale.y);
-
-		label.setScale(
-			1 / ige.pixi.viewport.scale.x,
-			1 / ige.pixi.viewport.scale.y
-		);
-		label.y = -3 - sprite.height / 2
-			- 17 / ige.pixi.viewport.scale.y;
-
-		if (unit._pixiText) {
-			console.log('x', unit._pixiText.x, label.x);
-			console.log('y', unit._pixiText.y, label.y);
-		}
-
 	}
 }

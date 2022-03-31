@@ -1105,6 +1105,7 @@ var Unit = IgeEntityBox2d.extend({
 		);
 
 		if (hideLabel) {
+			this.emit('hide-label');
 			return;
 		}
 
@@ -1117,14 +1118,6 @@ var Unit = IgeEntityBox2d.extend({
 		// if (isMyUnit) {
 		//     color = '#99FF00';
 		// }
-
-		console.log(self._stats.name, { // TODO remove
-			shouldBeBold: isMyUnit,
-			parentUnit: self.id(),
-			gluedIndex: 0,
-			color: color
-		});
-
 
 		self.unitNameLabel = new IgePixiFloatingText(self._stats.name, {
 			shouldBeBold: isMyUnit,

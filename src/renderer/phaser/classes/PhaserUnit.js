@@ -41,6 +41,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.updateLabelListener =
             unit.on('update-label', function (config) {
                 console.log('PhaserUnit update-label', unit.id()); // TODO remove
+                label.visible = true;
                 label.setFontFamily('Verdana');
                 label.setFontSize(16);
                 label.setFontStyle(config.bold ? 'bold' : 'normal');
@@ -49,6 +50,14 @@ var PhaserUnit = /** @class */ (function (_super) {
                     .addStrokeToNameAndAttributes !== false ? 4 : 0;
                 label.setStroke('#000', strokeThickness);
                 label.setText(config.text || '');
+                label.y = -25 -
+                    Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
+                label.setScale(1.25);
+            });
+        _this.hideLabelListener =
+            unit.on('hide-label', function () {
+                console.log('PhaserUnit hide-label', unit.id()); // TODO remove
+                label.visible = false;
             });
         scene.events.on('update', _this.update, _this);
         return _this;
@@ -64,6 +73,8 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.playAnimationListener = null;
             unit.off('update-label', this.updateLabelListener);
             this.updateLabelListener = null;
+            unit.off('hide-label', this.hideLabelListener);
+            this.hideLabelListener = null;
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
@@ -71,18 +82,10 @@ var PhaserUnit = /** @class */ (function (_super) {
         var container = unit._pixiContainer;
         var texture = unit._pixiTexture;
         var sprite = this.sprite;
-        var label = this.label;
         this.x = container.x;
         this.y = container.y;
         sprite.rotation = texture.rotation;
         sprite.setScale(texture.scale.x, texture.scale.y);
-        label.setScale(1 / ige.pixi.viewport.scale.x, 1 / ige.pixi.viewport.scale.y);
-        label.y = -3 - sprite.height / 2
-            - 17 / ige.pixi.viewport.scale.y;
-        if (unit._pixiText) {
-            console.log('x', unit._pixiText.x, label.x);
-            console.log('y', unit._pixiText.y, label.y);
-        }
     };
     return PhaserUnit;
 }(Phaser.GameObjects.Container));
