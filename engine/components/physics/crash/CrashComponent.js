@@ -28,6 +28,10 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.crash.SAT = Crash.SAT;
 		this.crash.Vector = Crash.SAT.Vector;
 		this.crash.Response = Crash.SAT.Response;
+		this.crash.cancel = function () {
+			this.BREAK = true;
+			return false;
+		};
 
 		this.totalBodiesCreated = 0;
 		this.physicsTickDuration = 0;
@@ -36,94 +40,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.avgPhysicsTickDuration = 0;
 
-		const listener = function(a, b, res, cancel) {
-			if (a.data.entity._category != 'unit' && a.data.entity._category != 'projectile') return;
-			if (b.data.entity._category != 'item' && b.data.entity._category != 'region' && b.data.entity._category != 'sensor') {
-				if (b.data.entity.body.type == 'static') {
-					a.pos = a.sat.pos = a.sat.pos.sub(res.overlapV);
-					a.data.entity._translate.x = a.pos.x;
-					a.data.entity._translate.y = a.pos.y;
-					/*if (a.data.entity._category == 'unit') {
-						a.data.entity._velocity.x = 0;
-						a.data.entity._velocity.y = 0;
-					}
-					else if (a.data.entity._category == 'projectile') {
-						a.data.entity._velocity.x = -a.data.entity._velocity.x;
-						a.data.entity._velocity.y = -a.data.entity._velocity.y;
-					}*/
-				} else /*if (b.data.entity._category == 'unit' || b.data.entity._category == 'projectile')*/ {
-					// scale the vector to 1/2
-					// console.log(res);
-					const halfOverlapVB = res.overlapV.clone().scale(0.5);
-					const halfOverlapVA = halfOverlapVB.clone().reverse();
-
-					// console.log(a.data.igeId, b.data.igeId);
-					// remember this overlapV is defined as if 'a' is the acting body
-					// so we subtract from 'a' and add to 'b'
-					// added 'moveByVec' to crash. It adds a vector to Collider.pos
-
-					// communicate this translation to the entities
-					// a.data.entity._translate.x = a.pos.x;
-					// a.data.entity._translate.y = a.pos.y;
-					// b.data.entity._translate.x = b.pos.x;
-					// b.data.entity._translate.y = b.pos.y;
-
-					// console.log('Overlap normal from A: ', res.overlapN);
-
-					const appliedAngle = Math.atan2(res.overlapN.y, res.overlapN.x);
-					// console.log('appliedAngle: ', appliedAngle);
-					// console.log('Math.PI % Math.abs(appliedAngle): ', round((Math.PI * 2) % Math.abs(appliedAngle)));
-					// Math.abs(appliedAngle) >= ANGLE_MINIMUM && 
-					if ((Math.PI * 2) % Math.abs(appliedAngle) !== 0) {
-						a.data.entity.translateTo(a.pos.x + halfOverlapVA.x, a.pos.y + halfOverlapVA.y);
-						b.data.entity.translateTo(b.pos.x + halfOverlapVB.x, b.pos.y + halfOverlapVB.y);
-						b.data.entity.rotateTo(0, 0, -(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)));
-						// console.log('Applying angle to... ', b.data.igeId, round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
-					} else {
-						// console.log('Not applying this angle to b... ', round(Math.atan2(res.overlapN.y, res.overlapN.x) + (Math.PI / 2)), '\n');
-					}
-
-
-					// zero the velocities for now
-					// this will change when we add mass/force
-					a.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
-
-					//const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-					//const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-					//a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
-					//a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
-					//b.data.entity._velocity.x += (speed * res.overlapN.x) * 2;
-					//b.data.entity._velocity.y += (speed * res.overlapN.y) * 2;
-
-					//b.data.entity._velocity.x += a.data.entity._velocity.x/2;
-					//b.data.entity._velocity.y += a.data.entity._velocity.y/2;
-				}
-				if (a.data.entity._category == 'unit') {
-					a.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
-				}
-				else if (a.data.entity._category == 'projectile') {
-					a.data.entity._velocity.x = 0;
-					a.data.entity._velocity.y = 0;
-					//const vRelativeVelocity = {x: a.data.entity._velocity.x - b.data.entity._velocity.x, y: a.data.entity._velocity.y - b.data.entity._velocity.y};
-					//const speed = vRelativeVelocity.x * res.overlapN.x + vRelativeVelocity.y * res.overlapN.y;
-					//a.data.entity._velocity.x -= (speed * res.overlapN.x) * 2;
-					//a.data.entity._velocity.y -= (speed * res.overlapN.y) * 2;
-
-					//a.data.entity._velocity.x -= a.data.entity._velocity.x * 2;
-					//a.data.entity._velocity.y -= a.data.entity._velocity.y * 2;
-				}
-			}
-
-			/*else if (b.data.entity._category == 'sensor') {
-				console.log('sensor');
-			}*/
-			/*else {
-				console.log('enter region player pos', a.pos.x, a.pos.y)
-			} */
-		};
-
+		// we should consider moving all of our collision listeners outside of the Component
 		const contactDetails = function (a, b, res, cancel) {
 			ige.trigger._beginContactCallback({
 				m_fixtureA: {
@@ -139,7 +56,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 			});
 		};
 
-		this.crash.onCollision(listener);
+		this.crash.onCollision(CollisionController);
 		this.crash.onCollision(contactDetails);
 	},
 
