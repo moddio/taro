@@ -63,8 +63,8 @@ const PhysicsComponent = IgeEventingClass.extend({
 			aVel = bVel.clone().projectN(normal).add(aVel.clone().projectN(tangent));
 			bVel = temp.clone().projectN(normal).add(bVel.clone().projectN(tangent));
 
-			const aRestitution = aEntity.body.fixtures[0].restitution;
-			const bRestitution = bEntity.body.fixtures[0].restitution;
+			const aRestitution = aEntity.bodyDef.fixtures[0].restitution;
+			const bRestitution = bEntity.bodyDef.fixtures[0].restitution;
 
 			aEntity._velocity.x = aVel.x * aRestitution;
 			aEntity._velocity.y = aVel.y * aRestitution;
@@ -79,7 +79,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 			// aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
 			aVel = aVel.clone().sub(aVel.projectN(overlapN).scale(2));
 
-			const aRestitution = aEntity.body.fixtures[0].restitution;
+			const aRestitution = aEntity.bodyDef.fixtures[0].restitution;
 
 			aEntity._velocity.x = aVel.x * aRestitution;
 			aEntity._velocity.y = aVel.y * aRestitution;
