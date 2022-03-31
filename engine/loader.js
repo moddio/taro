@@ -91,6 +91,7 @@ window.igeLoader = (function () {
 		this._physicsList = igePhysicsConfig.igePhysicsChoices[clientPhysicsEngine] ?
 			igePhysicsConfig.igePhysicsChoices[clientPhysicsEngine] :
 			// we need to have an IgeEntityPhysics class no matter what
+			// 3/31/22 ran into an issue with this hack when I tried to add a file to PhysicsConfig
 			[igePhysicsConfig.igePhysicsChoices[serverPhysicsEngine][1]];
 
 		this._physicsGameClasses = igePhysicsConfig.gameClasses;

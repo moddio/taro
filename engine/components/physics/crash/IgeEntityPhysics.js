@@ -210,13 +210,16 @@ const IgeEntityPhysics = IgeEntity.extend({
 		// update position based on its velocity, collision, and damping
 		if (Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
 			this.crashBody.move(this._velocity.x, this._velocity.y);
-			let damping = 1 + this.bodyDef.linearDamping * 0.03;
+			let damping = 1 + this.bodyDef.linearDamping * 0.015;
 			//if (damping === 0) damping = 1;
 			this._velocity.x = this._velocity.x / damping;
 			this._velocity.y = this._velocity.y / damping;
 
 			this._translate.x = this.crashBody.pos.x;
 			this._translate.y = this.crashBody.pos.y;
+
+			//ige.physics.crash.cancel();
+			this.crashBody.disable = false;
 		}
 	},
 
@@ -328,6 +331,7 @@ const IgeEntityPhysics = IgeEntity.extend({
 		if (ige.isServer) {
 			if (this.body) {
 				if (this._hasMoved && this.body.type != 'spriteOnly') {
+					// console.log('translate collider')
 					this.translateColliderTo(x, y);
 				}
 			}
