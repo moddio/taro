@@ -63,11 +63,14 @@ const PhysicsComponent = IgeEventingClass.extend({
 			aVel = bVel.clone().projectN(normal).add(aVel.clone().projectN(tangent));
 			bVel = temp.clone().projectN(normal).add(bVel.clone().projectN(tangent));
 
-			aEntity._velocity.x = aVel.x;
-			aEntity._velocity.y = aVel.y;
+			const aRestitution = aEntity.body.fixtures[0].restitution;
+			const bRestitution = bEntity.body.fixtures[0].restitution;
 
-			bEntity._velocity.x = bVel.x;
-			bEntity._velocity.y = bVel.y;
+			aEntity._velocity.x = aVel.x * aRestitution;
+			aEntity._velocity.y = aVel.y * aRestitution;
+
+			bEntity._velocity.x = bVel.x * bRestitution;
+			bEntity._velocity.y = bVel.y * bRestitution;
 		};
 
 		const dyn_static_exitVelocity = function(aEntity, overlapN) {
@@ -76,8 +79,10 @@ const PhysicsComponent = IgeEventingClass.extend({
 			// aVelVec = aVelVec.sub(res.overlapN.clone().scale((aVelVec.dot(res.overlapN))));
 			aVel = aVel.clone().sub(aVel.projectN(overlapN).scale(2));
 
-			aEntity._velocity.x = aVel.x;
-			aEntity._velocity.y = aVel.y;
+			const aRestitution = aEntity.body.fixtures[0].restitution;
+
+			aEntity._velocity.x = aVel.x * aRestitution;
+			aEntity._velocity.y = aVel.y * aRestitution;
 		};
 
 		const listener = function(a, b, res, cancel) {
