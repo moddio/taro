@@ -41,7 +41,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 		this.totalTimeElapsed = 0;
 		this.avgPhysicsTickDuration = 0;
 
-		let aVelVec, bVelVec;
+		// let aVelVec, bVelVec;
 
 		// const dyn_dyn_exitVelocities = function(aEntity, bEntity, overlapN) {
 		// 	const normal = overlapN.clone();
