@@ -2,8 +2,8 @@
 const CollisionController = function(a, b, res) {
 	if (a.data.entity.body.type != 'dynamic') return;
 	// test case for now
-	if (!['unit', 'wall', 'projectile', 'item'].includes(a.data.entity._category) ||
-		!['unit', 'wall', 'projectile', 'item'].includes(b.data.entity._category)) return;
+	if (!['unit', 'wall', 'projectile'].includes(a.data.entity._category) ||
+		!['unit', 'wall', 'projectile'].includes(b.data.entity._category)) return;
 
 	const b_type = b.data.entity.body.type;
 
