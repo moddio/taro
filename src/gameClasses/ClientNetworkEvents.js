@@ -277,10 +277,10 @@ var ClientNetworkEvents = {
 				ige.playerUi.disableCustomButton(data.buttonId);
 				break;
 			case 'enableCustomButton':
-				ige.playerUi.toggleCustomButtonVisibility(data.buttonId);
+				ige.playerUi.enableCustomButton(data.buttonId);
 				break;
 			case 'toggleCustomButtonUsability':
-				ige.playerUi.disableCustomButton(data.buttonId);
+				ige.playerUi.toggleCustomButtonUsability(data.buttonId);
 				break;
 			case 'openWebsite':
 				ige.playerUi.openWebsite(data);

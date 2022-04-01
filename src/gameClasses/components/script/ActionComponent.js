@@ -2604,7 +2604,7 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'removeCustomButton',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						};
 						break;
@@ -2615,7 +2615,7 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'hideCustomButton',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						};
 						break;
@@ -2626,9 +2626,10 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'showCustomButton',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						};
+						break;
 
 					case 'toggleCustomButtonVisibilityForPlayer': // toggles visibility of a button to player
 						var player = ige.variable.getValue(action.player, vars);
@@ -2636,9 +2637,10 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'toggleCustomButtonVisibility',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						};
+						break;
 
 					case 'disableCustomButtonForPlayer':
 						var player = ige.variable.getValue(action.player, vars);
@@ -2646,9 +2648,10 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'disableCustomButton',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						};
+						break;
 
 					case 'enableCustomButtonForPlayer':
 						var player = ige.variable.getValue(action.player, vars);
@@ -2656,7 +2659,7 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'enableCustomButton',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						}
 						break;
@@ -2667,7 +2670,7 @@ var ActionComponent = IgeEntity.extend({
 						if(player && player._stats && player._stats.clientId) {
 							ige.network.send('ui', {
 								command: 'toggleCustomButtonUsability',
-								buttonId: action.buttonId
+								buttonId: action.id
 							}, player._stats.clientId);
 						};
 						break;
