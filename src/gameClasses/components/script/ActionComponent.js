@@ -2594,8 +2594,82 @@ var ActionComponent = IgeEntity.extend({
 							ige.network.send('ui', {
 								command: 'addCustomButton',
 								button: action.button
-							}, player._stats.clientId)
+							}, player._stats.clientId);
+						};
+						break;
+
+					case 'removeCustomButtonFromPlayer':
+						var player = ige.variable.getValue(action.player, vars);
+
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'removeCustomButton',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
+						};
+						break;
+
+					case 'hideCustomButtonFromPlayer': // hides existing custom button from player
+						var player = ige.variable.getValue(action.player, vars);
+
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'hideCustomButton',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
+						};
+						break;
+					
+					case 'showCustomButtonForPlayer': // show existing custom button from player
+						var player = ige.variable.getValue(action.player, vars);
+
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'showCustomButton',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
+						};
+
+					case 'toggleCustomButtonVisibilityForPlayer': // toggles visibility of a button to player
+						var player = ige.variable.getValue(action.player, vars);
+
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'toggleCustomButtonVisibility',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
+						};
+
+					case 'disableCustomButtonForPlayer':
+						var player = ige.variable.getValue(action.player, vars);
+					
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'disableCustomButton',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
+						};
+
+					case 'enableCustomButtonForPlayer':
+						var player = ige.variable.getValue(action.player, vars);
+
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'enableCustomButton',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
 						}
+						break;
+
+					case 'toggleCustomButtonUsabilityForPlyer':
+						var player = ige.variable.getValue(action.player, vars);
+
+						if(player && player._stats && player._stats.clientId) {
+							ige.network.send('ui', {
+								command: 'toggleCustomButtonUsability',
+								buttonId: action.buttonId
+							}, player._stats.clientId);
+						};
 						break;
 
 					case 'comment':

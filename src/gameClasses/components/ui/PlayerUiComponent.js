@@ -447,8 +447,8 @@ var PlayerUiComponent = IgeEntity.extend({
 	addCustomButton: function (data) {
 		if(data && typeof data.button == 'object') {
 			var button = document.createElement('button');
-			var { text, customID, type, height, width, x, y } = data.button;
-			button.id = `${customID ?? "default"}`;
+			var { text, id, type, height, width, x, y } = data.button;
+			button.id = `${id ?? "default"}`;
 			button.className = `btn btn-${type ?? "secondary"}`;
 			button.onclick = () => {
 				ige.network.send('playerButtonClick', {
@@ -466,6 +466,45 @@ var PlayerUiComponent = IgeEntity.extend({
 			document.getElementById("game-div").appendChild(button);
 		};
 	},
+	removeCustomButton: function (id) {
+		if(id) {
+			$(`#${id}`).remove();
+ 		};
+	},
+	hideCustomButton: function (id) {
+		if(id) {
+			$(`#${id}`).hide();
+		};
+	},
+	showCustomButton: function (id) {
+		if(id) {
+			$(`#${id}`).show();
+		};
+	},
+	toggleCustomButtonVisibility: function (id) {
+		if(id) {
+			$(`#${id}`).toggle();
+		};
+	},
+	disableCustomButton: function (id) {
+		if(id) {
+			$(`#${id}`).prop({ disabled: true });
+		};
+	},
+	enableCustomButton: function (id) {
+		if(id) {
+			$(`#${id}`).prop({ disabled: false });
+		};
+	},
+	toggleCustomButtonUsability: function (id) {
+		if(id) {
+			if($(`#${id}`).prop('disabled')) {
+				$(`#${id}`).prop({ disabled: false })
+			} else {
+				$(`#${id}`).prop({ disabled: true })
+			}
+		}
+	}
 });
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = PlayerUiComponent; }

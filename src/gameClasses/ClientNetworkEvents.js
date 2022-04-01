@@ -261,6 +261,27 @@ var ClientNetworkEvents = {
 			case 'addCustomButton':
 				ige.playerUi.addCustomButton(data);
 				break;
+			case 'removeCustomButton':
+				ige.playerUi.removeCustomButton(data.buttonId);
+				break;
+			case 'hideCustomButton':
+				ige.playerUi.hideCustomButton(data.buttonId);
+				break;
+			case 'showCustomButton':
+				ige.playerUi.showCustomButton(data.buttonId);
+				break;
+			case 'toggleCustomButtonVisibility':
+				ige.playerUi.toggleCustomButtonVisibility(data.buttonId);
+				break;
+			case 'disableCustomButton':
+				ige.playerUi.disableCustomButton(data.buttonId);
+				break;
+			case 'enableCustomButton':
+				ige.playerUi.toggleCustomButtonVisibility(data.buttonId);
+				break;
+			case 'toggleCustomButtonUsability':
+				ige.playerUi.disableCustomButton(data.buttonId);
+				break;
 			case 'openWebsite':
 				ige.playerUi.openWebsite(data);
 				break;
