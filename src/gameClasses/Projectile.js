@@ -1,8 +1,8 @@
-var Projectile = IgeEntityBox2d.extend({
+var Projectile = IgeEntityPhysics.extend({
 	classId: 'Projectile',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer);
 		var self = this;
 		if (ige.isClient) {
@@ -112,7 +112,9 @@ var Projectile = IgeEntityBox2d.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	// apply texture based on state
@@ -179,7 +181,10 @@ var Projectile = IgeEntityBox2d.extend({
 	},
 	destroy: function () {
 		this.playEffect('destroy');
-		IgeEntityBox2d.prototype.destroy.call(this);
+		IgeEntityPhysics.prototype.destroy.call(this);
+		if (ige.physics && ige.physics.engine == 'CRASH') {
+			this.destroyBody();
+		}
 	}
 });
 

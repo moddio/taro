@@ -1,8 +1,8 @@
-var Item = IgeEntityBox2d.extend({
+var Item = IgeEntityPhysics.extend({
 	classId: 'Item',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer); // ensure that entityId is consistent between server & client
 		if (ige.isClient) {
 			this._pixiContainer = new PIXI.Container();
@@ -96,6 +96,7 @@ var Item = IgeEntityBox2d.extend({
 
 		if (ige.isServer) {
 			if (this._stats.stateId == 'dropped') {
+				// console.log('item is dropping', this)	// fix this
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1);
@@ -113,7 +114,7 @@ var Item = IgeEntityBox2d.extend({
 		}
 
 		if (body && body.type != 'none') {
-			IgeEntityBox2d.prototype.updateBody.call(self, initTransform);
+			IgeEntityPhysics.prototype.updateBody.call(self, initTransform);
 
 			self.show();
 			if (ige.isClient) {
@@ -444,6 +445,7 @@ var Item = IgeEntityBox2d.extend({
 						var hitboxData = this._stats.damageHitBox;
 
 						if (hitboxData) {
+							// console.log(hitboxData);
 							var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
 							var hitboxPosition = {
 								x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
@@ -465,6 +467,7 @@ var Item = IgeEntityBox2d.extend({
 								unitAttributes: this._stats.damage.unitAttributes,
 								playerAttributes: this._stats.damage.playerAttributes
 							};
+							// console.log(owner._translate.x, owner._translate.y, hitbox);                                              //////////Hitbox log
 
 							entities = ige.physics.getBodiesInRegion(hitbox);
 
@@ -802,7 +805,7 @@ var Item = IgeEntityBox2d.extend({
 			}
 		}
 
-		IgeEntityBox2d.prototype.remove.call(this);
+		IgeEntityPhysics.prototype.remove.call(this);
 		// this.destroy()
 	},
 
@@ -1004,7 +1007,9 @@ var Item = IgeEntityBox2d.extend({
 			}
 		}
 
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	// what does this do? - Jaeyun
@@ -1025,7 +1030,7 @@ var Item = IgeEntityBox2d.extend({
 	},
 	destroy: function () {
 		this.playEffect('destroy');
-		IgeEntityBox2d.prototype.destroy.call(this);
+		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
 

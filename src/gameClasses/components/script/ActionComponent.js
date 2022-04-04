@@ -219,7 +219,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'setPlayerAttribute':
 
 						var attrId = ige.variable.getValue(action.attribute, vars);
-						var player = entity;						
+						var player = entity;
 						if (player && player._category == 'player' && player._stats.attributes) {
 							var attribute = player._stats.attributes[attrId];
 							if (attribute != undefined) {
@@ -570,7 +570,7 @@ var ActionComponent = IgeEntity.extend({
 							}, player._stats.clientId);
 						}
 						break;
-						
+
 					case 'showMenu':
 						var player = ige.variable.getValue(action.player, vars);
 						if (player && player._stats) {
@@ -1000,6 +1000,7 @@ var ActionComponent = IgeEntity.extend({
 									}
 								}
 							);
+
 							var unit = player.createUnit(data);
 							ige.game.lastCreatedUnitId = unit.id();
 						} else {
@@ -1148,7 +1149,8 @@ var ActionComponent = IgeEntity.extend({
 					case 'createFloatingText':
 						var position = ige.variable.getValue(action.position, vars);
 						var text = ige.variable.getValue(action.text, vars);
-						ige.network.send('createFloatingText', { position: position, text: text });
+						var color = ige.variable.getValue(action.color, vars);
+						ige.network.send('createFloatingText', { position: position, text: text, color: color });
 						break;
 
 						/* Item */
@@ -2245,7 +2247,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'moveEntity':
 						var position = ige.variable.getValue(action.position, vars);
 						var entity = ige.variable.getValue(action.entity, vars);
-						
+
 						if (position && entity && ['unit', 'item', 'projectile'].includes(entity._category)) {
 							entity.teleportTo(position.x, position.y, entity._rotate.z);
 						}
@@ -2366,6 +2368,7 @@ var ActionComponent = IgeEntity.extend({
 								//     entity.rotateBy(0, 0, -rotateDiff);
 								// }
 								entity.rotateTo(0, 0, newFacingAngle);
+								// console.log('rotating')
 							}
 							// &&
 							else if (ige.isClient && ige.client.myPlayer && (entity == ige.client.selectedUnit || entity.getOwner() == ige.client.selectedUnit)) {

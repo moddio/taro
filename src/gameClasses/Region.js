@@ -1,10 +1,10 @@
 
-var Region = IgeEntityBox2d.extend({
+var Region = IgeEntityPhysics.extend({
 	classId: 'Region',
 	componentId: 'region',
 
 	init: function (data, entityIdFromServer) {
-		IgeEntityBox2d.prototype.init.call(this);
+		IgeEntityPhysics.prototype.init.call(this);
 
 		// on server regions are offsetted by 2 tile. So adding offset just server
 		// making region work fine on both side
@@ -47,9 +47,23 @@ var Region = IgeEntityBox2d.extend({
 
 			var regionDimension = self._stats.default;
 
+			if (ige.physics && ige.physics.engine === 'CRASH') {
+				self._translate.x = regionDimension.x;
+				self._translate.y = regionDimension.y;
+			}
+			else {
+				self._translate.x = regionDimension.x + (regionDimension.width / 2);
+				self._translate.y = regionDimension.y + (regionDimension.height / 2);
+			}
+			
+	
 			self.updateBody({
-				translate: { x: regionDimension.x + (regionDimension.width / 2), y: regionDimension.y + (regionDimension.height / 2) }
+				translate: { x: self._translate.x, y: self._translate.y}
 			});
+			// if (ige.isClient) {
+			// 	this._pixiContainer = new PIXI.Container();
+			// 	this.drawCrashCollider(regionDimension);
+			// }
 
 			if (ige.isServer) {
 				self.streamMode(1);
@@ -112,7 +126,7 @@ var Region = IgeEntityBox2d.extend({
 			// shapeData.x = regionCordinates.x;
 			// shapeData.y = regionCordinates.y;
 			this._stats.currentBody.fixtures[0].shape.data = shapeData;
-			this.box2dBody(this._stats.currentBody);
+			this.physicsBody(this._stats.currentBody);
 		}
 
 		if (this.regionUi) {
