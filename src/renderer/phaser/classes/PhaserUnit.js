@@ -65,7 +65,9 @@ var PhaserUnit = /** @class */ (function (_super) {
     }
     PhaserUnit.prototype.update = function ( /*time: number, delta: number*/) {
         var unit = this.unit;
-        if (unit._destroyed) {
+        var container = unit._pixiContainer;
+        var texture = unit._pixiTexture;
+        if (unit._destroyed || container._destroyed) {
             unit.off('follow', this.followListener);
             this.followListener = null;
             unit.off('stop-follow', this.stopFollowListener);
@@ -80,11 +82,9 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.destroy();
             return;
         }
-        var container = unit._pixiContainer;
-        var texture = unit._pixiTexture;
-        var sprite = this.sprite;
         this.x = container.x;
         this.y = container.y;
+        var sprite = this.sprite;
         sprite.rotation = texture.rotation;
         sprite.setScale(texture.scale.x, texture.scale.y);
     };

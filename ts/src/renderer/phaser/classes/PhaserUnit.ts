@@ -82,8 +82,10 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 	update (/*time: number, delta: number*/): void {
 
 		const unit = this.unit;
+		const container = unit._pixiContainer;
+		const texture = unit._pixiTexture;
 
-		if (unit._destroyed) {
+		if (unit._destroyed || container._destroyed) {
 
 			unit.off('follow', this.followListener);
 			this.followListener = null;
@@ -107,13 +109,10 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			return;
 		}
 
-		const container = unit._pixiContainer;
-		const texture = unit._pixiTexture;
-		const sprite = this.sprite;
-
 		this.x = container.x;
 		this.y = container.y;
 
+		const sprite = this.sprite;
 		sprite.rotation = texture.rotation;
 		sprite.setScale(texture.scale.x, texture.scale.y);
 	}
