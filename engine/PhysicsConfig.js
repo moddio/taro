@@ -11,7 +11,7 @@ var igePhysicsConfig = {
 		/* Physics Libraries */
 		planck: [
 			['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
-			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityPhysics.js'],
 			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
 			['csap', 'dists', './components/physics/box2d/dists.js'],
 			['csap', 'planck', './components/physics/box2d/dists/planck/planck.js']
@@ -19,7 +19,7 @@ var igePhysicsConfig = {
 
 		box2dweb: [
 			['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
-			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityPhysics.js'],
 			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
 			['csap', 'dists', './components/physics/box2d/dists.js'],
 			['csap', 'box2dweb', './components/physics/box2d/dists/box2dweb/lib_box2d.js', 'box2dweb'],
@@ -28,7 +28,7 @@ var igePhysicsConfig = {
 
 		box2dts: [
 			['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
-			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityBox2d.js'],
+			['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityPhysics.js'],
 			['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
 			['csap', 'dists', './components/physics/box2d/dists.js'],
 			['csap', 'box2dts', './components/physics/box2d/dists/flyoverbox2dts/bundle.js']
@@ -36,7 +36,7 @@ var igePhysicsConfig = {
 
 		crash: [
 			['csap', 'PhysicsComponent', './components/physics/crash/CrashComponent.js'],
-			['csap', 'IgeEntityPhysics', './components/physics/crash/IgeEntityCrash.js'],
+			['csap', 'IgeEntityPhysics', './components/physics/crash/IgeEntityPhysics.js'],
 			['csap', 'CollisionController', './components/physics/crash/CollisionController.js'],
 			['csap', 'quickselect', './components/physics/crash/crashDependencies/quickselect.js'],
 			['csap', 'rbush', './components/physics/crash/crashDependencies/rbush.js'],
