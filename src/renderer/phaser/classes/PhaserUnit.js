@@ -18,6 +18,7 @@ var PhaserUnit = /** @class */ (function (_super) {
     function PhaserUnit(scene, unit) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
+        _this.attributes = [];
         var key = "unit/".concat(unit._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         _this.add(sprite);

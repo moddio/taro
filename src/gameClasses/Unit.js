@@ -199,6 +199,9 @@ var Unit = IgeEntityBox2d.extend({
 		self.attributeBars = [];
 
 		if (!ownerPlayer) {
+			this.emit('render-attributes', {
+				attrs: attributesToRender
+			});
 			return;
 		}
 
@@ -229,6 +232,10 @@ var Unit = IgeEntityBox2d.extend({
 				index: i
 			});
 		}
+
+		this.emit('render-attributes', {
+			attrs: attributesToRender
+		});
 	},
 
 	updateAttributeBar: function (attr) {
@@ -277,6 +284,11 @@ var Unit = IgeEntityBox2d.extend({
 			if (pixiBar && shouldRender && showOnlyWhenValueChanged) {
 				pixiBar.showValueAndFadeOut();
 			}
+
+			this.emit('update-attribute', {
+				attr: attr,
+				shouldRender: shouldRender
+			});
 		}
 	},
 

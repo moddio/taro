@@ -3,6 +3,8 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 	sprite: Phaser.GameObjects.Sprite;
 	label: Phaser.GameObjects.Text;
 
+	private attributes: PhaserAttributeBar[] = [];
+
 	private followListener: EvtListener;
 	private stopFollowListener: EvtListener;
 
