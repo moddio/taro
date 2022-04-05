@@ -1142,10 +1142,10 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'getEntireMapRegion':
 					var region = {
-						x: ige.map.data.tilewidth * 2,
-						y: ige.map.data.tileheight * 2,
-						width: (ige.map.data.width * ige.map.data.tilewidth) - (ige.map.data.tilewidth * 2),
-						height: (ige.map.data.height * ige.map.data.tileheight) - (ige.map.data.tileheight * 2)
+						x: 0,
+						y: 0,
+						width: ige.map.data.width * ige.map.data.tilewidth,
+						height: ige.map.data.height * ige.map.data.tileheight
 					};
 
 					returnValue = { _stats: { default: region } };
