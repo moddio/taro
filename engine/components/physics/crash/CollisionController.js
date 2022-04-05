@@ -58,7 +58,7 @@ const dyn_dyn_collision = function(a, b, res) {
 		case ('item'):
 		default:
 			dyn_dyn_exitPositions(a, b, res.overlapV);
-			dyn_dyn_exitVelocities(a.data.entity, b.data.entity, res.overlapN);
+			dyn_dyn_exitVelocities(a, b, a.data.entity, b.data.entity, res.overlapN);
 	}
 };
 
@@ -70,7 +70,7 @@ const dyn_dyn_exitPositions = function(a, b, overlapV) {
 	b.data.entity.translateTo(b.pos.x + halfOverlapV.x, b.pos.y + halfOverlapV.y);
 };
 
-const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
+const dyn_dyn_exitVelocities = function(a, b, a_entity, b_entity, overlapN) {
 	const normal = overlapN.clone();
 	const tangent = normal.clone().perp();
 	let temp;
@@ -83,18 +83,26 @@ const dyn_dyn_exitVelocities = function(a_entity, b_entity, overlapN) {
 	let bVel = new ige.physics.crash.Vector(b_entity._velocity.x, b_entity._velocity.y);
 	temp = aVel;
 
-	aVel = bVel.clone().projectN(normal).add(aVel.clone().projectN(tangent));
-	bVel = temp.clone().projectN(normal).add(bVel.clone().projectN(tangent));
+	//aVel = bVel.clone().projectN(normal).add(aVel.clone().projectN(tangent));
+	//bVel = temp.clone().projectN(normal).add(bVel.clone().projectN(tangent));
+
+	const vRelativeVelocity = {x: aVel.x - bVel.x, y: aVel.y - bVel.y};
+	const speed = vRelativeVelocity.x * overlapN.x + vRelativeVelocity.y * overlapN.y;
+	let impulse = 2 * speed / (a.mass + b.mass);
+	a_entity._velocity.x -= (impulse * b.mass * overlapN.x);
+	a_entity._velocity.y -= (impulse * b.mass * overlapN.y);
+	b_entity._velocity.x += (impulse * a.mass * overlapN.x);
+	b_entity._velocity.y += (impulse * a.mass * overlapN.y);
 
 	//apply restitutions
-	aVel = aVel.scale(a_restitution);
+	/*aVel = aVel.scale(a_restitution);
 	bVel = bVel.scale(b_restitution);
 
 	a_entity._velocity.x = aVel.x;
 	a_entity._velocity.y = aVel.y;
 
 	b_entity._velocity.x = bVel.x;
-	b_entity._velocity.y = bVel.y;
+	b_entity._velocity.y = bVel.y;*/
 };
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = CollisionController; }
