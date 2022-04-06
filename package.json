@@ -60,7 +60,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.11.0",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "node-arguments": "^0.0.1",
