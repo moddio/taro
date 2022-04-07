@@ -208,8 +208,7 @@ const PhysicsComponent = IgeEventingClass.extend({
 		//add forces
 		crashBody.force = new this.crash.Vector(0, 0);
 		if (bodyDef.affectedByGravity && bodyDef.type === 'dynamic' && entity._category == 'projectile') {
-			entity.applyForce(0, 3);
-			console.log(entity, 'added gravity force');
+			entity.applyForce(0, 1000);
 		}
 		return crashBody;
 	},
