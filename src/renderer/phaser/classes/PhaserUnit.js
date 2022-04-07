@@ -60,6 +60,46 @@ var PhaserUnit = /** @class */ (function (_super) {
                 console.log('PhaserUnit hide-label', unit.id()); // TODO remove
                 label.visible = false;
             });
+        var attributes = _this.attributes;
+        _this.renderAttributesListener =
+            unit.on('render-attributes', function (data) {
+                console.log('PhaserUnit render-attributes', data); // TODO remove
+                // release all existing attribute bars
+                attributes.forEach(function (a) {
+                    PhaserAttributeBar.release(a);
+                });
+                attributes.length = 0;
+                // add attribute bars based on passed data
+                data.attrs.forEach(function (ad) {
+                    var a = PhaserAttributeBar.get(_this);
+                    a.render(ad);
+                    attributes.push(a);
+                });
+            });
+        _this.updateAttributeListener =
+            unit.on('update-attribute', function (data) {
+                console.log('PhaserUnit update-attribute', data); // TODO remove
+                var a;
+                var i = 0;
+                for (; i < attributes.length; i++) {
+                    if (attributes[i].name === data.attr.type) {
+                        a = attributes[i];
+                        break;
+                    }
+                }
+                if (!data.shouldRender) {
+                    if (a) {
+                        PhaserAttributeBar.release(a);
+                        attributes.splice(i, 1);
+                    }
+                    return;
+                }
+                if (!a) {
+                    a = PhaserAttributeBar.get(_this);
+                    attributes.push(a);
+                }
+                a.render(data.attr);
+            });
         scene.events.on('update', _this.update, _this);
         return _this;
     }
@@ -78,7 +118,19 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.updateLabelListener = null;
             unit.off('hide-label', this.hideLabelListener);
             this.hideLabelListener = null;
+            unit.off('render-attributes', this.renderAttributesListener);
+            this.renderAttributesListener = null;
+            unit.off('update-attribute', this.updateAttributeListener);
+            this.updateAttributeListener = null;
+            // release all instantiated attribute bars
+            this.attributes.forEach(function (a) {
+                PhaserAttributeBar.release(a);
+            });
+            this.attributes.length = 0;
+            this.attributes = null;
             this.scene.events.off('update', this.update, this);
+            this.label = null;
+            this.sprite = null;
             this.destroy();
             return;
         }

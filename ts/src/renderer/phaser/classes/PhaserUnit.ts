@@ -13,6 +13,9 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 	private updateLabelListener: EvtListener;
 	private hideLabelListener: EvtListener;
 
+	private renderAttributesListener: EvtListener;
+	private updateAttributeListener: EvtListener;
+
 	constructor (scene: Phaser.Scene,
 				 private unit: Unit) {
 
@@ -76,6 +79,70 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 				label.visible = false;
 			});
 
+		const attributes = this.attributes;
+
+		this.renderAttributesListener =
+			unit.on('render-attributes', (data: {
+				attrs: AttributeData[]
+			}) => {
+				console.log('PhaserUnit render-attributes', data); // TODO remove
+
+				// release all existing attribute bars
+				attributes.forEach((a) => {
+					PhaserAttributeBar.release(a);
+				});
+				attributes.length = 0;
+
+				// add attribute bars based on passed data
+				data.attrs.forEach((ad) => {
+					const a = PhaserAttributeBar.get(this);
+					a.render(ad);
+					attributes.push(a);
+				});
+			});
+
+		this.updateAttributeListener =
+			unit.on('update-attribute', (data: {
+				attr: AttributeData;
+				shouldRender: boolean;
+			}) => {
+				console.log('PhaserUnit update-attribute', data); // TODO remove
+
+				let a: PhaserAttributeBar;
+				let i = 0;
+
+				for (; i < attributes.length; i++) {
+
+					if (attributes[i].name === data.attr.type) {
+
+						a = attributes[i];
+
+						break;
+					}
+				}
+
+				if (!data.shouldRender) {
+
+					if (a) {
+						PhaserAttributeBar.release(a);
+						attributes.splice(i, 1);
+					}
+
+					return;
+
+				}
+
+				if (!a) {
+
+					a = PhaserAttributeBar.get(this);
+
+					attributes.push(a);
+				}
+
+				a.render(data.attr);
+
+			});
+
 		scene.events.on('update', this.update, this);
 	}
 
@@ -102,7 +169,23 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.off('hide-label', this.hideLabelListener);
 			this.hideLabelListener = null;
 
+			unit.off('render-attributes', this.renderAttributesListener);
+			this.renderAttributesListener = null;
+
+			unit.off('update-attribute', this.updateAttributeListener);
+			this.updateAttributeListener = null;
+
+			// release all instantiated attribute bars
+			this.attributes.forEach((a) => {
+				PhaserAttributeBar.release(a);
+			});
+			this.attributes.length = 0;
+			this.attributes = null;
+
 			this.scene.events.off('update', this.update, this);
+
+			this.label = null;
+			this.sprite = null;
 
 			this.destroy();
 
