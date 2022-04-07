@@ -147,6 +147,7 @@ const IgeEntityPhysics = IgeEntity.extend({
 			if (defaultData.velocity && !isNaN(defaultData.velocity.x) && !isNaN(defaultData.velocity.y)) {
 				switch (defaultData.velocity.deployMethod) {
 					case 'applyForce':
+						this.setLinearVelocity(defaultData.velocity.x, defaultData.velocity.y, 0, isLossTolerant);
 						this.applyForce(defaultData.velocity.x, defaultData.velocity.y);
 						break;
 
@@ -207,6 +208,12 @@ const IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	_behaviourCrash: function () {
+		//add velocity from forces
+		if (this.crashBody.force.x != 0 || this.crashBody.force.y != 0) {
+			this._velocity.x += this.crashBody.force.x //* this.crashBody.mass;
+			this._velocity.y += this.crashBody.force.y //* this.crashBody.mass;
+		}
+
 		// update position based on its velocity, collision, and damping
 		if (Math.floor(Math.abs(this._velocity.x)) != 0 || Math.floor(Math.abs(this._velocity.y)) != 0) {
 			this.crashBody.move(this._velocity.x, this._velocity.y);
@@ -295,7 +302,10 @@ const IgeEntityPhysics = IgeEntity.extend({
 
 	// lossless applyForce
 	applyForce: function (x, y) {
-		console.log('apply force is disabled for now')
+		this.crashBody.force.x += x;
+		this.crashBody.force.y += y;
+
+		//console.log('apply force is disabled for now');
 		// if body doesn't exist yet, queue
 		/*if (!ige.physics) return;
 
@@ -306,7 +316,8 @@ const IgeEntityPhysics = IgeEntity.extend({
 
 	// lossless applyForce
 	applyImpulse: function (x, y) {
-		console.log('apply impulse is disabled for now')
+		console.log('apply impulse is disabled for now');
+		// this._velocity.y -= 100;
 		// if body doesn't exist yet, queue
 
 		/*if (!ige.physics._world.isLocked() && this.body != undefined) {
