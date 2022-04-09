@@ -973,6 +973,15 @@ var VariableComponent = IgeEntity.extend({
 					returnValue = randomNumber;
 					break;
 
+				case 'getRandomHEXColor':
+					var randomColor = "#";
+					var chars = "0123456789ABCDEF";
+					for(i = 0; i < 7; i++) {
+						randomColor += chars[Math.floor(Math.random() * chars.length)];
+					}
+					returnValue = randomColor;
+					break;
+
 				case 'getMapHeight':
 					var worldHeight = ige.map.data.height;
 					var tileHeight = ige.game.data.map.tileheight;
