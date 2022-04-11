@@ -1,8 +1,5 @@
 class GameScene extends Phaser.Scene {
 
-	// TODO remove
-	controls: Phaser.Cameras.Controls.FixedKeyControl;
-
 	constructor() {
 		super({ key: 'Game' });
 	}
@@ -150,18 +147,5 @@ class GameScene extends Phaser.Scene {
 		);
 		camera.zoom = this.scale.width / 800;
 
-		const cursors = this.input.keyboard.createCursorKeys();
-		this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
-			camera,
-			left: cursors.left,
-			right: cursors.right,
-			up: cursors.up,
-			down: cursors.down,
-			speed: 0.5
-		});
-	}
-
-	update (time: number, delta: number): void {
-		this.controls.update(delta);
 	}
 }
