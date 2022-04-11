@@ -37,14 +37,11 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
     PhaserAttributeBar.get = function (unit) {
         if (!this.pool) {
             this.pool = unit.scene.make.group({});
-            console.info('create PhaserAttributeBar pool'); // TODO remove
         }
-        console.info("PhaserAttributeBar get [".concat(this.pool.countActive(false), "/").concat(this.pool.getLength(), "]")); // TODO remove
         var bar = this.pool.getFirstDead(false);
         if (!bar) {
             bar = new PhaserAttributeBar(unit);
             this.pool.add(bar);
-            console.info('PhaserAttributeBar created'); // TODO remove
         }
         bar.setActive(true);
         bar.unit = unit;
@@ -53,12 +50,12 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         return bar;
     };
     PhaserAttributeBar.release = function (bar) {
+        bar.resetFadeOut();
         bar.setVisible(false);
         bar.unit.remove(bar);
         bar.unit = null;
         bar.name = null;
         bar.setActive(false);
-        console.info("PhaserAttributeBar release [".concat(this.pool.countActive(false), "/").concat(this.pool.getLength(), "]")); // TODO remove
     };
     PhaserAttributeBar.prototype.render = function (data) {
         this.name = data.type || data.key;
@@ -81,9 +78,7 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         this.y = 25 +
             Math.max(sprite.displayHeight, sprite.displayWidth) / 2
             + data.index * h * 1.1;
-        this.visible = true;
-        // TODO reset timer and tween
-        this.alpha = 1;
+        this.resetFadeOut();
         if ((data.showWhen instanceof Array &&
             data.showWhen.indexOf('valueChanges') > -1) ||
             data.showWhen === 'valueChanges') {
@@ -91,8 +86,40 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         }
     };
     PhaserAttributeBar.prototype.fadeOut = function () {
-        // TODO showValueAndFadeOut
-        console.log('fadeOut');
+        var _this = this;
+        var scene = this.scene;
+        this.fadeTimerEvent = scene.time.delayedCall(1000, function () {
+            _this.fadeTimerEvent = null;
+            _this.fadeTween = scene.tweens.add({
+                targets: _this,
+                alpha: 0,
+                duration: 500,
+                onComplete: function () {
+                    _this.fadeTween = null;
+                    var unit = _this.unit;
+                    if (unit) {
+                        var attributes = unit.attributes;
+                        var index = attributes.indexOf(_this);
+                        if (index !== -1) {
+                            attributes.splice(index, 1);
+                            PhaserAttributeBar.release(_this);
+                        }
+                    }
+                }
+            });
+        });
+    };
+    PhaserAttributeBar.prototype.resetFadeOut = function () {
+        // reset fade timer and tween
+        if (this.fadeTimerEvent) {
+            this.scene.time.removeEvent(this.fadeTimerEvent);
+            this.fadeTimerEvent = null;
+        }
+        if (this.fadeTween) {
+            this.fadeTween.remove();
+            this.fadeTween = null;
+        }
+        this.alpha = 1;
     };
     return PhaserAttributeBar;
 }(Phaser.GameObjects.Container));

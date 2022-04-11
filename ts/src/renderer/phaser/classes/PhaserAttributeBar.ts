@@ -6,20 +6,12 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 
 		if (!this.pool) {
 			this.pool = unit.scene.make.group({});
-			console.info('create PhaserAttributeBar pool'); // TODO remove
 		}
-
-		console.info(`PhaserAttributeBar get [${
-			this.pool.countActive(false)
-		}/${
-			this.pool.getLength()
-		}]`); // TODO remove
 
 		let bar: PhaserAttributeBar = this.pool.getFirstDead(false);
 		if (!bar) {
 			bar = new PhaserAttributeBar(unit);
 			this.pool.add(bar);
-			console.info('PhaserAttributeBar created'); // TODO remove
 		}
 		bar.setActive(true);
 
@@ -31,21 +23,23 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 	}
 
 	static release (bar: PhaserAttributeBar): void {
+
+		bar.resetFadeOut();
+
 		bar.setVisible(false);
 		bar.unit.remove(bar);
 		bar.unit = null;
-		bar.name = null;
-		bar.setActive(false);
 
-		console.info(`PhaserAttributeBar release [${
-			this.pool.countActive(false)
-		}/${
-			this.pool.getLength()
-		}]`); // TODO remove
+		bar.name = null;
+
+		bar.setActive(false);
 	}
 
 	private readonly bar: Phaser.GameObjects.Graphics;
 	private readonly text: Phaser.GameObjects.Text;
+
+	private fadeTimerEvent: Phaser.Time.TimerEvent;
+	private fadeTween: Phaser.Tweens.Tween;
 
 	private constructor(private unit: PhaserUnit) {
 
@@ -111,13 +105,10 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 			Math.max(sprite.displayHeight, sprite.displayWidth) / 2
 			+ data.index * h*1.1;
 
-		this.visible = true;
-
-		// TODO reset timer and tween
-		this.alpha = 1;
+		this.resetFadeOut();
 
 		if ((data.showWhen instanceof Array &&
-				data.showWhen.indexOf('valueChanges') > -1) ||
+			data.showWhen.indexOf('valueChanges') > -1) ||
 			data.showWhen === 'valueChanges') {
 
 			this.fadeOut();
@@ -125,7 +116,47 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 	}
 
 	private fadeOut(): void {
-		// TODO showValueAndFadeOut
-		console.log('fadeOut');
+
+		const scene = this.scene;
+
+		this.fadeTimerEvent = scene.time.delayedCall(1000, () => {
+
+			this.fadeTimerEvent = null;
+
+			this.fadeTween = scene.tweens.add({
+				targets: this,
+				alpha: 0,
+				duration: 500,
+				onComplete: () => {
+
+					this.fadeTween = null;
+
+					const unit = this.unit;
+					if (unit) {
+
+						const attributes = unit.attributes;
+						const index = attributes.indexOf(this);
+
+						if (index !== -1) {
+							attributes.splice(index, 1);
+							PhaserAttributeBar.release(this);
+						}
+					}
+				}
+			});
+		});
+	}
+
+	private resetFadeOut (): void {
+		// reset fade timer and tween
+		if (this.fadeTimerEvent) {
+			this.scene.time.removeEvent(this.fadeTimerEvent);
+			this.fadeTimerEvent = null;
+		}
+		if (this.fadeTween) {
+			this.fadeTween.remove();
+			this.fadeTween = null;
+		}
+		this.alpha = 1;
 	}
 }
