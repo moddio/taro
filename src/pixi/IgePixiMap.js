@@ -26,14 +26,16 @@ var IgePixiMap = IgeClass.extend({
 			next();
 		};
 
+		ige.pixi.mapLoader = new PIXI.Loader();
+
 		tileSetArray.forEach((tileset) => {
 			// Loader.shared
 			var url = `${tileset.image}?version=${1}`;
-			ige.pixi.loader.add(tileset.image, url, { crossOrigin: true });
+			ige.pixi.mapLoader.add(tileset.image, url, { crossOrigin: true });
 		});
 
-		ige.pixi.loader.use(applyStats);
-		ige.pixi.loader.load(function (loader, resources) {
+		ige.pixi.mapLoader.use(applyStats);
+		ige.pixi.mapLoader.load(function (loader, resources) {
 			map.tilewidth = parseFloat(map.tilewidth);
 			map.tileheight = parseFloat(map.tileheight);
 			map.width = parseFloat(map.width);

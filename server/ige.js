@@ -30,7 +30,6 @@ function generateId () {
 
 // Load the CoreConfig.js file
 igeCoreConfig = require('../engine/CoreConfig.js');
-
 var arr = igeCoreConfig.include;
 var arrCount = arr.length;
 var arrIndex;

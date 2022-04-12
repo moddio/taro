@@ -1,4 +1,5 @@
 {
+    "root": true,
     "env": {
         "browser": true,
         "commonjs": true,
@@ -6,15 +7,13 @@
         "node": true
     },
     "extends": [
-        "standard",
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
-    "parser": "@babel/eslint-parser",
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 6,
-        "requireConfigFile": false
+        "project": ["./tsconfig.json"]
     },
-
     "globals": {
         "process": "writable",
         "module": "writable",
@@ -69,9 +68,7 @@
         "IgeViewport": "writable"
     },
     "plugins": [
-        "import",
-        "node",
-        "promise"
+        "@typescript-eslint"
     ],
     "rules": {
         // Alternatives to eval should be used.
@@ -127,6 +124,9 @@
         "array-callback-return": 0,
         "no-prototype-builtins": 0,
         "no-case-declarations": 0,
-        "use-isnan": 0
+        "use-isnan": 0,
+
+        "no-trailing-spaces": "error",
+        "@typescript-eslint/no-var-requires": "off"
     }
 }

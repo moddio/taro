@@ -16,7 +16,7 @@ var ThemeComponent = IgeEntity.extend({
 				})
 			);
 		} else {
-			$('.game-title').html(server.gameName);
+			$('.game-title').html((server)?server.gameName:"");
 		}
 	}
 
