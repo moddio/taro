@@ -1,4 +1,3 @@
-
 var pathArray = window.location.href.split('/');
 var igeRoot = `http://${pathArray[2]}/engine/`;
 var igeClientRoot = `http://${pathArray[2]}/src/`;
@@ -25,16 +24,25 @@ window.igeLoader = (function () {
 		ccScript = document.createElement('script');
 		ccScript.src = `${igeRoot}CoreConfig.js`;
 		ccScript.onload = function () {
-			self.coreConfigReady();
+			self.loadCoreConfig();
 		};
 		ccScript.addEventListener('error', function () {
 			throw (`ERROR LOADING ${igeRoot}CoreConfig.js` + ' - does it exist?');
 		}, true);
 
+		// Load the physicsConfig.js file into browser memory
+		pcScript = document.createElement('script');
+		pcScript.src = `${igeRoot}PhysicsConfig.js`;
+
+		ccScript.addEventListener('error', function () {
+			throw (`ERROR LOADING ${igeRoot}PhysicsConfig.js` + ' - does it exist?');
+		}, true);
+
 		document.getElementsByTagName('head')[0].appendChild(ccScript);
+		document.getElementsByTagName('head')[0].appendChild(pcScript);
 	};
 
-	IgeLoader.prototype.coreConfigReady = function () {
+	IgeLoader.prototype.loadCoreConfig = function () {
 		var self = this;
 
 		if (typeof (igeCoreConfig) !== 'undefined') {
@@ -42,7 +50,7 @@ window.igeLoader = (function () {
 			ccScript = document.createElement('script');
 			ccScript.src = `${igeClientRoot}ClientConfig.js`;
 			ccScript.onload = function () {
-				self.clientConfigReady();
+				self.loadClientConfig();
 			};
 			ccScript.addEventListener('error', function () {
 				throw ('ERROR LOADING ClientConfig.js - does it exist?');
@@ -54,7 +62,7 @@ window.igeLoader = (function () {
 		}
 	};
 
-	IgeLoader.prototype.clientConfigReady = function () {
+	IgeLoader.prototype.loadClientConfig = function () {
 		// Add the two array items into a single array
 		this._coreList = igeCoreConfig.include;
 		this._clientList = igeClientConfig.include;
@@ -69,6 +77,36 @@ window.igeLoader = (function () {
 
 		for (i = 0; i < this._clientList.length; i++) {
 			this._fileList.push(igeClientRoot + this._clientList[i]);
+		}
+
+		this.loadNext();
+	};
+
+	IgeLoader.prototype.loadPhysicsConfig = function (clientPhysicsEngine, serverPhysicsEngine, callback) {
+		// this.fileList should be empty after loadNext runs the first time
+		// but lets show it and comment it out
+		// this._fileList = [];
+		this.callback = callback;
+		// ternary to create an empty array if we are passed physicsEngine = ''
+		this._physicsList = igePhysicsConfig.igePhysicsChoices[clientPhysicsEngine] ?
+			igePhysicsConfig.igePhysicsChoices[clientPhysicsEngine] :
+			// we need to have an IgeEntityPhysics class no matter what
+			// 3/31/22 ran into an issue with this hack when I tried to add a file to PhysicsConfig
+			[igePhysicsConfig.igePhysicsChoices[serverPhysicsEngine][1]];
+
+		this._physicsGameClasses = igePhysicsConfig.gameClasses;
+		for (i = 0; i < this._physicsList.length; i++) {
+			// Check that the file should be loaded on the client
+			if (this._physicsList[i][0].indexOf('c') > -1) {
+				this._fileList.push(igeRoot + this._physicsList[i][2].slice(2));
+			}
+		}
+
+		for (i = 0; i < this._physicsGameClasses.length; i++) {
+			// Check that the file should be loaded on the client
+			if (this._physicsGameClasses[i][0].indexOf('c') > -1) {
+				this._fileList.push(igeClientRoot + this._physicsGameClasses[i][2].slice(7));
+			}
 		}
 
 		this.loadNext();
@@ -90,6 +128,10 @@ window.igeLoader = (function () {
 			}, true);
 
 			document.getElementsByTagName('head')[0].appendChild(script);
+		} else {
+			if (typeof this.callback === 'function') {
+				this.callback();
+			}
 		}
 	};
 

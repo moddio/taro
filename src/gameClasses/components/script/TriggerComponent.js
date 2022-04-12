@@ -7,16 +7,16 @@ var TriggerComponent = IgeEntity.extend({
 		if (ige.isServer || (ige.isClient && ige.physics)) {
 			self._enableContactListener();
 		}
-		
+
 		this._registerTriggeredScripts();
 	},
 
 	// map trigger events, so we don't have to iterate through all scripts to find corresponding scripts
-	_registerTriggeredScripts: function() {
-		this.triggeredScripts = {}
-		for (scriptId in ige.game.data.scripts) {		
+	_registerTriggeredScripts: function () {
+		this.triggeredScripts = {};
+		for (scriptId in ige.game.data.scripts) {
 			var script = ige.game.data.scripts[scriptId];
-			
+
 			// look for matching trigger within the script's triggers
 
 			if (script && script.triggers) {
@@ -26,9 +26,9 @@ var TriggerComponent = IgeEntity.extend({
 						this.triggeredScripts[trigger.type] = [scriptId]
 					} else {
 						this.triggeredScripts[trigger.type].push(scriptId)
-					}					
+					}
 				}
-			}		
+			}
 		}
 		// console.log("registered triggered scripts: ", this.triggeredScripts)
 	},
@@ -241,8 +241,8 @@ var TriggerComponent = IgeEntity.extend({
 		fire trigger and run all of the corresponding script(s)
 	*/
 	fire: function (triggerName, triggeredBy) {
-		// console.log("trigger fire", triggerName, triggeredBy)
-		
+		// if (triggerName === 'projectileTouchesWall') console.log("trigger fire", triggerName, triggeredBy)
+
 		if (ige.isServer || (ige.isClient && ige.physics)) {
 			let scriptIds = this.triggeredScripts[triggerName]
 			for (i in scriptIds) {
@@ -255,7 +255,7 @@ var TriggerComponent = IgeEntity.extend({
 				ige.script.runScript(scriptId, localVariables);
 			}
 		}
-		
+
 		if (triggeredBy && triggeredBy.projectileId) {
 			var projectile = ige.$(triggeredBy.projectileId);
 			if (projectile) {

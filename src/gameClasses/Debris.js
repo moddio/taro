@@ -1,10 +1,10 @@
-var Debris = IgeEntityBox2d.extend({
+var Debris = IgeEntityPhysics.extend({
 	classId: 'Debris',
 
 	init: function (data, entityIdFromServer) {
 		var self = this;
 
-		IgeEntityBox2d.prototype.init.call(this, data.defaultData);
+		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		if (ige.isClient) {
 			this._pixiContainer = new PIXI.Container();
 		}
@@ -132,7 +132,9 @@ var Debris = IgeEntityBox2d.extend({
 	 * @param ctx The canvas context to render to.
 	 */
 	_behaviour: function (ctx) {
-		this.processBox2dQueue();
+		if (ige.physics && ige.physics.engine != 'CRASH') {
+			this.processBox2dQueue();
+		}
 	},
 
 	tick: function (ctx) {
