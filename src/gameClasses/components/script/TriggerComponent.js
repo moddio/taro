@@ -110,9 +110,9 @@ var TriggerComponent = IgeEntity.extend({
 							});
 							break;
 
-						case 'debris':
-							ige.trigger.fire('debrisEntersRegion', {
-								debrisId: entityB.id(),
+						case 'projectile':
+							ige.trigger.fire('projectileEntersRegion', {
+								projectileId: entityB.id(),
 								region: region
 							});
 							break;
