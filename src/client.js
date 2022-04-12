@@ -730,6 +730,12 @@ const Client = IgeEventingClass.extend({
 		ige.pixi.zoom(zoomVar);
 		// there was a bunch of stuff involving viewports and view areas in the old method,
 		// it appeared to be out of use.
+		if (ige.client.resolutionQuality === 'low') {
+			viewArea.width = viewArea.width * 0.5;
+			viewArea.height = viewArea.height * 0.5;
+		}
+
+		this.emit('zoom', zoomVar);
 	},
 
 	//
