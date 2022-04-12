@@ -45,6 +45,10 @@ var GameScene = /** @class */ (function (_super) {
             console.log('create-unit', unit); // TODO remove
             new PhaserUnit(_this, unit);
         });
+        ige.client.on('create-projectile', function (projectile) {
+            console.log('create-projectile', projectile); // TODO remove
+            new PhaserProjectile(_this, projectile);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;
@@ -118,18 +122,6 @@ var GameScene = /** @class */ (function (_super) {
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
         camera.zoom = this.scale.width / 800;
-        var cursors = this.input.keyboard.createCursorKeys();
-        this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
-            camera: camera,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
-            speed: 0.5
-        });
-    };
-    GameScene.prototype.update = function (time, delta) {
-        this.controls.update(delta);
     };
     return GameScene;
 }(Phaser.Scene));
