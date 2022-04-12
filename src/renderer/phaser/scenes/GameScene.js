@@ -118,18 +118,6 @@ var GameScene = /** @class */ (function (_super) {
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
         camera.zoom = this.scale.width / 800;
-        var cursors = this.input.keyboard.createCursorKeys();
-        this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
-            camera: camera,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
-            speed: 0.5
-        });
-    };
-    GameScene.prototype.update = function (time, delta) {
-        this.controls.update(delta);
     };
     return GameScene;
 }(Phaser.Scene));
