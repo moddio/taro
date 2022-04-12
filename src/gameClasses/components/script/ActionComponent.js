@@ -2514,9 +2514,18 @@ var ActionComponent = IgeEntity.extend({
 						if (ige.game.data.variables.hasOwnProperty(action.variable) && !_.isNaN(newValue) && !_.isNil(newValue)) {
 							var variable = ige.game.data.variables[action.variable];
 							if (variable.value === undefined || isNaN(variable.value)) {
-								variable = variable.default || 0;
+								variable.value = variable.default || 0;
 							}
 							variable.value += newValue;
+							if (ige.isServer) {
+								ige.variable.updateDevConsole({
+									type: 'setVariable',
+									params: {
+										variableName: action.variable,
+										newValue: variable.value
+									}
+								});
+							}
 						}
 						break;
 
@@ -2525,9 +2534,18 @@ var ActionComponent = IgeEntity.extend({
 						if (ige.game.data.variables.hasOwnProperty(action.variable) && !_.isNaN(newValue) && !_.isNil(newValue)) {
 							var variable = ige.game.data.variables[action.variable];
 							if (variable.value === undefined || isNaN(variable.value)) {
-								variable = variable.default || 0;
+								variable.value = variable.default || 0;
 							}
 							variable.value -= newValue;
+							if (ige.isServer) {
+								ige.variable.updateDevConsole({
+									type: 'setVariable',
+									params: {
+										variableName: action.variable,
+										newValue: variable.value
+									}
+								});
+							}
 						}
 						break;
 
