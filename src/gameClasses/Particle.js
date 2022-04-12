@@ -1,9 +1,9 @@
-var Particle = IgeEntityBox2d.extend({
+var Particle = IgeEntityPhysics.extend({
 	classId: 'Particle',
 
 	init: function (emitter) {
 		this._emitter = emitter;
-		IgeEntityBox2d.prototype.init.call(this);
+		IgeEntityPhysics.prototype.init.call(this);
 
 		// Set the rectangle colour (this is read in the Rectangle.js smart texture)
 		this._rectColor = emitter.color;
@@ -22,6 +22,6 @@ var Particle = IgeEntityBox2d.extend({
 		if (this._emitter !== undefined) {
 			this._emitter._particles.pull(this);
 		}
-		IgeEntityBox2d.prototype.destroy.call(this);
+		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
