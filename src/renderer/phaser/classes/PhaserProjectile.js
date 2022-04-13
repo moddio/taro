@@ -18,9 +18,15 @@ var PhaserProjectile = /** @class */ (function (_super) {
     function PhaserProjectile(scene, projectile) {
         var _this = _super.call(this, scene) || this;
         _this.projectile = projectile;
-        var key = "projectile/".concat(projectile._stats.type);
+        var key;
+        if (projectile._stats.type) {
+            key = "projectile/".concat(projectile._stats.type);
+        }
+        else
+            key = 'projectile/blood';
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         _this.add(sprite);
+        console.log('sprite', key, sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
         _this.playAnimationListener =

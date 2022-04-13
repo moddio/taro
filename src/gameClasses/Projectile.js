@@ -12,6 +12,7 @@ var Projectile = IgeEntityPhysics.extend({
 		var projectileData = {};
 		if (ige.isClient) {
 			projectileData = ige.game.getAsset('projectileTypes', data.type);
+			console.log('data.type', data.type);
 			projectileData = _.pick(projectileData, ige.client.keysToAddBeforeRender);
 		}
 
@@ -86,6 +87,7 @@ var Projectile = IgeEntityPhysics.extend({
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
 			if (currentState) {
+				console.log('data.defaulData', data.defaultData);
 				var defaultAnimation = this._stats.animations[currentState.animation];
 				this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
 			}

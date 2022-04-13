@@ -2042,6 +2042,7 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				if (effect.projectileType) {
+					console.log('effect.projectileType', effect.projectileType);
 					var projectile = ige.game.getAsset('projectileTypes', effect.projectileType);
 					if (projectile) {
 						var position = ige.game.lastProjectileHitPosition || (this.body && this.body.getPosition()) || this._translate;
@@ -2050,12 +2051,14 @@ var IgeEntity = IgeObject.extend({
 							position.y *= this._b2dRef._scaleRatio;
 						}
 						projectile.defaultData = {
+							//type: effect.projectileType,
 							translate: {
 								x: position.x,
 								y: position.y
 							},
 							rotate: this._rotate.z
 						};
+						console.log('projectile info for creation', projectile);
 						new Projectile(projectile);
 					}
 				}
