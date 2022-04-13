@@ -80,6 +80,8 @@ var Item = IgeEntityPhysics.extend({
 			}
 			self.createPixiTexture();
 			self.drawBounds(false);
+
+			ige.client.emit('create-item', this);
 		}
 		self.playEffect('create');
 		// self.addComponent(AttributeBarsContainerComponent);
@@ -771,7 +773,7 @@ var Item = IgeEntityPhysics.extend({
 					if (self._stats.controls && self._stats.controls.mouseBehaviour) {
 						if (self._stats.controls.mouseBehaviour.rotateToFaceMouseCursor || (self._stats.currentBody && (self._stats.currentBody.jointType == 'weldJoint'))) {
 							offset.rotate = rotate;
-						}						
+						}
 					}
 				}
 			}
@@ -992,7 +994,7 @@ var Item = IgeEntityPhysics.extend({
 					}
 				}
 			}
-			
+
 			self.rotateTo(0, 0, rotate);
 		}
 
@@ -1034,4 +1036,6 @@ var Item = IgeEntityPhysics.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Item; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Item;
+}
