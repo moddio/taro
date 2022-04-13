@@ -23,6 +23,11 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
+        _this.playAnimationListener =
+            projectile.on('play-animation', function (animationId) {
+                console.log('PhaserProjectile play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
+                sprite.play("".concat(key, "/").concat(animationId));
+            });
         return _this;
     }
     PhaserProjectile.prototype.update = function ( /*time: number, delta: number*/) {
@@ -30,6 +35,8 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var container = projectile._pixiContainer;
         var texture = projectile._pixiTexture;
         if (projectile._destroyed || container._destroyed) {
+            projectile.off('play-animation', this.playAnimationListener);
+            this.playAnimationListener = null;
             this.destroy();
             return;
         }
