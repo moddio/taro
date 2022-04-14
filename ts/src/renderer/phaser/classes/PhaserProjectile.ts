@@ -13,7 +13,6 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
 		this.add(sprite);
-		console.log('sprite', key, sprite);
 
 		scene.add.existing(this);
 		scene.events.on('update', this.update, this);

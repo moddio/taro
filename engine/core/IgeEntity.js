@@ -2042,7 +2042,6 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				if (effect.projectileType) {
-					console.log('effect.projectileType', effect.projectileType);
 					var projectile = ige.game.getAsset('projectileTypes', effect.projectileType);
 					if (projectile) {
 						var position = ige.game.lastProjectileHitPosition || (this.body && this.body.getPosition()) || this._translate;
@@ -2060,7 +2059,6 @@ var IgeEntity = IgeObject.extend({
 						};
 						//fix added for correct phaser projectile texture
 						projectile.type = effect.projectileType;
-						console.log('projectile info for creation', projectile);
 						new Projectile(projectile);
 					}
 				}
