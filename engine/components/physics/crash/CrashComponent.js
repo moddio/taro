@@ -134,7 +134,6 @@ const PhysicsComponent = IgeEventingClass.extend({
 
 		this.totalBodiesCreated++;
 		const shapeType = bodyDef.fixtures[0].shape.type;
-		const density = bodyDef.fixtures[0].density;
 
 		let crashBody;
 		const x = entity._translate.x;
@@ -144,9 +143,6 @@ const PhysicsComponent = IgeEventingClass.extend({
 			const radius = entity._bounds2d.x / 2;
 			crashBody = new this.crash.Circle(new this.crash.Vector(x, y), radius, false, { entity: entity });
 			// later check if added to .__moved()
-			if (bodyDef.type === 'dynamic') {
-				crashBody.mass = density * Math.PI * radius * radius;
-			}
 		}
 		else if (entity._category == 'wall' || entity._category == 'region') {
 			const width = entity._bounds2d.x;
@@ -175,10 +171,6 @@ const PhysicsComponent = IgeEventingClass.extend({
 			];
 			crashBody = new this.crash.Polygon(new this.crash.Vector(x, y), points, false, { entity: entity });
 			crashBody.sat.setAngle(entity._rotate.z);
-
-			if (bodyDef.type === 'dynamic') {
-				crashBody.mass = density * width * height;
-			}
 		}
 		else {
 			console.log('body shape is wrong');
@@ -200,9 +192,6 @@ const PhysicsComponent = IgeEventingClass.extend({
 		};
 		if (bodyDef.type != 'static') entity.addBehaviour('crash behaviour', entity._behaviourCrash, false);
 
-		if (crashBody.mass) {
-			console.log ('mass' , crashBody.mass);
-		}
 		return crashBody;
 	},
 
