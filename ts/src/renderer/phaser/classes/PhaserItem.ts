@@ -20,7 +20,6 @@ class PhaserItem extends Phaser.GameObjects.Container {
 
 		this.hide = item.on('hide', () => {
 			this.sprite.setActive(false).setVisible(false);
-			//this.destroy();
 		});
 
 		this.show = item.on('show', () => {
@@ -30,7 +29,7 @@ class PhaserItem extends Phaser.GameObjects.Container {
 		this.playAnimationListener =
 			item.on('play-animation', (animationId: string) => {
 				console.log('PhaserItem play-animation', `${key}/${animationId}`);  // TODO remove
-				//sprite.play(`${key}/${animationId}`);
+				sprite.play(`${key}/${animationId}`);
 			});
 
 		scene.events.on('update', this.update, this);

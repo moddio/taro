@@ -24,7 +24,6 @@ var PhaserItem = /** @class */ (function (_super) {
         scene.add.existing(_this);
         _this.hide = item.on('hide', function () {
             _this.sprite.setActive(false).setVisible(false);
-            //this.destroy();
         });
         _this.show = item.on('show', function () {
             _this.sprite.setActive(true).setVisible(true);
@@ -32,7 +31,7 @@ var PhaserItem = /** @class */ (function (_super) {
         _this.playAnimationListener =
             item.on('play-animation', function (animationId) {
                 console.log('PhaserItem play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
-                //sprite.play(`${key}/${animationId}`);
+                sprite.play("".concat(key, "/").concat(animationId));
             });
         scene.events.on('update', _this.update, _this);
         return _this;
