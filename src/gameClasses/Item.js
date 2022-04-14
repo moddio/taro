@@ -73,8 +73,11 @@ var Item = IgeEntityPhysics.extend({
 			self._hidden = self._stats.isHidden;
 			if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._hidden) {
 				self.hide();
+				this.emit('hide');
 			} else {
 				self.show();
+				this.emit('show');
+
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
@@ -120,12 +123,16 @@ var Item = IgeEntityPhysics.extend({
 
 			self.show();
 			if (ige.isClient) {
+				this.emit('show');
 				self.updateTexture();
 				self.mount(ige.pixi.world);
 			}
 		} else {
 			ige.devLog('hide & destroyBody.');
 			self.hide();
+			if (ige.isClient) {
+				this.emit('hide');
+			}
 			self.destroyBody();
 			if (ige.isServer) {
 				this.streamMode(2);
@@ -181,11 +188,14 @@ var Item = IgeEntityPhysics.extend({
 
 			if (isInvisible || !hasBody) {
 				self.hide();
+				this.emit('hide');
 				return;
 			}
 		}
 
 		self.show();
+		this.emit('show');
+
 		self.updateLayer();
 		IgeEntity.prototype.updateTexture.call(this);
 	},
@@ -878,8 +888,10 @@ var Item = IgeEntityPhysics.extend({
 						if (ige.isClient) {
 							if (newValue) {
 								self.hide();
+								this.emit('hide');
 							} else {
 								self.show();
+								this.emit('show');
 							}
 						}
 						break;

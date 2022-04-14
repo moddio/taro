@@ -22,10 +22,17 @@ var PhaserItem = /** @class */ (function (_super) {
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         _this.add(sprite);
         scene.add.existing(_this);
+        _this.hide = item.on('hide', function () {
+            _this.sprite.setActive(false).setVisible(false);
+            //this.destroy();
+        });
+        _this.show = item.on('show', function () {
+            _this.sprite.setActive(true).setVisible(true);
+        });
         _this.playAnimationListener =
             item.on('play-animation', function (animationId) {
                 console.log('PhaserItem play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
-                sprite.play("".concat(key, "/").concat(animationId));
+                //sprite.play(`${key}/${animationId}`);
             });
         scene.events.on('update', _this.update, _this);
         return _this;
@@ -35,6 +42,10 @@ var PhaserItem = /** @class */ (function (_super) {
         var container = item._pixiContainer;
         var texture = item._pixiTexture;
         if (item._destroyed || container._destroyed) {
+            item.off('hide', this.hide);
+            this.hide = null;
+            item.off('show', this.show);
+            this.show = null;
             item.off('play-animation', this.playAnimationListener);
             this.playAnimationListener = null;
             this.scene.events.off('update', this.update, this);

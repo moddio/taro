@@ -3,6 +3,8 @@ class PhaserItem extends Phaser.GameObjects.Container {
 	sprite: Phaser.GameObjects.Sprite;
 
 	private playAnimationListener: EvtListener;
+	private hide: EvtListener;
+	private show: EvtListener;
 
 	constructor (scene: Phaser.Scene,
 				 private item: Item) {
@@ -16,10 +18,19 @@ class PhaserItem extends Phaser.GameObjects.Container {
 
 		scene.add.existing(this);
 
+		this.hide = item.on('hide', () => {
+			this.sprite.setActive(false).setVisible(false);
+			//this.destroy();
+		});
+
+		this.show = item.on('show', () => {
+			this.sprite.setActive(true).setVisible(true);
+		});
+
 		this.playAnimationListener =
 			item.on('play-animation', (animationId: string) => {
 				console.log('PhaserItem play-animation', `${key}/${animationId}`);  // TODO remove
-				sprite.play(`${key}/${animationId}`);
+				//sprite.play(`${key}/${animationId}`);
 			});
 
 		scene.events.on('update', this.update, this);
@@ -32,6 +43,12 @@ class PhaserItem extends Phaser.GameObjects.Container {
 		const texture = item._pixiTexture;
 
 		if (item._destroyed || container._destroyed) {
+
+			item.off('hide', this.hide);
+			this.hide = null;
+
+			item.off('show', this.show);
+			this.show = null;
 
 			item.off('play-animation', this.playAnimationListener);
 			this.playAnimationListener = null;
