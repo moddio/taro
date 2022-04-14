@@ -45,6 +45,10 @@ var GameScene = /** @class */ (function (_super) {
             console.log('create-unit', unit); // TODO remove
             new PhaserUnit(_this, unit);
         });
+        ige.client.on('create-projectile', function (projectile) {
+            console.log('create-projectile', projectile); // TODO remove
+            new PhaserProjectile(_this, projectile);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;

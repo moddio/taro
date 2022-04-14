@@ -2050,12 +2050,15 @@ var IgeEntity = IgeObject.extend({
 							position.y *= this._b2dRef._scaleRatio;
 						}
 						projectile.defaultData = {
+							//type: effect.projectileType,
 							translate: {
 								x: position.x,
 								y: position.y
 							},
 							rotate: this._rotate.z
 						};
+						//fix added for correct phaser projectile texture
+						projectile.type = effect.projectileType;
 						new Projectile(projectile);
 					}
 				}
