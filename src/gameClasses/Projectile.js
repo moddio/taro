@@ -11,13 +11,15 @@ var Projectile = IgeEntityPhysics.extend({
 		self.category('projectile');
 		var projectileData = {};
 		if (ige.isClient) {
-			projectileData = ige.game.getAsset('projectileTypes', data.type);
 			console.log('data.type', data.type);
+			projectileData = ige.game.getAsset('projectileTypes', data.type);
+			console.log('PROJ DATA', projectileData);
 			projectileData = _.pick(projectileData, ige.client.keysToAddBeforeRender);
 		}
 
 		self.entityId = this._id;
 
+		console.log('DATA', data, projectileData);
 		self._stats = Object.assign(
 			data,
 			projectileData

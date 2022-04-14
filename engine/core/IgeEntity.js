@@ -2058,6 +2058,8 @@ var IgeEntity = IgeObject.extend({
 							},
 							rotate: this._rotate.z
 						};
+						//fix added for correct phaser projectile texture
+						projectile.type = effect.projectileType;
 						console.log('projectile info for creation', projectile);
 						new Projectile(projectile);
 					}

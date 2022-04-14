@@ -9,11 +9,7 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 
 		super(scene);
 
-		let key;
-		if (projectile._stats.type) {
-			key = `projectile/${projectile._stats.type}`;
-		}
-		else key = 'projectile/blood';
+		const key = `projectile/${projectile._stats.type}`;
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
 		this.add(sprite);
