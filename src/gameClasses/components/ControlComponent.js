@@ -301,8 +301,8 @@ var ControlComponent = IgeEntity.extend({
 				var mouseY = ige.client.mouseMove && ige.client.mouseMove.clientY || 0;
 
 				var currentMouseTransform = [
-					Number.parseInt(vpTransform[0] + mouseX / ige.pixi.viewport.scale.x),
-					Number.parseInt(vpTransform[1] + mouseY / ige.pixi.viewport.scale.y)
+					(vpTransform[0] + mouseX / ige.pixi.viewport.scale.x).toFixed(1),
+					(vpTransform[1] + mouseY / ige.pixi.viewport.scale.y).toFixed(1)
 				];
 				this.newMousePosition = currentMouseTransform;
 			} else {
