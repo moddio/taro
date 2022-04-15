@@ -52,6 +52,11 @@ class GameScene extends Phaser.Scene {
 			console.log('create-item', item); // TODO remove
 			new PhaserItem(this, item);
 		});
+
+		ige.client.on('create-projectile', (projectile: Projectile) => {
+			console.log('create-projectile', projectile); // TODO remove
+			new PhaserProjectile(this, projectile);
+		});
 	}
 
 	preload (): void {
