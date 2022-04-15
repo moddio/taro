@@ -72,6 +72,7 @@ var igeClientConfig = {
 		'renderer/phaser/classes/PhaserUnit.js',
 		'renderer/phaser/classes/PhaserProjectile.js',
 		'renderer/phaser/classes/PhaserAttributeBar.js',
+		'renderer/phaser/classes/PhaserItem.js',
 		'renderer/phaser/scenes/GameScene.js',
 		'renderer/phaser/scenes/MobileControlsScene.js',
 		'renderer/phaser/PhaserRenderer.js',

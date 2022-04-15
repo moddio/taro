@@ -15,4 +15,5 @@ declare interface EntityStats {
 		frames: number[]
 	}>;
 	type: string;
+	itemTypeId?: string;
 }
