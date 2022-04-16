@@ -768,6 +768,15 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getLastTouchingProjectile':
+					var id = ige.game.lastTouchingProjectileId;
+
+					projectile = ige.$(id);
+					if (projectile && projectile._category == 'projectile') {
+						returnValue = projectile;
+					}
+					break;
+
 				case 'getSourceItemOfProjectile':
 					if (entity && entity._category == 'projectile') {
 						var item = entity.getSourceItem();

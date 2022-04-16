@@ -188,13 +188,17 @@ var TriggerComponent = IgeEntity.extend({
 
 				case 'projectile':
 					switch (entityB._category) {
-						case 'debris':
+						case 'projectile':
 							var triggeredBy = {
-								projectileId: entityA.id(),
-								debrisId: entityB.id(),
-								collidingEntity: entityB.id()
+								projectileId: entityA.id()
 							};
-							ige.trigger.fire('projectileTouchesDebris', triggeredBy);
+							ige.game.lastTouchingProjectileId = entityA.id();
+							ige.game.lastTouchedProjectileId = entityB.id();
+							ige.trigger.fire('projectileTouchesProjectile', triggeredBy);
+							triggeredBy.projectileId = entityB.id();
+							ige.game.lastTouchingProjectileId = entityB.id();
+							ige.game.lastTouchedProjectileId = entityA.id();
+							ige.trigger.fire('projectileTouchesProjectile', triggeredBy);
 							break;
 						case undefined:
 						case 'wall':
@@ -268,11 +272,6 @@ var TriggerComponent = IgeEntity.extend({
 							if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith.units && damageHasBeenInflicted) {
 								projectile.destroy();
 							}
-						}
-						break;
-					case 'projectileTouchesDebris':
-						if (projectile._stats.destroyOnContactWith && projectile._stats.destroyOnContactWith.debris) {
-							projectile.destroy();
 						}
 						break;
 					case 'projectileTouchesItem':
