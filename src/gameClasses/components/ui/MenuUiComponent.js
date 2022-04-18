@@ -5,7 +5,7 @@ var MenuUiComponent = IgeEntity.extend({
 	init: function () {
 		var self = this;
 		// adding event for taro engine button
-		var playButtonClick = document.querySelector("#play-game-button")
+		var playButtonClick = document.querySelector('#play-game-button');
 
 		if (ige.isClient) {
 			console.log('initializing UI elements...');
@@ -190,6 +190,9 @@ var MenuUiComponent = IgeEntity.extend({
 			// this should only be a temporary solution
 			// we need to find a better way to implement the callbacks
 			// all related to clicking the Play Game button
+			//
+			// added connectPlayer event dispatch from index.ejs for local env
+			//
 			playButtonClick.addEventListener('connectPlayer', function () {
 				if (this.innerText.includes('Connection Failed')) {
 					var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
@@ -216,35 +219,6 @@ var MenuUiComponent = IgeEntity.extend({
 				}
 				$('#play-game-button-wrapper').addClass('d-none-important');
 			});
-
-			if (window.location.hostname == 'localhost') {
-				$('#play-game-button').on('click', function () {
-					if (this.innerText.includes('Connection Failed')) {
-						var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
-						$('#server-list').attr('size', serverLength);
-						$('#server-list').focus();
-					} else {
-						// did user tried to change server
-						var isServerChanged = window.connectedServer && ige.client.server.id !== window.connectedServer.id;
-
-						if (isServerChanged) {
-							window.location = `${window.location.pathname}?serverId=${ige.client.server.id}&joinGame=true`;
-							return;
-						}
-
-						if (ige.game && ige.game.isGameStarted) {
-							var wasGamePaused = this.innerText.includes('Continue');
-							self.playGame(wasGamePaused);
-							self.setResolution();
-						} else {
-							$('#play-game-button').attr('disabled', true);
-							self.startLoading();
-							ige.client.connectToServer();
-						}
-					}
-					$('#play-game-button-wrapper').addClass('d-none-important');
-				});
-			}
 
 			$('#help-button').on('click', function () {
 				$('#help-modal').modal('show');
