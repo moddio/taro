@@ -53,6 +53,10 @@ var GameScene = /** @class */ (function (_super) {
             console.log('create-projectile', projectile); // TODO remove
             new PhaserProjectile(_this, projectile);
         });
+        /*ige.client.on('create-chat', (data: Unit) => {
+            console.log('create-chat', data.text, data.unit); // TODO remove
+            new PhaserChatBubble(this, data.text, data.unit);
+        });*/
     };
     GameScene.prototype.preload = function () {
         var _this = this;

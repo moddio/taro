@@ -100,6 +100,34 @@ var PhaserUnit = /** @class */ (function (_super) {
                 }
                 a.render(data.attr);
             });
+        _this.renderChatListener = unit.on('render-chat-bubble', function (text) {
+            console.log('create-chat', text); // TODO remove
+            if (_this.chat) {
+                _this.chat.showMessage(text);
+            }
+            else {
+                _this.chat = new PhaserChatBubble(scene, text, _this);
+            }
+        });
+        /*this.renderChatBubble =
+            unit.on('render-chat-bubble', (data: {
+                attrs: AttributeData[]
+            }) => {
+                console.log('PhaserUnit render-attributes', data); // TODO remove
+
+                // release all existing attribute bars
+                attributes.forEach((a) => {
+                    PhaserAttributeBar.release(a);
+                });
+                attributes.length = 0;
+
+                // add attribute bars based on passed data
+                data.attrs.forEach((ad) => {
+                    const a = PhaserAttributeBar.get(this);
+                    a.render(ad);
+                    attributes.push(a);
+                });
+            });*/
         scene.events.on('update', _this.update, _this);
         return _this;
     }
@@ -122,6 +150,10 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.renderAttributesListener = null;
             unit.off('update-attribute', this.updateAttributeListener);
             this.updateAttributeListener = null;
+            unit.off('render-chat-bubble', this.renderChatListener);
+            this.renderChatListener = null;
+            if (this.chat)
+                this.chat.destroy();
             // release all instantiated attribute bars
             this.attributes.forEach(function (a) {
                 PhaserAttributeBar.release(a);
@@ -136,6 +168,8 @@ var PhaserUnit = /** @class */ (function (_super) {
         }
         this.x = container.x;
         this.y = container.y;
+        if (this.chat)
+            this.chat.update(this.x, this.y);
         var sprite = this.sprite;
         sprite.rotation = texture.rotation;
         sprite.setScale(texture.scale.x, texture.scale.y);

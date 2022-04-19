@@ -73,6 +73,9 @@ var IgeChatClient = {
 						parentUnit: selectedUnit.id()
 					})
 						.fade(3000);
+
+					selectedUnit.emit('render-chat-bubble', data.text);
+					//ige.client.emit('create-chat', {text: data.text, unit: selectedUnit} );
 				}
 				// console.log("chatMsg from " + player._stats.name + ': ', data.text);
 			}

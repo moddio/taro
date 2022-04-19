@@ -2,6 +2,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 	sprite: Phaser.GameObjects.Sprite;
 	label: Phaser.GameObjects.Text;
+	chat: PhaserChatBubble;
 
 	attributes: PhaserAttributeBar[] = [];
 
@@ -15,6 +16,8 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 	private renderAttributesListener: EvtListener;
 	private updateAttributeListener: EvtListener;
+
+	private renderChatListener: EvtListener;
 
 	constructor (scene: Phaser.Scene,
 				 private unit: Unit) {
@@ -143,6 +146,36 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 			});
 
+		this.renderChatListener = unit.on('render-chat-bubble', (text) => {
+			console.log('create-chat', text); // TODO remove
+			if (this.chat) {
+				this.chat.showMessage(text);
+			}
+			else {
+				this.chat = new PhaserChatBubble(scene, text, this);
+			}
+		});
+
+		/*this.renderChatBubble =
+			unit.on('render-chat-bubble', (data: {
+				attrs: AttributeData[]
+			}) => {
+				console.log('PhaserUnit render-attributes', data); // TODO remove
+
+				// release all existing attribute bars
+				attributes.forEach((a) => {
+					PhaserAttributeBar.release(a);
+				});
+				attributes.length = 0;
+
+				// add attribute bars based on passed data
+				data.attrs.forEach((ad) => {
+					const a = PhaserAttributeBar.get(this);
+					a.render(ad);
+					attributes.push(a);
+				});
+			});*/
+
 		scene.events.on('update', this.update, this);
 	}
 
@@ -175,6 +208,10 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.off('update-attribute', this.updateAttributeListener);
 			this.updateAttributeListener = null;
 
+			unit.off('render-chat-bubble', this.renderChatListener);
+			this.renderChatListener = null;
+			if (this.chat) this.chat.destroy();
+
 			// release all instantiated attribute bars
 			this.attributes.forEach((a) => {
 				PhaserAttributeBar.release(a);
@@ -194,6 +231,8 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 		this.x = container.x;
 		this.y = container.y;
+
+		if (this.chat) this.chat.update(this.x, this.y);
 
 		const sprite = this.sprite;
 		sprite.rotation = texture.rotation;
