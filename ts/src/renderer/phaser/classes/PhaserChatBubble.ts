@@ -1,45 +1,11 @@
 class PhaserChatBubble extends Phaser.GameObjects.Container {
 
-	/*private static pool: Phaser.GameObjects.Group;
-
-	static get(unit: PhaserUnit): PhaserAttributeBar {
-
-		if (!this.pool) {
-			this.pool = unit.scene.make.group({});
-		}
-
-		let bar: PhaserAttributeBar = this.pool.getFirstDead(false);
-		if (!bar) {
-			bar = new PhaserAttributeBar(unit);
-			this.pool.add(bar);
-		}
-		bar.setActive(true);
-
-		bar.unit = unit;
-		unit.add(bar);
-		bar.setVisible(true);
-
-		return bar;
-	}
-
-	static release (bar: PhaserAttributeBar): void {
-
-		bar.resetFadeOut();
-
-		bar.setVisible(false);
-		bar.unit.remove(bar);
-		bar.unit = null;
-
-		bar.name = null;
-
-		bar.setActive(false);
-	}*/
-
-	private bubble: Phaser.GameObjects.Graphics;
+	private readonly triangle: Phaser.GameObjects.Graphics;
+	private readonly bubble: Phaser.GameObjects.Graphics;
 	private readonly text: Phaser.GameObjects.Text;
 
-	offset: number;
-	basicWidth: number;
+	private offset: number;
+	private basicWidth: number;
 
 	private fadeTimerEvent: Phaser.Time.TimerEvent;
 	private fadeTween: Phaser.Tweens.Tween;
@@ -63,15 +29,15 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			color: '#ffffff',
 			align: 'center'
 		});
-		//text.setFontStyle('bold');
 		text.setFontSize(11);
 		text.setOrigin(0.5);
+		text.depth = 1;
 
 		// draw bubble
 		const bubble = this.bubble = scene.add.graphics();
 		const width = text.width + 10;
 		const height = 25;
-		const borderRadius = 5;
+		const borderRadius = 3;
 
 		bubble.fillStyle(0x000000, 0.5);
 		bubble.fillRoundedRect(
@@ -82,11 +48,23 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			borderRadius
 		);
 		bubble.lineStyle(2, 0x000000, 1);
+		//temporary for bubble scaling after changing text width
 		this.basicWidth = width;
+
+		// draw triangle
+		const triangle = this.triangle = scene.add.graphics();
+		const geometry = Phaser.Geom.Triangle.BuildRight(0, 0, 10, 10);
+		const rotatedTriangle = Phaser.Geom.Triangle.Rotate(geometry, -Math.PI/4);
+		triangle.fillStyle(0x000000, 0.5);
+		triangle.fillTriangleShape(rotatedTriangle);
+		triangle.lineStyle(2, 0x000000, 1);
+		triangle.x = -2.5;
+		triangle.y = 18.5;
 
 		this.x = unit.x;
 		this.y = unit.y - this.offset;
 
+		this.add(triangle);
 		this.add(bubble);
 		this.add(text);
 		scene.add.existing(this);
@@ -101,7 +79,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			words += '...';
 		}
 
-		//need to change it later - draw new rectangle, instead of resizing
+		//need to change it later - draw new rectangle, instead of resizing, now problem with z-index
 		this.text.text = words;
 		const width = this.text.width + 10;
 		this.bubble.scaleX = width/this.basicWidth;
@@ -121,7 +99,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			borderRadius
 		);
 		bubble.lineStyle(2, 0x000000, 1);
-		//bubble.setOrigin(0.5);
+		bubble.setDepth(0);
 		this.bubble.x = this.text.x + width / 4;
 		this.add(bubble);*/
 
@@ -129,14 +107,10 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.fadeOut();
 	}
 
-	fadeOut(): void {
-
+	private fadeOut(): void {
 		const scene = this.scene;
-
 		this.fadeTimerEvent = scene.time.delayedCall(3000, () => {
-
 			this.fadeTimerEvent = null;
-
 			this.fadeTween = scene.tweens.add({
 				targets: this,
 				alpha: 0,
@@ -161,105 +135,17 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.alpha = 1;
 	}
 
+	//need to add scaling
+	updateScale(): void {
+		/*this.scaleTo(
+			1 / ige.pixi.viewport.scale.x,
+			1 / ige.pixi.viewport.scale.y,
+			1 / ige.pixi.viewport.scale.z
+		);*/
+	}
+
 	update (x, y) {
 		this.x = x;
 		this.y = y - this.offset;
 	}
-
-	/*render (data: AttributeData): void {
-
-		this.name = data.type || data.key;
-
-		const bar = this.bar;
-		const text = this.text;
-
-		const w = 94;
-		const h = 16;
-		const borderRadius = h / 2 - 1;
-
-		bar.clear();
-
-		bar.fillStyle(Phaser.Display.Color
-			.HexStringToColor(data.color)
-			.color);
-		bar.fillRoundedRect(
-			-w / 2,
-			-h / 2,
-			w * data.value / data.max,
-			h,
-			borderRadius
-		);
-
-		bar.lineStyle(2, 0x000000, 1);
-		bar.strokeRoundedRect(
-			-w / 2,
-			-h / 2,
-			w,
-			h,
-			borderRadius
-		);
-
-		text.setText(data.displayValue ?
-			(typeof data.value === 'number' ?
-				data.value.toFixed(0) : '0') : '');
-
-		const sprite = this.unit.sprite;
-		this.y = 25 +
-			Math.max(sprite.displayHeight, sprite.displayWidth) / 2
-			+ data.index * h*1.1;
-
-		this.resetFadeOut();
-
-		if ((data.showWhen instanceof Array &&
-			data.showWhen.indexOf('valueChanges') > -1) ||
-			data.showWhen === 'valueChanges') {
-
-			this.fadeOut();
-		}
-	}*/
-
-	/*private fadeOut(): void {
-
-		const scene = this.scene;
-
-		this.fadeTimerEvent = scene.time.delayedCall(1000, () => {
-
-			this.fadeTimerEvent = null;
-
-			this.fadeTween = scene.tweens.add({
-				targets: this,
-				alpha: 0,
-				duration: 500,
-				onComplete: () => {
-
-					this.fadeTween = null;
-
-					const unit = this.unit;
-					if (unit) {
-
-						const attributes = unit.attributes;
-						const index = attributes.indexOf(this);
-
-						if (index !== -1) {
-							attributes.splice(index, 1);
-							PhaserAttributeBar.release(this);
-						}
-					}
-				}
-			});
-		});
-	}*/
-
-	/*private resetFadeOut (): void {
-		// reset fade timer and tween
-		if (this.fadeTimerEvent) {
-			this.scene.time.removeEvent(this.fadeTimerEvent);
-			this.fadeTimerEvent = null;
-		}
-		if (this.fadeTween) {
-			this.fadeTween.remove();
-			this.fadeTween = null;
-		}
-		this.alpha = 1;
-	}*/
 }
