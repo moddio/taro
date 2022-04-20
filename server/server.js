@@ -74,6 +74,7 @@ var Server = IgeClass.extend({
 		self.totalProjectilesCreated = 0;
 		self.retryCount = 0;
 		self.maxRetryCount = 3;
+		self.postReqTimestamps = []
 		self.started_at = new Date();
 		self.lastSnapshot = [];
 
@@ -646,9 +647,12 @@ var Server = IgeClass.extend({
 		ige.network.define('trade', self._onTrade);
 	},
 
-	unpublish: function (from) {
+	unpublish: function (msg) {
 		console.log('unpublishing...');
-		ige.clusterClient.unpublish(from);
+		if (ige.clusterClient) {
+			ige.clusterClient.unpublish(msg);
+		}
+		
 		process.exit(0);
 	},
 
