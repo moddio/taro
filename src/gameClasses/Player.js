@@ -534,7 +534,7 @@ var Player = IgeEntity.extend({
 
 		if (value) {
 			$('#message').attr('disabled', true);
-			$('#message').attr('placeholder', 'you are muted');
+			$('#message').attr('placeholder', 'You are muted');
 		} else {
 			$('#message').attr('disabled', false);
 			$('#message').attr('placeholder', 'message');
