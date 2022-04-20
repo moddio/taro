@@ -548,7 +548,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 				var player = ige.client.myPlayer;
 				if(gameData.allowVerifiedUserToChat && !player._stats.isUserVerified){
 					$('#message').attr('disabled', true);
-					$('#message').attr('placeholder', 'please log in to chat');
+					$('#message').attr('placeholder', 'Please log in to chat');
 				}
 				$('#chat-message-input').show();
 
