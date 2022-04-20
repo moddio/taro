@@ -90,6 +90,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         bubble.setDepth(0);
         this.bubble.x = this.text.x + width / 4;
         this.add(bubble);*/
+        this.setVisible(true);
         this.resetFadeOut();
         this.fadeOut();
     };
@@ -104,6 +105,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
                 duration: 500,
                 onComplete: function () {
                     _this.fadeTween = null;
+                    _this.setVisible(false);
                 }
             });
         });

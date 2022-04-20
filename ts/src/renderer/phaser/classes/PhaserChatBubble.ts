@@ -103,6 +103,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.bubble.x = this.text.x + width / 4;
 		this.add(bubble);*/
 
+		this.setVisible(true);
 		this.resetFadeOut ();
 		this.fadeOut();
 	}
@@ -117,6 +118,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 				duration: 500,
 				onComplete: () => {
 					this.fadeTween = null;
+					this.setVisible(false);
 				}
 			});
 		});
