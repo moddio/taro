@@ -287,7 +287,6 @@ var Item = IgeEntityPhysics.extend({
 							if (owner && self._stats.currentBody && self._stats.currentBody.jointType == 'weldJoint') {
 								rotate = owner._rotate.z;
 							}
-							
 							rotate += self._stats.bulletStartPosition.rotation * Math.PI / 180;
 
 							if (self.anchoredOffset == undefined) {
