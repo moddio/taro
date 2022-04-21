@@ -216,7 +216,7 @@ var Server = IgeClass.extend({
 					return reject(new Error('Could not load game'));
 				}
 
-				this.request(`${gameUrl}&num=${self.retryCount}`, (error, response, body) => {
+				this.request(`${gameUrl}?num=${self.retryCount}`, (error, response, body) => {
 					if (error) {
 						console.log('LOADING GAME-JSON ERROR', gameUrl);
 						console.log('retry #', self.retryCount);
@@ -404,7 +404,7 @@ var Server = IgeClass.extend({
 			if (gameJson) {
 				promise = Promise.resolve(gameJson);
 			} else if (ige.server.gameId) {
-				var gameUrl = `${domain}/api/game-client/${ige.server.gameId}/?source=gs`;
+				var gameUrl = `${domain}/api/game-client/${ige.server.gameId}`;
 				console.log('gameUrl', gameUrl);
 				promise = self.loadGameJSON(gameUrl);
 			} else {
@@ -687,78 +687,19 @@ var Server = IgeClass.extend({
 
 	giveCoinToUser: function (player, coin, itemName) {
 		if (coin && player._stats && player._stats.userId && (ige.game.data.defaultData.tier == 3 || ige.game.data.defaultData.tier == 4)) {
-			this.request({
-				method: 'POST',
-				url: `${global.beUrl}/api/user/updateCoins`,
-				body: {
-					creatorId: ige.game.data.defaultData.owner,
-					userId: player._stats.userId,
-					coins: coin,
-					game: ige.game.data.defaultData._id
-				},
-				json: true
-			}, (err, httpResponse, body) => {
-				const statusCode = httpResponse && httpResponse.statusCode;
-
-				if (err) {
-					console.log(err);
-				}
-
-				if (statusCode !== 200) {
-					console.log(new Error(`BE responded with statusCode ${statusCode}`));
-				}
-
-				if (body) {
-					if (body.status === 'success') {
-						player.streamUpdateData([{ coins: body.message }]);
-					}
-					if (body.status === 'error') {
-						ige.chat.sendToRoom('1', `cannot create ${itemName}. ${body.message.username} is out of coins`, player._stats.clientId, undefined);
-					}
-				} else {
-					console.log(new Error('BE responded without body (giveCoinToUser)'));
-				}
+			
+			ige.clusterClient && ige.clusterClient.giveCoinToUser({
+				creatorId: ige.game.data.defaultData.owner,
+				userId: player._stats.userId,
+				coins: coin,
+				game: ige.game.data.defaultData._id,
+				itemName
 			});
-			// console.log('player stream update', coin)
 		}
 	},
 	postConsumeCoinsForUsers: function () {
 		var self = this;
-		this.request({
-			method: 'POST',
-			url: `${global.beUrl}/api/user/consumecoins`,
-			body: self.coinUpdate,
-			json: true
-		}, (err, httpResponse, body) => {
-			const statusCode = httpResponse && httpResponse.statusCode;
-
-			if (err) {
-				console.log(err);
-			}
-
-			if (statusCode !== 200) {
-				console.log(new Error(`BE responded with statusCode ${statusCode}`));
-			}
-
-			if (body) {
-				if (body.status === 'success') {
-					if (body.message && body.message.length > 0) {
-						body.message.forEach(function (updatedCoinsValue) {
-							var foundPlayer = ige.$$('player').find(function (player) {
-								return player && player._stats && player._stats.clientId == updatedCoinsValue.clientId;
-							});
-							if (foundPlayer) {
-								foundPlayer.streamUpdateData([{ coins: updatedCoinsValue.coinsLeft }]);
-							}
-						});
-					}
-					self.coinUpdate = {};
-				}
-				if (body.status === 'error') {
-					// console.log('error in buying item')
-				}
-			}
-		});
+		ige.clusterClient && ige.clusterClient.postConsumeCoinsForUsers(self.coinUpdate);
 	},
 	consumeCoinFromUser: function (player, coins, boughtItemId) {
 		var self = this;
