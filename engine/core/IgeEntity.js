@@ -4791,10 +4791,7 @@ var IgeEntity = IgeObject.extend({
 			// remove _stats which are static and can be added from client as well. which will save our bandwidth
 			var keys = ige.server.keysToRemoveBeforeSend.slice();
 
-			if (this._category === 'debris' && keys.indexOf('cellSheet') > -1) {
-				keys.splice(keys.indexOf('cellSheet'), 1);
-				keys = keys.concat(['rotation', 'type', 'density', 'friction', 'restitution', 'rotation', 'y', 'x']);
-			} else if (this._category === 'region') {
+			if (this._category === 'region') {
 				keys = keys.concat('value');
 			}
 

@@ -38,7 +38,7 @@ var Region = IgeEntityPhysics.extend({
 						type: 'rectangle'
 					}
 				}],
-				collidesWith: { walls: true, units: true, projectiles: true, items: true, debris: true },
+				collidesWith: { walls: true, units: true, projectiles: true, items: true},
 				// Refactor TODO: width & height should've been assigned into "currentBody". not int "default".
 				// Region is only one doing this (not unit/item/projectile). I shouldn't have to do below:
 				width: self._stats.default.width,

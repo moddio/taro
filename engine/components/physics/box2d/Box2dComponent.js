@@ -576,7 +576,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 
 							// keep entities within the boundaries
 							if (
-								(entity._category == 'unit' || entity._category == 'debris' || entity._category == 'item' || entity._category == 'projectile') &&
+								(entity._category == 'unit' || entity._category == 'item' || entity._category == 'projectile') &&
 								!skipBoundaryCheck &&
 								(
 									x < padding || x > (ige.map.data.width * tileWidth) - padding ||

@@ -3,7 +3,7 @@ var ActionComponent = IgeEntity.extend({
 	componentId: 'action',
 
 	init: function () {
-		this.entityCategories = ['unit', 'item', 'projectile', 'debris', 'region', 'wall'];
+		this.entityCategories = ['unit', 'item', 'projectile', 'region', 'wall'];
 	},
 
 	// entity can be either trigger entity, or entity in loop
@@ -748,30 +748,6 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 
-					case 'forAllDebris':
-						if (action.debrisGroup) {
-							if (!vars) {
-								vars = {};
-							}
-							var allDebris = ige.variable.getValue(action.debrisGroup, vars) || [];
-							for (var l = 0; l < allDebris.length; l++) {
-								var debris = allDebris[l];
-								var brk = self.run(action.actions, Object.assign(vars, { selectedDebris: debris }));
-
-								if (brk == 'break' || vars.break) {
-									vars.break = false;
-									ige.devLog('break called');
-									break;
-								} else if (brk == 'continue') {
-									continue;
-								} else if (brk == 'return') {
-									ige.devLog('return without executing script');
-									return 'return';
-								}
-							}
-						}
-						break;
-
 					case 'forAllEntities':
 						if (action.entityGroup) {
 							if (!vars) {
@@ -1065,11 +1041,6 @@ var ActionComponent = IgeEntity.extend({
 						if (unit && unit._stats) {
 							unit.streamUpdateData([{ isStunned: false }]);
 						}
-						break;
-
-					case 'resetDebrisPosition':
-						if (entity && entity._category == 'debris')
-							entity.resetPosition();
 						break;
 
 					case 'setEntityVelocityAtAngle':
@@ -1588,8 +1559,6 @@ var ActionComponent = IgeEntity.extend({
 							}
 						}
 						break;
-
-						/* debris */
 
 						/* Camera */
 					case 'playerCameraTrackUnit':
