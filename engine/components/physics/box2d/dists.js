@@ -349,7 +349,6 @@ var dists = {
 
 	// 					var count = {
 	// 						unit: 0,
-	// 						debris: 0,
 	// 						item: 0,
 	// 						projectile: 0,
 	// 						wall: 0,
@@ -413,8 +412,6 @@ var dists = {
 	// 			// Grab the fixture definition
 	// 			var fixtureDef = body.fixtures[0];
 	// 			var type = body.type;
-	// 			if (entity._category == 'debris' && entity._stats.name == 'car')
-	// 				console.log(entity._translate, entity.width(), entity.height());
 	// 			var collider = new self.crash.Box(new self.crash.Vector(entity._translate.x, entity._translate.y), entity.width(), entity.height());
 	// 			if (typeof PIXI != 'undefined') {
 	// 				var graphics = new PIXI.Graphics();
