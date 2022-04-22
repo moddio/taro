@@ -73,6 +73,9 @@ var IgeChatClient = {
 						parentUnit: selectedUnit.id()
 					})
 						.fade(3000);
+
+					//phaser chat bubble rendering - logic for destroying and fading moved to PhaserChatBubble.ts
+					selectedUnit.emit('render-chat-bubble', data.text);
 				}
 				// console.log("chatMsg from " + player._stats.name + ': ', data.text);
 			}
