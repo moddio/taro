@@ -126,7 +126,17 @@ var igeCoreConfig = {
 		['cap', 'IgeFilters.invert', 'filters/invert.js'],
 		['cap', 'IgeFilters.glowMask', 'filters/glowMask.js'],
 		/* Engine Actual */
-		['csap', 'IgeEngine', 'core/IgeEngine.js']
+		['csap', 'IgeEngine', 'core/IgeEngine.js'],
+		/* Physics Libraries */
+		['csap', 'PhysicsComponent', './components/physics/box2d/Box2dComponent.js'],
+		['csap', 'IgeEntityPhysics', './components/physics/box2d/IgeEntityPhysics.js'],
+		['csap', 'IgeBox2dWorld', './components/physics/box2d/IgeBox2dDebugPainter.js'],
+		['csap', 'dists', './components/physics/box2d/dists.js'],
+		['csap', 'planck', './components/physics/box2d/dists/planck/planck.js'],
+		['csap', 'box2dweb', './components/physics/box2d/dists/box2dweb/lib_box2d.js', 'box2dweb'],
+		['csap', 'box2dninja', './components/physics/box2d/dists/box2dweb/box2d_ninja.js', 'box2dninja'],
+		['csap', 'box2dts', './components/physics/box2d/dists/flyoverbox2dts/bundle.js']
+		// No crash for now
 	]
 };
 
