@@ -170,6 +170,16 @@ var ActionComponent = IgeEntity.extend({
 							return;
 						}
 
+						// ensure we aren't sending more than 30 POST requests within 10 seconds
+						ige.server.postReqTimestamps.push(ige.currentTime());
+						var oldestReqTimestamp = ige.server.postReqTimestamps[0]
+						while (Date.now() - oldestReqTimestamp > 10000 && ige.server.postReqTimestamps.length > 0) {
+							oldestReqTimestamp = ige.server.postReqTimestamps.shift();	
+						}						
+						if (ige.server.postReqTimestamps.length > 30) {
+							ige.server.unpublish("Game server is sending too many POST requests. You cannot send more than 30 req per every 10s.")
+						}
+
 						ige.server.request.post({
 						    url: url,
 						    form: obj
