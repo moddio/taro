@@ -1,3 +1,3 @@
 module.exports = {
-	BE_URL: 'http://45.76.57.35'
+	BE_URL: 'https://staging.modd.io'
 };
