@@ -9,11 +9,13 @@ class GameScene extends Phaser.Scene {
 		// phaser canvas adjustments
 		const canvas = this.game.canvas;
 		canvas.style.position = 'fixed';
-		canvas.style.opacity = '0.5';
+		//canvas.style.opacity = '0.5';
 		canvas.style.backgroundColor = 'transparent';
-		canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
 
 		const camera = this.cameras.main;
+
+		ige.client.phaserScene = this;
 
 		this.scale.on(Phaser.Scale.Events.RESIZE, (
 			gameSize: Phaser.Structs.Size,
@@ -157,5 +159,11 @@ class GameScene extends Phaser.Scene {
 		);
 		camera.zoom = this.scale.width / 800;
 
+		/*console.log('INPUT-------------------', this.input);
+		this.input.on('pointermove', function(pointer){
+			this.pointX = pointer.x;
+			this.pointY = pointer.y;
+			console.log('pointermove', this.pointX, this.pointY);
+		});*/
 	}
 }

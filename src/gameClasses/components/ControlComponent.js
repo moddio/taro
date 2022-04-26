@@ -297,13 +297,15 @@ var ControlComponent = IgeEntity.extend({
 					-ige.pixi.viewport.x / ige.pixi.viewport.scale.x,
 					-ige.pixi.viewport.y / ige.pixi.viewport.scale.y
 				];
+				//console.log(ige.client.phaserScene.cameras.main.worldView.x, ige.client.phaserScene.cameras.main.worldView.y,/*, ige.pixi.viewport.scale.x, ige.pixi.viewport.scale.y,*/ vpTransform[0], vpTransform[1]);
 				var mouseX = ige.client.mouseMove && ige.client.mouseMove.clientX || 0;
 				var mouseY = ige.client.mouseMove && ige.client.mouseMove.clientY || 0;
 
 				var currentMouseTransform = [
-					vpTransform[0] + mouseX / ige.pixi.viewport.scale.x,
-					vpTransform[1] + mouseY / ige.pixi.viewport.scale.y
+					ige.client.phaserScene.cameras.main.worldView.x + ige.client.phaserScene.input.activePointer.x / ige.pixi.viewport.scale.x,
+					ige.client.phaserScene.cameras.main.worldView.y + ige.client.phaserScene.input.activePointer.y / ige.pixi.viewport.scale.y
 				];
+				//console.log (ige.client.phaserScene.input.activePointer.x , ige.client.phaserScene.input.activePointer.y, 'mouse position', mouseX, mouseY);
 				this.newMousePosition = currentMouseTransform;
 			} else {
 				this.newMousePosition = [0, 0];
