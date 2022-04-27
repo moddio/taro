@@ -1149,6 +1149,12 @@ var VariableComponent = IgeEntity.extend({
 						return Math.floor(value);
 					break;
 
+				case 'roundToNearest':
+					var value = self.getValue(text.value, vars);
+					var nearest = self.getValue(text.nearest, vars);
+					returnValue = Math.floor(value / nearest + 0.5) * nearest;
+					break;
+
 				case 'getEntireMapRegion':
 					var region = {
 						x: 0,
