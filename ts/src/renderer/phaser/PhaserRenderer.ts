@@ -18,7 +18,7 @@ class PhaserRenderer {
 				mode: Phaser.Scale.ScaleModes.RESIZE
 			},
 			render: {
-				pixelArt: true,
+				pixelArt: false,
 				transparent: !false,
 				mipmapFilter: 'NEAREST'
 			},
