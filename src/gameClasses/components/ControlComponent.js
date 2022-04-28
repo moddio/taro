@@ -292,8 +292,8 @@ var ControlComponent = IgeEntity.extend({
 	mouseMove: function () {
 		var player = ige.client.myPlayer;
 		if (player) {
-			//we can remove it
-			if (ige.pixi && ige.pixi.viewport) {
+			//we can remove it. If we need to enable PIXI mouse input we should uncomment this
+			/*if (ige.pixi && ige.pixi.viewport) {
 				var vpTransform = [
 					-ige.pixi.viewport.x / ige.pixi.viewport.scale.x,
 					-ige.pixi.viewport.y / ige.pixi.viewport.scale.y
@@ -308,8 +308,8 @@ var ControlComponent = IgeEntity.extend({
 				this.newMousePosition = currentMouseTransform;
 			} else {
 				this.newMousePosition = [0, 0];
-			}
-			ige.client.emit('mouse-move', this);
+			}*/
+			ige.client.emit('fetch-mouse-position', this);
 		}
 	},
 	/**

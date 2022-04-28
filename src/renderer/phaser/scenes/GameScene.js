@@ -24,8 +24,9 @@ var GameScene = /** @class */ (function (_super) {
         // phaser canvas adjustments
         var canvas = this.game.canvas;
         canvas.style.position = 'fixed';
-        //canvas.style.opacity = '0.5';
+        canvas.style.opacity = '0.5';
         canvas.style.backgroundColor = 'transparent';
+        //canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
         var camera = this.cameras.main;
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
@@ -40,7 +41,7 @@ var GameScene = /** @class */ (function (_super) {
             console.log('GameScene zoom event', height); // TODO remove
             camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
         });
-        ige.client.on('mouse-move', function (controlComponent) {
+        ige.client.on('fetch-mouse-position', function (controlComponent) {
             var currentMouseTransform = [
                 _this.input.activePointer.worldX,
                 _this.input.activePointer.worldY
@@ -132,12 +133,6 @@ var GameScene = /** @class */ (function (_super) {
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
         camera.zoom = this.scale.width / 800;
-        /*console.log('INPUT-------------------', this.input);
-        this.input.on('pointermove', function(pointer){
-            this.pointX = pointer.x;
-            this.pointY = pointer.y;
-            console.log('pointermove', this.pointX, this.pointY);
-        });*/
     };
     return GameScene;
 }(Phaser.Scene));
