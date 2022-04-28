@@ -117,7 +117,7 @@ dist
 
 .Ds_Store
 
-# videoChatConfig.js
-# assets/js/videoChatConfig.js
+videoChatConfig.js
+assets/js/videoChatConfig.js
 
 .idea/
