@@ -5,7 +5,6 @@ declare class Client extends IgeEventingClass {
 	entityUpdateQueue: Record<string, UpdateData[]>;
 
 	phaserLoaded: JQueryDeferred<void>;
-	phaserScene: Phaser.Scene;
 
 	constructor(options?: object);
 }

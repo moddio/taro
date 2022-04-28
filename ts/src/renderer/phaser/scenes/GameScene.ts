@@ -163,12 +163,5 @@ class GameScene extends Phaser.Scene {
 			map.height * map.tileHeight / 2
 		);
 		camera.zoom = this.scale.width / 800;
-
-		/*console.log('INPUT-------------------', this.input);
-		this.input.on('pointermove', function(pointer){
-			this.pointX = pointer.x;
-			this.pointY = pointer.y;
-			console.log('pointermove', this.pointX, this.pointY);
-		});*/
 	}
 }
