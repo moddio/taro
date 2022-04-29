@@ -2248,7 +2248,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'removeAllAttributeBuffs':
 						var unit = ige.variable.getValue(action.unit, vars)
 						if(unit && unit._stats && unit._stats.buffs){
-							for(var i = 0; i < unit._stats.buffs.length; i++){
+							for(let i = 0; i < unit._stats.buffs.length; i++){
 								unit._stats.buffs[i].timeLimit = 0;
 							}
 						}
