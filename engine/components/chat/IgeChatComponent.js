@@ -16,28 +16,7 @@ var IgeChatComponent = IgeEventingClass.extend({
 		/* CEXCLUDE */
 		if (ige.isServer) {
 			if (process.env.ENV != 'standalone') {
-				this.filter = soap;
-			} else {
-				var Filter = require('bad-words');
-				// this.filter = new Filter();
-
-				// a hack to support special characters. bad-words currently crashes server when special characters are entered (v3.0.4)
-				// https://github.com/web-mech/badwords/issues/93
-				class FilterHacked extends Filter {
-					cleanHacked (string) {
-						try {
-							return this.clean(string);
-						} catch {
-							const joinMatch = this.splitRegex.exec(string);
-							const joinString = (joinMatch && joinMatch[0]) || '';
-							return string.split(this.splitRegex).map((word) => {
-								return this.isProfane(word) ? this.replaceWord(word) : word;
-							}).join(joinString);
-						}
-					}
-				}
-				// module.exports = FilterHacked; don't really think we need to export this
-				this.filter = new FilterHacked();
+				this.filter = betterFilter;
 			}
 
 			// this.sanitizer = require('sanitizer');

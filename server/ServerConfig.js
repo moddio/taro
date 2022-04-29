@@ -5,7 +5,7 @@ var moddioConfig =
 			{ name: 'ClusterClientComponent', path: '../../ClusterClientComponent' },
 			{ name: 'ClusterServerComponent', path: '../../ClusterServerComponent' },
 			{ name: 'HttpComponent', path: '../../HttpComponent' },
-			{ name: 'soap', path: '../../moderation/soap' }
+			{ name: 'betterFilter', path: '../../moderation/betterFilter' }
 		];
 var defaultConfig = [
 	{ name: 'ServerNetworkEvents', path: '../server/ServerNetworkEvents' },
