@@ -1,3 +1,3 @@
 module.exports = {
-	BE_URL: 'https://staging.modd.io'
+	BE_URL: 'http://staging_gs_manager.modd.io'
 };
