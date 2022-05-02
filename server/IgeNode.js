@@ -443,10 +443,13 @@ var IgeNode = IgeClass.extend({
 		// Require babel.
 		let babel = require('@babel/core');
 
-		// Remove client-exclude marked code.
-		source = source.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
-
-		let finCode = babel.transform(source, { ast: true, compact: true, minified: true, comments: false }).code.toString();
+		let finCode = babel.transformSync(source, {parserOpts: {  'presets': [
+			'@babel/preset-env',
+			'@babel/plugin-transform-typescript'
+		],
+		'plugins': [
+			'@babel/plugin-transform-modules-commonjs'
+		],  allowReturnOutsideFunction: true}}).code();
 
 		// Return final code.
 		return finCode;
@@ -468,4 +471,6 @@ var IgeNode = IgeClass.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeNode; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeNode;
+}
