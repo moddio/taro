@@ -74,6 +74,7 @@ var Server = IgeClass.extend({
 		self.totalProjectilesCreated = 0;
 		self.retryCount = 0;
 		self.maxRetryCount = 3;
+		self.postReqTimestamps = []
 		self.started_at = new Date();
 		self.lastSnapshot = [];
 
@@ -446,16 +447,16 @@ var Server = IgeClass.extend({
 
 				ige._physicsTickRate = engineTickFrameRate;
 
-				/*
-				 * Significant changes below
-				 * Let's test loading PhysicsConfig here
-				*/
-				var igePhysicsConfig = require('../engine/PhysicsConfig');
-				igePhysicsConfig.loadSelectPhysics(game.data.defaultData.physicsEngine);
-				igePhysicsConfig.loadPhysicsGameClasses();
-				/*
-				 * Significant changes above
-				*/
+				// /*
+				//  * Significant changes below
+				//  * Let's test loading PhysicsConfig here
+				// */
+				// var igePhysicsConfig = require('../engine/PhysicsConfig');
+				// igePhysicsConfig.loadSelectPhysics(game.data.defaultData.physicsEngine);
+				// igePhysicsConfig.loadPhysicsGameClasses();
+				// /*
+				//  * Significant changes above
+				// */
 
 				// Add physics and setup physics world
 				ige.addComponent(PhysicsComponent)
@@ -520,10 +521,10 @@ var Server = IgeClass.extend({
 
 						let map = ige.scaleMap(_.cloneDeep(ige.game.data.map));
 						ige.map.load(map);
-						
-						if (ige.physics.engine === 'CRASH') {
-							ige.physics.addBorders();
-						}
+
+						// if (ige.physics.engine === 'CRASH') {
+						// 	ige.physics.addBorders();
+						// }
 
 						ige.game.start();
 
@@ -649,9 +650,12 @@ var Server = IgeClass.extend({
 		ige.network.define('trade', self._onTrade);
 	},
 
-	unpublish: function (from) {
+	unpublish: function (msg) {
 		console.log('unpublishing...');
-		ige.clusterClient.unpublish(from);
+		if (ige.clusterClient) {
+			ige.clusterClient.unpublish(msg);
+		}
+		
 		process.exit(0);
 	},
 

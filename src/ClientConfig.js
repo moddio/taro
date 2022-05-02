@@ -5,18 +5,18 @@ var igeClientConfig = {
 		'/lib/msgpack.min.js',
 
 		'/gameClasses/Player.js',
-		// '/gameClasses/Unit.js',
+		'/gameClasses/Unit.js',
 		'/gameClasses/ClientScore.js',
 		'/gameClasses/MinimapUnit.js',
-		// '/gameClasses/Region.js',
+		'/gameClasses/Region.js',
 
-		// '/gameClasses/Item.js',
-		// '/gameClasses/Projectile.js',
-		// '/gameClasses/Particle.js',
+		'/gameClasses/Item.js',
+		'/gameClasses/Projectile.js',
+		'/gameClasses/Particle.js',
 
 		'/gameClasses/ClientNetworkEvents.js',
 		'/gameClasses/components/GameComponent.js',
-		// '/gameClasses/components/MapComponent.js',
+		'/gameClasses/components/MapComponent.js',
 		'/gameClasses/components/InventoryComponent.js',
 		'/gameClasses/components/SoundComponent.js',
 		'/gameClasses/components/ControlComponent.js',
@@ -50,7 +50,7 @@ var igeClientConfig = {
 		'/gameClasses/components/unit/AbilityComponent.js',
 		'/gameClasses/components/unit/AttributeComponent.js',
 
-		// '/gameClasses/Debris.js',
+		'/gameClasses/Debris.js',
 
 		/* Standard game scripts */
 		'/gameClasses/Cursor.js',

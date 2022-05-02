@@ -1255,8 +1255,6 @@ var Unit = IgeEntityPhysics.extend({
 					item._translateTo(defaultData.translate.x, defaultData.translate.y)*/
 				}
 
-				console.log('default data', defaultData)
-
 				item.setState('dropped', defaultData);
 				item.setOwnerUnit(undefined);
 				self._stats.currentItemId = null;

@@ -267,24 +267,13 @@ const Client = IgeEventingClass.extend({
 		const clientPhysicsEngine = ige.game.data.defaultData.clientPhysicsEngine;
 		const serverPhysicsEngine = ige.game.data.defaultData.physicsEngine;
 
-
-		window.igeLoader.loadPhysicsConfig(
+		if (clientPhysicsEngine) {
 			//
-			clientPhysicsEngine,
-			serverPhysicsEngine,
-			// this callback fires when we have loaded all of the files
-			() => {
-				//
-				// console.log('Physics engine files loaded');
-				if (clientPhysicsEngine) {
-					//
-					ige.addComponent(PhysicsComponent)
-						.physics.sleep(true);
-				}
-				// we want as little as possible in here so we can start our other loading
-				this.physicsConfigLoaded.resolve();
-			}
-		);
+			ige.addComponent(PhysicsComponent)
+				.physics.sleep(true);
+		}
+
+		this.physicsConfigLoaded.resolve();
 	},
 
 	loadMap: function() {
