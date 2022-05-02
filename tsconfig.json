@@ -1,15 +1,10 @@
 {
     "compilerOptions": {
+        "module": "None",
+        "target": "es6",
         "sourceMap": true,
-        "noImplicitReturns": true,
-        "noImplicitAny": true,
-        "module": "es6",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "target": "es5",
-        "allowJs": true,
-        "baseUrl": ".",
+        "outDir": ".",
+        "rootDir": "ts",
         "typeRoots": [
             "node_modules/@types",
             "node_modules/phaser/types",
