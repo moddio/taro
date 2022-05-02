@@ -444,16 +444,16 @@ var Server = IgeClass.extend({
 
 				ige._physicsTickRate = engineTickFrameRate;
 
-				/*
-				 * Significant changes below
-				 * Let's test loading PhysicsConfig here
-				*/
-				var igePhysicsConfig = require('../engine/PhysicsConfig');
-				igePhysicsConfig.loadSelectPhysics(game.data.defaultData.physicsEngine);
-				igePhysicsConfig.loadPhysicsGameClasses();
-				/*
-				 * Significant changes above
-				*/
+				// /*
+				//  * Significant changes below
+				//  * Let's test loading PhysicsConfig here
+				// */
+				// var igePhysicsConfig = require('../engine/PhysicsConfig');
+				// igePhysicsConfig.loadSelectPhysics(game.data.defaultData.physicsEngine);
+				// igePhysicsConfig.loadPhysicsGameClasses();
+				// /*
+				//  * Significant changes above
+				// */
 
 				// Add physics and setup physics world
 				ige.addComponent(PhysicsComponent)
@@ -518,10 +518,10 @@ var Server = IgeClass.extend({
 
 						let map = ige.scaleMap(_.cloneDeep(ige.game.data.map));
 						ige.map.load(map);
-						
-						if (ige.physics.engine === 'CRASH') {
-							ige.physics.addBorders();
-						}
+
+						// if (ige.physics.engine === 'CRASH') {
+						// 	ige.physics.addBorders();
+						// }
 
 						ige.game.start();
 
