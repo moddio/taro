@@ -439,18 +439,24 @@ var IgeNode = IgeClass.extend({
 		return finalFileData;
 	},
 
-	obfuscate: function (source, seed, opts, deployOptions) {
-		// Require babel.
-		let babel = require('@babel/core');
+    obfuscate: function (source, seed, opts, deployOptions) {
+        // Require babel.
+        let babel = require('@babel/core');
 
-		// Remove client-exclude marked code.
-		source = source.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
+        let finCode = babel.transformSync(source, {parserOpts: {  'presets': [
+            '@babel/preset-env',
+            // '@babel/plugin-transform-typescript'
+        ],
+        // 'plugins': [
+        //     '@babel/plugin-transform-modules-commonjs'
+        // ],
+        allowReturnOutsideFunction: true}});
 
-		let finCode = babel.transform(source, { ast: true, compact: true, minified: true, comments: false }).code.toString();
+        finCode = finCode.code;
 
-		// Return final code.
-		return finCode;
-	},
+        // Return final code.
+        return finCode;
+    },
 
 	ask: function (question, callback) {
 		var readline = require('readline');
