@@ -1,6 +1,6 @@
-var PhaserRenderer = /** @class */ (function () {
-    function PhaserRenderer() {
-        var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
+class PhaserRenderer {
+    constructor() {
+        const forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
         this.game = new Phaser.Game({
             type: forceCanvas[gameId] ?
                 Phaser.CANVAS : Phaser.AUTO,
@@ -21,6 +21,4 @@ var PhaserRenderer = /** @class */ (function () {
             ]
         });
     }
-    return PhaserRenderer;
-}());
-//# sourceMappingURL=PhaserRenderer.js.map
+}

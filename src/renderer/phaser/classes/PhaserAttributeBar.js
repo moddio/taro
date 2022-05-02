@@ -1,112 +1,105 @@
-var __extends = (this && this.__extends);
-var PhaserAttributeBar = /** @class */ (function (_super) {
-	__extends(PhaserAttributeBar, _super);
-	function PhaserAttributeBar(unit) {
-		var _this = this;
-		var scene = unit.scene;
-		_this = _super.call(this, scene) || this;
-		_this.unit = unit;
-		var bar = _this.bar = scene.add.graphics();
-		_this.add(bar);
-		var text = _this.text = scene.add.text(0, 0, '', {
-			fontFamily: 'Arial',
-			color: '#000000',
-			align: 'center'
-		});
-		text.setFontStyle('bold');
-		text.setFontSize(14);
-		text.setOrigin(0.5);
-		_this.add(text);
-		unit.add(_this);
-		return _this;
-	}
-	PhaserAttributeBar.get = function (unit) {
-		if (!this.pool) {
-			this.pool = unit.scene.make.group({});
-		}
-		var bar = this.pool.getFirstDead(false);
-		if (!bar) {
-			bar = new PhaserAttributeBar(unit);
-			this.pool.add(bar);
-		}
-		bar.setActive(true);
-		bar.unit = unit;
-		unit.add(bar);
-		bar.setVisible(true);
-		return bar;
-	};
-	PhaserAttributeBar.release = function (bar) {
-		bar.resetFadeOut();
-		bar.setVisible(false);
-		bar.unit.remove(bar);
-		bar.unit = null;
-		bar.name = null;
-		bar.setActive(false);
-	};
-	PhaserAttributeBar.prototype.render = function (data) {
-		this.name = data.type || data.key;
-		var bar = this.bar;
-		var text = this.text;
-		var w = 94;
-		var h = 16;
-		var borderRadius = h / 2 - 1;
-		bar.clear();
-		bar.fillStyle(Phaser.Display.Color
-			.HexStringToColor(data.color)
-			.color);
-		bar.fillRoundedRect(-w / 2, -h / 2, w * data.value / data.max, h, borderRadius);
-		bar.lineStyle(2, 0x000000, 1);
-		bar.strokeRoundedRect(-w / 2, -h / 2, w, h, borderRadius);
-		text.setText(data.displayValue ?
-			(typeof data.value === 'number' ?
-				data.value.toFixed(0) : '0') : '');
-		var sprite = this.unit.sprite;
-		this.y = 25 +
+class PhaserAttributeBar extends Phaser.GameObjects.Container {
+    constructor(unit) {
+        const scene = unit.scene;
+        super(scene);
+        this.unit = unit;
+        const bar = this.bar = scene.add.graphics();
+        this.add(bar);
+        const text = this.text = scene.add.text(0, 0, '', {
+            fontFamily: 'Arial',
+            color: '#000000',
+            align: 'center'
+        });
+        text.setFontStyle('bold');
+        text.setFontSize(14);
+        text.setOrigin(0.5);
+        this.add(text);
+        unit.add(this);
+    }
+    static get(unit) {
+        if (!this.pool) {
+            this.pool = unit.scene.make.group({});
+        }
+        let bar = this.pool.getFirstDead(false);
+        if (!bar) {
+            bar = new PhaserAttributeBar(unit);
+            this.pool.add(bar);
+        }
+        bar.setActive(true);
+        bar.unit = unit;
+        unit.add(bar);
+        bar.setVisible(true);
+        return bar;
+    }
+    static release(bar) {
+        bar.resetFadeOut();
+        bar.setVisible(false);
+        bar.unit.remove(bar);
+        bar.unit = null;
+        bar.name = null;
+        bar.setActive(false);
+    }
+    render(data) {
+        this.name = data.type || data.key;
+        const bar = this.bar;
+        const text = this.text;
+        const w = 94;
+        const h = 16;
+        const borderRadius = h / 2 - 1;
+        bar.clear();
+        bar.fillStyle(Phaser.Display.Color
+            .HexStringToColor(data.color)
+            .color);
+        bar.fillRoundedRect(-w / 2, -h / 2, w * data.value / data.max, h, borderRadius);
+        bar.lineStyle(2, 0x000000, 1);
+        bar.strokeRoundedRect(-w / 2, -h / 2, w, h, borderRadius);
+        text.setText(data.displayValue ?
+            (typeof data.value === 'number' ?
+                data.value.toFixed(0) : '0') : '');
+        const sprite = this.unit.sprite;
+        this.y = 25 +
             Math.max(sprite.displayHeight, sprite.displayWidth) / 2
             + data.index * h * 1.1;
-		this.resetFadeOut();
-		if ((data.showWhen instanceof Array &&
+        this.resetFadeOut();
+        if ((data.showWhen instanceof Array &&
             data.showWhen.indexOf('valueChanges') > -1) ||
             data.showWhen === 'valueChanges') {
-			this.fadeOut();
-		}
-	};
-	PhaserAttributeBar.prototype.fadeOut = function () {
-		var _this = this;
-		var scene = this.scene;
-		this.fadeTimerEvent = scene.time.delayedCall(1000, function () {
-			_this.fadeTimerEvent = null;
-			_this.fadeTween = scene.tweens.add({
-				targets: _this,
-				alpha: 0,
-				duration: 500,
-				onComplete: function () {
-					_this.fadeTween = null;
-					var unit = _this.unit;
-					if (unit) {
-						var attributes = unit.attributes;
-						var index = attributes.indexOf(_this);
-						if (index !== -1) {
-							attributes.splice(index, 1);
-							PhaserAttributeBar.release(_this);
-						}
-					}
-				}
-			});
-		});
-	};
-	PhaserAttributeBar.prototype.resetFadeOut = function () {
-		// reset fade timer and tween
-		if (this.fadeTimerEvent) {
-			this.scene.time.removeEvent(this.fadeTimerEvent);
-			this.fadeTimerEvent = null;
-		}
-		if (this.fadeTween) {
-			this.fadeTween.remove();
-			this.fadeTween = null;
-		}
-		this.alpha = 1;
-	};
-	return PhaserAttributeBar;
-}(Phaser.GameObjects.Container));
-//# sourceMappingURL=PhaserAttributeBar.js.map
+            this.fadeOut();
+        }
+    }
+    fadeOut() {
+        const scene = this.scene;
+        this.fadeTimerEvent = scene.time.delayedCall(1000, () => {
+            this.fadeTimerEvent = null;
+            this.fadeTween = scene.tweens.add({
+                targets: this,
+                alpha: 0,
+                duration: 500,
+                onComplete: () => {
+                    this.fadeTween = null;
+                    const unit = this.unit;
+                    if (unit) {
+                        const attributes = unit.attributes;
+                        const index = attributes.indexOf(this);
+                        if (index !== -1) {
+                            attributes.splice(index, 1);
+                            PhaserAttributeBar.release(this);
+                        }
+                    }
+                }
+            });
+        });
+    }
+    resetFadeOut() {
+        // reset fade timer and tween
+        if (this.fadeTimerEvent) {
+            this.scene.time.removeEvent(this.fadeTimerEvent);
+            this.fadeTimerEvent = null;
+        }
+        if (this.fadeTween) {
+            this.fadeTween.remove();
+            this.fadeTween = null;
+        }
+        this.alpha = 1;
+    }
+}

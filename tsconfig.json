@@ -1,15 +1,10 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
-        "noImplicitReturns": true,
-        "noImplicitAny": true,
-        "module": "es6",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "target": "es5",
-        "allowJs": true,
-        "baseUrl": ".",
+        "module": "es2015",
+        "target": "es2015",
+        "sourceMap": false,
+        "outDir": ".",
+        "rootDir": "ts",
         "typeRoots": [
             "node_modules/@types",
             "node_modules/phaser/types",
@@ -17,10 +12,10 @@
         ],
         "types": [
             "node",
-			"jquery",
+            "jquery",
             "Phaser"
         ]
-	},
+    },
     "exclude": [
         "node_modules"
     ]
