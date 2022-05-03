@@ -2033,10 +2033,10 @@ var IgeEntity = IgeObject.extend({
 					position = (ownerUnit && ownerUnit._pixiContainer) || position;
 				}
 
-				// play default animation if animation isn't set.
+				// DONT play default animation if animation isn't set.
 				if (effect.animation == undefined || effect.animation == 'none') {
-					var currentState = this._stats.states[this._stats.stateId];
-					this.applyAnimationById(currentState.animation);
+					// var currentState = this._stats.states[this._stats.stateId];
+					// this.applyAnimationById(currentState.animation);
 				} else {
 					this.applyAnimationById(effect.animation);
 				}
