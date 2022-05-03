@@ -440,23 +440,18 @@ var IgeNode = IgeClass.extend({
 	},
 
 	obfuscate: function (source, seed, opts, deployOptions) {
-        // Require babel.
-        let babel = require('@babel/core');
+		// Require babel.
+		let babel = require('@babel/core');
 
-        let finCode = babel.transformSync(source, {parserOpts: {  'presets': [
-            '@babel/preset-env',
-            // '@babel/plugin-transform-typescript'
-        ],
-        // 'plugins': [
-        //     '@babel/plugin-transform-modules-commonjs'
-        // ],  
-        allowReturnOutsideFunction: true}});
+		let finCode = babel.transformSync(source, {
+			parserOpts: {
+				'presets': ['@babel/preset-env']
+			}
+		}).code;
 
-        finCode = finCode.code;
-
-        // Return final code.
-        return finCode;
-    },
+		// Return final code.
+		return finCode;
+	},
 
 	ask: function (question, callback) {
 		var readline = require('readline');
