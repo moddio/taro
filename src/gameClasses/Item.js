@@ -251,307 +251,300 @@ var Item = IgeEntityPhysics.extend({
 		var player = owner && owner.getOwner();
 		var isUsed = false;
 
-		setTimeout(() => {
-			// if item has no owner, or item is unusable type, or it cannot be used by its current owner, then return
-			if (!owner ||
-				(self._stats.canBeUsedBy && self._stats.canBeUsedBy.length > 0 && self._stats.canBeUsedBy.indexOf(owner._stats.type) == -1) ||
-				self._stats.type === 'unusable') {
-				return;
-			}
+		// if item has no owner, or item is unusable type, or it cannot be used by its current owner, then return
+		if (!owner ||
+			(self._stats.canBeUsedBy && self._stats.canBeUsedBy.length > 0 && self._stats.canBeUsedBy.indexOf(owner._stats.type) == -1) ||
+			self._stats.type === 'unusable') {
+			return;
+		}
 
-			if (self.hasQuantityRemaining()) {
-				ige.game.lastUsedItemId = self.id();
+		if (self.hasQuantityRemaining()) {
+			ige.game.lastUsedItemId = self.id();
 
-				if ((self._stats.lastUsed - self._stats.delayBeforeUse + self._stats.fireRate < now) || self._stats.type == 'consumable') {
-					if (!self.canAffordItemCost()) {
-						ige.devLog('cannot afford item cost');
-						return;
-					}
+			if ((self._stats.lastUsed + self._stats.fireRate < now) || self._stats.type == 'consumable') {
+				if (!self.canAffordItemCost()) {
+					ige.devLog('cannot afford item cost');
+					return;
+				}
 
-					isUsed = true;
+				isUsed = true;
 
-					// item must be ready to fire (accordingly to fire rate), and must have ammo or have infinite ammo
-					if (ige.isClient && self._stats.type == 'weapon' && self._stats.effects && self._stats.effects.use && self._stats.effects.use.animation) {
-						self.applyAnimationById(self._stats.effects.use.animation);
-					}
+				// item must be ready to fire (accordingly to fire rate), and must have ammo or have infinite ammo
+				if (ige.isClient && self._stats.type == 'weapon' && self._stats.effects && self._stats.effects.use && self._stats.effects.use.animation) {
+					self.applyAnimationById(self._stats.effects.use.animation);
+				}
 
-					self._stats.lastUsed = ige.now;
-					ige.trigger && ige.trigger.fire('unitUsesItem', {
-						unitId: (owner) ? owner.id() : undefined,
-						itemId: self.id()
-					});
+				self._stats.lastUsed = ige.now;
+				ige.trigger && ige.trigger.fire('unitUsesItem', {
+					unitId: (owner) ? owner.id() : undefined,
+					itemId: self.id()
+				});
 
-					if (ige.physics && self._stats.type == 'weapon') {
-						if (self._stats.isGun) {
-							if (self._stats.bulletStartPosition) {
-								var rotate = this._rotate.z;
-								if (owner && self._stats.currentBody && self._stats.currentBody.jointType == 'weldJoint') {
-									rotate = owner._rotate.z;
-								}
-								
-								// FIX
-								// fixed bulletStartPositionRotation
-								rotate += self._stats.bulletStartPosition.rotation * Math.PI / 180;
-								// FIX
+				if (ige.physics && self._stats.type == 'weapon') {
+					if (self._stats.isGun) {
+						if (self._stats.bulletStartPosition) {
+							var rotate = this._rotate.z;
+							if (owner && self._stats.currentBody && self._stats.currentBody.jointType == 'weldJoint') {
+								rotate = owner._rotate.z;
+							}
+							rotate += self._stats.bulletStartPosition.rotation * Math.PI / 180;
 
-								if (self.anchoredOffset == undefined) {
-									self.anchoredOffset = { x: 0, y: 0, rotate: 0 };
-								}
+							if (self.anchoredOffset == undefined) {
+								self.anchoredOffset = { x: 0, y: 0, rotate: 0 };
+							}
 
-								var offsetAngle = rotate;
-								if (self._stats.flip == 1) {
-									offsetAngle += Math.PI;
-								}
+							var offsetAngle = rotate;
+							if (self._stats.flip == 1) {
+								offsetAngle += Math.PI;
+							}
 
-								// item is flipped, then mirror the rotation
-								if (owner._stats.flip == 1) {
-									var bulletY = -self._stats.bulletStartPosition.y || 0;
-								} else {
-									var bulletY = self._stats.bulletStartPosition.y || 0;
-								}
+							// item is flipped, then mirror the rotation
+							if (owner._stats.flip == 1) {
+								var bulletY = -self._stats.bulletStartPosition.y || 0;
+							} else {
+								var bulletY = self._stats.bulletStartPosition.y || 0;
+							}
 
-								var bulletStartPosition = {
-									x: (owner._translate.x + self.anchoredOffset.x) + (self._stats.bulletStartPosition.x * Math.cos(offsetAngle)) + (bulletY * Math.sin(offsetAngle)),
-									y: (owner._translate.y + self.anchoredOffset.y) + (self._stats.bulletStartPosition.x * Math.sin(offsetAngle)) - (bulletY * Math.cos(offsetAngle))
+							var bulletStartPosition = {
+								x: (owner._translate.x + self.anchoredOffset.x) + (self._stats.bulletStartPosition.x * Math.cos(offsetAngle)) + (bulletY * Math.sin(offsetAngle)),
+								y: (owner._translate.y + self.anchoredOffset.y) + (self._stats.bulletStartPosition.x * Math.sin(offsetAngle)) - (bulletY * Math.cos(offsetAngle))
+							};
+
+							if (
+								this._stats.isGun &&
+								(ige.isServer || (ige.isClient && ige.physics)) // render projectile on clientside if physics is enabled
+							) {
+								var defaultData = {
+									rotate: rotate,
+									translate: bulletStartPosition
 								};
 
-								if (
-									this._stats.isGun &&
-									(ige.isServer || (ige.isClient && ige.physics)) // render projectile on clientside if physics is enabled
-								) {
-									var defaultData = {
-										rotate: rotate,
-										translate: bulletStartPosition
+								if (self.projectileData && (ige.isServer || (ige.isClient && !self._stats.projectileStreamMode))) {
+									defaultData.velocity = {
+										deployMethod: self._stats.deployMethod,
+										x: Math.cos(rotate + Math.radians(-90)) * self._stats.bulletForce,
+										y: Math.sin(rotate + Math.radians(-90)) * self._stats.bulletForce
 									};
 
-									if (self.projectileData && (ige.isServer || (ige.isClient && !self._stats.projectileStreamMode))) {
-										defaultData.velocity = {
-											deployMethod: self._stats.deployMethod,
-											x: Math.cos(rotate + Math.radians(-90)) * self._stats.bulletForce,
-											y: Math.sin(rotate + Math.radians(-90)) * self._stats.bulletForce
-										};
-
-										// console.log(self._stats.currentBody.type, "unit: ", angleToTarget, "item's rotate.z: ", self._rotate.z, "facing angle", itemrotate)
-										var data = Object.assign(
-											JSON.parse(JSON.stringify(self.projectileData)),
-											{
-												type: self._stats.projectileType,
+									// console.log(self._stats.currentBody.type, "unit: ", angleToTarget, "item's rotate.z: ", self._rotate.z, "facing angle", itemrotate)
+									var data = Object.assign(
+										JSON.parse(JSON.stringify(self.projectileData)),
+										{
+											type: self._stats.projectileType,
+											sourceItemId: self.id(),
+											sourceUnitId: (owner) ? owner.id() : undefined,
+											defaultData: defaultData,
+											damageData: {
+												targetsAffected: this._stats.damage.targetsAffected,
+												sourceUnitId: owner.id(),
 												sourceItemId: self.id(),
-												sourceUnitId: (owner) ? owner.id() : undefined,
-												defaultData: defaultData,
-												damageData: {
-													targetsAffected: this._stats.damage.targetsAffected,
-													sourceUnitId: owner.id(),
-													sourceItemId: self.id(),
-													sourcePlayerId: owner.getOwner().id(),
-													unitAttributes: this._stats.damage.unitAttributes,
-													playerAttributes: this._stats.damage.playerAttributes
-												}
-											});
-
-										var projectile = new Projectile(data);
-										ige.game.lastCreatedProjectileId = projectile.id();
-									}
-									if (this._stats.bulletType == 'raycast') {
-										// starting from unit center position
-										var raycastStartPosition = {
-											x: owner._translate.x + (Math.cos(this._rotate.z + Math.radians(-90))) + (Math.cos(this._rotate.z)),
-											y: owner._translate.y + (Math.sin(this._rotate.z + Math.radians(-90))) + (Math.sin(this._rotate.z))
-										};
-
-										if (self._stats.currentBody && (self._stats.currentBody.type == 'spriteOnly' || self._stats.currentBody.type == 'none')) {
-											var unitAnchorX = (self._stats.currentBody.unitAnchor != undefined) ? self._stats.currentBody.unitAnchor.x : 0;
-											var unitAnchorY = (self._stats.currentBody.unitAnchor != undefined) ? self._stats.currentBody.unitAnchor.y : 0;
-
-											var endPosition = {
-												x: (owner._translate.x + unitAnchorX) + (this._stats.bulletDistance * Math.cos(owner._rotate.z + Math.radians(-90))),
-												y: (owner._translate.y + unitAnchorY) + (this._stats.bulletDistance * Math.sin(owner._rotate.z + Math.radians(-90)))
-											};
-										} else {
-											var endPosition = {
-												x: (self._translate.x) + (this._stats.bulletDistance * Math.cos(self._rotate.z + Math.radians(-90))),
-												y: (self._translate.y) + (this._stats.bulletDistance * Math.sin(self._rotate.z + Math.radians(-90)))
-											};
-										}
-
-										var raycastMultipleCallback = function () {
-											var def = {};
-											// var e_maxCount = 3;
-											var raycastCollidesWith = self._stats.raycastCollidesWith;
-											def.m_points = [];
-											def.m_normals = [];
-
-											def.ReportFixture = function (fixture, point, normal, fraction) {
-												var fixtureList = fixture.m_body.m_fixtureList;
-												var entity = fixtureList && fixtureList.igeId && ige.$(fixtureList.igeId);
-												if (entity) {
-													entity.lastRaycastCollisionPosition = {
-														x: point.x * self.scaleRatio,
-														y: point.y * self.scaleRatio
-													};
-													entity.raycastFraction = fraction;
-													self.raycastTargets.push(entity);
-												}
-
-												// var body = fixture.getBody();
-												// var userData = body.getUserData();
-												// if (userData) {
-												// 	if (userData == 0) {
-												// 		// By returning -1, we instruct the calling code to ignore this fixture
-												// 		// and continue the ray-cast to the next fixture.
-												// 		return -1.0;
-												// 	}
-												// }
-
-												def.m_points.push(point);
-												def.m_normals.push(normal);
-												// By returning 1, we instruct the caller to continue without clipping the
-												// ray.
-												return 1.0;
-											};
-
-											return def;
-										};
-
-										var callback = raycastMultipleCallback();
-
-										// ige.physics.world().rayCast(, callback.ReportFixture);
-										ige.physics.world().rayCast(
-											callback.ReportFixture,
-											{
-												x: raycastStartPosition.x / self.scaleRatio,
-												y: raycastStartPosition.y / self.scaleRatio
-											},
-											{
-												x: endPosition.x / self.scaleRatio,
-												y: endPosition.y / self.scaleRatio
+												sourcePlayerId: owner.getOwner().id(),
+												unitAttributes: this._stats.damage.unitAttributes,
+												playerAttributes: this._stats.damage.playerAttributes
 											}
-										);
-
-										// if (!self._stats.penetration) {
-										ige.game.entitiesCollidingWithLastRaycast = _.orderBy(self.raycastTargets, ['raycastFraction'], ['asc']);
-										// }
-										ige.trigger && ige.trigger.fire('raycastItemFired', {
-											itemId: self.id()
 										});
-									}
-									self.raycastTargets = [];
 
-									if (self._stats.recoilForce) {
-										// apply recoil on its owner if item itself doesn't have physical body
-										if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._stats.currentBody.type == 'spriteOnly') {
-											owner.applyForce(self._stats.recoilForce * Math.cos(owner._rotate.z + Math.radians(90)), self._stats.recoilForce * Math.sin(owner._rotate.z + Math.radians(90)));
-										} else { // apply recoil on item
-											self.applyForce(self._stats.recoilForce * Math.cos(this._rotate.z + Math.radians(90)), self._stats.recoilForce * Math.sin(this._rotate.z + Math.radians(90)));
+									var projectile = new Projectile(data);
+									ige.game.lastCreatedProjectileId = projectile.id();
+								}
+								if (this._stats.bulletType == 'raycast') {
+									// starting from unit center position
+									var raycastStartPosition = {
+										x: owner._translate.x + (Math.cos(this._rotate.z + Math.radians(-90))) + (Math.cos(this._rotate.z)),
+										y: owner._translate.y + (Math.sin(this._rotate.z + Math.radians(-90))) + (Math.sin(this._rotate.z))
+									};
+
+									if (self._stats.currentBody && (self._stats.currentBody.type == 'spriteOnly' || self._stats.currentBody.type == 'none')) {
+										var unitAnchorX = (self._stats.currentBody.unitAnchor != undefined) ? self._stats.currentBody.unitAnchor.x : 0;
+										var unitAnchorY = (self._stats.currentBody.unitAnchor != undefined) ? self._stats.currentBody.unitAnchor.y : 0;
+
+										var endPosition = {
+											x: (owner._translate.x + unitAnchorX) + (this._stats.bulletDistance * Math.cos(owner._rotate.z + Math.radians(-90))),
+											y: (owner._translate.y + unitAnchorY) + (this._stats.bulletDistance * Math.sin(owner._rotate.z + Math.radians(-90)))
+										};
+									} else {
+										var endPosition = {
+											x: (self._translate.x) + (this._stats.bulletDistance * Math.cos(self._rotate.z + Math.radians(-90))),
+											y: (self._translate.y) + (this._stats.bulletDistance * Math.sin(self._rotate.z + Math.radians(-90)))
+										};
+									}
+
+									var raycastMultipleCallback = function () {
+										var def = {};
+										// var e_maxCount = 3;
+										var raycastCollidesWith = self._stats.raycastCollidesWith;
+										def.m_points = [];
+										def.m_normals = [];
+
+										def.ReportFixture = function (fixture, point, normal, fraction) {
+											var fixtureList = fixture.m_body.m_fixtureList;
+											var entity = fixtureList && fixtureList.igeId && ige.$(fixtureList.igeId);
+											if (entity) {
+												entity.lastRaycastCollisionPosition = {
+													x: point.x * self.scaleRatio,
+													y: point.y * self.scaleRatio
+												};
+												entity.raycastFraction = fraction;
+												self.raycastTargets.push(entity);
+											}
+
+											// var body = fixture.getBody();
+											// var userData = body.getUserData();
+											// if (userData) {
+											// 	if (userData == 0) {
+											// 		// By returning -1, we instruct the calling code to ignore this fixture
+											// 		// and continue the ray-cast to the next fixture.
+											// 		return -1.0;
+											// 	}
+											// }
+
+											def.m_points.push(point);
+											def.m_normals.push(normal);
+											// By returning 1, we instruct the caller to continue without clipping the
+											// ray.
+											return 1.0;
+										};
+
+										return def;
+									};
+
+									var callback = raycastMultipleCallback();
+
+									// ige.physics.world().rayCast(, callback.ReportFixture);
+									ige.physics.world().rayCast(
+										callback.ReportFixture,
+										{
+											x: raycastStartPosition.x / self.scaleRatio,
+											y: raycastStartPosition.y / self.scaleRatio
+										},
+										{
+											x: endPosition.x / self.scaleRatio,
+											y: endPosition.y / self.scaleRatio
 										}
-									}
+									);
+
+									// if (!self._stats.penetration) {
+									ige.game.entitiesCollidingWithLastRaycast = _.orderBy(self.raycastTargets, ['raycastFraction'], ['asc']);
+									// }
+									ige.trigger && ige.trigger.fire('raycastItemFired', {
+										itemId: self.id()
+									});
 								}
-							}
-						} else { // melee weapon
-							var hitboxData = this._stats.damageHitBox;
+								self.raycastTargets = [];
 
-							if (hitboxData) {
-								// console.log(hitboxData);
-								var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
-								var hitboxPosition = {
-									x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
-									y: (owner._translate.y) + (hitboxData.offsetX * Math.sin(rotate)) - (hitboxData.offsetY * Math.cos(rotate))
-								};
-
-								var hitbox = {
-									x: hitboxPosition.x - hitboxData.width,
-									y: hitboxPosition.y - hitboxData.width,
-									width: hitboxData.width * 2,
-									height: hitboxData.width * 2 // width is used as a radius
-								};
-
-								var damageData = {
-									targetsAffected: this._stats.damage.targetsAffected,
-									sourceUnitId: owner.id(),
-									sourceItemId: self.id(),
-									sourcePlayerId: owner.getOwner().id(),
-									unitAttributes: this._stats.damage.unitAttributes,
-									playerAttributes: this._stats.damage.playerAttributes
-								};
-								// console.log(owner._translate.x, owner._translate.y, hitbox);                                              //////////Hitbox log
-
-								entities = ige.physics.getBodiesInRegion(hitbox);
-
-								while (entities.length > 0) {
-									var entity = entities.shift();
-									if (entity && entity._category == 'unit') {
-										entity.inflictDamage(damageData);
+								if (self._stats.recoilForce) {
+									// apply recoil on its owner if item itself doesn't have physical body
+									if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._stats.currentBody.type == 'spriteOnly') {
+										owner.applyForce(self._stats.recoilForce * Math.cos(owner._rotate.z + Math.radians(90)), self._stats.recoilForce * Math.sin(owner._rotate.z + Math.radians(90)));
+									} else { // apply recoil on item
+										self.applyForce(self._stats.recoilForce * Math.cos(this._rotate.z + Math.radians(90)), self._stats.recoilForce * Math.sin(this._rotate.z + Math.radians(90)));
 									}
 								}
 							}
 						}
-					} else if (self._stats.type == 'consumable') { // item is not a gun (e.g. consumable)
-						// if cost quantity of consumable item is not defined or 0
-						// it should be 1 by default. Bcz 1 item will be consumed when fire.
-						// currently we dont have cost quantity setting in consumable items so
-						// this is handler for it.
+					} else { // melee weapon
+						var hitboxData = this._stats.damageHitBox;
 
-						if (!self.quantityCost) {
-							self.quantityCost = 1;
-						}
+						if (hitboxData) {
+							// console.log(hitboxData);
+							var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
+							var hitboxPosition = {
+								x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
+								y: (owner._translate.y) + (hitboxData.offsetX * Math.sin(rotate)) - (hitboxData.offsetY * Math.cos(rotate))
+							};
 
-						attrData = { attributes: {} };
-						if (self._stats.bonus && self._stats.bonus.consume) {
-							// apply unit bonuses
-							var unitAttributeBonuses = self._stats.bonus.consume.unitAttribute;
-							if (unitAttributeBonuses) {
-								for (var attrId in unitAttributeBonuses) {
-									if (attrData.attributes) {
-										var newValue = owner.attribute.getValue(attrId) + parseFloat(unitAttributeBonuses[attrId]);
-										attrData.attributes[attrId] = owner.attribute.update(attrId, newValue, true);
-									}
+							var hitbox = {
+								x: hitboxPosition.x - hitboxData.width,
+								y: hitboxPosition.y - hitboxData.width,
+								width: hitboxData.width * 2,
+								height: hitboxData.width * 2 // width is used as a radius
+							};
+
+							var damageData = {
+								targetsAffected: this._stats.damage.targetsAffected,
+								sourceUnitId: owner.id(),
+								sourceItemId: self.id(),
+								sourcePlayerId: owner.getOwner().id(),
+								unitAttributes: this._stats.damage.unitAttributes,
+								playerAttributes: this._stats.damage.playerAttributes
+							};
+							// console.log(owner._translate.x, owner._translate.y, hitbox);                                              //////////Hitbox log
+
+							entities = ige.physics.getBodiesInRegion(hitbox);
+
+							while (entities.length > 0) {
+								var entity = entities.shift();
+								if (entity && entity._category == 'unit') {
+									entity.inflictDamage(damageData);
 								}
-							}
-
-							if (player && player.attribute) {
-								// apply player bonuses
-								var playerAttributeBonuses = self._stats.bonus.consume.playerAttribute;
-								if (playerAttributeBonuses) {
-									for (attrId in playerAttributeBonuses) {
-										var newValue = player.attribute.getValue(attrId) + parseFloat(playerAttributeBonuses[attrId]);
-										attrData.attributes[attrId] = player.attribute.update(attrId, newValue, true);
-									}
-								}
-
-								if (ige.isServer && self._stats && self._stats.bonus && self._stats.bonus.consume && self._stats.bonus.consume.coin) {
-									// ige.server.giveCoinToUser(player, self._stats.bonus.consume.coin, self._stats.name);
-									// player.streamUpdateData([{
-									// 	coins: self._stats.bonus.consume.coin + player._stats.coins
-									// }]);
-								}
-							}
-
-							if (ige.isServer) {
-								owner.streamUpdateData(attrData);
 							}
 						}
-
-						self.stopUsing(); // stop using immediately after use.
 					}
+				} else if (self._stats.type == 'consumable') { // item is not a gun (e.g. consumable)
+					// if cost quantity of consumable item is not defined or 0
+					// it should be 1 by default. Bcz 1 item will be consumed when fire.
+					// currently we dont have cost quantity setting in consumable items so
+					// this is handler for it.
+
+					if (!self.quantityCost) {
+						self.quantityCost = 1;
+					}
+
+					attrData = { attributes: {} };
+					if (self._stats.bonus && self._stats.bonus.consume) {
+						// apply unit bonuses
+						var unitAttributeBonuses = self._stats.bonus.consume.unitAttribute;
+						if (unitAttributeBonuses) {
+							for (var attrId in unitAttributeBonuses) {
+								if (attrData.attributes) {
+									var newValue = owner.attribute.getValue(attrId) + parseFloat(unitAttributeBonuses[attrId]);
+									attrData.attributes[attrId] = owner.attribute.update(attrId, newValue, true);
+								}
+							}
+						}
+
+						if (player && player.attribute) {
+							// apply player bonuses
+							var playerAttributeBonuses = self._stats.bonus.consume.playerAttribute;
+							if (playerAttributeBonuses) {
+								for (attrId in playerAttributeBonuses) {
+									var newValue = player.attribute.getValue(attrId) + parseFloat(playerAttributeBonuses[attrId]);
+									attrData.attributes[attrId] = player.attribute.update(attrId, newValue, true);
+								}
+							}
+
+							if (ige.isServer && self._stats && self._stats.bonus && self._stats.bonus.consume && self._stats.bonus.consume.coin) {
+								// ige.server.giveCoinToUser(player, self._stats.bonus.consume.coin, self._stats.name);
+								// player.streamUpdateData([{
+								// 	coins: self._stats.bonus.consume.coin + player._stats.coins
+								// }]);
+							}
+						}
+
+						if (ige.isServer) {
+							owner.streamUpdateData(attrData);
+						}
+					}
+
+					self.stopUsing(); // stop using immediately after use.
 				}
-
-				// lowering the quantity by self.quantityCost
-			} else { // quantity is 0
-				self.stopUsing();
 			}
 
-			if (isUsed && ige.isClient) {
-				this.playEffect('use');
-			}
+			// lowering the quantity by self.quantityCost
+		} else { // quantity is 0
+			self.stopUsing();
+		}
 
-			if (self._stats.quantity != null || self._stats.quantity != undefined) {
-				// ige.devLog(isUsed, self._stats.quantity , self._stats.quantity > 0)
-				if (isUsed && self._stats.quantity > 0) {
-					self.updateQuantity(self._stats.quantity - self.quantityCost);
-				}
+		if (isUsed && ige.isClient) {
+			this.playEffect('use');
+		}
+
+		if (self._stats.quantity != null || self._stats.quantity != undefined) {
+			// ige.devLog(isUsed, self._stats.quantity , self._stats.quantity > 0)
+			if (isUsed && self._stats.quantity > 0) {
+				self.updateQuantity(self._stats.quantity - self.quantityCost);
 			}
-			
-		}, self._stats.delayBeforeUse);
+		}
 	},
 
 	updateQuantity: function (qty) {
