@@ -22,4 +22,3 @@ class PhaserRenderer {
         });
     }
 }
-//# sourceMappingURL=PhaserRenderer.js.map

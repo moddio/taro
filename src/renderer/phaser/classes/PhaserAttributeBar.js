@@ -103,4 +103,3 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
         this.alpha = 1;
     }
 }
-//# sourceMappingURL=PhaserAttributeBar.js.map

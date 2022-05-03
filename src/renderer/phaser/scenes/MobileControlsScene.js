@@ -11,4 +11,3 @@ class MobileControlsScene extends Phaser.Scene {
         this.mobileControls.scale.set(scaleToFit, scaleToFit);*/
     }
 }
-//# sourceMappingURL=MobileControlsScene.js.map

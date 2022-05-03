@@ -116,4 +116,3 @@ class GameScene extends Phaser.Scene {
         camera.zoom = this.scale.width / 800;
     }
 }
-//# sourceMappingURL=GameScene.js.map

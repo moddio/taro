@@ -158,4 +158,3 @@ class PhaserUnit extends Phaser.GameObjects.Container {
         sprite.setScale(texture.scale.x, texture.scale.y);
     }
 }
-//# sourceMappingURL=PhaserUnit.js.map

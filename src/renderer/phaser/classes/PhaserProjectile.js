@@ -30,4 +30,3 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
         sprite.setScale(texture.scale.x, texture.scale.y);
     }
 }
-//# sourceMappingURL=PhaserProjectile.js.map

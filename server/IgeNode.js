@@ -443,13 +443,11 @@ var IgeNode = IgeClass.extend({
 		// Require babel.
 		let babel = require('@babel/core');
 
-		let finCode = babel.transformSync(source, {parserOpts: {  'presets': [
-			'@babel/preset-env',
-			'@babel/plugin-transform-typescript'
-		],
-		'plugins': [
-			'@babel/plugin-transform-modules-commonjs'
-		],  allowReturnOutsideFunction: true}}).code();
+		let finCode = babel.transformSync(source, {
+			parserOpts: {
+				'presets': ['@babel/preset-env']
+			}
+		}).code;
 
 		// Return final code.
 		return finCode;

@@ -117,4 +117,3 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
         this.y = y - this.offset;
     }
 }
-//# sourceMappingURL=PhaserChatBubble.js.map
