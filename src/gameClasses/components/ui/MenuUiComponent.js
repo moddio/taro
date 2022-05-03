@@ -663,9 +663,9 @@ var MenuUiComponent = IgeEntity.extend({
 
 		// refreshIn("connection-lost-refresh", 5);
 
-		$('#more-games')
-			.removeClass('slidedown-menu-animation')
-			.addClass('slideup-menu-animation');
+		// $('#more-games')
+		// 	.removeClass('slidedown-menu-animation')
+		// 	.addClass('slideup-menu-animation');
 	},
 	setResolution: function () {
 		if (ige.mobileControls.isMobile) return;
