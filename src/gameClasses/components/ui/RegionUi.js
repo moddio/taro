@@ -27,6 +27,8 @@ var RegionUi = IgeEntity.extend({
 			this._pixiContainer.name = regionName;
 			this.mount(ige.pixi.world);
 			ige.pixi.trackEntityById[entity._id] = entity;
+
+			ige.client.emit('create-region', {regionUi: this, region: region});
 		}
 	},
 	translateTo: function (x, y, z) {

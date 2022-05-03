@@ -133,6 +133,8 @@ var Region = IgeEntityPhysics.extend({
 			this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
 			this.regionUi.width(regionCordinates.width);
 			this.regionUi.height(regionCordinates.height);
+
+			this.regionUi.emit('transform-region', {x: regionCordinates.x, y: regionCordinates.y, width: regionCordinates.width, height: regionCordinates.height});
 		}
 
 		if (this.font) {
