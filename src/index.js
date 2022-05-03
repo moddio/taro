@@ -1,6 +1,6 @@
 var Game = IgeClass.extend({
     classId: 'Game',
-    init: function (App, options) {
+    init(App, options) {
         // Create the engine
         ige = new IgeEngine(options);
         console.log('ige initialized', ige.isClient, ige.isServer);
@@ -18,4 +18,3 @@ if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') 
 else {
     var game = new Game(Client);
 }
-//# sourceMappingURL=index.js.map

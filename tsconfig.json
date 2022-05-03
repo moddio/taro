@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "module": "None",
-        "target": "es5",
-        "sourceMap": true,
+        "module": "es2015",
+        "target": "es2015",
+        "sourceMap": false,
         "outDir": ".",
         "rootDir": "ts",
         "typeRoots": [
@@ -12,10 +12,10 @@
         ],
         "types": [
             "node",
-			"jquery",
+            "jquery",
             "Phaser"
         ]
-	},
+    },
     "exclude": [
         "node_modules"
     ]

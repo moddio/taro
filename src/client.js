@@ -267,24 +267,13 @@ const Client = IgeEventingClass.extend({
 		const clientPhysicsEngine = ige.game.data.defaultData.clientPhysicsEngine;
 		const serverPhysicsEngine = ige.game.data.defaultData.physicsEngine;
 
-
-		window.igeLoader.loadPhysicsConfig(
+		if (clientPhysicsEngine) {
 			//
-			clientPhysicsEngine,
-			serverPhysicsEngine,
-			// this callback fires when we have loaded all of the files
-			() => {
-				//
-				// console.log('Physics engine files loaded');
-				if (clientPhysicsEngine) {
-					//
-					ige.addComponent(PhysicsComponent)
-						.physics.sleep(true);
-				}
-				// we want as little as possible in here so we can start our other loading
-				this.physicsConfigLoaded.resolve();
-			}
-		);
+			ige.addComponent(PhysicsComponent)
+				.physics.sleep(true);
+		}
+
+		this.physicsConfigLoaded.resolve();
 	},
 
 	loadMap: function() {
@@ -722,14 +711,15 @@ const Client = IgeEventingClass.extend({
 	//
 	setZoom: function(zoom) {
 		// old comment => 'on mobile increase default zoom by 25%'
-		let zoomVar = zoom;
 		if (ige.mobileControls.isMobile) {
-			zoomVar *= 0.75;
+			zoom *= 0.75;
 		}
 
-		ige.pixi.zoom(zoomVar);
+		ige.pixi.zoom(zoom);
 		// there was a bunch of stuff involving viewports and view areas in the old method,
 		// it appeared to be out of use.
+
+		this.emit('zoom', zoom);
 	},
 
 	//

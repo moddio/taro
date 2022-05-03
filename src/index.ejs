@@ -49,6 +49,21 @@
         var userId = '';
         var isLoggedIn = false;
         window.joinGameSent = {};
+        //
+        var playGameBtn;
+        var connectPlayer = new Event('connectPlayer');
+        //
+        // Trying to accomodate the format of production so we don't have the problem with
+        // duplicate callbacks in MenuUiComponent.js
+        //
+        window.onload = (event) => {
+            playGameBtn = document.querySelector('#play-game-button');
+            playGameBtn.addEventListener('click', () => {
+                playGameBtn.dispatchEvent(connectPlayer);
+            });
+        };
+        //
+        //
         function loadJS(file) {
             // DOM: Create the script element
             var jsElm = document.createElement('script');

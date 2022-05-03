@@ -1,28 +1,11 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var PhaserAttributeBar = /** @class */ (function (_super) {
-    __extends(PhaserAttributeBar, _super);
-    function PhaserAttributeBar(unit) {
-        var _this = this;
-        var scene = unit.scene;
-        _this = _super.call(this, scene) || this;
-        _this.unit = unit;
-        var bar = _this.bar = scene.add.graphics();
-        _this.add(bar);
-        var text = _this.text = scene.add.text(0, 0, '', {
+class PhaserAttributeBar extends Phaser.GameObjects.Container {
+    constructor(unit) {
+        const scene = unit.scene;
+        super(scene);
+        this.unit = unit;
+        const bar = this.bar = scene.add.graphics();
+        this.add(bar);
+        const text = this.text = scene.add.text(0, 0, '', {
             fontFamily: 'Arial',
             color: '#000000',
             align: 'center'
@@ -30,15 +13,14 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         text.setFontStyle('bold');
         text.setFontSize(14);
         text.setOrigin(0.5);
-        _this.add(text);
-        unit.add(_this);
-        return _this;
+        this.add(text);
+        unit.add(this);
     }
-    PhaserAttributeBar.get = function (unit) {
+    static get(unit) {
         if (!this.pool) {
             this.pool = unit.scene.make.group({});
         }
-        var bar = this.pool.getFirstDead(false);
+        let bar = this.pool.getFirstDead(false);
         if (!bar) {
             bar = new PhaserAttributeBar(unit);
             this.pool.add(bar);
@@ -48,22 +30,22 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         unit.add(bar);
         bar.setVisible(true);
         return bar;
-    };
-    PhaserAttributeBar.release = function (bar) {
+    }
+    static release(bar) {
         bar.resetFadeOut();
         bar.setVisible(false);
         bar.unit.remove(bar);
         bar.unit = null;
         bar.name = null;
         bar.setActive(false);
-    };
-    PhaserAttributeBar.prototype.render = function (data) {
+    }
+    render(data) {
         this.name = data.type || data.key;
-        var bar = this.bar;
-        var text = this.text;
-        var w = 94;
-        var h = 16;
-        var borderRadius = h / 2 - 1;
+        const bar = this.bar;
+        const text = this.text;
+        const w = 94;
+        const h = 16;
+        const borderRadius = h / 2 - 1;
         bar.clear();
         bar.fillStyle(Phaser.Display.Color
             .HexStringToColor(data.color)
@@ -74,7 +56,7 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         text.setText(data.displayValue ?
             (typeof data.value === 'number' ?
                 data.value.toFixed(0) : '0') : '');
-        var sprite = this.unit.sprite;
+        const sprite = this.unit.sprite;
         this.y = 25 +
             Math.max(sprite.displayHeight, sprite.displayWidth) / 2
             + data.index * h * 1.1;
@@ -84,32 +66,31 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
             data.showWhen === 'valueChanges') {
             this.fadeOut();
         }
-    };
-    PhaserAttributeBar.prototype.fadeOut = function () {
-        var _this = this;
-        var scene = this.scene;
-        this.fadeTimerEvent = scene.time.delayedCall(1000, function () {
-            _this.fadeTimerEvent = null;
-            _this.fadeTween = scene.tweens.add({
-                targets: _this,
+    }
+    fadeOut() {
+        const scene = this.scene;
+        this.fadeTimerEvent = scene.time.delayedCall(1000, () => {
+            this.fadeTimerEvent = null;
+            this.fadeTween = scene.tweens.add({
+                targets: this,
                 alpha: 0,
                 duration: 500,
-                onComplete: function () {
-                    _this.fadeTween = null;
-                    var unit = _this.unit;
+                onComplete: () => {
+                    this.fadeTween = null;
+                    const unit = this.unit;
                     if (unit) {
-                        var attributes = unit.attributes;
-                        var index = attributes.indexOf(_this);
+                        const attributes = unit.attributes;
+                        const index = attributes.indexOf(this);
                         if (index !== -1) {
                             attributes.splice(index, 1);
-                            PhaserAttributeBar.release(_this);
+                            PhaserAttributeBar.release(this);
                         }
                     }
                 }
             });
         });
-    };
-    PhaserAttributeBar.prototype.resetFadeOut = function () {
+    }
+    resetFadeOut() {
         // reset fade timer and tween
         if (this.fadeTimerEvent) {
             this.scene.time.removeEvent(this.fadeTimerEvent);
@@ -120,7 +101,5 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
             this.fadeTween = null;
         }
         this.alpha = 1;
-    };
-    return PhaserAttributeBar;
-}(Phaser.GameObjects.Container));
-//# sourceMappingURL=PhaserAttributeBar.js.map
+    }
+}

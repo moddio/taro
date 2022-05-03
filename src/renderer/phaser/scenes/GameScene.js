@@ -1,34 +1,17 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var GameScene = /** @class */ (function (_super) {
-    __extends(GameScene, _super);
-    function GameScene() {
-        return _super.call(this, { key: 'Game' }) || this;
+class GameScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'Game' });
     }
-    GameScene.prototype.init = function () {
-        var _this = this;
+    init() {
         // TODO move to css once pixi is gone
         // phaser canvas adjustments
-        var canvas = this.game.canvas;
+        const canvas = this.game.canvas;
         canvas.style.position = 'fixed';
         canvas.style.opacity = '0.5';
         canvas.style.backgroundColor = 'transparent';
-        canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
-        var camera = this.cameras.main;
-        this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
+        //canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+        const camera = this.cameras.main;
+        this.scale.on(Phaser.Scale.Events.RESIZE, (gameSize, baseSize, displaySize, previousWidth, previousHeight) => {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
             camera.zoom *= gameSize.height / previousHeight;
@@ -37,61 +20,74 @@ var GameScene = /** @class */ (function (_super) {
                 camera.scrollY + (gameSize.height - previousHeight) / 2
             );*/
         });
-        ige.client.on('zoom', function (height) {
+        ige.client.on('zoom', (height) => {
             console.log('GameScene zoom event', height); // TODO remove
-            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
+            camera.zoomTo(this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
         });
-        ige.client.on('create-unit', function (unit) {
+        ige.client.on('fetch-mouse-position', (controlComponent) => {
+            const currentMouseTransform = [
+                this.input.activePointer.worldX,
+                this.input.activePointer.worldY
+            ];
+            controlComponent.newMousePosition = currentMouseTransform;
+        });
+        ige.client.on('create-unit', (unit) => {
             console.log('create-unit', unit); // TODO remove
-            new PhaserUnit(_this, unit);
+            new PhaserUnit(this, unit);
         });
-    };
-    GameScene.prototype.preload = function () {
-        var _this = this;
+        ige.client.on('create-item', (item) => {
+            console.log('create-item', item); // TODO remove
+            new PhaserItem(this, item);
+        });
+        ige.client.on('create-projectile', (projectile) => {
+            console.log('create-projectile', projectile); // TODO remove
+            new PhaserProjectile(this, projectile);
+        });
+    }
+    preload() {
         this.load.crossOrigin = 'anonymous';
-        var data = ige.game.data;
-        for (var type in data.unitTypes) {
-            this.loadEntity("unit/".concat(type), data.unitTypes[type]);
+        const data = ige.game.data;
+        for (let type in data.unitTypes) {
+            this.loadEntity(`unit/${type}`, data.unitTypes[type]);
         }
-        for (var type in data.projectileTypes) {
-            this.loadEntity("projectile/".concat(type), data.projectileTypes[type]);
+        for (let type in data.projectileTypes) {
+            this.loadEntity(`projectile/${type}`, data.projectileTypes[type]);
         }
-        for (var type in data.itemTypes) {
-            this.loadEntity("item/".concat(type), data.itemTypes[type]);
+        for (let type in data.itemTypes) {
+            this.loadEntity(`item/${type}`, data.itemTypes[type]);
         }
-        data.map.tilesets.forEach(function (tileset) {
-            _this.load.image("tiles/".concat(tileset.name), tileset.image);
+        data.map.tilesets.forEach((tileset) => {
+            this.load.image(`tiles/${tileset.name}`, tileset.image);
         });
         this.load.tilemapTiledJSON('map', data.map);
-    };
-    GameScene.prototype.loadEntity = function (key, data) {
-        var _this = this;
-        var cellSheet = data.cellSheet;
+    }
+    loadEntity(key, data) {
+        const cellSheet = data.cellSheet;
         if (!cellSheet) { // skip if no cell sheet data
             return;
         }
-        this.load.once("filecomplete-image-".concat(key), function () {
+        this.load.once(`filecomplete-image-${key}`, () => {
             // create spritesheet,
             // even if it has only one sprite
-            var texture = _this.textures.get(key);
-            var width = texture.source[0].width;
-            var height = texture.source[0].height;
+            const texture = this.textures.get(key);
+            const width = texture.source[0].width;
+            const height = texture.source[0].height;
             Phaser.Textures.Parsers.SpriteSheet(texture, 0, 0, 0, width, height, {
                 frameWidth: width / cellSheet.columnCount,
                 frameHeight: height / cellSheet.rowCount,
             });
             // add animations
-            for (var animationsKey in data.animations) {
-                var animation = data.animations[animationsKey];
-                var frames_1 = animation.frames;
-                var animationFrames = [];
-                for (var i = 0; i < frames_1.length; i++) {
+            for (let animationsKey in data.animations) {
+                const animation = data.animations[animationsKey];
+                const frames = animation.frames;
+                const animationFrames = [];
+                for (let i = 0; i < frames.length; i++) {
                     // correction for 0-based indexing
-                    animationFrames.push(frames_1[i] - 1);
+                    animationFrames.push(frames[i] - 1);
                 }
-                _this.anims.create({
-                    key: "".concat(key, "/").concat(animation.name),
-                    frames: _this.anims.generateFrameNumbers(key, {
+                this.anims.create({
+                    key: `${key}/${animation.name}`,
+                    frames: this.anims.generateFrameNumbers(key, {
                         frames: animationFrames
                     }),
                     frameRate: animation.framesPerSecond || 15,
@@ -100,25 +96,23 @@ var GameScene = /** @class */ (function (_super) {
             }
         });
         this.load.image(key, cellSheet.url);
-    };
-    GameScene.prototype.create = function () {
+    }
+    create() {
         ige.client.phaserLoaded.resolve();
-        var map = this.make.tilemap({ key: 'map' });
-        var data = ige.game.data;
-        data.map.tilesets.forEach(function (tileset) {
-            map.addTilesetImage(tileset.name, "tiles/".concat(tileset.name));
+        const map = this.make.tilemap({ key: 'map' });
+        const data = ige.game.data;
+        data.map.tilesets.forEach((tileset) => {
+            map.addTilesetImage(tileset.name, `tiles/${tileset.name}`);
         });
-        data.map.layers.forEach(function (layer) {
+        data.map.layers.forEach((layer) => {
             if (layer.type !== 'tilelayer') {
                 return;
             }
             console.log(layer.name);
             map.createLayer(layer.name, map.tilesets[0], 0, 0);
         });
-        var camera = this.cameras.main;
+        const camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
         camera.zoom = this.scale.width / 800;
-    };
-    return GameScene;
-}(Phaser.Scene));
-//# sourceMappingURL=GameScene.js.map
+    }
+}

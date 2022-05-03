@@ -73,13 +73,18 @@ var Item = IgeEntityPhysics.extend({
 			self._hidden = self._stats.isHidden;
 			if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._hidden) {
 				self.hide();
+				this.emit('hide');
 			} else {
 				self.show();
+				this.emit('show');
+
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
 			self.createPixiTexture();
 			self.drawBounds(false);
+
+			ige.client.emit('create-item', this);
 		}
 		self.playEffect('create');
 		// self.addComponent(AttributeBarsContainerComponent);
@@ -118,12 +123,16 @@ var Item = IgeEntityPhysics.extend({
 
 			self.show();
 			if (ige.isClient) {
+				this.emit('show');
 				self.updateTexture();
 				self.mount(ige.pixi.world);
 			}
 		} else {
 			ige.devLog('hide & destroyBody.');
 			self.hide();
+			if (ige.isClient) {
+				this.emit('hide');
+			}
 			self.destroyBody();
 			if (ige.isServer) {
 				this.streamMode(2);
@@ -179,11 +188,14 @@ var Item = IgeEntityPhysics.extend({
 
 			if (isInvisible || !hasBody) {
 				self.hide();
+				this.emit('hide');
 				return;
 			}
 		}
 
 		self.show();
+		this.emit('show');
+
 		self.updateLayer();
 		IgeEntity.prototype.updateTexture.call(this);
 	},
@@ -771,7 +783,7 @@ var Item = IgeEntityPhysics.extend({
 					if (self._stats.controls && self._stats.controls.mouseBehaviour) {
 						if (self._stats.controls.mouseBehaviour.rotateToFaceMouseCursor || (self._stats.currentBody && (self._stats.currentBody.jointType == 'weldJoint'))) {
 							offset.rotate = rotate;
-						}						
+						}
 					}
 				}
 			}
@@ -876,8 +888,10 @@ var Item = IgeEntityPhysics.extend({
 						if (ige.isClient) {
 							if (newValue) {
 								self.hide();
+								this.emit('hide');
 							} else {
 								self.show();
+								this.emit('show');
 							}
 						}
 						break;
@@ -992,7 +1006,7 @@ var Item = IgeEntityPhysics.extend({
 					}
 				}
 			}
-			
+
 			self.rotateTo(0, 0, rotate);
 		}
 
@@ -1034,4 +1048,6 @@ var Item = IgeEntityPhysics.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Item; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Item;
+}

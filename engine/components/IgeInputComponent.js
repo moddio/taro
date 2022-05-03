@@ -544,7 +544,15 @@ var IgeInputComponent = IgeEventingClass.extend({
 
 			if (isChatInputHidden && !isModalOpen && !isMenuVisible) {
 				// if (ige.client.myPlayer && ige.client.myPlayer._stats.email) {
+				var gameData = ige.game && ige.game.data && ige.game.data.defaultData;
+				var player = ige.client.myPlayer;
+				if(gameData.allowVerifiedUserToChat && !player._stats.isUserVerified){
+					$('#message').attr('disabled', true);
+					$('#message').attr('placeholder', 'Please log in to chat');
+				}
 				$('#chat-message-input').show();
+
+				
 				setTimeout(function () {
 					$('#message').focus();
 				}, 0);

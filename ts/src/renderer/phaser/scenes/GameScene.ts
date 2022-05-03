@@ -11,7 +11,7 @@ class GameScene extends Phaser.Scene {
 		canvas.style.position = 'fixed';
 		canvas.style.opacity = '0.5';
 		canvas.style.backgroundColor = 'transparent';
-		canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
 
 		const camera = this.cameras.main;
 
@@ -43,9 +43,27 @@ class GameScene extends Phaser.Scene {
 			);
 		});
 
+		ige.client.on('fetch-mouse-position', (controlComponent: ControlComponent) => {
+			const currentMouseTransform = [
+				this.input.activePointer.worldX,
+				this.input.activePointer.worldY
+			];
+			controlComponent.newMousePosition = currentMouseTransform;
+		});
+
 		ige.client.on('create-unit', (unit: Unit) => {
 			console.log('create-unit', unit); // TODO remove
 			new PhaserUnit(this, unit);
+		});
+
+		ige.client.on('create-item', (item: Item) => {
+			console.log('create-item', item); // TODO remove
+			new PhaserItem(this, item);
+		});
+
+		ige.client.on('create-projectile', (projectile: Projectile) => {
+			console.log('create-projectile', projectile); // TODO remove
+			new PhaserProjectile(this, projectile);
 		});
 	}
 
@@ -146,6 +164,5 @@ class GameScene extends Phaser.Scene {
 			map.height * map.tileHeight / 2
 		);
 		camera.zoom = this.scale.width / 800;
-
 	}
 }
