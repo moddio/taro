@@ -142,7 +142,6 @@ var Region = IgeEntityPhysics.extend({
 			this.regionUi.height(regionCordinates.height);
 		}
 
-
 		if (this.font) {
 			this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
 		}
