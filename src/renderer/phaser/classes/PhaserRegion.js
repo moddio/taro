@@ -1,21 +1,20 @@
 class PhaserRegion extends Phaser.GameObjects.Container {
-    constructor(scene, regionUi, region) {
+    constructor(scene, region) {
         super(scene);
-        this.regionUi = regionUi;
         this.region = region;
         // draw bubble
         const rectangle = this.rectangle = scene.add.graphics();
-        const width = this.basicWidth = region.default.height;
-        const height = this.basicHeight = region.default.width;
+        const width = this.basicWidth = region._stats.default.height;
+        const height = this.basicHeight = region._stats.default.width;
         console.log('region basics', this.basicWidth, this.basicHeight);
         rectangle.fillStyle(0xFF0000, 0.4);
         rectangle.fillRect(0, 0, width, height);
         //rectangle.lineStyle(2, 0xFF0000, 1);
-        this.x = region.default.x;
-        this.y = region.default.y;
+        this.x = region._stats.default.x;
+        this.y = region._stats.default.y;
         this.add(rectangle);
         scene.add.existing(this);
-        this.translateTo = regionUi.on('transform-region', (regionTransform) => {
+        this.translateTo = region.on('transform-region', (regionTransform) => {
             this.x = regionTransform.x;
             this.y = regionTransform.y;
             //maybe possible to rescale old rectangle instead of creating new one?

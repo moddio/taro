@@ -9,15 +9,14 @@ class PhaserRegion extends Phaser.GameObjects.Container {
 	private basicHeight: number;
 
 	constructor (scene: Phaser.Scene,
-				private regionUi: any,
 				private region: any) {
 
 		super(scene);
 
 		// draw bubble
 		const rectangle = this.rectangle = scene.add.graphics();
-		const width = this.basicWidth = region.default.height;
-		const height = this.basicHeight = region.default.width;
+		const width = this.basicWidth = region._stats.default.height;
+		const height = this.basicHeight = region._stats.default.width;
 		console.log('region basics', this.basicWidth, this.basicHeight)
 
 		rectangle.fillStyle(0xFF0000, 0.4);
@@ -29,13 +28,13 @@ class PhaserRegion extends Phaser.GameObjects.Container {
 		);
 		//rectangle.lineStyle(2, 0xFF0000, 1);
 
-		this.x = region.default.x;
-		this.y = region.default.y;
+		this.x = region._stats.default.x;
+		this.y = region._stats.default.y;
 
 		this.add(rectangle);
 		scene.add.existing(this);
 
-		this.translateTo = regionUi.on('transform-region', (regionTransform) => {
+		this.translateTo = region.on('transform-region', (regionTransform) => {
 			this.x = regionTransform.x;
 			this.y = regionTransform.y;
 

@@ -74,6 +74,11 @@ var Region = IgeEntityPhysics.extend({
 
 				self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
 
+				//phaser
+				if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
+					ige.client.emit('create-region', this);
+				}
+
 				// self.regionUi.depth(10)
 				//     .layer(2)
 				//     .drawBoundsData(false)
@@ -134,7 +139,7 @@ var Region = IgeEntityPhysics.extend({
 			this.regionUi.width(regionCordinates.width);
 			this.regionUi.height(regionCordinates.height);
 
-			this.regionUi.emit('transform-region', {x: regionCordinates.x, y: regionCordinates.y, width: regionCordinates.width, height: regionCordinates.height});
+			this.emit('transform-region', {x: regionCordinates.x, y: regionCordinates.y, width: regionCordinates.width, height: regionCordinates.height});
 		}
 
 		if (this.font) {
