@@ -2032,7 +2032,7 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				// if animation is assigned to effect, play it
-				if (effect.animation != undefined && effect.animation != 'none') {
+				if (effect.animation != undefined && effect.animation != 'none' && effect.animation != '') {
 					this.applyAnimationById(effect.animation);
 				}
 
@@ -2089,10 +2089,6 @@ var IgeEntity = IgeObject.extend({
 				if (effect.runScript) {
 					ige.script.runScript(effect.runScript, {});
 				}
-			}
-		} else {
-			if (ige.isClient) {
-				this.applyAnimationById('default'); // play default animation if effect isn't set
 			}
 		}
 	},
