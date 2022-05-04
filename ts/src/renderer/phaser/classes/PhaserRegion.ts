@@ -1,23 +1,20 @@
 class PhaserRegion extends Phaser.GameObjects.Container {
 
-	private readonly rectangle: Phaser.GameObjects.Graphics;
-	private translateTo: EvtListener;
-	//rectangle: Phaser.GameObjects.Rectangle;
-	label: Phaser.GameObjects.Text;
-
-	private basicWidth: number;
-	private basicHeight: number;
-
+	private rectangle: Phaser.GameObjects.Graphics;
+	
 	constructor (scene: Phaser.Scene,
-				private region: any) {
+				private region: Region) {
 
 		super(scene);
 
-		// draw bubble
+		this.region = region;
+
+		const stats = this.region._stats.default
+
+		// draw rectangle
 		const rectangle = this.rectangle = scene.add.graphics();
-		const width = this.basicWidth = region._stats.default.height;
-		const height = this.basicHeight = region._stats.default.width;
-		console.log('region basics', this.basicWidth, this.basicHeight)
+		const width = this.width = stats.height;
+		const height = this.height = stats.width;
 
 		rectangle.fillStyle(0xFF0000, 0.4);
 		rectangle.fillRect(
@@ -26,43 +23,44 @@ class PhaserRegion extends Phaser.GameObjects.Container {
 			width,
 			height
 		);
-		//rectangle.lineStyle(2, 0xFF0000, 1);
 
-		this.x = region._stats.default.x;
-		this.y = region._stats.default.y;
+		this.x = stats.x;
+		this.y = stats.y;
 
 		this.add(rectangle);
 		scene.add.existing(this);
+		scene.events.on('update', this.update, this);
+	}
 
-		this.translateTo = region.on('transform-region', (regionTransform) => {
-			this.x = regionTransform.x;
-			this.y = regionTransform.y;
+	update (/*time: number, delta: number*/): void {
 
-			//maybe possible to rescale old rectangle instead of creating new one?
+		const region = this.region;
+		const container = region.regionUi._pixiContainer;
+
+		if (region._destroyed || container._destroyed) {
+			this.scene.events.off('update', this.update, this);
+			this.destroy();
+			return;
+		}
+
+		const stats = this.region._stats.default
+
+		if (this.x != stats.x) this.x = stats.x;
+		if (this.y != stats.y) this.y = stats.y;
+
+		if (this.width != stats.width || this.height != stats.height) {
+			this.width = stats.width;
+			this.height = stats.height;
+
 			const rectangle = this.rectangle
 			rectangle.clear();
 			rectangle.fillStyle(0xFF0000, 0.4);
 			rectangle.fillRect(
 				0,
 				0,
-				regionTransform.width,
-				regionTransform.height
+				stats.width,
+				stats.height
 			);
-		});
-
-		// const key = `region/${region._stats.type}`;
-
-		//const regionName: string = region._stats.id;
-		// add in the RegionUi
-		// Phaser classes for vec/pt/rect
-		/*const width: number = region.default.width;
-		const points: object[] = [
-			{ -(width/2), -(height/2) },
-			{ (width/2), -(height/2) },
-			{ (width/2), (height/2) },
-			{ -(width/2), (height/2) }
-		];
-		const rectangle = this.rectangle = scene.add.rectangle(0, 0, );*/
-
+		}
 	}
 }
