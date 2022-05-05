@@ -1,3 +1,3 @@
-declare class Region extends IgeEntityBox2d {
-    regionUi: IgeObject;
+declare class Region extends IgeEntityPhysics {
+    regionUi: IgeEntity;
 }

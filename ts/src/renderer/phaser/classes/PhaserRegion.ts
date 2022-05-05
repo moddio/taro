@@ -45,10 +45,10 @@ class PhaserRegion extends Phaser.GameObjects.Container {
 
 		const stats = this.region._stats.default
 
-		if (this.x != stats.x) this.x = stats.x;
-		if (this.y != stats.y) this.y = stats.y;
+		this.x = stats.x;
+		this.y = stats.y;
 
-		if (this.width != stats.width || this.height != stats.height) {
+		if (this.width !== stats.width || this.height !== stats.height) {
 			this.width = stats.width;
 			this.height = stats.height;
 
