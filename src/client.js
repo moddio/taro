@@ -450,8 +450,8 @@ const Client = IgeClass.extend({
 			window.activatePlayGame = true; // is there a reason this line was repeated?
 
 			$('#play-game-button-wrapper').removeClass('d-none-important');
-			// $('.modal-videochat-backdrop, .modal-videochat').removeClass('d-none'); // hmmm
-			// $('.modal-videochat').show(); // no
+			$('.modal-videochat-backdrop, .modal-videochat').removeClass('d-none'); // hmmm
+			$('.modal-videochat').show(); // no...yes?
 
 			//
 			$('.modal-step-link[data-step=2]').click(); // ok this is going to have to be explained
