@@ -1,3 +1,3 @@
-declare class Projectile extends IgeEntityBox2d {
+declare class Projectile extends IgeEntityPhysics {
 
 }
