@@ -116,7 +116,7 @@ var Server = IgeClass.extend({
 		self.serverStartTime = new Date();// record start time
 		global.isDev = ige.env == 'dev' || ige.env == 'local' || ige.env === 'standalone' || ige.env === 'standalone-remote';
 		global.myIp = process.env.IP;
-		global.beUrl = self.config.BE_URL || 'http://gs_manager.modd.io';
+		global.beUrl = self.config.BE_URL;
 
 		console.log('environment', ige.env, self.config);
 		console.log('isDev =', global.isDev);
