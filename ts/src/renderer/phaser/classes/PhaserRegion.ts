@@ -1,7 +1,7 @@
 class PhaserRegion extends Phaser.GameObjects.Graphics {
 
-	private width;
-	private height;
+	private width: number;
+	private height: number;
 	
 	constructor (scene: Phaser.Scene,
 				private region: Region) {
