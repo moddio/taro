@@ -116,7 +116,7 @@ var Server = IgeClass.extend({
 		self.serverStartTime = new Date();// record start time
 		global.isDev = ige.env == 'dev' || ige.env == 'local' || ige.env === 'standalone' || ige.env === 'standalone-remote';
 		global.myIp = process.env.IP;
-		global.beUrl = self.config.BE_URL;
+		global.beUrl = self.config.BE_URL || 'http://gs_manager.modd.io';
 
 		console.log('environment', ige.env, self.config);
 		console.log('isDev =', global.isDev);
@@ -385,17 +385,8 @@ var Server = IgeClass.extend({
 		ige.network.debug(self.isDebugging);
 		// Start the network server
 		ige.network.start(self.port, function (data) {
-			console.log('connecting to BE:', global.beUrl);
 
-			var domain = null;
-
-			// dev gets map from local file
-			if (ige.env == 'standalone' || ige.env == 'standalone-remote' || ige.env === 'production') { // production or staging gets map data from API
-				// using BE's URL instead of GS Manager because GS Manager is overloaded right now so..
-				domain = 'https://www.modd.io';
-			} else {
-				domain = global.beUrl;
-			}
+			var domain = global.beUrl;
 
 			console.log('connecting to BE:', global.beUrl);
 
