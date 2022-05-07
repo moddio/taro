@@ -14,6 +14,13 @@ declare interface EntityStats {
 	animations: Record<string, {
 		frames: number[]
 	}>;
+	default?: {
+		x: number,
+		y: number,
+		width: number,
+		height: number
+	}
 	type: string;
+	id: string;
 	itemTypeId?: string;
 }
