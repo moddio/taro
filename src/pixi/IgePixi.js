@@ -72,6 +72,15 @@ var IgeInitPixi = IgeClass.extend({
 			self.frameTick();
 		};
 		this.ticker.add(frameTick);
+
+		///
+
+		// This should be looked at
+		
+		// My understanding currently is that this is sorting the scenes defined in client.js
+		// PIXI.Application.stage is a property of the contructor, and
+		// it points to the 'root display container that is rendered'
+
 		var sort = function (children) {
 			children.sort(function (a, b) {
 				a.zIndex = a.zIndex || 0;

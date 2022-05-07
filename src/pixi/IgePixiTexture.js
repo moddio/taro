@@ -99,6 +99,8 @@ var IgePixiTexture = IgeClass.extend({
 		sprite.anchor.set(0.5);
 		return sprite;
 	},
+	// This is never called
+	
 	zOrder: function (order) {
 		this.zIndex = order;
 	},
