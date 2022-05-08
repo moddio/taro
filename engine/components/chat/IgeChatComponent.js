@@ -35,7 +35,7 @@ var IgeChatComponent = IgeEventingClass.extend({
 			}
 			module.exports = FilterHacked;
 
-			this.filter = new FilterHacked();
+			this.filter = new FilterHacked({ list: ige.game.data.settings.bannedWords });
 
 			// this.sanitizer = require('sanitizer');
 			this.validator = require('validator');
