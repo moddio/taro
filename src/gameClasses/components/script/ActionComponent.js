@@ -68,15 +68,16 @@ var ActionComponent = IgeEntity.extend({
 
 						break;
 
-					case 'setTimeOut': // execute actions after timeout
+					case 'setTimeOut': { // execute actions after timeout
 
 						// const use for creating new instance of variable every time.
 						const setTimeOutActions = JSON.parse(JSON.stringify(action.actions));
 						// const setTimeoutVars = _.cloneDeep(vars);
 						setTimeout(function (actions) {
 							self.run(actions, vars);
-						}, action.duration, setTimeOutActions);
+						}, ige.variable.getValue(action.duration, vars), setTimeOutActions);
 						break;
+					}
 
 					case 'repeat':
 					{
