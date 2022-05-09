@@ -661,16 +661,21 @@ var IgeEntity = IgeObject.extend({
 		}
 		this._pixiContainer.zIndex = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].layer) || 3;
 		this._pixiContainer.depth = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].depth) || 3;
-		this._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
+		// this._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
 		this._pixiContainer.entityId = this.entityId;
 		this._pixiContainer._category = this._category;
 		this._pixiTexture = texture;
 		this._pixiContainer.addChild(texture);
+		
+		console.log(this._stats.currentBody);
+		
 
 		if (defaultData) {
+			console.log('hello');
 			this._pixiContainer.x = defaultData.translate.x;
 			this._pixiContainer.y = defaultData.translate.y;
 			this._pixiTexture.rotation = defaultData.rotate;
+			this._pixiContainer.depth += Math.round(defaultData.translate.y);
 		}
 		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
 	},
