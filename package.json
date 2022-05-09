@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/moddio/taro#readme",
   "dependencies": {
+    "axios": "^0.26.0",
     "bad-words": "^3.0.4",
     "cookie-parser": "^1.4.6",
     "ejs": "^3.1.7",

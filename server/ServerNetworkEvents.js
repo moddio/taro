@@ -1,3 +1,9 @@
+var axios = require('axios')
+
+// PORT SETUP AND URL SETUP FOR BE AND GS
+global.APIURL = 'http://localhost:8080';
+global.GSPORT = 2000;
+
 var ServerNetworkEvents = {
 
 	/**
@@ -61,11 +67,47 @@ var ServerNetworkEvents = {
 		}
 	},
 
-	_onJoinGameWrapper: function (data, clientId) {
+	_onJoinGameWrapper: async function (data, clientId) {
 
 		var reason = 'IP banned.';
 		var client = ige.server.clients[clientId];
 		var socket = ige.network._socketById[clientId];
+		try {
+			// ............ LOGIC FOR CHECKING ..........
+			var player = ige.game.getPlayerByUserId(data._id);
+			if(data._id && !player?._stats.clientId && player?._stats.clientId !== clientId){
+			// ....BE WILL LET GS KNOW THAT A PLAYER IS DISCONNECTED....
+	
+			// Call API to get serverId of user
+			const serverIds = await axios.post(`${global.APIURL}/api/user/get-current-serverId/${data._id}`)
+			// Call API to get IP address of gs-connected to
+			const serverData = await axios.get(`${global.APIURL}/api/game-server/getServerIp/${serverIds.data.message[0]}`)
+			// Check if the server is down or up
+			const serverStatus = await axios.get(`${global.APIURL}/get-server-status/${serverIds.data.message[0]}`)
+			
+			// If the server is down we remove it from currentServerIds OBJECT
+			if(!serverStatus.data.serverStatus){
+				// Clear all data from currentIds CASE: FAILURE IN GS
+			for(let elem in serverIds.data.message){
+				await axios.post(`${global.APIURL}/api/user/${data._id}/remove-current-server`,
+				 {server : serverIds.data.message[elem] })
+			 }
+			}
+			// KICK THE USER ONLY IF ALL CONFIRMATION HAS BEEN SETUP
+			serverIds.data.message.length >= 1 && serverStatus.data.serverStatus ? 
+			await axios.post(`http://${serverData.data?.message?.ip}:${global.GSPORT}/init-kick-user`, {
+				userId: data._id,
+				serverId: serverIds.data.message[0]
+			}) : ''
+			}   
+			   }
+			catch(err){
+				socket.close("BE is not responding");
+				return;
+	
+			}
+			// ............ LOGIC FOR CHECKING ..........
+	
 		if (client) {
 			var ipAddress = client.ip;
 
