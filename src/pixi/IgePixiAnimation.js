@@ -93,7 +93,6 @@ var IgePixiAnimation = IgeClass.extend({
 
 		var startFrame = frames[0] - 1;
 		var lastFrame = frames[frames.length - 1] - 1;
-		var totalNumberOfFrames = frames.length;
 
 		self.i = 0;
 		self.fpsSecond = 1000 / fps;
@@ -146,6 +145,7 @@ var IgePixiAnimation = IgeClass.extend({
 		} else {
 			this.stopAtFrame(this.lastFrame);
 			this.resetAnimation();
+			this._entity.applyAnimationById('default'); // play default animation if effect isn't set		
 		}
 		this.i = i;
 	},

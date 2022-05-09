@@ -388,17 +388,8 @@ var Server = IgeClass.extend({
 		ige.network.debug(self.isDebugging);
 		// Start the network server
 		ige.network.start(self.port, function (data) {
-			console.log('connecting to BE:', global.beUrl);
 
-			var domain = null;
-
-			// dev gets map from local file
-			if (ige.env == 'standalone' || ige.env == 'standalone-remote' || ige.env === 'production') { // production or staging gets map data from API
-				// using BE's URL instead of GS Manager because GS Manager is overloaded right now so..
-				domain = 'https://www.modd.io';
-			} else {
-				domain = global.beUrl;
-			}
+			var domain = global.beUrl;
 
 			console.log('connecting to BE:', global.beUrl);
 
