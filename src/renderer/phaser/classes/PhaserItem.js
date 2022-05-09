@@ -1,28 +1,45 @@
-class PhaserItem extends Phaser.GameObjects.Container {
-    constructor(scene, item) {
-        super(scene);
-        this.item = item;
-        const key = `item/${item._stats.itemTypeId}`;
-        const sprite = this.sprite = scene.add.sprite(0, 0, key);
-        this.add(sprite);
-        scene.add.existing(this);
-        this.hide = item.on('hide', () => {
-            this.sprite.setActive(false).setVisible(false);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var PhaserItem = /** @class */ (function (_super) {
+    __extends(PhaserItem, _super);
+    function PhaserItem(scene, item) {
+        var _this = _super.call(this, scene) || this;
+        _this.item = item;
+        var key = "item/".concat(item._stats.itemTypeId);
+        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        _this.add(sprite);
+        scene.add.existing(_this);
+        _this.hide = item.on('hide', function () {
+            _this.sprite.setActive(false).setVisible(false);
         });
-        this.show = item.on('show', () => {
-            this.sprite.setActive(true).setVisible(true);
+        _this.show = item.on('show', function () {
+            _this.sprite.setActive(true).setVisible(true);
         });
-        this.playAnimationListener =
-            item.on('play-animation', (animationId) => {
-                console.log('PhaserItem play-animation', `${key}/${animationId}`); // TODO remove
-                sprite.play(`${key}/${animationId}`);
+        _this.playAnimationListener =
+            item.on('play-animation', function (animationId) {
+                console.log('PhaserItem play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
+                sprite.play("".concat(key, "/").concat(animationId));
             });
-        scene.events.on('update', this.update, this);
+        scene.events.on('update', _this.update, _this);
+        return _this;
     }
-    update( /*time: number, delta: number*/) {
-        const item = this.item;
-        const container = item._pixiContainer;
-        const texture = item._pixiTexture;
+    PhaserItem.prototype.update = function ( /*time: number, delta: number*/) {
+        var item = this.item;
+        var container = item._pixiContainer;
+        var texture = item._pixiTexture;
         if (item._destroyed || container._destroyed) {
             item.off('hide', this.hide);
             this.hide = null;
@@ -37,8 +54,10 @@ class PhaserItem extends Phaser.GameObjects.Container {
         }
         this.x = container.x;
         this.y = container.y;
-        const sprite = this.sprite;
+        var sprite = this.sprite;
         sprite.rotation = texture.rotation;
         sprite.setScale(texture.scale.x, texture.scale.y);
-    }
-}
+    };
+    return PhaserItem;
+}(Phaser.GameObjects.Container));
+//# sourceMappingURL=PhaserItem.js.map
