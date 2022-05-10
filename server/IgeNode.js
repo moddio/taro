@@ -452,7 +452,7 @@ var IgeNode = IgeClass.extend({
 			compact: true,
 			minified: true,
 			comments: false,
-			presets: [ '@babel/preset-env' ]
+			// presets: [ '@babel/preset-env' ]
 		}).code.toString();
 	},
 
