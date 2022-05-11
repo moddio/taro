@@ -86,16 +86,18 @@ var Projectile = IgeEntityPhysics.extend({
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
 			if (currentState) {
-				var defaultAnimation = this._stats.animations[currentState.animation];
-				this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+				//var defaultAnimation = this._stats.animations[currentState.animation];
+				//this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+				//need it for moving projectily currently
+				ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
 			}
-			self.drawBounds(false);
+			//self.drawBounds(false);
 
 			//self.addComponent(AttributeBarsContainerComponent);
-			self.updateLayer();
+			/*self.updateLayer();
 			self.updateTexture();
 			self.mouseEvents();
-			self.mount(ige.pixi.world);
+			self.mount(ige.pixi.world);*/
 
 			ige.client.emit('create-projectile', this);
 		}

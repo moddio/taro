@@ -13,8 +13,11 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
 		sprite.rotation = projectile._rotate.z;
-		sprite.displayWidth = projectile._stats.currentBody.width;
-		sprite.displayHeight = projectile._stats.currentBody.height;
+		//sprite.displayWidth = projectile._stats.currentBody.width;
+		//sprite.displayHeight = projectile._stats.currentBody.height;
+		sprite.displayWidth = projectile._bounds2d.x;
+		sprite.displayHeight = projectile._bounds2d.y;
+
 		this.add(sprite);
 
 		scene.add.existing(this);
@@ -51,6 +54,8 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 
 		const sprite = this.sprite;
 		sprite.rotation = projectile._rotate.z; //texture.rotation;
+		sprite.displayWidth = projectile._bounds2d.x;
+		sprite.displayHeight = projectile._bounds2d.y;
 		//sprite.setScale (projectile._scale.x, projectile._scale.y); //texture.scale.x, texture.scale.y);
 	}
 }

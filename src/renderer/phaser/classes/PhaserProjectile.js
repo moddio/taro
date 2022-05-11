@@ -21,8 +21,10 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         sprite.rotation = projectile._rotate.z;
-        sprite.displayWidth = projectile._stats.currentBody.width;
-        sprite.displayHeight = projectile._stats.currentBody.height;
+        //sprite.displayWidth = projectile._stats.currentBody.width;
+        //sprite.displayHeight = projectile._stats.currentBody.height;
+        sprite.displayWidth = projectile._bounds2d.x;
+        sprite.displayHeight = projectile._bounds2d.y;
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
@@ -52,6 +54,8 @@ var PhaserProjectile = /** @class */ (function (_super) {
         //this.y = container.y;
         var sprite = this.sprite;
         sprite.rotation = projectile._rotate.z; //texture.rotation;
+        sprite.displayWidth = projectile._bounds2d.x;
+        sprite.displayHeight = projectile._bounds2d.y;
         //sprite.setScale (projectile._scale.x, projectile._scale.y); //texture.scale.x, texture.scale.y);
     };
     return PhaserProjectile;
