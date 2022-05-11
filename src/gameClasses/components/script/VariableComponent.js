@@ -2144,7 +2144,7 @@ var VariableComponent = IgeEntity.extend({
 					'<tr>' +
 					'<td>Heap used</td>' +
 					`<td>${data.status.heapUsed.toFixed(2)}</td>` +
-					`<td>${(window.performance.memory.usedJSHeapSize / 1000000).toFixed(2)}</td>` +
+					`<td>${(/*window.performance.memory.usedJSHeapSize /*/ 1000000).toFixed(2)}</td>` +
 					'<td></td>' +
 					'</tr>' +
 					'<tr>' +

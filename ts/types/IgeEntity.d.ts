@@ -1,10 +1,12 @@
 declare class IgeEntity extends IgeObject {
 
+	_alive: boolean;
 	_destroyed: boolean;
 	_deathTime: number;
 	_category: string; // TODO more specific values
 	_translate: IgePoint3d;
 	_rotate: IgePoint3d;
+	_scale: IgePoint3d;
 	_stats: EntityStats;
 
 	_pixiText: any; // PIXI.Text
