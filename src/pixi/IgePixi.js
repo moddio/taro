@@ -220,7 +220,7 @@ var IgeInitPixi = IgeClass.extend({
 
 		// var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
 		for (var entityId in ige.pixi.trackEntityById) {
-			if (ige.pixi.trackEntityById[entityId]._destroyed) {
+			if (ige.pixi.trackEntityById[entityId] && ige.pixi.trackEntityById[entityId]._destroyed) {
 				delete ige.pixi.trackEntityById[entityId];
 				break;
 			}

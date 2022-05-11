@@ -6,7 +6,7 @@ var Projectile = IgeEntityPhysics.extend({
 		this.id(entityIdFromServer);
 		var self = this;
 		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
+			//this._pixiContainer = new PIXI.Container();
 		}
 		self.category('projectile');
 		var projectileData = {};
@@ -91,7 +91,7 @@ var Projectile = IgeEntityPhysics.extend({
 			}
 			self.drawBounds(false);
 
-			// self.addComponent(AttributeBarsContainerComponent);
+			//self.addComponent(AttributeBarsContainerComponent);
 			self.updateLayer();
 			self.updateTexture();
 			self.mouseEvents();

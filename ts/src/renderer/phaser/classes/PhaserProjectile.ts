@@ -12,6 +12,7 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		const key = `projectile/${projectile._stats.type}`;
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
+		sprite.rotation = projectile._rotate.z;
 		sprite.displayWidth = projectile._stats.currentBody.width;
 		sprite.displayHeight = projectile._stats.currentBody.height;
 		this.add(sprite);
