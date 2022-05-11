@@ -20,6 +20,8 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.projectile = projectile;
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        sprite.displayWidth = projectile._stats.currentBody.width;
+        sprite.displayHeight = projectile._stats.currentBody.height;
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
@@ -29,23 +31,27 @@ var PhaserProjectile = /** @class */ (function (_super) {
                 sprite.play("".concat(key, "/").concat(animationId));
             });
         return _this;
+        //console.log('projectile', projectile._scale, projectile._pixiTexture.scale, projectile._stats.currentBody.width)
     }
     PhaserProjectile.prototype.update = function ( /*time: number, delta: number*/) {
         var projectile = this.projectile;
-        var container = projectile._pixiContainer;
-        var texture = projectile._pixiTexture;
-        if (projectile._destroyed || container._destroyed) {
+        //const container = projectile._pixiContainer;
+        //const texture = projectile._pixiTexture;
+        if (!projectile._alive /*projectile._destroyed || container._destroyed*/) {
+            console.log('projectile destroy', projectile);
             projectile.off('play-animation', this.playAnimationListener);
             this.playAnimationListener = null;
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
         }
-        this.x = container.x;
-        this.y = container.y;
+        this.x = projectile._translate.x;
+        this.y = projectile._translate.y;
+        //this.x = container.x;
+        //this.y = container.y;
         var sprite = this.sprite;
-        sprite.rotation = texture.rotation;
-        sprite.setScale(texture.scale.x, texture.scale.y);
+        sprite.rotation = projectile._rotate.z; //texture.rotation;
+        //sprite.setScale (projectile._scale.x, projectile._scale.y); //texture.scale.x, texture.scale.y);
     };
     return PhaserProjectile;
 }(Phaser.GameObjects.Container));
