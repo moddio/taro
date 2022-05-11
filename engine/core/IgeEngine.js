@@ -2084,9 +2084,9 @@ var IgeEngine = IgeEntity.extend({
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}
-
-						if (self.now - self.serverEmptySince > self.emptyTimeLimit) {
-							ige.server.kill('game\'s been empty for too long (15 min)');
+						
+						if (ige.server.tier == '1' && self.now - self.serverEmptySince > self.emptyTimeLimit) {
+							ige.server.kill('game\'s been empty for too long (3 min)');
 						}
 					} else {
 						self.serverEmptySince = null;
