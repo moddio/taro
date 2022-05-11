@@ -1,37 +1,53 @@
-class PhaserUnit extends Phaser.GameObjects.Container {
-    constructor(scene, unit) {
-        super(scene);
-        this.unit = unit;
-        this.attributes = [];
-        const key = `unit/${unit._stats.type}`;
-        const sprite = this.sprite = scene.add.sprite(0, 0, key);
-        this.add(sprite);
-        const label = this.label = scene.add.text(0, 0, 'cccccc');
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var PhaserUnit = /** @class */ (function (_super) {
+    __extends(PhaserUnit, _super);
+    function PhaserUnit(scene, unit) {
+        var _this = _super.call(this, scene) || this;
+        _this.unit = unit;
+        _this.attributes = [];
+        var key = "unit/".concat(unit._stats.type);
+        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        _this.add(sprite);
+        var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
-        this.add(label);
-        scene.add.existing(this);
-        this.followListener = unit.on('follow', () => {
+        _this.add(label);
+        scene.add.existing(_this);
+        _this.followListener = unit.on('follow', function () {
             console.log('PhaserUnit follow', unit.id()); // TODO remove
-            scene.cameras.main.startFollow(this, true, 0.05, 0.05);
+            scene.cameras.main.startFollow(_this, true, 0.05, 0.05);
         });
-        this.stopFollowListener = unit.on('stop-follow', () => {
+        _this.stopFollowListener = unit.on('stop-follow', function () {
             console.log('PhaserUnit stop-follow', unit.id()); // TODO remove
             scene.cameras.main.stopFollow();
         });
-        this.playAnimationListener =
-            unit.on('play-animation', (animationId) => {
-                console.log('PhaserUnit play-animation', `${key}/${animationId}`); // TODO remove
-                sprite.play(`${key}/${animationId}`);
+        _this.playAnimationListener =
+            unit.on('play-animation', function (animationId) {
+                console.log('PhaserUnit play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
+                sprite.play("".concat(key, "/").concat(animationId));
             });
-        this.updateLabelListener =
-            unit.on('update-label', (config) => {
+        _this.updateLabelListener =
+            unit.on('update-label', function (config) {
                 console.log('PhaserUnit update-label', unit.id()); // TODO remove
                 label.visible = true;
                 label.setFontFamily('Verdana');
                 label.setFontSize(16);
                 label.setFontStyle(config.bold ? 'bold' : 'normal');
                 label.setFill(config.color || '#fff');
-                const strokeThickness = ige.game.data.settings
+                var strokeThickness = ige.game.data.settings
                     .addStrokeToNameAndAttributes !== false ? 4 : 0;
                 label.setStroke('#000', strokeThickness);
                 label.setText(config.text || '');
@@ -39,32 +55,32 @@ class PhaserUnit extends Phaser.GameObjects.Container {
                     Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
                 label.setScale(1.25);
             });
-        this.hideLabelListener =
-            unit.on('hide-label', () => {
+        _this.hideLabelListener =
+            unit.on('hide-label', function () {
                 console.log('PhaserUnit hide-label', unit.id()); // TODO remove
                 label.visible = false;
             });
-        const attributes = this.attributes;
-        this.renderAttributesListener =
-            unit.on('render-attributes', (data) => {
+        var attributes = _this.attributes;
+        _this.renderAttributesListener =
+            unit.on('render-attributes', function (data) {
                 console.log('PhaserUnit render-attributes', data); // TODO remove
                 // release all existing attribute bars
-                attributes.forEach((a) => {
+                attributes.forEach(function (a) {
                     PhaserAttributeBar.release(a);
                 });
                 attributes.length = 0;
                 // add attribute bars based on passed data
-                data.attrs.forEach((ad) => {
-                    const a = PhaserAttributeBar.get(this);
+                data.attrs.forEach(function (ad) {
+                    var a = PhaserAttributeBar.get(_this);
                     a.render(ad);
                     attributes.push(a);
                 });
             });
-        this.updateAttributeListener =
-            unit.on('update-attribute', (data) => {
+        _this.updateAttributeListener =
+            unit.on('update-attribute', function (data) {
                 console.log('PhaserUnit update-attribute', data); // TODO remove
-                let a;
-                let i = 0;
+                var a;
+                var i = 0;
                 for (; i < attributes.length; i++) {
                     if (attributes[i].name === data.attr.type) {
                         a = attributes[i];
@@ -79,18 +95,18 @@ class PhaserUnit extends Phaser.GameObjects.Container {
                     return;
                 }
                 if (!a) {
-                    a = PhaserAttributeBar.get(this);
+                    a = PhaserAttributeBar.get(_this);
                     attributes.push(a);
                 }
                 a.render(data.attr);
             });
-        this.renderChatListener = unit.on('render-chat-bubble', (text) => {
+        _this.renderChatListener = unit.on('render-chat-bubble', function (text) {
             console.log('create-chat', text); // TODO remove
-            if (this.chat) {
-                this.chat.showMessage(text);
+            if (_this.chat) {
+                _this.chat.showMessage(text);
             }
             else {
-                this.chat = new PhaserChatBubble(scene, text, this);
+                _this.chat = new PhaserChatBubble(scene, text, _this);
             }
         });
         /*this.renderChatBubble =
@@ -112,12 +128,13 @@ class PhaserUnit extends Phaser.GameObjects.Container {
                     attributes.push(a);
                 });
             });*/
-        scene.events.on('update', this.update, this);
+        scene.events.on('update', _this.update, _this);
+        return _this;
     }
-    update( /*time: number, delta: number*/) {
-        const unit = this.unit;
-        const container = unit._pixiContainer;
-        const texture = unit._pixiTexture;
+    PhaserUnit.prototype.update = function ( /*time: number, delta: number*/) {
+        var unit = this.unit;
+        var container = unit._pixiContainer;
+        var texture = unit._pixiTexture;
         if (unit._destroyed || container._destroyed) {
             unit.off('follow', this.followListener);
             this.followListener = null;
@@ -138,7 +155,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
             if (this.chat)
                 this.chat.destroy();
             // release all instantiated attribute bars
-            this.attributes.forEach((a) => {
+            this.attributes.forEach(function (a) {
                 PhaserAttributeBar.release(a);
             });
             this.attributes.length = 0;
@@ -153,8 +170,10 @@ class PhaserUnit extends Phaser.GameObjects.Container {
         this.y = container.y;
         if (this.chat)
             this.chat.update(this.x, this.y);
-        const sprite = this.sprite;
+        var sprite = this.sprite;
         sprite.rotation = texture.rotation;
         sprite.setScale(texture.scale.x, texture.scale.y);
-    }
-}
+    };
+    return PhaserUnit;
+}(Phaser.GameObjects.Container));
+//# sourceMappingURL=PhaserUnit.js.map
