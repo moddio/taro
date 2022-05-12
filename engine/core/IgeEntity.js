@@ -668,7 +668,7 @@ var IgeEntity = IgeObject.extend({
 		this._pixiContainer._category = this._category;
 		this._pixiTexture = texture;
 		this._pixiContainer.addChild(texture);
-		
+
 		if (defaultData) {
 			this._pixiContainer.x = defaultData.translate.x;
 			this._pixiContainer.y = defaultData.translate.y;
