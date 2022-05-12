@@ -534,7 +534,7 @@ var Player = IgeEntity.extend({
 
 		if (value) {
 			$('#message').attr('disabled', true);
-			$('#message').attr('placeholder', 'you are muted');
+			$('#message').attr('placeholder', 'You are muted');
 		} else {
 			$('#message').attr('disabled', false);
 			$('#message').attr('placeholder', 'message');
@@ -581,21 +581,10 @@ var Player = IgeEntity.extend({
 
 				if (score > self._stats.highscore) {
 					// highscore updated
-
-					request({
-						method: 'POST',
-						url: `${global.beUrl}/api/user/updatehighscore`,
-						body: {
-							userId: self._stats.userId,
-							highscore: score,
-							gameId: ige.game.data.defaultData._id,
-							source: 'gs'
-						},
-						json: true
-					}, (err) => {
-						if (err) {
-							console.log(err);
-						}
+					ige.clusterClient && ige.clusterClient.updatePlayerHighscore({
+						userId: self._stats.userId,
+						gameId: ige.game.data.defaultData._id,
+						highscore: score,
 					});
 				}
 			}

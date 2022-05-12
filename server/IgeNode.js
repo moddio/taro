@@ -376,7 +376,7 @@ var IgeNode = IgeClass.extend({
 			// Remove client-exclude marked code
 			data = data.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
 
-			finalEngineCoreCode += `${data};`;
+			finalEngineCoreCode += `${data}\n`;
 		}
 
 		// Write the engine core's file data
@@ -430,7 +430,7 @@ var IgeNode = IgeClass.extend({
 
 			// Remove client-exclude marked code
 			data = data.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
-			finalFileData += `${data};`;
+			finalFileData += `${data}\n`;
 		}
 
 		// Write the engine core's file data
@@ -446,10 +446,14 @@ var IgeNode = IgeClass.extend({
 		// Remove client-exclude marked code.
 		source = source.replace(/\/\* CEXCLUDE \*\/[\s\S.]*?\* CEXCLUDE \*\//g, '');
 
-		let finCode = babel.transform(source, { ast: true, compact: true, minified: true, comments: false }).code.toString();
-
 		// Return final code.
-		return finCode;
+		return babel.transform(source, {
+			ast: true,
+			compact: true,
+			minified: true,
+			comments: false,
+			// presets: [ '@babel/preset-env' ]
+		}).code.toString();
 	},
 
 	ask: function (question, callback) {
@@ -468,4 +472,6 @@ var IgeNode = IgeClass.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeNode; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeNode;
+}

@@ -594,9 +594,9 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'stringToNumber':
 					var value = self.getValue(text.value, vars);
-					var parsedValue = parseFloat(value);
+					var parsedValue = Number(value);
 
-					if (parsedValue && !isNaN(parsedValue)) {
+					if (!isNaN(parsedValue)) {
 						returnValue = parsedValue;
 					}
 

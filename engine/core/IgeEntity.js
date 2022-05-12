@@ -2031,11 +2031,8 @@ var IgeEntity = IgeObject.extend({
 					position = (ownerUnit && ownerUnit._pixiContainer) || position;
 				}
 
-				// play default animation if animation isn't set.
-				if (effect.animation == undefined || effect.animation == 'none') {
-					var currentState = this._stats.states[this._stats.stateId];
-					this.applyAnimationById(currentState.animation);
-				} else {
+				// if animation is assigned to effect, play it
+				if (effect.animation != undefined && effect.animation != 'none' && effect.animation != '') {
 					this.applyAnimationById(effect.animation);
 				}
 
@@ -2092,10 +2089,6 @@ var IgeEntity = IgeObject.extend({
 				if (effect.runScript) {
 					ige.script.runScript(effect.runScript, {});
 				}
-			}
-		} else {
-			if (ige.isClient) {
-				this.applyAnimationById('default'); // play default animation if effect isn't set
 			}
 		}
 	},
