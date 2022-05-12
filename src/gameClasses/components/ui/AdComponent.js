@@ -20,7 +20,7 @@ var AdComponent = IgeEntity.extend({
 			ige.network.send('playAd', data, clientId); // update text for all clients
 		} else if (ige.isClient) {
 			// are we running on mobile
-			if (ige.mobileControls.isMobile) {
+			if (ige.isMobile) {
 				// on mobile
 				var eventData = { msg: 'showad' };
 
@@ -88,4 +88,6 @@ var AdComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = AdComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = AdComponent;
+}

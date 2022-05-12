@@ -21,7 +21,7 @@ var ShopComponent = IgeEntity.extend({
 			self.perPageItems = 20;
 			self.currentType = '';
 			self.oldModalHTMLBody = '';
-			// if (!ige.mobileControls.isMobile) {
+			// if (!ige.isMobile) {
 			$('.open-modd-shop-button').on('click', function () {
 				var player = ige.client.myPlayer;
 				if (player && !player._stats.isAdBlockEnabled) {
@@ -276,8 +276,7 @@ var ShopComponent = IgeEntity.extend({
 							'	 <div class="d-flex justify-content-center action-button-container">';
 						if (purchasable.soldForSocialShare) {
 							html += self.getTwitterBtnHtml(purchasable);
-						}
-						else {
+						} else {
 							html += `		 <button class="btn btn-sm btn-outline-success btn-purchase-purchasable" id="${purchasable._id}"` +
 								`			 data-purchasabled="${purchasable.name}" data-price="${purchasable.price}">` +
 								'			 <div class="d-flex">' +
@@ -521,10 +520,8 @@ var ShopComponent = IgeEntity.extend({
 	updateModdShop: function (tabSelected) {
 		var self = this;
 
-		if (ige.mobileControls) {
-			if (ige.mobileControls.isMobile) {
-				$('.open-coin-shop-button').hide();
-			}
+		if (ige.isMobile) {
+			$('.open-coin-shop-button').hide();
 		}
 
 		// populate shop sidebar keys
@@ -1270,7 +1267,7 @@ var ShopComponent = IgeEntity.extend({
 
 		var totalPages = Math.ceil(self.skinItems.length / self.perPageItems);
 		var maxPageNumber = Math.min(11, totalPages);
-		if (ige.mobileControls && ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			maxPageNumber = Math.min(3, totalPages);
 		}
 		var currentPage = self.currentPagination - 1;
@@ -1409,4 +1406,6 @@ var ShopComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ShopComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = ShopComponent;
+}

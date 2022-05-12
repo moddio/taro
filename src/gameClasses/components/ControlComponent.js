@@ -323,7 +323,7 @@ var ControlComponent = IgeEntity.extend({
 				for (key in self.input[device]) {
 					if (ige.input.actionState(key)) {
 						if (self.input[device][key] == false) {
-							if (ige.mobileControls.isMobile && device == 'mouse') {
+							if (ige.isMobile && device == 'mouse') {
 								// block
 							} else {
 								self.keyDown(device, key);
@@ -331,7 +331,7 @@ var ControlComponent = IgeEntity.extend({
 						}
 					} else {
 						if (self.input[device][key] == true) {
-							if (ige.mobileControls.isMobile && device == 'mouse') {
+							if (ige.isMobile && device == 'mouse') {
 								// block
 							} else {
 								self.keyUp(device, key);
@@ -352,7 +352,7 @@ var ControlComponent = IgeEntity.extend({
 
 			if (self.newMousePosition && (self.newMousePosition[0] != self.lastMousePosition[0] || self.newMousePosition[1] != self.lastMousePosition[1])) {
 				// if we are using mobile controls don't send mouse moves to server here as we will do so from a look touch stick
-				if (!ige.mobileControls.isMobile) {
+				if (!ige.isMobile) {
 					// absolute mouse position wrt window
 					if (ige._mouseAbsoluteTranslation && ige._mouseAbsoluteTranslation[0] && ige._mouseAbsoluteTranslation[1]) {
 						var centerOfScreen = {};
@@ -401,4 +401,6 @@ var ControlComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ControlComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = ControlComponent;
+}
