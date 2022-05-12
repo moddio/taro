@@ -5,9 +5,6 @@ var Projectile = IgeEntityPhysics.extend({
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer);
 		var self = this;
-		if (ige.isClient) {
-			//this._pixiContainer = new PIXI.Container();
-		}
 		self.category('projectile');
 		var projectileData = {};
 		if (ige.isClient) {
@@ -86,19 +83,11 @@ var Projectile = IgeEntityPhysics.extend({
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
 			if (currentState) {
-				//var defaultAnimation = this._stats.animations[currentState.animation];
-				//this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
-				//need it for moving projectily currently
-				ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+				/* TEMPORARY */
+				//TODO - add new logic for trackEntityById and updating entities with out PIXI in EntityManager
+				ige.pixi.trackEntityById[this.entityId] = undefined;
 			}
-			//self.drawBounds(false);
-
 			//self.addComponent(AttributeBarsContainerComponent);
-			/*self.updateLayer();
-			self.updateTexture();
-			self.mouseEvents();
-			self.mount(ige.pixi.world);*/
-
 			ige.client.emit('create-projectile', this);
 		}
 		this.playEffect('create');
