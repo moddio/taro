@@ -23,6 +23,9 @@ var PhaserProjectile = /** @class */ (function (_super) {
         sprite.rotation = projectile._rotate.z;
         sprite.displayWidth = projectile._stats.currentBody.width;
         sprite.displayHeight = projectile._stats.currentBody.height;
+        //it is another option for width and height, but _stats.currentBody.width seems better,
+        //for projectiles currentBody is working fine, need to check for another entities like items
+        //just for information, this comment can be deleted
         //sprite.displayWidth = projectile._bounds2d.x;
         //sprite.displayHeight = projectile._bounds2d.y;
         _this.add(sprite);
@@ -51,6 +54,9 @@ var PhaserProjectile = /** @class */ (function (_super) {
         sprite.rotation = projectile._rotate.z;
         sprite.displayWidth = projectile._stats.currentBody.width;
         sprite.displayHeight = projectile._stats.currentBody.height;
+        //it is another option for width and height, but _stats.currentBody.width seems better,
+        //for projectiles currentBody is working fine, need to check for another entities like items
+        //just for information, this comment can be deleted
         //sprite.displayWidth = projectile._bounds2d.x;
         //sprite.displayHeight = projectile._bounds2d.y;
     };
