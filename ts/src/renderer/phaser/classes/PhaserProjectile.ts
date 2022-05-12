@@ -38,7 +38,6 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		const projectile = this.projectile;
 
 		if (!projectile._alive) {
-			console.log('projectile destroy', projectile)
 			projectile.off('play-animation', this.playAnimationListener);
 			this.playAnimationListener = null;
 			this.scene.events.off('update', this.update, this);
