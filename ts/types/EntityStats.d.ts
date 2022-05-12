@@ -25,6 +25,4 @@ declare interface EntityStats {
 	type: string;
 	id: string;
 	itemTypeId?: string;
-
-	width: number;
 }
