@@ -668,11 +668,15 @@ const Client = IgeEventingClass.extend({
 					if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
 						//
 						ige.client.loadedTextures[cellSheet.url] = cellSheet;
-						pixiLoader.add(
-							cellSheet.url,
-							`${cellSheet.url}?version=${version}`,
-							{ crossOrigin: true }
-						);
+						
+						// check if the cell sheet url is a valid url
+						if (cellSheet.url && cellSheet.url.indexOf('http') === 0) {
+							pixiLoader.add(
+								cellSheet.url,
+								`${cellSheet.url}?version=${version}`,
+								{ crossOrigin: true }
+							);
+						}
 					}
 				}
 			};
