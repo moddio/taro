@@ -22,6 +22,32 @@ var IgeEngine = IgeEntity.extend({
 		// Determine the environment we are executing in
 		this.isServer = (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined');
 		this.isClient = !this.isServer;
+
+		this.isMobile = this.isClient && (function () {  // cache value
+			// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+			var isMobile = {
+				Android: function () {
+					return navigator.userAgent.match(/Android/i);
+				},
+				BlackBerry: function () {
+					return navigator.userAgent.match(/BlackBerry/i);
+				},
+				iOS: function () {
+					return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+				},
+				Opera: function () {
+					return navigator.userAgent.match(/Opera Mini/i);
+				},
+				Windows: function () {
+					return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+				},
+				any: function () {
+					return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+				}
+			};
+			return isMobile.any() != null;
+		})();
+
 		this.banIpsList = [];
 
 		// Assign ourselves to the global variable
@@ -2355,30 +2381,6 @@ var IgeEngine = IgeEntity.extend({
 
 		return item;
 	},
-	isMobile: (function () {  // cache value
-		// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
-		var isMobile = {
-			Android: function () {
-				return navigator.userAgent.match(/Android/i);
-			},
-			BlackBerry: function () {
-				return navigator.userAgent.match(/BlackBerry/i);
-			},
-			iOS: function () {
-				return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-			},
-			Opera: function () {
-				return navigator.userAgent.match(/Opera Mini/i);
-			},
-			Windows: function () {
-				return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
-			},
-			any: function () {
-				return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-			}
-		};
-		return isMobile.any() != null;
-	})(),
 
 	/**
 	 * Walks the scene graph and outputs a console map of the graph.
