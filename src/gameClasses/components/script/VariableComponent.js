@@ -1348,7 +1348,7 @@ var VariableComponent = IgeEntity.extend({
 
 							for (var i = 0; i < unitTypes.length; i++) {
 								var unitType = unitTypes[i];
-								console.log(randomNumber, currentHead, currentHead + unitType.probability, _.inRange(randomNumber, currentHead, currentHead + unitType.probability));
+								// console.log(randomNumber, currentHead, currentHead + unitType.probability, _.inRange(randomNumber, currentHead, currentHead + unitType.probability));
 								if (_.inRange(randomNumber, currentHead, currentHead + unitType.probability)) {
 									returnValue = unitType.unitType;
 								}
