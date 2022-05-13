@@ -26,6 +26,7 @@ var GameScene = /** @class */ (function (_super) {
         canvas.style.position = 'fixed';
         canvas.style.opacity = '0.5';
         canvas.style.backgroundColor = 'transparent';
+        //canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
         var camera = this.cameras.main;
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
