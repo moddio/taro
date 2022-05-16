@@ -124,6 +124,7 @@ var GameScene = /** @class */ (function (_super) {
         ige.client.phaserLoaded.resolve();
         var map = this.make.tilemap({ key: 'map' });
         var data = ige.game.data;
+        var scaleFactor = ige.scaleMapDetails.scaleFactor;
         data.map.tilesets.forEach(function (tileset) {
             map.addTilesetImage(tileset.name, "tiles/".concat(tileset.name));
         });
@@ -132,7 +133,8 @@ var GameScene = /** @class */ (function (_super) {
                 return;
             }
             console.log(layer.name);
-            map.createLayer(layer.name, map.tilesets[0], 0, 0);
+            var tilemapLayer = map.createLayer(layer.name, map.tilesets[0], 0, 0);
+            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);

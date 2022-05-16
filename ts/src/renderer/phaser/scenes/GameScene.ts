@@ -152,6 +152,8 @@ class GameScene extends Phaser.Scene {
 
 		const map = this.make.tilemap({ key: 'map' });
 		const data = ige.game.data;
+		const scaleFactor = ige.scaleMapDetails.scaleFactor;
+
 		data.map.tilesets.forEach((tileset) => {
 			map.addTilesetImage(tileset.name, `tiles/${tileset.name}`);
 		});
@@ -160,7 +162,8 @@ class GameScene extends Phaser.Scene {
 				return;
 			}
 			console.log(layer.name);
-			map.createLayer(layer.name, map.tilesets[0], 0, 0);
+			const tilemapLayer = map.createLayer(layer.name, map.tilesets[0], 0, 0);
+			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
 		});
 
 		const camera = this.cameras.main;
