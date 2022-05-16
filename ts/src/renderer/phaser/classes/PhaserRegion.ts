@@ -48,7 +48,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		}
 
 		const stats = this.region._stats.default;
-		console.log(stats);
+		console.log(stats); // TODO: remove this console log
 		this.x = stats.x;
 		this.y = stats.y;
 

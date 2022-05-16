@@ -9,7 +9,7 @@ var Region = IgeEntityPhysics.extend({
 		// on server regions are offsetted by 2 tile. So adding offset just server
 		// making region work fine on both side
 
-		// need to look into the above comment and confirm or deny.
+		// TODO: look into the above comment and confirm or deny.
 
 		this.id(entityIdFromServer);
 		var self = this;
