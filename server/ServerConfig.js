@@ -32,7 +32,7 @@ var defaultConfig = [
 	{ name: 'GameTextComponent', path: '../src/gameClasses/components/ui/GameTextComponent' },
 	{ name: 'ScoreboardComponent', path: '../src/gameClasses/components/ui/ScoreboardComponent' },
 	{ name: 'AdComponent', path: '../src/gameClasses/components/ui/AdComponent' },
-	{ name: 'RegionUi', path: '../src/gameClasses/components/ui/RegionUi' },
+	// { name: 'RegionUi', path: '../src/gameClasses/components/ui/RegionUi' },
 	{ name: 'VideoChatComponent', path: '../src/gameClasses/components/ui/VideoChatComponent' },
 	{ name: 'SoundComponent', path: '../src/gameClasses/components/SoundComponent' },
 

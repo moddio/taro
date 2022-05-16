@@ -9,6 +9,8 @@ var Region = IgeEntityPhysics.extend({
 		// on server regions are offsetted by 2 tile. So adding offset just server
 		// making region work fine on both side
 
+		// need to look into the above comment and confirm or deny.
+
 		this.id(entityIdFromServer);
 		var self = this;
 		var regionName = typeof data.id === 'string' ? data.id : null;
@@ -59,19 +61,30 @@ var Region = IgeEntityPhysics.extend({
 			self.updateBody({
 				translate: { x: self._translate.x, y: self._translate.y}
 			});
+
+			// will leave this for a little while longer. this is sloont's from
+			// drawing Crash Colliders
+
 			// if (ige.isClient) {
 			// 	this._pixiContainer = new PIXI.Container();
 			// 	this.drawCrashCollider(regionDimension);
 			// }
 
+			//
+
 			if (ige.isServer) {
+				// IgeEntity.streamMode(val)
+				// 1 is 'automatic' streaming
 				self.streamMode(1);
 			} else if (ige.isClient) {
 				if (typeof mode === 'string' && mode === 'sandbox') {
 					delete self._stats.value;
 				}
 
-				self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
+				// removing references to regionUi.
+				// /
+				// self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
+				// /
 
 				//later move phaser render event here
 				//ige.client.emit('create-region', this);
@@ -91,6 +104,8 @@ var Region = IgeEntityPhysics.extend({
 				// .mount(ige.client.rootScene);
 
 				if (mode === 'sandbox') {
+					// I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
+					// Only other reference is AttributeComponent.js:init
 					self.font = new FloatingText(regionName);
 					self.font.colorOverlay('#fff')
 						.translateTo(self._stats.default.x, self._stats.default.y, 0)
@@ -99,8 +114,14 @@ var Region = IgeEntityPhysics.extend({
 
 					if (ige.game.data.isDeveloper) {
 						// creating region click handler if user is developer
+						// /
+						// need to see if we can do this with simple region instead
+						// of using regionUi because we want to remove it entirely
+						// /
 						self.regionUi
+							// IgeObject method
 							.drawMouse(true)
+							// IgeEntity method (IgeUiEntity extends...)
 							.mouseDown(function (event, evc) {
 								if (
 									ige.mapEditor.selectEntities &&
