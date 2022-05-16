@@ -18,6 +18,11 @@ var PhaserRegion = /** @class */ (function (_super) {
     function PhaserRegion(scene, region) {
         var _this = _super.call(this, scene) || this;
         _this.region = region;
+        // looking at whether to use _stats.default or _stats.currentBody
+        // appears the implementation of currentBody for regions is unfinished,
+        // but everything we should need for rendering is contained in default.
+        //
+        // I believe this is an issue unique to 'Region'
         var stats = _this.region._stats.default;
         // draw rectangle
         var width = _this.width = stats.width;
@@ -39,6 +44,7 @@ var PhaserRegion = /** @class */ (function (_super) {
             return;
         }
         var stats = this.region._stats.default;
+        console.log(stats);
         this.x = stats.x;
         this.y = stats.y;
         if (this.width !== stats.width || this.height !== stats.height) {

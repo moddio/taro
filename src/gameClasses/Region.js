@@ -55,8 +55,7 @@ var Region = IgeEntityPhysics.extend({
 				self._translate.x = regionDimension.x + (regionDimension.width / 2);
 				self._translate.y = regionDimension.y + (regionDimension.height / 2);
 			}
-			
-	
+
 			self.updateBody({
 				translate: { x: self._translate.x, y: self._translate.y}
 			});
@@ -78,7 +77,7 @@ var Region = IgeEntityPhysics.extend({
 				//ige.client.emit('create-region', this);
 
 				/*if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
-					
+
 				}*/
 
 				// self.regionUi.depth(10)

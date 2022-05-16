@@ -9,7 +9,14 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 	) {
 		super(scene);
 
-		const stats = this.region._stats.default
+		// looking at whether to use _stats.default or _stats.currentBody
+		// appears the implementation of currentBody for regions is unfinished,
+		// but everything we should need for rendering is contained in default.
+		//
+		// I believe this is an issue unique to 'Region'
+		const stats = this.region._stats.default;
+
+		// const stats = this.region._stats;
 
 		// draw rectangle
 		const width = this.width = stats.width;
@@ -40,8 +47,8 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 			return;
 		}
 
-		const stats = this.region._stats.default
-
+		const stats = this.region._stats.default;
+		console.log(stats);
 		this.x = stats.x;
 		this.y = stats.y;
 

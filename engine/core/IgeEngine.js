@@ -1766,7 +1766,7 @@ var IgeEngine = IgeEntity.extend({
 		// console.log("increment time", this._currentTime, now, this._timeScaleLastTimestamp, (now - this._timeScaleLastTimestamp))
 		this._currentTime = (now + this.timeDiscrepancy) * this._timeScale;
 		this.renderTime = this._currentTime - 100;
-		
+
 		// this.incrementCount++;
 		// if (now - this._aSecondAgo > 1000) {
 		// 	console.log((this._currentTime - this.lastIncrementAt), this.incrementCount, (this._currentTime - this.lastIncrementAt) / this.incrementCount)
