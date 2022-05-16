@@ -13,7 +13,7 @@ var ScoreboardComponent = IgeEntity.extend({
 	},
 
 	setUI: function () {
-		if (ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			$('#scoreboard-header').addClass('small');
 			$('#scoreboard').addClass('small');
 		} else {
@@ -132,7 +132,7 @@ var ScoreboardComponent = IgeEntity.extend({
 			var scoreboard = '';
 			var sortedScores = [];
 			var players = ige.$$('player');
-			var topPlayersToShow = ige.mobileControls.isMobile ? 3 : 10;
+			var topPlayersToShow = ige.isMobile ? 3 : 10;
 
 			players.forEach(function (player) {
 				if (player._stats && player._stats.clientId) // only display human players on scoreboard
@@ -212,4 +212,6 @@ var ScoreboardComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ScoreboardComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = ScoreboardComponent;
+}

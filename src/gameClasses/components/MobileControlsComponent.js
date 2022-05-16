@@ -10,7 +10,6 @@ var MobileControlsComponent = IgeEntity.extend({
 		IgeEntity.prototype.init.call(this);
 		var self = this;
 
-		this.isMobile = ige.isMobileDevice(); // cache
 		this.isSingleGame = this.isSingleGameMode();
 
 		// Store the entity that this component has been added to
@@ -75,7 +74,7 @@ var MobileControlsComponent = IgeEntity.extend({
 	// called from client after textures loaded
 	attach: function (mountScene) {
 		// don't add if not on mobile
-		if (!this.isMobile) return;
+		if (!ige.isMobile) return;
 
 		// DOM UI Modifications for mobile
 		noAds = true;
@@ -128,7 +127,7 @@ var MobileControlsComponent = IgeEntity.extend({
 	},
 
 	configure: function (abilities) {
-		if (!this.isMobile || !abilities) return;
+		if (!ige.isMobile || !abilities) return;
 
 		// $("#show-chat").show();
 		$('#show-chat').hide(); // completely disable chat on mobile (app review)
@@ -556,8 +555,12 @@ class Joystick extends PIXI.Container {
 		this.outer.scale.set(this.settings.outerScale.x, this.settings.outerScale.y);
 		this.inner.scale.set(this.settings.innerScale.x, this.settings.innerScale.y);
 
-		if ('anchor' in this.outer) { this.outer.anchor.set(0.5); }
-		if ('anchor' in this.inner) { this.inner.anchor.set(0.5); }
+		if ('anchor' in this.outer) {
+			this.outer.anchor.set(0.5);
+		}
+		if ('anchor' in this.inner) {
+			this.inner.anchor.set(0.5);
+		}
 
 		this.addChild(this.outer);
 		this.addChild(this.inner);
@@ -591,7 +594,9 @@ class Joystick extends PIXI.Container {
 		}
 
 		function onDragEnd (event) {
-			if (dragging == false) { return; }
+			if (dragging == false) {
+				return;
+			}
 
 			that.inner.position.set(0, 0);
 
@@ -604,7 +609,9 @@ class Joystick extends PIXI.Container {
 		}
 
 		function onDragMove (event) {
-			if (dragging == false) { return; }
+			if (dragging == false) {
+				return;
+			}
 
 			let newPosition = eventData.getLocalPosition(that);
 
@@ -614,7 +621,9 @@ class Joystick extends PIXI.Container {
 			let centerPoint = new PIXI.Point(0, 0);
 			let angle = 0;
 
-			if (sideX == 0 && sideY == 0) { return; }
+			if (sideX == 0 && sideY == 0) {
+				return;
+			}
 
 			let calRadius = 0;
 
