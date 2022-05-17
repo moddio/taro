@@ -8,7 +8,7 @@ var Region = IgeEntityPhysics.extend({
 
 		// on server regions are offsetted by 2 tile. So adding offset just server
 		// making region work fine on both side
-
+		// TODO: look into the above comment and confirm or deny
 		this.id(entityIdFromServer);
 		var self = this;
 		var regionName = typeof data.id === 'string' ? data.id : null;
@@ -55,8 +55,7 @@ var Region = IgeEntityPhysics.extend({
 				self._translate.x = regionDimension.x + (regionDimension.width / 2);
 				self._translate.y = regionDimension.y + (regionDimension.height / 2);
 			}
-			
-	
+
 			self.updateBody({
 				translate: { x: self._translate.x, y: self._translate.y}
 			});
@@ -66,13 +65,15 @@ var Region = IgeEntityPhysics.extend({
 			// }
 
 			if (ige.isServer) {
+				// IgeEntity.streamMode(val) 1 is 'automatic' streaming
 				self.streamMode(1);
 			} else if (ige.isClient) {
 				if (typeof mode === 'string' && mode === 'sandbox') {
 					delete self._stats.value;
 				}
-
-				self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
+				// remove references to RegionUi
+				// self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
+				// /
 
 				// self.regionUi.depth(10)
 				//     .layer(2)
@@ -85,6 +86,8 @@ var Region = IgeEntityPhysics.extend({
 				// .mount(ige.client.rootScene);
 
 				if (mode === 'sandbox') {
+					// I am concerned about these references to 'FloatingText' and not 'IgePixiFloatingText'
+					// Only other reference is in AttributeComponent.js.init()
 					self.font = new FloatingText(regionName);
 					self.font.colorOverlay('#fff')
 						.translateTo(self._stats.default.x, self._stats.default.y, 0)
@@ -94,8 +97,12 @@ var Region = IgeEntityPhysics.extend({
 					if (ige.game.data.isDeveloper) {
 						// creating region click handler if user is developer
 						self.regionUi
+							// need to see if we can do this with simple region instead
+							// of using regionUi because we want to remove it entirely
 							.drawMouse(true)
+							// IgeObject method
 							.mouseDown(function (event, evc) {
+							// IgeEntity method (IgeUiEntity extends...)
 								if (
 									ige.mapEditor.selectEntities &&
                                     event.which === 1 &&

@@ -1641,6 +1641,7 @@ var IgeObject = IgeEventingClass.extend({
 				// the current viewport
 				this.viewCheckChildren();
 			}
+			// TODO: potentially remove or change to just 'region'
 			// dont render regions if they are not visible
 			if (this._category === 'regionUi' && this._stats.default && !(this._stats.default.inside || this._stats.default.outside)) {
 				return;
