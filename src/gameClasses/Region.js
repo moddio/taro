@@ -127,6 +127,30 @@ var Region = IgeEntityPhysics.extend({
 				}
 			}
 		}
+
+		if (
+			ige.isClient &&
+			// TODO: address Region._stats.default.outside
+			// removed ...default.outside for now
+			((mode === 'play' && this._stats.default.inside) || mode === 'sandbox')
+		) {
+			var graphic = new PIXI.Graphics();
+			// graphic.lineStyle(3, 0x000000, 0.7);
+			graphic.beginFill(`0x${this._stats.default.inside.substring(1)}`, this._stats.default.alpha / 100 || 0.4);
+			graphic.drawRect(0, 0, 50, 50);
+			graphic.endFill();
+			graphic.isSprite = true;
+			this._pixiContainer = graphic;
+			this._pixiContainer.x = this._stats.default.x;
+			this._pixiContainer.y = this._stats.default.y;
+			this._pixiContainer.height = this._stats.default.height;
+			this._pixiContainer.width = this._stats.default.width;
+			this._pixiContainer.zIndex = 10;
+			this._pixiContainer._category = 'region';
+			this._pixiContainer.name = regionName;
+			this.mount(ige.pixi.world);
+			ige.pixi.trackEntityById[this._id] = this;
+		}
 	},
 	updateDimension: function () {
 		var regionCordinates = this._stats.default;
