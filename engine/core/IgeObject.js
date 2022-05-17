@@ -1549,6 +1549,7 @@ var IgeObject = IgeEventingClass.extend({
 	update: function (ctx, tickDelta) {
 		// Check that we are alive before processing further
 
+		// removing regionUi
 		// if(this._category === 'regionUi') return;
 
 		if (this._alive) {
@@ -1643,7 +1644,9 @@ var IgeObject = IgeEventingClass.extend({
 			}
 			// TODO: potentially remove or change to just 'region'
 			// dont render regions if they are not visible
-			if (this._category === 'regionUi' && this._stats.default && !(this._stats.default.inside || this._stats.default.outside)) {
+
+			// for now *did* change to just region
+			if (this._category === 'region' && this._stats.default && !(this._stats.default.inside || this._stats.default.outside)) {
 				return;
 			}
 			// Loop the child objects of this object

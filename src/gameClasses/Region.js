@@ -85,18 +85,26 @@ var Region = IgeEntityPhysics.extend({
 				//     .bounds2d(self._stats.default.width, self._stats.default.height, 0)
 				// .mount(ige.client.rootScene);
 
-				if (mode === 'sandbox') {
+				// TEST
+				// going to make this 'play' as well to figure out what FloatingText is doing
+
+				// RESULT
+				// FloatingText is not defined... surprise
+
+				// It must exist either as an old class in some BE bundle
+				if (mode === 'sandbox'|| mode === 'play') {
 					// I am concerned about these references to 'FloatingText' and not 'IgePixiFloatingText'
 					// Only other reference is in AttributeComponent.js.init()
-					self.font = new FloatingText(regionName);
-					self.font.colorOverlay('#fff')
-						.translateTo(self._stats.default.x, self._stats.default.y, 0)
-						.mount(ige.client.rootScene)
-						.drawBounds(false);
+
+					// self.font = new FloatingText(regionName);
+					// self.font.colorOverlay('#fff')
+					// 	.translateTo(self._stats.default.x, self._stats.default.y, 0)
+					// 	.mount(ige.client.rootScene)
+					// 	.drawBounds(false);
 
 					if (ige.game.data.isDeveloper) {
 						// creating region click handler if user is developer
-						self.regionUi
+						self
 							// need to see if we can do this with simple region instead
 							// of using regionUi because we want to remove it entirely
 							.drawMouse(true)
@@ -136,15 +144,19 @@ var Region = IgeEntityPhysics.extend({
 			this.physicsBody(this._stats.currentBody);
 		}
 
-		if (this.regionUi) {
-			this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
-			this.regionUi.width(regionCordinates.width);
-			this.regionUi.height(regionCordinates.height);
-		}
+		// We do this above for Region (self)
 
-		if (this.font) {
-			this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
-		}
+		// if (this.regionUi) {
+		// 	this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
+		// 	this.regionUi.width(regionCordinates.width);
+		// 	this.regionUi.height(regionCordinates.height);
+		// }
+
+		// Below is/was an extension of the FloatingText class assigned to this.font
+
+		// if (this.font) {
+		// 	this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
+		// }
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -163,12 +175,15 @@ var Region = IgeEntityPhysics.extend({
 	},
 
 	deleteRegion: function () {
-		if (this.font) {
-			this.font.destroy();
-		}
-		if (this.regionUi) {
-			this.regionUi.destroy();
-		}
+		// We removed both of these
+
+		// if (this.font) {
+		// 	this.font.destroy();
+		// }
+		// if (this.regionUi) {
+		// 	this.regionUi.destroy();
+		// }
+
 		this.destroy();
 	}
 });

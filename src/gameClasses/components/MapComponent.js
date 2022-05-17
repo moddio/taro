@@ -139,7 +139,8 @@ var MapComponent = IgeEntity.extend({
 							if (mode === 'sandbox') {
 								var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
 								var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
-								var region = new RegionUi({ height: mapHeight, width: mapWidth });
+								// This is a region for the entire map. Changed it to Region from RegionUi
+								var region = new Region({ height: mapHeight, width: mapWidth });
 								region.depth(3)
 									.layer(3)
 									.drawBoundsData(false)

@@ -1,3 +1,4 @@
+// We aren't going to be using this class
 var RegionUi = IgeEntity.extend({
 	classId: 'RegionUi',
 
