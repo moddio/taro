@@ -130,14 +130,7 @@ var GameScene = /** @class */ (function (_super) {
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
         camera.zoom = this.scale.width / 800;
         this.input.on('pointermove', function (pointer) {
-            var player = ige.client.myPlayer;
-            if (player) {
-                var currentMouseTransform = [
-                    pointer.worldX,
-                    pointer.worldY
-                ];
-                player.control.newMousePosition = currentMouseTransform;
-            }
+            ige.client.emit('mouse-move', { x: pointer.worldX, y: pointer.worldY });
         });
     };
     return GameScene;

@@ -79,6 +79,17 @@ var ControlComponent = IgeEntity.extend({
 				ige.input.mapAction(key, ige.input[device][key]);
 			}
 		}
+
+		if (ige.isClient) {
+		// mouse move listener
+			ige.client.on('mouse-move', position => {
+				const currentMouseTransform = [
+					position.x,
+					position.y
+				];
+				this.newMousePosition = currentMouseTransform;
+			});
+		}
 	},
 
 	keyDown: function (device, key) {
@@ -289,12 +300,12 @@ var ControlComponent = IgeEntity.extend({
 			this.input[device][key] = false;
 	},
 
-	/*mouseMove: function () {
-		var player = ige.client.myPlayer;
+	mouseMove: function () {
+		/*var player = ige.client.myPlayer;
 		if (player) {
 			ige.client.emit('fetch-mouse-position', this);
-		}
-	},*/
+		}*/
+	},
 
 	/**
 	 * Called every frame by the engine when this entity is mounted to the
@@ -362,8 +373,9 @@ var ControlComponent = IgeEntity.extend({
 						ige.client.myPlayer.control.input.mouse.x = self.newMousePosition[0];
 						ige.client.myPlayer.control.input.mouse.y = self.newMousePosition[1];
 					}
-					if (self.sendPlayerInput)
+					if (self.sendPlayerInput) {
 						ige.network.send('playerMouseMoved', self.newMousePosition);
+					}
 				}
 				self.lastMousePosition = self.newMousePosition;
 			}

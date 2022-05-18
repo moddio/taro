@@ -161,15 +161,8 @@ class GameScene extends Phaser.Scene {
 		);
 		camera.zoom = this.scale.width / 800;
 
-		this.input.on('pointermove', function(pointer){
-			const player = ige.client.myPlayer;
-			if (player) {
-				const currentMouseTransform = [
-					pointer.worldX,
-					pointer.worldY
-				];
-				player.control.newMousePosition = currentMouseTransform;
-			}
+		this.input.on('pointermove', (pointer)=> {
+			ige.client.emit('mouse-move', {x: pointer.worldX, y: pointer.worldY});
 		});
 	}
 }
