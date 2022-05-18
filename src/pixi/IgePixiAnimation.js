@@ -144,8 +144,10 @@ var IgePixiAnimation = IgeClass.extend({
 			this.stopAtFrame(this.lastFrame);
 		} else {
 			this.stopAtFrame(this.lastFrame);
+			if (this.animating) {
+				this._entity.applyAnimationById('default'); // play default animation if effect isn't set		
+			}
 			this.resetAnimation();
-			this._entity.applyAnimationById('default'); // play default animation if effect isn't set		
 		}
 		this.i = i;
 	},
