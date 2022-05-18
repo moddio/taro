@@ -21,13 +21,13 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         sprite.rotation = projectile._rotate.z;
-        sprite.displayWidth = projectile._stats.currentBody.width;
-        sprite.displayHeight = projectile._stats.currentBody.height;
-        //it is another option for width and height, but _stats.currentBody.width seems better,
-        //for projectiles currentBody is working fine, need to check for another entities like items
+        sprite.displayWidth = projectile._bounds2d.x;
+        sprite.displayHeight = projectile._bounds2d.y;
+        //it is another option for width and height, but correct data is stored in _bounds2d,
+        //as it gets updated when changing entity's width and height consistently
         //just for information, this comment can be deleted
-        //sprite.displayWidth = projectile._bounds2d.x;
-        //sprite.displayHeight = projectile._bounds2d.y;
+        //sprite.displayWidth = projectile._stats.currentBody.width;
+        //sprite.displayHeight = projectile._stats.currentBody.height;
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
@@ -51,13 +51,13 @@ var PhaserProjectile = /** @class */ (function (_super) {
         this.y = projectile._translate.y;
         var sprite = this.sprite;
         sprite.rotation = projectile._rotate.z;
-        sprite.displayWidth = projectile._stats.currentBody.width;
-        sprite.displayHeight = projectile._stats.currentBody.height;
-        //it is another option for width and height, but _stats.currentBody.width seems better,
-        //for projectiles currentBody is working fine, need to check for another entities like items
+        sprite.displayWidth = projectile._bounds2d.x;
+        sprite.displayHeight = projectile._bounds2d.y;
+        //it is another option for width and height, but correct data is stored in _bounds2d,
+        //as it gets updated when changing entity's width and height consistently
         //just for information, this comment can be deleted
-        //sprite.displayWidth = projectile._bounds2d.x;
-        //sprite.displayHeight = projectile._bounds2d.y;
+        //sprite.displayWidth = projectile._stats.currentBody.width;
+        //sprite.displayHeight = projectile._stats.currentBody.height;
     };
     return PhaserProjectile;
 }(Phaser.GameObjects.Container));
