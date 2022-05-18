@@ -42,14 +42,6 @@ class GameScene extends Phaser.Scene {
 			);
 		});
 
-		ige.client.on('fetch-mouse-position', (controlComponent: ControlComponent) => {
-			const currentMouseTransform = [
-				this.input.activePointer.worldX,
-				this.input.activePointer.worldY
-			];
-			controlComponent.newMousePosition = currentMouseTransform;
-		});
-
 		ige.client.on('create-unit', (unit: Unit) => {
 			console.log('create-unit', unit); // TODO remove
 			new PhaserUnit(this, unit);
@@ -168,5 +160,16 @@ class GameScene extends Phaser.Scene {
 			map.height * map.tileHeight / 2
 		);
 		camera.zoom = this.scale.width / 800;
+
+		this.input.on('pointermove', function(pointer){
+			const player = ige.client.myPlayer;
+			if (player) {
+				const currentMouseTransform = [
+					pointer.worldX,
+					pointer.worldY
+				];
+				player.control.newMousePosition = currentMouseTransform;
+			}
+		});
 	}
 }

@@ -9,6 +9,7 @@ declare class IgeEntity extends IgeObject {
 
 	_pixiText: any; // PIXI.Text
 
+	control: ControlComponent;
 	angleToTarget: number;
 	tween: TweenComponent;
 	pixianimation: IgePixiAnimation;

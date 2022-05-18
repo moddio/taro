@@ -289,12 +289,13 @@ var ControlComponent = IgeEntity.extend({
 			this.input[device][key] = false;
 	},
 
-	mouseMove: function () {
+	/*mouseMove: function () {
 		var player = ige.client.myPlayer;
 		if (player) {
 			ige.client.emit('fetch-mouse-position', this);
 		}
-	},
+	},*/
+
 	/**
 	 * Called every frame by the engine when this entity is mounted to the
 	 * scenegraph.
