@@ -532,13 +532,14 @@ const Client = IgeEventingClass.extend({
 						.mount(ige);
 
 					// old comment => 'Create the UI scene'
-					this.uiScene = new IgeScene2d()
+					// never used
+					/* this.uiScene = new IgeScene2d()
 						.id('uiScene')
 						.depth(1000)
 						.ignoreCamera(true)
 						.mount(this.rootScene);
 
-					ige.mobileControls.attach(this.uiScene);
+					ige.mobileControls.attach(this.uiScene); */
 
 					// sandbox check for minimap
 					if (mode == 'sandbox') {
@@ -668,7 +669,7 @@ const Client = IgeEventingClass.extend({
 					if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
 						//
 						ige.client.loadedTextures[cellSheet.url] = cellSheet;
-						
+
 						// check if the cell sheet url is a valid url
 						if (cellSheet.url && cellSheet.url.indexOf('http') === 0) {
 							pixiLoader.add(
@@ -715,7 +716,7 @@ const Client = IgeEventingClass.extend({
 	//
 	setZoom: function(zoom) {
 		// old comment => 'on mobile increase default zoom by 25%'
-		if (ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			zoom *= 0.75;
 		}
 
@@ -1022,7 +1023,7 @@ const Client = IgeEventingClass.extend({
 			data._id = userId;
 		}
 
-		if (ige.mobileControls && !ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			//
 			$('.game-ui').show();
 		}
@@ -1060,7 +1061,7 @@ const Client = IgeEventingClass.extend({
 		}
 
 		// old comment => 'show popover on settings icon for low fram rate'
-		if (!ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			//
 			setTimeout(() => {
 				//
