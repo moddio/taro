@@ -36,7 +36,7 @@ var MiniMapComponent = IgeEntity.extend({
 			var worldWidth = ige.game.data.map.width * ige.map.data.tilewidth;
 			var worldHeight = ige.game.data.map.height * ige.map.data.tileheight;
 
-			if (ige.mobileControls.isMobile) {
+			if (ige.isMobile) {
 				self.maxMapDimension.width = 50;
 				self.maxMapDimension.height = 50;
 			} else {
@@ -76,4 +76,6 @@ var MiniMapComponent = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = MiniMapComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = MiniMapComponent;
+}
