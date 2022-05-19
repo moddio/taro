@@ -77,21 +77,42 @@ var Region = IgeEntityPhysics.extend({
 				// 1 is 'automatic' streaming
 				self.streamMode(1);
 			} else if (ige.isClient) {
-				if (typeof mode === 'string' && mode === 'sandbox') {
-					delete self._stats.value;
+				if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
+					ige.client.emit('create-region', this);
 				}
 
+				if (typeof mode === 'string' && mode === 'sandbox') {
+					delete self._stats.value;
+
+					if (ige.game.data.isDeveloper) {
+						// creating region click handler if user is developer
+						// /
+						// need to see if we can do this with simple region instead
+						// of using regionUi because we want to remove it entirely
+						// /
+
+						// IgeObject method
+						self.drawMouse(true)
+							// IgeEntity method (IgeUiEntity extends...)
+							.mouseDown(function (event, evc) {
+								if (
+									ige.mapEditor.selectEntities &&
+									event.which === 1 &&
+									!ige.mapEditor.mouseDownOnMiniMap &&
+									!ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY)
+								) {
+									var selectedRegion = self;
+									if (selectedRegion._stats && selectedRegion._stats.id) {
+										ige.regionManager.openRegionModal(selectedRegion._stats, selectedRegion._stats.id, false);
+									}
+								}
+							});
+					}
+				}
 				// removing references to regionUi.
 				// /
 				// self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
 				// /
-
-				//later move phaser render event here
-				//ige.client.emit('create-region', this);
-
-				/*if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
-
-				}*/
 
 				// self.regionUi.depth(10)
 				//     .layer(2)
@@ -103,40 +124,13 @@ var Region = IgeEntityPhysics.extend({
 				//     .bounds2d(self._stats.default.width, self._stats.default.height, 0)
 				// .mount(ige.client.rootScene);
 
-				if (mode === 'sandbox') {
-					// TODO? I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
-					// Only other reference is AttributeComponent.js:init
-					self.font = new FloatingText(regionName);
-					self.font.colorOverlay('#fff')
-						.translateTo(self._stats.default.x, self._stats.default.y, 0)
-						.mount(ige.client.rootScene)
-						.drawBounds(false);
-
-					if (ige.game.data.isDeveloper) {
-						// creating region click handler if user is developer
-						// /
-						// need to see if we can do this with simple region instead
-						// of using regionUi because we want to remove it entirely
-						// /
-						self.region
-							// IgeObject method
-							.drawMouse(true)
-							// IgeEntity method (IgeUiEntity extends...)
-							.mouseDown(function (event, evc) {
-								if (
-									ige.mapEditor.selectEntities &&
-                                    event.which === 1 &&
-                                    !ige.mapEditor.mouseDownOnMiniMap &&
-                                    !ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY)
-								) {
-									var selectedRegion = self;
-									if (selectedRegion._stats && selectedRegion._stats.id) {
-										ige.regionManager.openRegionModal(selectedRegion._stats, selectedRegion._stats.id, false);
-									}
-								}
-							});
-					}
-				}
+				// TODO? I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
+				// Only other reference is AttributeComponent.js:init
+				// self.font = new FloatingText(regionName);
+				// self.font.colorOverlay('#fff')
+				// 	.translateTo(self._stats.default.x, self._stats.default.y, 0)
+				// 	.mount(ige.client.rootScene)
+				// 	.drawBounds(false);
 			}
 		}
 	},
@@ -156,15 +150,15 @@ var Region = IgeEntityPhysics.extend({
 			this.physicsBody(this._stats.currentBody);
 		}
 
-		if (this.regionUi) {
-			this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
-			this.regionUi.width(regionCordinates.width);
-			this.regionUi.height(regionCordinates.height);
-		}
+		// if (this.regionUi) {
+		// 	this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
+		// 	this.regionUi.width(regionCordinates.width);
+		// 	this.regionUi.height(regionCordinates.height);
+		// }
 
-		if (this.font) {
-			this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
-		}
+		// if (this.font) {
+		// 	this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
+		// }
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -183,12 +177,12 @@ var Region = IgeEntityPhysics.extend({
 	},
 
 	deleteRegion: function () {
-		if (this.font) {
-			this.font.destroy();
-		}
-		if (this.regionUi) {
-			this.regionUi.destroy();
-		}
+		// if (this.font) {
+		// 	this.font.destroy();
+		// }
+		// if (this.regionUi) {
+		// 	this.regionUi.destroy();
+		// }
 		this.destroy();
 	}
 });

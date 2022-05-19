@@ -23,7 +23,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		const height = this.height = stats.height;
 		// Phaser wants a number for these
 		this.fillStyle(
-			Number(`0x${stats.inside}`),
+			Number(`0x${stats.inside.substring(1)}`) || 0xffffff,
 			stats.alpha / 100 || 0.4
 		);
 		this.fillRect(
@@ -43,9 +43,9 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 	update (/*time: number, delta: number*/): void {
 
 		const region = this.region;
-		const container = region.regionUi._pixiContainer;
+		// const container = region.regionUi._pixiContainer;
 
-		if (region._destroyed || container._destroyed) {
+		if (region._destroyed /*|| container._destroyed*/) {
 			this.scene.events.off('update', this.update, this);
 			this.destroy();
 			return;
@@ -62,7 +62,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 
 			this.clear();
 			this.fillStyle(
-				Number(`0x${stats.inside}`),
+				Number(`0x${stats.inside.substring(1)}`),
 				0.4 || stats.alpha / 100
 			);
 			this.fillRect(

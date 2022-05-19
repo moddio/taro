@@ -24,10 +24,12 @@ var PhaserRegion = /** @class */ (function (_super) {
         //
         // I believe this is an issue unique to 'Region'
         var stats = _this.region._stats.default;
+        // const stats = this.region._stats;
         // draw rectangle
         var width = _this.width = stats.width;
         var height = _this.height = stats.height;
-        _this.fillStyle(0xFF0000, 0.4);
+        // Phaser wants a number for these
+        _this.fillStyle(Number("0x".concat(stats.inside.substring(1))) || 0xffffff, stats.alpha / 100 || 0.4);
         _this.fillRect(0, 0, width, height);
         _this.x = stats.x;
         _this.y = stats.y;
@@ -37,21 +39,20 @@ var PhaserRegion = /** @class */ (function (_super) {
     }
     PhaserRegion.prototype.update = function ( /*time: number, delta: number*/) {
         var region = this.region;
-        var container = region.regionUi._pixiContainer;
-        if (region._destroyed || container._destroyed) {
+        // const container = region.regionUi._pixiContainer;
+        if (region._destroyed /*|| container._destroyed*/) {
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
         }
         var stats = this.region._stats.default;
-        console.log(stats);
         this.x = stats.x;
         this.y = stats.y;
         if (this.width !== stats.width || this.height !== stats.height) {
             this.width = stats.width;
             this.height = stats.height;
             this.clear();
-            this.fillStyle(0xFF0000, 0.4);
+            this.fillStyle(Number("0x".concat(stats.inside.substring(1))), 0.4 || stats.alpha / 100);
             this.fillRect(0, 0, stats.width, stats.height);
         }
     };
