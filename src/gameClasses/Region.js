@@ -104,7 +104,7 @@ var Region = IgeEntityPhysics.extend({
 				// .mount(ige.client.rootScene);
 
 				if (mode === 'sandbox') {
-					// I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
+					// TODO? I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
 					// Only other reference is AttributeComponent.js:init
 					self.font = new FloatingText(regionName);
 					self.font.colorOverlay('#fff')
@@ -118,7 +118,7 @@ var Region = IgeEntityPhysics.extend({
 						// need to see if we can do this with simple region instead
 						// of using regionUi because we want to remove it entirely
 						// /
-						self.regionUi
+						self.region
 							// IgeObject method
 							.drawMouse(true)
 							// IgeEntity method (IgeUiEntity extends...)

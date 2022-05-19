@@ -21,7 +21,11 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		// draw rectangle
 		const width = this.width = stats.width;
 		const height = this.height = stats.height;
-		this.fillStyle(0xFF0000, 0.4);
+		// Phaser wants a number for these
+		this.fillStyle(
+			Number(`0x${stats.inside}`),
+			stats.alpha / 100 || 0.4
+		);
 		this.fillRect(
 			0,
 			0,
@@ -48,7 +52,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		}
 
 		const stats = this.region._stats.default;
-		console.log(stats); // TODO: remove this console log
+
 		this.x = stats.x;
 		this.y = stats.y;
 
@@ -57,7 +61,10 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 			this.height = stats.height;
 
 			this.clear();
-			this.fillStyle(0xFF0000, 0.4);
+			this.fillStyle(
+				Number(`0x${stats.inside}`),
+				0.4 || stats.alpha / 100
+			);
 			this.fillRect(
 				0,
 				0,
