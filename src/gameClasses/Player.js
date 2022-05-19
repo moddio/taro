@@ -39,7 +39,7 @@ var Player = IgeEntity.extend({
 
 				// mouse move listener
 				ige.client.vp1.mouseMove(function (event, control) {
-					self.control.mouseMove();
+					//self.control.mouseMove();
 				});
 
 				this.setChatMute(this._stats.banChat);

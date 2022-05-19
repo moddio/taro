@@ -36,6 +36,9 @@ var GameScene = /** @class */ (function (_super) {
                 camera.scrollY + (gameSize.height - previousHeight) / 2
             );*/
         });
+        this.input.on('pointermove', function (pointer) {
+            ige.client.emit('mouse-move', { x: pointer.worldX, y: pointer.worldY });
+        });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
             camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
@@ -129,9 +132,6 @@ var GameScene = /** @class */ (function (_super) {
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
         camera.zoom = this.scale.width / 800;
-        this.input.on('pointermove', function (pointer) {
-            ige.client.emit('mouse-move', { x: pointer.worldX, y: pointer.worldY });
-        });
     };
     return GameScene;
 }(Phaser.Scene));

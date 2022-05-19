@@ -31,6 +31,9 @@ class GameScene extends Phaser.Scene {
 				camera.scrollY + (gameSize.height - previousHeight) / 2
 			);*/
 		});
+		this.input.on('pointermove', (pointer)=> {
+			ige.client.emit('mouse-move', {x: pointer.worldX, y: pointer.worldY});
+		});
 
 		ige.client.on('zoom', (height: number) => {
 			console.log('GameScene zoom event', height); // TODO remove
@@ -160,9 +163,5 @@ class GameScene extends Phaser.Scene {
 			map.height * map.tileHeight / 2
 		);
 		camera.zoom = this.scale.width / 800;
-
-		this.input.on('pointermove', (pointer)=> {
-			ige.client.emit('mouse-move', {x: pointer.worldX, y: pointer.worldY});
-		});
 	}
 }

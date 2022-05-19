@@ -83,11 +83,7 @@ var ControlComponent = IgeEntity.extend({
 		if (ige.isClient) {
 		// mouse move listener
 			ige.client.on('mouse-move', position => {
-				const currentMouseTransform = [
-					position.x,
-					position.y
-				];
-				this.newMousePosition = currentMouseTransform;
+				this.mouseMove(position);
 			});
 		}
 	},
@@ -300,7 +296,12 @@ var ControlComponent = IgeEntity.extend({
 			this.input[device][key] = false;
 	},
 
-	mouseMove: function () {
+	mouseMove: function (position) {
+		const currentMouseTransform = [
+			position.x,
+			position.y
+		];
+		this.newMousePosition = currentMouseTransform;
 		/*var player = ige.client.myPlayer;
 		if (player) {
 			ige.client.emit('fetch-mouse-position', this);
@@ -339,7 +340,7 @@ var ControlComponent = IgeEntity.extend({
 			}
 
 			// mouse move
-			self.mouseMove();
+			//self.mouseMove();
 
 			// check if sending player input is due (every 100ms)
 			if (ige._currentTime - self.lastInputSent > 100) {
