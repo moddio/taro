@@ -94,7 +94,7 @@ class GameScene extends Phaser.Scene {
 			this.load.image(`tiles/${tileset.name}`, tileset.image);
 		});
 
-		this.load.tilemapTiledJSON('map', data.map);
+		this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
 	}
 
 	loadEntity (key: string, data: EntityData): void {
@@ -162,7 +162,7 @@ class GameScene extends Phaser.Scene {
 				return;
 			}
 			console.log(layer.name);
-			const tilemapLayer = map.createLayer(layer.name, map.tilesets[0], 0, 0);
+			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
 			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
 		});
 
@@ -172,5 +172,42 @@ class GameScene extends Phaser.Scene {
 			map.height * map.tileHeight / 2
 		);
 		camera.zoom = this.scale.width / 800;
+	}
+
+	private patchMapData (map: typeof ige.game.data.map): typeof map {
+
+		/**
+		 * map data gets patched in place
+		 * to not make a copy of a huge object
+		 **/
+
+		const tilecount = map.tilesets[0].tilecount;
+
+		map.layers.forEach((layer) => {
+
+			if (layer.type !== 'tilelayer') {
+				return;
+			}
+
+			for (let i = 0; i < layer.data.length; i++) {
+
+				const value = layer.data[i];
+
+				if (value > tilecount) {
+
+					console.warn(`map data error: layer[${
+						layer.name
+					}], index[${
+						i
+					}], value[${
+						value
+					}].`);
+
+					layer.data[i] = 0;
+				}
+			}
+		});
+
+		return map;
 	}
 }
