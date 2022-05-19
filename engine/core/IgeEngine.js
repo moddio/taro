@@ -22,6 +22,32 @@ var IgeEngine = IgeEntity.extend({
 		// Determine the environment we are executing in
 		this.isServer = (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined');
 		this.isClient = !this.isServer;
+
+		this.isMobile = this.isClient && (function () {  // cache value
+			// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+			var isMobile = {
+				Android: function () {
+					return navigator.userAgent.match(/Android/i);
+				},
+				BlackBerry: function () {
+					return navigator.userAgent.match(/BlackBerry/i);
+				},
+				iOS: function () {
+					return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+				},
+				Opera: function () {
+					return navigator.userAgent.match(/Opera Mini/i);
+				},
+				Windows: function () {
+					return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+				},
+				any: function () {
+					return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+				}
+			};
+			return isMobile.any() != null;
+		})();
+
 		this.banIpsList = [];
 
 		// Assign ourselves to the global variable
@@ -412,7 +438,9 @@ var IgeEngine = IgeEntity.extend({
 				self._requireScriptLoaded(this);
 
 				if (callback) {
-					setTimeout(function () { callback(); }, 100);
+					setTimeout(function () {
+						callback();
+					}, 100);
 				}
 			});
 
@@ -656,7 +684,9 @@ var IgeEngine = IgeEntity.extend({
 			if (this.isServer) {
 				// Server-side implementation
 				requestAnimFrame = function (callback, element) {
-					setTimeout(function () { callback(new Date().getTime()); }, 1000 / fpsRate);
+					setTimeout(function () {
+						callback(new Date().getTime());
+					}, 1000 / fpsRate);
 				};
 			} else {
 				// Client-side implementation
@@ -664,7 +694,9 @@ var IgeEngine = IgeEntity.extend({
 					if (typeof mode === 'string' && mode === 'sandbox') {
 						fpsRate = 20;
 					}
-					setTimeout(function () { callback(new Date().getTime()); }, 1000 / fpsRate); // client will always run at 60 fps.
+					setTimeout(function () {
+						callback(new Date().getTime());
+					}, 1000 / fpsRate); // client will always run at 60 fps.
 				};
 			}
 		}
@@ -995,7 +1027,9 @@ var IgeEngine = IgeEntity.extend({
 					}
 				} else {
 					// Start a timer to keep checking dependencies
-					setTimeout(function () { ige.start(callback); }, 200);
+					setTimeout(function () {
+						ige.start(callback);
+					}, 200);
 				}
 			}
 		}
@@ -1402,8 +1436,12 @@ var IgeEngine = IgeEntity.extend({
 				// Make sure we can divide the new width and height by 2...
 				// otherwise minus 1 so we get an even number so that we
 				// negate the blur effect of sub-pixel rendering
-				if (newWidth % 2) { newWidth--; }
-				if (newHeight % 2) { newHeight--; }
+				if (newWidth % 2) {
+					newWidth--;
+				}
+				if (newHeight % 2) {
+					newHeight--;
+				}
 
 				if (ige.client && ige.client.resolutionQuality === 'low') {
 					ige._canvas.width = newWidth * ige._deviceFinalDrawRatio / 2;
@@ -1461,8 +1499,12 @@ var IgeEngine = IgeEntity.extend({
 						// Make sure we can divide the new width and height by 2...
 						// otherwise minus 1 so we get an even number so that we
 						// negate the blur effect of sub-pixel rendering
-						if (newWidth % 2) { newWidth--; }
-						if (newHeight % 2) { newHeight--; }
+						if (newWidth % 2) {
+							newWidth--;
+						}
+						if (newHeight % 2) {
+							newHeight--;
+						}
 
 						// ige._canvas.width = newWidth * ige._deviceFinalDrawRatio;
 						// ige._canvas.height = newHeight * ige._deviceFinalDrawRatio;
@@ -1655,7 +1697,9 @@ var IgeEngine = IgeEntity.extend({
 	 * want to disable the trace for.
 	 */
 	traceSetOff: function (object, propName) {
-		Object.defineProperty(object, propName, { set: function (val) { this.___igeTraceCurrentVal[propName] = val; } });
+		Object.defineProperty(object, propName, { set: function (val) {
+			this.___igeTraceCurrentVal[propName] = val;
+		} });
 	},
 
 	/**
@@ -2077,7 +2121,9 @@ var IgeEngine = IgeEntity.extend({
 					self.lastCheckedAt = self.now;
 
 					// kill tier 1 servers that has been empty for over 15 minutes
-					var playerCount = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human'; }).length;
+					var playerCount = ige.$$('player').filter(function (player) {
+						return player._stats.controlledBy == 'human';
+					}).length;
 
 					if (playerCount <= 0) {
 						if (!self.serverEmptySince) {
@@ -2335,30 +2381,6 @@ var IgeEngine = IgeEntity.extend({
 
 		return item;
 	},
-	isMobileDevice: function () {
-		// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
-		var isMobile = {
-			Android: function () {
-				return navigator.userAgent.match(/Android/i);
-			},
-			BlackBerry: function () {
-				return navigator.userAgent.match(/BlackBerry/i);
-			},
-			iOS: function () {
-				return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-			},
-			Opera: function () {
-				return navigator.userAgent.match(/Opera Mini/i);
-			},
-			Windows: function () {
-				return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
-			},
-			any: function () {
-				return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-			}
-		};
-		return isMobile.any() != null;
-	},
 
 	/**
 	 * Walks the scene graph and outputs a console map of the graph.
@@ -2370,7 +2392,9 @@ var IgeEngine = IgeEntity.extend({
 		var arr;
 		var arrCount;
 
-		if (currentDepth === undefined) { currentDepth = 0; }
+		if (currentDepth === undefined) {
+			currentDepth = 0;
+		}
 
 		if (!obj) {
 			// Set the obj to the main ige instance
@@ -2597,4 +2621,6 @@ var IgeEngine = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEngine; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeEngine;
+}

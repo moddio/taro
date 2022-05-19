@@ -100,7 +100,7 @@ var ItemUiComponent = IgeEntity.extend({
 		}
 	},
 	getItemSlotDiv: function (itemStats, options) {
-		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
+		var mobileClass = ige.isMobile ? 'inventory-slot-mobile ' : 'inventory-slot ';
 		if (itemStats) {
 			var itemSlot = $('<div/>', {
 				id: itemStats.id,
@@ -134,7 +134,7 @@ var ItemUiComponent = IgeEntity.extend({
 				}
 
 				var img = itemStats.inventoryImage || (itemStats.cellSheet ? itemStats.cellSheet.url : '');
-				var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'height:17px;max-width:20px;object-fit:contain' : 'height:30px;max-width:27px;object-fit:contain';
+				var mobileClass = ige.isMobile ? 'height:17px;max-width:20px;object-fit:contain' : 'height:30px;max-width:27px;object-fit:contain';
 				var isTrading = options.isTrading;
 				if (img) {
 					var itemDiv = $('<div/>', {
@@ -503,4 +503,6 @@ var ItemUiComponent = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ItemUiComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = ItemUiComponent;
+}

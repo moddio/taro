@@ -314,7 +314,9 @@ var MenuUiComponent = IgeEntity.extend({
 
 	kickPlayerFromGame: function (excludeEntity) {
 		var self = this;
-		var players = ige.$$('player').filter(function (player) { if (player && player._stats && player._stats.controlledBy === 'human' && player._alive && player.id() !== excludeEntity) return true; });
+		var players = ige.$$('player').filter(function (player) {
+			if (player && player._stats && player._stats.controlledBy === 'human' && player._alive && player.id() !== excludeEntity) return true;
+		});
 		var html = '<table class="table table-hover">';
 		html += '<tr class="border-bottom">';
 		html += '<th class="border-top-0">Name</th>';
@@ -352,7 +354,7 @@ var MenuUiComponent = IgeEntity.extend({
 				return $('#menu-wrapper').removeClass('d-none').addClass('d-flex');
 			}
 
-			if (!ige.mobileControls || !ige.mobileControls.isMobile) {
+			if (!ige.isMobile) {
 				$('#friends-panel').removeClass('d-none');
 			}
 
@@ -535,7 +537,7 @@ var MenuUiComponent = IgeEntity.extend({
 	},
 
 	changesForMobile: function (isMenuVisible) {
-		if (ige.mobileControls && ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			var loginDiv = $('#login-div');
 			var myScoreDiv = $('#my-score-div');
 			var leaderBoard = $('#leaderboard');
@@ -589,7 +591,7 @@ var MenuUiComponent = IgeEntity.extend({
 	hideMenu: function () {
 		$('#menu-wrapper').removeClass('d-flex').addClass('d-none');
 
-		if (!ige.mobileControls || !ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			$('#friends-panel').addClass('d-none');
 		}
 
@@ -653,7 +655,7 @@ var MenuUiComponent = IgeEntity.extend({
 	onDisconnectFromServer: function (src, message) {
 		console.log('modal shown from', src, message);
 
-		if (ige.mobileControls.isMobile) return;
+		if (ige.isMobile) return;
 
 		var defaultContent = 'Lost connection to the game server. Please refresh this page or visit our homepage.';
 		ige.client.disconnected = true;
@@ -668,7 +670,7 @@ var MenuUiComponent = IgeEntity.extend({
 		// 	.addClass('slideup-menu-animation');
 	},
 	setResolution: function () {
-		if (ige.mobileControls.isMobile) return;
+		if (ige.isMobile) return;
 		var resolution = localStorage.getItem('resolution') || 'high';
 		if (resolution == 'high') {
 			ige.client.resolutionQuality = 'high';
@@ -686,4 +688,6 @@ var MenuUiComponent = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = MenuUiComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = MenuUiComponent;
+}
