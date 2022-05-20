@@ -37,7 +37,13 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 		this.followListener = unit.on('follow', () => {
 			console.log('PhaserUnit follow', unit.id()); // TODO remove
-			scene.cameras.main.startFollow(this, true, 0.05, 0.05);
+			const camera = scene.cameras.main as Phaser.Cameras.Scene2D.Camera & {
+				_follow: Phaser.GameObjects.GameObject
+			};
+			if (camera._follow === this) {
+				return;
+			}
+			camera.startFollow(this, true, 0.05, 0.05);
 		});
 
 		this.stopFollowListener = unit.on('stop-follow', () => {
@@ -150,8 +156,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			console.log('create-chat', text); // TODO remove
 			if (this.chat) {
 				this.chat.showMessage(text);
-			}
-			else {
+			} else {
 				this.chat = new PhaserChatBubble(scene, text, this);
 			}
 		});
