@@ -643,7 +643,7 @@ var Player = IgeEntity.extend({
 			if (typeof (userId) !== 'undefined' && typeof (sessionId) !== 'undefined') {
 				if (ige.game.data.isDeveloper) {
 					// dont show dev menu by default
-					// if (ige.mobileControls && !ige.mobileControls.isMobile) {
+					// if (!ige.isMobile) {
 					// 	$("#dev-console").show() // if user has access of this game, show dev console
 					// }
 					// $('#game-suggestions-card').removeClass('d-xl-block');

@@ -530,13 +530,14 @@ const Client = IgeClass.extend({
 						.mount(ige);
 
 					// old comment => 'Create the UI scene'
-					this.uiScene = new IgeScene2d()
+					// never used
+					/* this.uiScene = new IgeScene2d()
 						.id('uiScene')
 						.depth(1000)
 						.ignoreCamera(true)
 						.mount(this.rootScene);
 
-					ige.mobileControls.attach(this.uiScene);
+					ige.mobileControls.attach(this.uiScene); */
 
 					// sandbox check for minimap
 					if (mode == 'sandbox') {
@@ -666,11 +667,15 @@ const Client = IgeClass.extend({
 					if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
 						//
 						ige.client.loadedTextures[cellSheet.url] = cellSheet;
-						pixiLoader.add(
-							cellSheet.url,
-							`${cellSheet.url}?version=${version}`,
-							{ crossOrigin: true }
-						);
+
+						// check if the cell sheet url is a valid url
+						if (cellSheet.url && cellSheet.url.indexOf('http') === 0) {
+							pixiLoader.add(
+								cellSheet.url,
+								`${cellSheet.url}?version=${version}`,
+								{ crossOrigin: true }
+							);
+						}
 					}
 				}
 			};
@@ -710,7 +715,7 @@ const Client = IgeClass.extend({
 	setZoom: function(zoom) {
 		// old comment => 'on mobile increase default zoom by 25%'
 		let zoomVar = zoom;
-		if (ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			zoomVar *= 0.75;
 		}
 
@@ -1013,7 +1018,7 @@ const Client = IgeClass.extend({
 			data._id = userId;
 		}
 
-		if (ige.mobileControls && !ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			//
 			$('.game-ui').show();
 		}
@@ -1051,7 +1056,7 @@ const Client = IgeClass.extend({
 		}
 
 		// old comment => 'show popover on settings icon for low fram rate'
-		if (!ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			//
 			setTimeout(() => {
 				//
