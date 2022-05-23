@@ -2,6 +2,8 @@ showMiniMap = false;
 showAllLayers = false;
 curLayerPainting = 'floor';
 let mouseIsDown = false;
+
+
 // be very careful with arrow functions.
 // arrow functions on these callbacks break mouse input
 
@@ -139,21 +141,16 @@ const Client = IgeClass.extend({
 			this.isActiveTab = !document.hidden;
 		});
 
+		// create a global variable and use it in client JS
+
+
 		//go fetch
 
 		ige.addComponent(GameComponent);
 		// we're going to try and insert the fetch here
 		let promise = new Promise((resolve, reject) => {
 			if (gameId) {
-				$.ajax({
-					url: `${this.host}/api/game-client/${gameId}`,
-					dataType: 'json',
-					type: 'GET',
-					success: (game) => {
-						//
-						resolve(game);
-					}
-				});
+				return resolve({status: 'success', data: gameDetails.gameData});
 			} else {
 				$.ajax({
 					url: '/src/game.json',
