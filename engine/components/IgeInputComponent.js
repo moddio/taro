@@ -211,7 +211,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 		this._evRef = {
 			mousedown: function (event) { event.igeType = 'mouse'; self._rationalise(event, undefined, true); self._mouseDown(event); },
 			mouseup: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseUp(event); },
-			mousemove: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseMove(event); },
+			//mousemove: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseMove(event); },
 			mousewheel: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseWheel(event); },
 
 			touchmove: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseMove(event); },
@@ -228,7 +228,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 		window.addEventListener('mousedown', this._evRef.mousedown, false);
 		window.addEventListener('mouseup', this._evRef.mouseup, false);
 
-		this._canvas.addEventListener('mousemove', this._evRef.mousemove, false);
+		//this._canvas.addEventListener('mousemove', this._evRef.mousemove, false);
 		this._canvas.addEventListener('mousewheel', this._evRef.mousewheel, false);
 
 		// Touch events
@@ -253,7 +253,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 		// Listen for mouse events
 		this._canvas.removeEventListener('mousedown', this._evRef.mousedown, false);
 		this._canvas.removeEventListener('mouseup', this._evRef.mouseup, false);
-		this._canvas.removeEventListener('mousemove', this._evRef.mousemove, false);
+		//this._canvas.removeEventListener('mousemove', this._evRef.mousemove, false);
 		this._canvas.removeEventListener('mousewheel', this._evRef.mousewheel, false);
 
 		// Touch events
@@ -455,7 +455,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 */
 	_mouseMove: function (event) {
 		// Update the mouse position within the viewports
-		ige._mouseOverVp = this._updateMouseData(event);
+		/*ige._mouseOverVp = this._updateMouseData(event);
 		// ige.client.mouseEvent = event;
 		// var mx = event.igeX - ige._bounds2d.x2,
 		// 	my = event.igeY - ige._bounds2d.y2,
@@ -471,7 +471,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 			this.queueEvent(this, function () {
 				self.emit('mouseMove', [event, event.igeX, event.igeY, event.button + 1]);
 			});
-		}
+		}*/
 	},
 
 	/**
@@ -774,7 +774,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 		this._eventQueue = [];
 		this._eventControl._cancelled = false;
 		this.dblClick = false; // TODO: Add double-click event handling
-		this.mouseMove = false;
+		//this.mouseMove = false;
 		this.mouseDown = false;
 		this.mouseUp = false;
 		this.mouseWheel = false;

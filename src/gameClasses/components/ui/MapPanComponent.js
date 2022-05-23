@@ -76,7 +76,7 @@ var MapPanComponent = IgeEventingClass.extend({
 			if (this._enabled) {
 				// Listen for the mouse events we need to operate a mouse pan
 				this._entity.mouseDown(function (event) { if (event.which === 3) self._mouseDown(event); });
-				this._entity.mouseMove(function (event) { self._mouseMove(event); });
+				//this._entity.mouseMove(function (event) { self._mouseMove(event); });
 				this._entity.mouseUp(function (event) { self._mouseUp(event); });
 				this._entity.mouseWheel(function (event) { self._mouseWheel(event); });
 			} else {
@@ -120,7 +120,7 @@ var MapPanComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseMove: function (event) {
-		var vpId = event && event.igeViewport && event.igeViewport.id();
+		/*var vpId = event && event.igeViewport && event.igeViewport.id();
 		if (vpId === 'minimapVp') {
 			vpId = 'vp1';
 		}
@@ -190,7 +190,7 @@ var MapPanComponent = IgeEventingClass.extend({
 				// update mini map position
 				ige.mapEditor.positionViewPortRect();
 			}
-		}
+		}*/
 	},
 
 	/**

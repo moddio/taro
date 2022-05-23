@@ -1950,12 +1950,12 @@ var IgeEntity = IgeObject.extend({
 					// Point is inside the trigger bounds
 					ige.input.queueEvent(this, this._mouseInTrigger, null);
 				} else {
-					if (ige.input.mouseMove) {
+					/*if (ige.input.mouseMove) {
 						// There is a mouse move event but we are not inside the entity
 						// so fire a mouse out event (_handleMouseOut will check if the
 						// mouse WAS inside before firing an out event).
 						this._handleMouseOut(ige.input.mouseMove);
-					}
+					}*/
 				}
 			}
 
@@ -2670,13 +2670,13 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      */
 	mouseMove: function (callback) {
-		if (callback) {
+		/*if (callback) {
 			this._mouseMove = callback;
 			this._mouseEventsActive = true;
 			return this;
 		}
 
-		return this._mouseMove;
+		return this._mouseMove;*/
 	},
 
 	/**
@@ -2825,9 +2825,9 @@ var IgeEntity = IgeObject.extend({
      * move event is triggered.
      */
 	mouseMoveOff: function () {
-		delete this._mouseMove;
+		/*delete this._mouseMove;
 
-		return this;
+		return this;*/
 	},
 
 	/**
@@ -2835,9 +2835,9 @@ var IgeEntity = IgeObject.extend({
      * over event is triggered.
      */
 	mouseOverOff: function () {
-		delete this._mouseOver;
+		/*delete this._mouseOver;
 
-		return this;
+		return this;*/
 	},
 
 	/**
@@ -2845,9 +2845,9 @@ var IgeEntity = IgeObject.extend({
      * out event is triggered.
      */
 	mouseOutOff: function () {
-		delete this._mouseOut;
+		/*delete this._mouseOut;
 
-		return this;
+		return this;*/
 	},
 
 	/**
@@ -2855,9 +2855,9 @@ var IgeEntity = IgeObject.extend({
      * up event is triggered.
      */
 	mouseUpOff: function () {
-		delete this._mouseUp;
+		/*delete this._mouseUp;
 
-		return this;
+		return this;*/
 	},
 
 	/**
@@ -2866,9 +2866,9 @@ var IgeEntity = IgeObject.extend({
      * via the mouseDown() method.
      */
 	mouseDownOff: function () {
-		delete this._mouseDown;
+		/*delete this._mouseDown;
 
-		return this;
+		return this;*/
 	},
 
 	/**
@@ -2946,10 +2946,10 @@ var IgeEntity = IgeObject.extend({
 			this.emit('mouseOver', [event, evc, data]);
 		}
 
-		if (this._mouseMove) {
+		/*if (this._mouseMove) {
 			this._mouseMove(event, evc, data);
 		}
-		this.emit('mouseMove', [event, evc, data]);
+		this.emit('mouseMove', [event, evc, data]);*/
 	},
 
 	/**
@@ -3055,7 +3055,7 @@ var IgeEntity = IgeObject.extend({
      * @private
      */
 	_mouseInTrigger: function (evc, data) {
-		if (ige.input.mouseMove) {
+		/*if (ige.input.mouseMove) {
 			// There is a mouse move event
 			this._handleMouseIn(ige.input.mouseMove, evc, data);
 		}
@@ -3073,7 +3073,7 @@ var IgeEntity = IgeObject.extend({
 		if (ige.input.mouseWheel) {
 			// There is a mouse wheel event
 			this._handleMouseWheel(ige.input.mouseWheel, evc, data);
-		}
+		}*/
 	},
 
 	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4151,29 +4151,29 @@ var IgeEntity = IgeObject.extend({
 				.mouseDown(function (event, evc) {
 					if (event.which === 1 && ige.mapEditor.selectEntities) {
 						this.onMouseDown = true;
-						this.onMouseMove = false;
+						//this.onMouseMove = false;
 					}
 				})
-				.mouseMove(function (event) {
+				/*.mouseMove(function (event) {
 					if (this.onMouseDown && ige.mapEditor.selectEntities) {
 						this.onMouseMove = true;
 						this.translateTo(ige.mapEditor.mouseCoordinatesWRTVp.x, ige.mapEditor.mouseCoordinatesWRTVp.y, 0);
 					}
-				})
+				})*/
 				.mouseUp(function (event) {
 					if (this.onMouseDown === true) {
-						if (this.onMouseMove === true) {
+						/*if (this.onMouseMove === true) {
 							self.scriptValues.x = ige.mapEditor.mouseCoordinatesWRTVp.x;
 							self.scriptValues.y = ige.mapEditor.mouseCoordinatesWRTVp.y;
 							ige.mapEditor.upsertMapEntities(self.scriptValues, parseInt(self.scriptValues.index));
 						} else if (this.onMouseMove === false && ige.mapEditor.selectEntities && event.which === 1) {
 							ige.mapEditor.openEntitiesModal(self.scriptValues, true);
 							this.selectedEntityForMovement = true;
-						}
+						}*/
 					}
 
 					this.onMouseDown = false;
-					this.onMouseMove = false;
+					//this.onMouseMove = false;
 				});
 		}
 	},

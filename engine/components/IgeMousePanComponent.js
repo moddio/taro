@@ -72,7 +72,7 @@ var IgeMousePanComponent = IgeEventingClass.extend({
 			if (this._enabled) {
 				// Listen for the mouse events we need to operate a mouse pan
 				this._entity.mouseDown(function (event) { self._mouseDown(event); });
-				this._entity.mouseMove(function (event) { self._mouseMove(event); });
+				//this._entity.mouseMove(function (event) { self._mouseMove(event); });
 				this._entity.mouseUp(function (event) { self._mouseUp(event); });
 			} else {
 				// Remove the pan start data
@@ -115,7 +115,7 @@ var IgeMousePanComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseMove: function (event) {
-		if (this._enabled) {
+		/*if (this._enabled) {
 			// Pan the camera if the mouse is down
 			if (this._panStartMouse) {
 				var curMousePos = ige._mousePos;
@@ -173,7 +173,7 @@ var IgeMousePanComponent = IgeEventingClass.extend({
 					this.emit('panMove');
 				}
 			}
-		}
+		}*/
 	},
 
 	/**

@@ -36,7 +36,7 @@ var IgeMouseZoomComponent = IgeEventingClass.extend({
 			if (this._enabled) {
 				// Listen for the mouse events we need to operate a mouse pan
 				this._entity.mouseDown(function (event) { self._mouseDown(event); });
-				this._entity.mouseMove(function (event) { self._mouseMove(event); });
+				//this._entity.mouseMove(function (event) { self._mouseMove(event); });
 				this._entity.mouseUp(function (event) { self._mouseUp(event); });
 			} else {
 				// Remove the zoom start data
@@ -79,7 +79,7 @@ var IgeMouseZoomComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseMove: function (event) {
-		if (this._enabled) {
+		/*if (this._enabled) {
 			// Zoom the camera if the mouse is down
 			if (this._zoomStartMouse) {
 				var curMousePos = ige._mousePos;
@@ -94,7 +94,7 @@ var IgeMouseZoomComponent = IgeEventingClass.extend({
 					0
 				);
 			}
-		}
+		}*/
 	},
 
 	/**

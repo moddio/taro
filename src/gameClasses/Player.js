@@ -38,9 +38,9 @@ var Player = IgeEntity.extend({
 				self.addComponent(ControlComponent);
 
 				// mouse move listener
-				ige.client.vp1.mouseMove(function (event, control) {
+				/*ige.client.vp1.mouseMove(function (event, control) {
 					//self.control.mouseMove();
-				});
+				});*/
 
 				this.setChatMute(this._stats.banChat);
 			}
