@@ -137,7 +137,7 @@ var GameScene = /** @class */ (function (_super) {
             tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
         });
         var camera = this.cameras.main;
-        camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
+        camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
         camera.zoom = this.scale.width / 800;
     };
     GameScene.prototype.patchMapData = function (map) {

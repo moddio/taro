@@ -168,8 +168,8 @@ class GameScene extends Phaser.Scene {
 
 		const camera = this.cameras.main;
 		camera.centerOn(
-			map.width * map.tileWidth / 2,
-			map.height * map.tileHeight / 2
+			map.width * map.tileWidth / 2 * scaleFactor.x,
+			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
 		camera.zoom = this.scale.width / 800;
 	}

@@ -241,6 +241,10 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 		const sprite = this.sprite;
 		sprite.rotation = texture.rotation;
-		sprite.setScale(texture.scale.x, texture.scale.y);
+
+		const bounds = unit._bounds2d;
+		const flip = unit._stats.flip;
+		sprite.setDisplaySize(bounds.x, bounds.y);
+		sprite.setFlip(flip % 2 === 1, flip > 1);
 	}
 }
