@@ -201,8 +201,10 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	setupListeners: function (canvas) {
+		console.log('CANVAS', canvas);
 		this.log('Setting up input event listeners...');
 		this._canvas = canvas;
+		//this._canvas = {};
 
 		// Setup the event listeners
 		var self = this;
@@ -211,14 +213,10 @@ var IgeInputComponent = IgeEventingClass.extend({
 		this._evRef = {
 			mousedown: function (event) { event.igeType = 'mouse'; self._rationalise(event, undefined, true); self._mouseDown(event); },
 			mouseup: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseUp(event); },
-			//mousemove: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseMove(event); },
-			mousewheel: function (event) { event.igeType = 'mouse'; self._rationalise(event); self._mouseWheel(event); },
 
 			touchmove: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseMove(event); },
 			touchstart: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseDown(event); },
 			touchend: function (event) { event.igeType = 'touch'; self._rationalise(event, true); self._mouseUp(event); },
-
-			contextmenu: function (event) { event.preventDefault(); event.igeType = 'mouse'; self._rationalise(event); self._contextMenu(event); },
 
 			keydown: function (event) { event.igeType = 'key'; self._rationalise(event); self._keyDown(event); },
 			keyup: function (event) { event.igeType = 'key'; self._rationalise(event); self._keyUp(event); }
@@ -228,16 +226,10 @@ var IgeInputComponent = IgeEventingClass.extend({
 		window.addEventListener('mousedown', this._evRef.mousedown, false);
 		window.addEventListener('mouseup', this._evRef.mouseup, false);
 
-		//this._canvas.addEventListener('mousemove', this._evRef.mousemove, false);
-		this._canvas.addEventListener('mousewheel', this._evRef.mousewheel, false);
-
 		// Touch events
 		this._canvas.addEventListener('touchmove', this._evRef.touchmove, false);
 		this._canvas.addEventListener('touchstart', this._evRef.touchstart, false);
 		this._canvas.addEventListener('touchend', this._evRef.touchend, false);
-
-		// Kill the context menu on right-click, urgh!
-		this._canvas.addEventListener('contextmenu', this._evRef.contextmenu, false);
 
 		// Listen for keyboard events
 		window.addEventListener('keydown', this._evRef.keydown, false);
@@ -247,22 +239,10 @@ var IgeInputComponent = IgeEventingClass.extend({
 	destroyListeners: function () {
 		this.log('Removing input event listeners...');
 
-		// Remove the event listeners
-		var canvas = this._canvas;
-
-		// Listen for mouse events
-		this._canvas.removeEventListener('mousedown', this._evRef.mousedown, false);
-		this._canvas.removeEventListener('mouseup', this._evRef.mouseup, false);
-		//this._canvas.removeEventListener('mousemove', this._evRef.mousemove, false);
-		this._canvas.removeEventListener('mousewheel', this._evRef.mousewheel, false);
-
 		// Touch events
 		this._canvas.removeEventListener('touchmove', this._evRef.touchmove, false);
 		this._canvas.removeEventListener('touchstart', this._evRef.touchstart, false);
 		this._canvas.removeEventListener('touchend', this._evRef.touchend, false);
-
-		// Kill the context menu on right-click, urgh!
-		this._canvas.removeEventListener('contextmenu', this._evRef.contextmenu, false);
 
 		// Listen for keyboard events
 		window.removeEventListener('keydown', this._evRef.keydown, false);
@@ -345,6 +325,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseDown: function (event) {
+		console.log('Ige Input Mouse Down');
 		if (this._debug) {
 			console.log('Mouse Down', event);
 		}
@@ -384,6 +365,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseUp: function (event) {
+		console.log('Ige Input Mouse Up');
 		if (this._debug) {
 			console.log('Mouse Up', event);
 		}
@@ -480,6 +462,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseWheel: function (event) {
+		console.log('Ige Input Mouse Wheel');
 		// Update the mouse position within the viewports
 		this._updateMouseData(event);
 
