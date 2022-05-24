@@ -134,7 +134,7 @@ class GameScene extends Phaser.Scene {
 				}
 
 				this.anims.create({
-					key: `${key}/${animation.name}`,
+					key: `${key}/${animationsKey}`,
 					frames: this.anims.generateFrameNumbers(key, {
 						frames: animationFrames
 					}),

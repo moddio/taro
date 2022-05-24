@@ -109,7 +109,7 @@ var GameScene = /** @class */ (function (_super) {
                     animationFrames.push(frames_1[i] - 1);
                 }
                 _this.anims.create({
-                    key: "".concat(key, "/").concat(animation.name),
+                    key: "".concat(key, "/").concat(animationsKey),
                     frames: _this.anims.generateFrameNumbers(key, {
                         frames: animationFrames
                     }),
