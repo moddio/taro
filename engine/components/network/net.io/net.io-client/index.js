@@ -295,16 +295,19 @@ NetIo.Client = NetIo.EventingClass.extend({
 		// 	}
 		// }
 
+		// KILL SERVER MEANS THAT THE GAME WAS UNPUBLISHED ON STATE 3 AND STATE 2
+		const unpublishMsg = "The game was unpublished from the current server, refresh the page to connect to another server, or visit our homepage for more games."
+
 		// If we are already connected and have an id...
 		if (this._state === 3) {
 			this._state = 0;
-			this.emit('disconnect', { reason: this._disconnectReason, wasClean: wasClean, code: code });
+			this.emit('disconnect', { reason: unpublishMsg, wasClean: wasClean, code: code });
 		}
 
 		// If we are connected but have no id...
 		if (this._state === 2) {
 			this._state = 0;
-			this.emit('disconnect', { reason: this._disconnectReason, wasClean: wasClean, code: code });
+			this.emit('disconnect', { reason: unpublishMsg, wasClean: wasClean, code: code });
 		}
 
 		// If we were trying to connect...
