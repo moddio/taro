@@ -149,9 +149,21 @@ const Client = IgeClass.extend({
 		ige.addComponent(GameComponent);
 		// we're going to try and insert the fetch here
 		let promise = new Promise((resolve, reject) => {
-			if (gameId) {
+			if (gameId && window.location.hostname !== 'localhost') {
 				return resolve({status: 'success', data: gameDetails.gameData});
-			} else {
+			}
+			if (gameId && window.location.hostname === 'localhost') {
+				$.ajax({
+					url: `${this.host}/api/game-client/${gameId}`,
+					dataType: 'json',
+					type: 'GET',
+					success: (game) => {
+						//
+						resolve(game);
+					}
+				});
+			}
+			else {
 				$.ajax({
 					url: '/src/game.json',
 					dataType: 'json',
