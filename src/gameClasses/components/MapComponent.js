@@ -58,102 +58,72 @@ var MapComponent = IgeEntity.extend({
 		}
 
 		self.data = data;
-		// ige.addComponent(IgeTiledComponent)
-		// 	.tiled.loadJson(self.data, function (layerArray, layersById) {
 
 		if (ige.isServer) {
 			ige.addComponent(IgeTiledComponent)
 				.tiled.loadJson(self.data, function (layerArray, layersById) {
 					self.minimapLayers = _.cloneDeep(layerArray);
 
-					if (ige.isServer || (ige.isClient && ige.physics)) {
-						console.log('load staticsFromMap');
-						ige.physics.staticsFromMap(layersById.walls);
-					}
+					ige.physics.staticsFromMap(layersById.walls);
+
 					var mapArray = layersById.floor.map._gameData;
 
 					// create debris
-					if (layersById.debris != undefined && (ige.isServer || mode === 'sandbox')) {
-						self.debrisLayer = layersById.debris.objects;
-						self.createDebris(layersById.debris.objects);
-					}
-					if (ige.isServer || mode === 'sandbox') {
-						self.createRegions();
-					}
 
-					// }
-
-					if (ige.isClient) {
-						$.when(ige.client.igeEngineStarted).done(function () {
-							// We can add all our layers to our main scene by looping the
-							// array or we can pick a particular layer via the layersById
-							// object. Let's give an example:
-							if (mode === 'sandbox') {
-								var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
-								var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
-								// changed to Region from RegionUI
-								var region = new Region({ height: mapHeight, width: mapWidth });
-								region.depth(3)
-									.layer(3)
-									.drawBoundsData(false)
-									.drawBounds(false)
-									.mount(ige.client.rootScene)
-									.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
-									.height(mapHeight)
-									.width(mapWidth)
-									.bounds2d(mapWidth, mapHeight, 0);
-							}
-
-							if (layerArray[i].name !== 'debris') {
-								ige.devLog(`layer ${i}`);
-								layerArray[i]
-									.layer(self.layersZIndex[layerArray[i].name])
-									.autoSection(20)
-									.drawBounds(false)
-									.drawBoundsData(false)
-									.drawBounds(false)
-									.mount(ige.client.rootScene)
-									.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
-									.height(mapHeight)
-									.width(mapWidth)
-									.bounds2d(mapWidth, mapHeight, 0);
-							}
-							ige.client.mapLoaded.resolve();
-						});
-					}
+					self.createRegions();
 				});
+
 		} else if (ige.isClient) {
-			ige.addComponent(IgeTiledComponent)
-				.tiled.loadJson(self.data, function (IgeLayerArray, IgeLayersById) {
-					ige.addComponent(IgePixiMap)
-						.pixiMap.loadJson(self.data, function (layerArray, layersById) {
-							self.minimapLayers = _.cloneDeep(layerArray);
+			$.when(ige.client.igeEngineStarted).done(function () {
+				ige.addComponent(IgeTiledComponent)
+					.tiled.loadJson(self.data, function (IgeLayerArray, IgeLayersById) {
+						ige.addComponent(IgePixiMap)
+							.pixiMap.loadJson(self.data, function (layerArray, layersById) {
+								self.minimapLayers = _.cloneDeep(layerArray);
 
-							if (ige.isServer || (ige.isClient && ige.physics)) {
-								ige.physics.staticsFromMap(IgeLayersById.walls);
-							}
-							self.createRegions();
-							// We can add all our layers to our main scene by looping the
-							// array or we can pick a particular layer via the layersById
-							// object. Let's give an example:
-							if (mode === 'sandbox') {
-								var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
-								var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
-								var region = new RegionUi({ height: mapHeight, width: mapWidth });
-								region.depth(3)
-									.layer(3)
-									.drawBoundsData(false)
-									.drawBounds(false)
-									.mount(ige.client.rootScene)
-									.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
-									.height(mapHeight)
-									.width(mapWidth)
-									.bounds2d(mapWidth, mapHeight, 0);
-							}
-							ige.client.mapLoaded.resolve();
-							delete ige.pixi.mapLoader;
-						});
-				});
+								if (ige.physics) {
+									ige.physics.staticsFromMap(IgeLayersById.walls);
+								}
+
+								// We can add all our layers to our main scene by looping the
+								// array or we can pick a particular layer via the layersById
+								// object. Let's give an example:
+								if (mode === 'sandbox') {
+									var mapHeight = ige.game.data.map.height * ige.game.data.map.tileheight;
+									var mapWidth = ige.game.data.map.width * ige.game.data.map.tilewidth;
+									// changed to Region from RegionUi
+									var region = new Region({ height: mapHeight, width: mapWidth });
+									region.depth(3)
+										.layer(3)
+										.drawBoundsData(false)
+										.drawBounds(false)
+										.mount(ige.client.rootScene)
+										.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
+										.height(mapHeight)
+										.width(mapWidth)
+										.bounds2d(mapWidth, mapHeight, 0);
+								}
+								// we're not iterating, and in the previous structure, this logic
+								// was never actually reached
+								// if (IgeLayerArray[i].name !== 'debris') {
+								// 	ige.devLog(`layer ${i}`);
+								// 	IgeLayerArray[i]
+								// 		.layer(self.layersZIndex[IgeLayerArray[i].name])
+								// 		.autoSection(20)
+								// 		.drawBounds(false)
+								// 		.drawBoundsData(false)
+								// 		.drawBounds(false)
+								// 		.mount(ige.client.rootScene)
+								// 		.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
+								// 		.height(mapHeight)
+								// 		.width(mapWidth)
+								// 		.bounds2d(mapWidth, mapHeight, 0);
+								// }
+								ige.client.mapLoaded.resolve();
+								delete ige.pixi.mapLoader;
+							});
+					});
+			});
 		}
 	},
 	createRegions: function () {
