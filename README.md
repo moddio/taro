@@ -36,6 +36,18 @@
 ## Node Version
 Node Versions below [14](https://nodejs.org) are not supported due to package incompatibility and degraded performance.
 
+## Running a game server 
+
+- Import you game.json file into /taro/src/ directory
+
+To run the game server, execute the following command:
+```
+npm run server
+```
+
+
+
+
 ## Running a game server
 Taro engine will run games made using [modd.io](https://www.modd.io).
 

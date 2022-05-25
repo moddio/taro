@@ -2,6 +2,7 @@ showMiniMap = false;
 showAllLayers = false;
 curLayerPainting = 'floor';
 let mouseIsDown = false;
+		
 
 
 // be very careful with arrow functions.
@@ -152,18 +153,7 @@ const Client = IgeClass.extend({
 			if (gameId && window.location.hostname !== 'localhost') {
 				return resolve({status: 'success', data: gameDetails.gameData});
 			}
-			if (gameId && window.location.hostname === 'localhost') {
-				$.ajax({
-					url: `${this.host}/api/game-client/${gameId}`,
-					dataType: 'json',
-					type: 'GET',
-					success: (game) => {
-						//
-						resolve(game);
-					}
-				});
-			}
-			else {
+			else  {
 				$.ajax({
 					url: '/src/game.json',
 					dataType: 'json',
