@@ -576,7 +576,9 @@ var ServerNetworkEvents = {
 			var kickedPlayer = ige.$$('player').find(function (player) {
 				if (player._stats && player._stats.clientId === kickuserId) return true;
 			});
-			kickedPlayer.streamUpdateData([{ playerJoined: false }]);
+			if (kickedPlayer) {
+				kickedPlayer.streamUpdateData([{ playerJoined: false }]);
+			}
 		}
 	},
 	_onBanUser: function ({ userId, kickuserId }, clientId) {
