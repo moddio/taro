@@ -4,11 +4,11 @@ declare class IgeEngine extends IgeClass {
 	_tickStart: number;
 	_renderLatency: number;
 
-    isClient: boolean;
-    isServer: boolean;
+	isClient: boolean;
+	isServer: boolean;
 
-    client: Client;
-    server: Client;
+	client: Client;
+	server: Client;
 
 	network: IgeNetworkComponent;
 
@@ -20,6 +20,18 @@ declare class IgeEngine extends IgeClass {
 
 	pixi: IgeInitPixi;
 	phaser: PhaserRenderer;
+
+	scaleMapDetails: {
+		scaleFactor: {
+			x: number;
+			y: number;
+		};
+		shouldScaleTilesheet: boolean;
+		tileWidth: number;
+		tileHeight: number;
+		originalTileHeight: number;
+		originalTileWidth: number;
+	};
 
 	constructor(options: object);
 

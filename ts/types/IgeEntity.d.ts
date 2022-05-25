@@ -6,6 +6,7 @@ declare class IgeEntity extends IgeObject {
 	_translate: IgePoint3d;
 	_rotate: IgePoint3d;
 	_stats: EntityStats;
+	_bounds2d: IgePoint2d;
 
 	_pixiText: any; // PIXI.Text
 
@@ -23,4 +24,6 @@ declare class IgeEntity extends IgeObject {
 	getOwnerUnit (): IgeEntity | undefined;
 	streamUpdateData (queuedData: UpdateData[]);
 	transformPixiEntity (x: number, y: number, z: number, type?: boolean);
+
+	flip (flip: FlipMode): void
 }
