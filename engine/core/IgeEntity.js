@@ -2835,9 +2835,9 @@ var IgeEntity = IgeObject.extend({
      * over event is triggered.
      */
 	mouseOverOff: function () {
-		/*delete this._mouseOver;
+		delete this._mouseOver;
 
-		return this;*/
+		return this;
 	},
 
 	/**
@@ -2845,9 +2845,9 @@ var IgeEntity = IgeObject.extend({
      * out event is triggered.
      */
 	mouseOutOff: function () {
-		/*delete this._mouseOut;
+		delete this._mouseOut;
 
-		return this;*/
+		return this;
 	},
 
 	/**
@@ -2855,9 +2855,9 @@ var IgeEntity = IgeObject.extend({
      * up event is triggered.
      */
 	mouseUpOff: function () {
-		/*delete this._mouseUp;
+		delete this._mouseUp;
 
-		return this;*/
+		return this;
 	},
 
 	/**
@@ -2866,9 +2866,9 @@ var IgeEntity = IgeObject.extend({
      * via the mouseDown() method.
      */
 	mouseDownOff: function () {
-		/*delete this._mouseDown;
+		delete this._mouseDown;
 
-		return this;*/
+		return this;
 	},
 
 	/**

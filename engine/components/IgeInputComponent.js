@@ -201,10 +201,8 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	setupListeners: function (canvas) {
-		console.log('CANVAS', canvas);
 		this.log('Setting up input event listeners...');
 		this._canvas = canvas;
-		//this._canvas = {};
 
 		// Setup the event listeners
 		var self = this;
@@ -325,7 +323,6 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseDown: function (event) {
-		console.log('Ige Input Mouse Down');
 		if (this._debug) {
 			console.log('Mouse Down', event);
 		}
@@ -365,7 +362,6 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @private
 	 */
 	_mouseUp: function (event) {
-		console.log('Ige Input Mouse Up');
 		if (this._debug) {
 			console.log('Mouse Up', event);
 		}
@@ -435,7 +431,7 @@ var IgeInputComponent = IgeEventingClass.extend({
 	 * @param event
 	 * @private
 	 */
-	_mouseMove: function (event) {
+	_mouseMove: function (event) { //keep ir for now as touchmove use it
 		// Update the mouse position within the viewports
 		/*ige._mouseOverVp = this._updateMouseData(event);
 		// ige.client.mouseEvent = event;
