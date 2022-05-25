@@ -94,7 +94,7 @@ class GameScene extends Phaser.Scene {
 			this.load.image(`tiles/${tileset.name}`, tileset.image);
 		});
 
-		this.load.tilemapTiledJSON('map', data.map);
+		this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
 	}
 
 	loadEntity (key: string, data: EntityData): void {
@@ -134,7 +134,7 @@ class GameScene extends Phaser.Scene {
 				}
 
 				this.anims.create({
-					key: `${key}/${animation.name}`,
+					key: `${key}/${animationsKey}`,
 					frames: this.anims.generateFrameNumbers(key, {
 						frames: animationFrames
 					}),
@@ -152,6 +152,8 @@ class GameScene extends Phaser.Scene {
 
 		const map = this.make.tilemap({ key: 'map' });
 		const data = ige.game.data;
+		const scaleFactor = ige.scaleMapDetails.scaleFactor;
+
 		data.map.tilesets.forEach((tileset) => {
 			map.addTilesetImage(tileset.name, `tiles/${tileset.name}`);
 		});
@@ -160,14 +162,52 @@ class GameScene extends Phaser.Scene {
 				return;
 			}
 			console.log(layer.name);
-			map.createLayer(layer.name, map.tilesets[0], 0, 0);
+			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
+			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
 		});
 
 		const camera = this.cameras.main;
 		camera.centerOn(
-			map.width * map.tileWidth / 2,
-			map.height * map.tileHeight / 2
+			map.width * map.tileWidth / 2 * scaleFactor.x,
+			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
 		camera.zoom = this.scale.width / 800;
+	}
+
+	private patchMapData (map: typeof ige.game.data.map): typeof map {
+
+		/**
+		 * map data gets patched in place
+		 * to not make a copy of a huge object
+		 **/
+
+		const tilecount = map.tilesets[0].tilecount;
+
+		map.layers.forEach((layer) => {
+
+			if (layer.type !== 'tilelayer') {
+				return;
+			}
+
+			for (let i = 0; i < layer.data.length; i++) {
+
+				const value = layer.data[i];
+
+				if (value > tilecount) {
+
+					console.warn(`map data error: layer[${
+						layer.name
+					}], index[${
+						i
+					}], value[${
+						value
+					}].`);
+
+					layer.data[i] = 0;
+				}
+			}
+		});
+
+		return map;
 	}
 }
