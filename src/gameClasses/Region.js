@@ -25,7 +25,7 @@ var Region = IgeEntityPhysics.extend({
 			}
 
 			this._stats.currentBody = {
-				type: 'dynamic',
+				type: 'static',
 				linearDamping: 1,
 				angularDamping: 5,
 				allowSleep: false,

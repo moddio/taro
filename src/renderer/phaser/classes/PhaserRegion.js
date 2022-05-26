@@ -46,6 +46,14 @@ var PhaserRegion = /** @class */ (function (_super) {
             return;
         }
         var stats = this.region._stats.default;
+        // works well now, but going to make this its own event listener I think.
+        // currently this logic triggers the console.log() 4 times per region change.
+        //
+        // output of console looks like:
+        // F T T T
+        // T F T T
+        // T T F T
+        // T T T F
         if (this.x !== stats.x ||
             this.y !== stats.y ||
             this.width !== stats.width ||
