@@ -1,4 +1,4 @@
-class MobileControlsScene extends Phaser.Scene {
+class MobileControlsScene extends PhaserScene {
 
 	constructor() {
 		super({ key: 'MobileControls' });

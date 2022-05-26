@@ -1,4 +1,4 @@
-class GameScene extends Phaser.Scene {
+class GameScene extends PhaserScene {
 
 	constructor() {
 		super({ key: 'Game' });
@@ -91,7 +91,7 @@ class GameScene extends Phaser.Scene {
 		}
 
 		data.map.tilesets.forEach((tileset) => {
-			this.load.image(`tiles/${tileset.name}`, tileset.image);
+			this.load.image(`tiles/${tileset.name}`, this.patchUrl(tileset.image));
 		});
 
 		this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
@@ -144,7 +144,7 @@ class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.load.image(key, cellSheet.url);
+		this.load.image(key, this.patchUrl(cellSheet.url));
 	}
 
 	create (): void {

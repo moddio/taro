@@ -79,7 +79,7 @@ var GameScene = /** @class */ (function (_super) {
             this.loadEntity("item/".concat(type), data.itemTypes[type]);
         }
         data.map.tilesets.forEach(function (tileset) {
-            _this.load.image("tiles/".concat(tileset.name), tileset.image);
+            _this.load.image("tiles/".concat(tileset.name), _this.patchUrl(tileset.image));
         });
         this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
     };
@@ -118,7 +118,7 @@ var GameScene = /** @class */ (function (_super) {
                 });
             }
         });
-        this.load.image(key, cellSheet.url);
+        this.load.image(key, this.patchUrl(cellSheet.url));
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();
@@ -161,5 +161,5 @@ var GameScene = /** @class */ (function (_super) {
         return map;
     };
     return GameScene;
-}(Phaser.Scene));
+}(PhaserScene));
 //# sourceMappingURL=GameScene.js.map

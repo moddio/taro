@@ -13,19 +13,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var MobileControlsScene = /** @class */ (function (_super) {
-    __extends(MobileControlsScene, _super);
-    function MobileControlsScene() {
-        return _super.call(this, { key: 'MobileControls' }) || this;
+var PhaserScene = /** @class */ (function (_super) {
+    __extends(PhaserScene, _super);
+    function PhaserScene() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    MobileControlsScene.prototype.create = function () {
-        /*this.mobileControls.zIndex = 10;
-
-        // make the mobileControls container fit to width and anchored to bottom
-        this.mobileControls.y = window.innerHeight - 540;
-        const scaleToFit = window.innerWidth / 960;
-        this.mobileControls.scale.set(scaleToFit, scaleToFit);*/
+    PhaserScene.prototype.patchUrl = function (url) {
+        return url.replace(/^http(s)?:/i, location.protocol);
     };
-    return MobileControlsScene;
-}(PhaserScene));
-//# sourceMappingURL=MobileControlsScene.js.map
+    return PhaserScene;
+}(Phaser.Scene));
+//# sourceMappingURL=PhaserScene.js.map
