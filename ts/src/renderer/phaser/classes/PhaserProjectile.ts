@@ -12,14 +12,9 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		const key = `projectile/${projectile._stats.type}`;
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
+		const bounds = projectile._bounds2d;
+		sprite.setDisplaySize(bounds.x, bounds.y);
 		sprite.rotation = projectile._rotate.z;
-		sprite.displayWidth = projectile._bounds2d.x;
-		sprite.displayHeight = projectile._bounds2d.y;
-		//it is another option for width and height, but correct data is stored in _bounds2d,
-		//as it gets updated when changing entity's width and height consistently
-		//just for information, this comment can be deleted
-		//sprite.displayWidth = projectile._stats.currentBody.width;
-		//sprite.displayHeight = projectile._stats.currentBody.height;
 
 		this.add(sprite);
 
@@ -49,14 +44,8 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		this.y = projectile._translate.y;
 
 		const sprite = this.sprite;
+		const bounds = projectile._bounds2d;
+		sprite.setDisplaySize(bounds.x, bounds.y);
 		sprite.rotation = projectile._rotate.z;
-		sprite.displayWidth = projectile._bounds2d.x;
-		sprite.displayHeight = projectile._bounds2d.y;
-
-		//it is another option for width and height, but correct data is stored in _bounds2d,
-		//as it gets updated when changing entity's width and height consistently
-		//just for information, this comment can be deleted
-		//sprite.displayWidth = projectile._stats.currentBody.width;
-		//sprite.displayHeight = projectile._stats.currentBody.height;
 	}
 }
