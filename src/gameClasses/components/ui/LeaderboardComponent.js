@@ -13,7 +13,7 @@ var LeaderboardComponent = IgeEntity.extend({
 	},
 
 	setUI: function () {
-		if (ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			$('#leaderboard-header').addClass('small');
 			$('#leaderboard').addClass('small');
 		} else {
@@ -128,7 +128,7 @@ var LeaderboardComponent = IgeEntity.extend({
 		if (ige.isClient) {
 			var sortedScores = [];
 			var players = ige.$$('player');
-			var topPlayersToShow = ige.mobileControls.isMobile ? 3 : 10;
+			var topPlayersToShow = ige.isMobile ? 3 : 10;
 
 			players.forEach(function (player) {
 				if (player._stats && player._stats.clientId) // only display human players on scoreboard
@@ -206,4 +206,6 @@ var LeaderboardComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = LeaderboardComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = LeaderboardComponent;
+}

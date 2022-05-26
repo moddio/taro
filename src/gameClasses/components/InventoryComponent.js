@@ -15,7 +15,7 @@ var InventoryComponent = IgeEntity.extend({
 		// render inventory slots on client end
 		var entity = this._entity;
 		var ownerPlayer = entity.getOwner();
-		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
+		var mobileClass = ige.isMobile ? 'inventory-slot-mobile ' : 'inventory-slot ';
 		if (ownerPlayer && ige.isClient && entity._stats.clientId === ige.network.id() && ownerPlayer._stats.selectedUnitId == entity.id()) {
 			$('#inventory-slots').html('');
 			$('#inventory-slots-key-stroke').html('');
@@ -53,7 +53,7 @@ var InventoryComponent = IgeEntity.extend({
 	createBackpack () {
 		var entity = this._entity;
 		var backpackSize = entity._stats.backpackSize;
-		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
+		var mobileClass = ige.isMobile ? 'inventory-slot-mobile ' : 'inventory-slot ';
 
 		if (backpackSize > 0) {
 			this.updateBackpackButton(true);
@@ -82,7 +82,7 @@ var InventoryComponent = IgeEntity.extend({
 		}
 	},
 	createTradingSlots: function () {
-		var mobileClass = (ige.mobileControls && ige.mobileControls.isMobile) ? 'inventory-slot-mobile ' : 'inventory-slot ';
+		var mobileClass = ige.isMobile ? 'inventory-slot-mobile ' : 'inventory-slot ';
 		if (this._entity._stats.inventorySize) {
 			var totalInventorySize = this.getTotalInventorySize();
 			// total 5 trading slots
@@ -388,7 +388,7 @@ var InventoryComponent = IgeEntity.extend({
 					// 	}
 					// }
 					if (item && item._stats && item._stats.inventorySlotColor) {
-						$(`#item-${slotIndex}`).css('background-image', 'radial-gradient(rgba(0, 0, 0, 0),' + item._stats.inventorySlotColor + ')');
+						$(`#item-${slotIndex}`).css('background-image', `radial-gradient(rgba(0, 0, 0, 0),${  item._stats.inventorySlotColor  })`);
 					} else {
 						$(`#item-${slotIndex}`).css('background-image', 'none');
 					}
@@ -426,4 +426,6 @@ var InventoryComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = InventoryComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = InventoryComponent;
+}

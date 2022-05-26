@@ -82,13 +82,21 @@ var Projectile = IgeEntityPhysics.extend({
 		if (ige.isServer) {
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
+
+			ige.client.emit('create-projectile', this);
+
 			if (currentState) {
 				/* TEMPORARY */
 				//TODO - add new logic for trackEntityById and updating entities with out PIXI in EntityManager
 				ige.pixi.trackEntityById[this.entityId] = undefined;
 			}
-			//self.addComponent(AttributeBarsContainerComponent);
-			ige.client.emit('create-projectile', this);
+			self.drawBounds(false);
+
+			// self.addComponent(AttributeBarsContainerComponent);
+			self.updateLayer();
+			self.updateTexture();
+			self.mouseEvents();
+			self.mount(ige.pixi.world);
 		}
 		this.playEffect('create');
 
@@ -181,4 +189,6 @@ var Projectile = IgeEntityPhysics.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Projectile; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Projectile;
+}

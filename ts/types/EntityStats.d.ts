@@ -25,4 +25,5 @@ declare interface EntityStats {
 	type: string;
 	id: string;
 	itemTypeId?: string;
+	flip: FlipMode;
 }
