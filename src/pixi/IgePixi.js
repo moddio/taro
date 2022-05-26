@@ -226,6 +226,7 @@ var IgeInitPixi = IgeClass.extend({
 			}
 
 			var entity = ige.$(entityId);
+
 			if (entity) {
 				// while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
 				if (self.viewport.isZooming) {
@@ -269,6 +270,7 @@ var IgeInitPixi = IgeClass.extend({
 						var updateQueue = ige.client.entityUpdateQueue[entityId];
 						if (updateQueue && updateQueue.length > 0) {
 							var nextUpdate = updateQueue[0];
+
 							if (
 							// Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
 								entity._category == 'item' &&

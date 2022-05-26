@@ -53,10 +53,30 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 
 		const stats = this.region._stats.default;
 
-		this.x = stats.x;
-		this.y = stats.y;
 
-		if (this.width !== stats.width || this.height !== stats.height) {
+		// works well now, but going to make this its own event listener I think.
+		// currently this logic triggers the console.log() 4 times per region change.
+		//
+		// output of console looks like:
+		// F T T T
+		// T F T T
+		// T T F T
+		// T T T F
+		if (
+			this.x !== stats.x ||
+			this.y !== stats.y ||
+			this.width !== stats.width ||
+			this.height !== stats.height
+		) {
+			console.log(`PhaserRegion update ${region._stats.id} ${region._id}`); // TODO: Remove
+			console.log(
+				this.x === stats.x,
+				this.y === stats.y,
+				this.width === stats.width,
+				this.height === stats.height
+			); // TODO: Remove
+			this.x = stats.x;
+			this.y = stats.y;
 			this.width = stats.width;
 			this.height = stats.height;
 

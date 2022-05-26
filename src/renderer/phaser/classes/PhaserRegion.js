@@ -46,9 +46,14 @@ var PhaserRegion = /** @class */ (function (_super) {
             return;
         }
         var stats = this.region._stats.default;
-        this.x = stats.x;
-        this.y = stats.y;
-        if (this.width !== stats.width || this.height !== stats.height) {
+        if (this.x !== stats.x ||
+            this.y !== stats.y ||
+            this.width !== stats.width ||
+            this.height !== stats.height) {
+            console.log("PhaserRegion update ".concat(region._stats.id, " ").concat(region._id)); // TODO: Remove
+            console.log(this.x === stats.x, this.y === stats.y, this.width === stats.width, this.height === stats.height); // TODO: Remove
+            this.x = stats.x;
+            this.y = stats.y;
             this.width = stats.width;
             this.height = stats.height;
             this.clear();
