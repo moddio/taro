@@ -117,6 +117,7 @@ const Client = IgeClass.extend({
 		// add utility
 		this.implement(ClientNetworkEvents);
 		ige.addComponent(IgeInitPixi);
+		ige.entityTrack = new EntityTrack();
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
