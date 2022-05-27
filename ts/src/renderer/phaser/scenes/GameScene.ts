@@ -13,6 +13,10 @@ class GameScene extends Phaser.Scene {
 		canvas.style.backgroundColor = 'transparent';
 		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
 
+		if (ige.isMobile) {
+			this.scene.launch('MobileControls');
+		}
+
 		const camera = this.cameras.main;
 
 		this.scale.on(Phaser.Scale.Events.RESIZE, (
@@ -44,11 +48,10 @@ class GameScene extends Phaser.Scene {
 		});
 
 		ige.client.on('fetch-mouse-position', (controlComponent: ControlComponent) => {
-			const currentMouseTransform = [
+			controlComponent.newMousePosition = [
 				this.input.activePointer.worldX,
 				this.input.activePointer.worldY
 			];
-			controlComponent.newMousePosition = currentMouseTransform;
 		});
 
 		ige.client.on('create-unit', (unit: Unit) => {
