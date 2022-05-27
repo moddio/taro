@@ -24,49 +24,35 @@ var PhaserRegion = /** @class */ (function (_super) {
         //
         // I believe this is an issue unique to 'Region'
         var stats = _this.region._stats.default;
-        // const stats = this.region._stats;
-        // draw rectangle
         var width = _this.width = stats.width;
         var height = _this.height = stats.height;
         // Phaser wants a number for these
-        _this.fillStyle(Number("0x".concat(stats.inside.substring(1))) || 0xffffff, stats.alpha / 100 || 0.4);
+        _this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
         _this.fillRect(0, 0, width, height);
         _this.x = stats.x;
         _this.y = stats.y;
         scene.add.existing(_this);
+        _this.updateDimensionsListener = region.on('update-region-dimensions', function () {
+            var stats = _this.region._stats.default;
+            console.log("PhaserRegion update ".concat(region._stats.id, " ").concat(region._id)); // TODO: Remove
+            console.log(_this.x === stats.x, _this.y === stats.y, _this.width === stats.width, _this.height === stats.height); // TODO: Remove
+            _this.x = stats.x;
+            _this.y = stats.y;
+            _this.width = stats.width;
+            _this.height = stats.height;
+            _this.clear();
+            _this.fillStyle(Number("0x".concat(stats.inside.substring(1))), 0.4 || stats.alpha / 100);
+            _this.fillRect(0, 0, stats.width, stats.height);
+        });
         scene.events.on('update', _this.update, _this);
         return _this;
     }
     PhaserRegion.prototype.update = function ( /*time: number, delta: number*/) {
-        var region = this.region;
-        // const container = region.regionUi._pixiContainer;
-        if (region._destroyed /*|| container._destroyed*/) {
+        if (this.region._destroyed) {
+            this.region.off('update-region-dimensions', this.updateDimensionsListener);
             this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
-        }
-        var stats = this.region._stats.default;
-        // works well now, but going to make this its own event listener I think.
-        // currently this logic triggers the console.log() 4 times per region change.
-        //
-        // output of console looks like:
-        // F T T T
-        // T F T T
-        // T T F T
-        // T T T F
-        if (this.x !== stats.x ||
-            this.y !== stats.y ||
-            this.width !== stats.width ||
-            this.height !== stats.height) {
-            console.log("PhaserRegion update ".concat(region._stats.id, " ").concat(region._id)); // TODO: Remove
-            console.log(this.x === stats.x, this.y === stats.y, this.width === stats.width, this.height === stats.height); // TODO: Remove
-            this.x = stats.x;
-            this.y = stats.y;
-            this.width = stats.width;
-            this.height = stats.height;
-            this.clear();
-            this.fillStyle(Number("0x".concat(stats.inside.substring(1))), 0.4 || stats.alpha / 100);
-            this.fillRect(0, 0, stats.width, stats.height);
         }
     };
     return PhaserRegion;

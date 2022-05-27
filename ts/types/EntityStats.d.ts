@@ -20,7 +20,6 @@ declare interface EntityStats {
 		width: number,
 		height: number,
 		inside?: string,
-		outside?: string,
 		alpha?: number,
 	}
 	type: string;

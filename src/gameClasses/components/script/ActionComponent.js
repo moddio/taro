@@ -123,19 +123,24 @@ var ActionComponent = IgeEntity.extend({
 
 					case 'transformRegionDimensions':
 						var region = ige.variable.getValue(action.region, vars);
+						// regionId seems like unnecessary stream data
 						var regionId = action.region.variableName;
 						if (region) {
 							var x = ige.variable.getValue(action.x, vars);
 							var y = ige.variable.getValue(action.y, vars);
 							var width = ige.variable.getValue(action.width, vars);
 							var height = ige.variable.getValue(action.height, vars);
+							// this change makes it so we don't stream data that is unchanged
+							var data = [
+								{ x: x !== region._stats.default.x ? x : null },
+								{ y: y !== region._stats.default.y ? y : null },
+								{ width: width !== region._stats.default.width ? width : null },
+								{ height: height !== region._stats.default.height ? height : null }
+							];
+							// there's gotta be a better way to do this, i'm just blind right now
+							data = data.filter(obj => obj[Object.keys(obj)[0]] !== null);
 
-							region.streamUpdateData([
-								{ x: x },
-								{ y: y },
-								{ width: width },
-								{ height: height }
-							]);
+							region.streamUpdateData(data);
 						}
 
 						break;

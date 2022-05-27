@@ -3,6 +3,8 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 	private width: number;
 	private height: number;
 
+	private updateDimensionsListener: EvtListener;
+
 	constructor (
 		scene: Phaser.Scene,
 		private region: Region
@@ -16,14 +18,12 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		// I believe this is an issue unique to 'Region'
 		const stats = this.region._stats.default;
 
-		// const stats = this.region._stats;
-
-		// draw rectangle
 		const width = this.width = stats.width;
 		const height = this.height = stats.height;
+
 		// Phaser wants a number for these
 		this.fillStyle(
-			Number(`0x${stats.inside.substring(1)}`) || 0xffffff,
+			Number(`0x${stats.inside.substring(1)}`),
 			stats.alpha / 100 || 0.4
 		);
 		this.fillRect(
@@ -37,44 +37,15 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		this.y = stats.y;
 
 		scene.add.existing(this);
-		scene.events.on('update', this.update, this);
-	}
 
-	update (/*time: number, delta: number*/): void {
+		this.updateDimensionsListener = region.on('update-region-dimensions', () => {
 
-		const region = this.region;
-		// const container = region.regionUi._pixiContainer;
+			const stats = this.region._stats.default;
 
-		if (region._destroyed /*|| container._destroyed*/) {
-			this.scene.events.off('update', this.update, this);
-			this.destroy();
-			return;
-		}
-
-		const stats = this.region._stats.default;
-
-
-		// works well now, but going to make this its own event listener I think.
-		// currently this logic triggers the console.log() 4 times per region change.
-		//
-		// output of console looks like:
-		// F T T T
-		// T F T T
-		// T T F T
-		// T T T F
-		if (
-			this.x !== stats.x ||
-			this.y !== stats.y ||
-			this.width !== stats.width ||
-			this.height !== stats.height
-		) {
+			// I didn't want to go too deep on the entity stream/update process, but because of the current logic,
+			// if we stream changes to (3) variables, this will fire (3) times.
 			console.log(`PhaserRegion update ${region._stats.id} ${region._id}`); // TODO: Remove
-			console.log(
-				this.x === stats.x,
-				this.y === stats.y,
-				this.width === stats.width,
-				this.height === stats.height
-			); // TODO: Remove
+
 			this.x = stats.x;
 			this.y = stats.y;
 			this.width = stats.width;
@@ -83,7 +54,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 			this.clear();
 			this.fillStyle(
 				Number(`0x${stats.inside.substring(1)}`),
-				0.4 || stats.alpha / 100
+				stats.alpha / 100 || 0.4
 			);
 			this.fillRect(
 				0,
@@ -91,6 +62,22 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 				stats.width,
 				stats.height
 			);
+		});
+
+		scene.events.on('update', this.update, this);
+	}
+
+	update (/*time: number, delta: number*/): void {
+
+		if (this.region._destroyed) {
+
+			this.region.off('update-region-dimensions', this.updateDimensionsListener)
+			this.scene.events.off('update', this.update, this);
+			this.destroy();
+			return;
 		}
+
+
+
 	}
 }

@@ -1,4 +1,3 @@
-
 var Region = IgeEntityPhysics.extend({
 	classId: 'Region',
 	componentId: 'region',
@@ -12,6 +11,7 @@ var Region = IgeEntityPhysics.extend({
 		// TODO: look into the above comment and confirm or deny.
 
 		this.id(entityIdFromServer);
+
 		var self = this;
 		var regionName = typeof data.id === 'string' ? data.id : null;
 
@@ -77,7 +77,7 @@ var Region = IgeEntityPhysics.extend({
 				// 1 is 'automatic' streaming
 				self.streamMode(1);
 			} else if (ige.isClient) {
-				if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
+				if ((mode === 'play' && self._stats.default.inside) || mode === 'sandbox') {
 					// o.O TODO: Remove /refactor
 					ige.pixi.trackEntityById[entityIdFromServer] = this;
 					ige.client.emit('create-region', this);
@@ -141,6 +141,7 @@ var Region = IgeEntityPhysics.extend({
 		this.translateTo(regionCordinates.x + (regionCordinates.width / 2), regionCordinates.y + (regionCordinates.height / 2), 0);
 		this.width(regionCordinates.width);
 		this.height(regionCordinates.height);
+
 		if (ige.isServer) {
 			var shapeData = {};
 			var normalizer = 0.45;
@@ -150,6 +151,9 @@ var Region = IgeEntityPhysics.extend({
 			// shapeData.y = regionCordinates.y;
 			this._stats.currentBody.fixtures[0].shape.data = shapeData;
 			this.physicsBody(this._stats.currentBody);
+
+		} else { // isClient
+			this.emit('update-region-dimensions');
 		}
 
 		// if (this.regionUi) {
@@ -176,7 +180,6 @@ var Region = IgeEntityPhysics.extend({
 		}
 
 		this.updateDimension();
-
 	},
 
 	deleteRegion: function () {
