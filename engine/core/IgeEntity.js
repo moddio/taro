@@ -673,6 +673,8 @@ var IgeEntity = IgeObject.extend({
 			this._pixiTexture.rotation = defaultData.rotate;
 		}
 		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+
+		ige.entityTrack.trackEntityById[this.entityId] = this._pixiContainer;
 	},
 
 	// drawCrashCollider: function (defaultData) {
@@ -2541,6 +2543,8 @@ var IgeEntity = IgeObject.extend({
 					entity.destroy();
 					// texture.destroy({ children: true, texture: true });
 					delete ige.pixi.trackEntityById[glueEntity.id];
+
+					delete ige.entityTrack.trackEntityById[glueEntity.id];
 				}
 			});
 		}
@@ -2565,6 +2569,9 @@ var IgeEntity = IgeObject.extend({
 				}
 				ige.pixi.trackEntityById[entityId]._destroyed = true;
 				delete ige.pixi.trackEntityById[entityId];
+
+				ige.entityTrack.trackEntityById[entityId]._destroyed = true;
+				delete ige.entityTrack.trackEntityById[entityId];
 			}
 
 			// destory attribute bars
