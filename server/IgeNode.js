@@ -237,6 +237,7 @@ var IgeNode = IgeClass.extend({
 
 			if (deployOptions.obfuscate) {
 				console.log('Compressing...');
+				if(!process.env.TEST) clientCode = clientCode.replace(/console\.log\(([^)]+)\);/igm, ' ');
 				finalFileData = this.obfuscate(coreCode + clientCode, null, null, deployOptions);
 
 				if (!deployOptions.clearClasses) {
@@ -256,6 +257,7 @@ var IgeNode = IgeClass.extend({
 					}
 				}
 			} else {
+				if(!process.env.TEST) clientCode = clientCode.replace(/console\.log\(([^)]+)\);/igm, ' ');
 				finalFileData = `${coreCode};${clientCode}`;
 			}
 
