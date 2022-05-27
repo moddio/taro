@@ -82,7 +82,7 @@ var IgeEngine = IgeEntity.extend({
 		if (this.isServer) {
 			// this._idCounter = 0
 			this.sanitizer = require('sanitizer').sanitize;
-			this.emptyTimeLimit = 10 * 60 * 1000; // in ms - kill t1 if empty for 10 mins
+			this.emptyTimeLimit = 10 * 60 * 1000; // in ms - kill t1/t2 if empty for 10 mins
 			this.lastCheckedAt = Date.now();
 		}
 
@@ -202,7 +202,7 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	getIdleTimeoutMs: function () {
-		var defaultValue = 10; // kill t1 if empty for 10 mins
+		var defaultValue = 10; // kill t1/t2 if empty for 10 mins
 		var idleTimeoutHours = ige.server.tier == '0' ? ige.game.data.defaultData.privateServerIdleTimeout : 0;
 		var timeoutMins = idleTimeoutHours ? idleTimeoutHours * 60 : defaultValue;
 
@@ -2129,7 +2129,8 @@ var IgeEngine = IgeEntity.extend({
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}
-						if (ige.server.tier === '1' && self.now - self.serverEmptySince > self.emptyTimeLimit) {
+						// Kill T1 and T2 servers if it's been empty for 10+ mins.
+						if ((ige.server.tier === '1' || ige.server.tier === '2') && self.now - self.serverEmptySince > self.emptyTimeLimit) {
 							ige.server.kill('game\'s been empty for too long (10 min)');
 						}
 					} else {
