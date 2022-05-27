@@ -17,7 +17,7 @@ var MobileControlsComponent = IgeEntity.extend({
 
 		this.debug = false;
 
-		this.controls = [];
+		this.controls = {};
 
 		var canvas = document.getElementById('igeFrontBuffer');
 		this.canvas = {
@@ -98,32 +98,29 @@ var MobileControlsComponent = IgeEntity.extend({
 			});
 		}
 
-		var self = this;
-
 		// guide is a "960x540" panel scaled to fit
 		// buttons are mounted / laid out within this space
-		this.guide = new IgeEntity()
+		// never used
+		/* this.guide = new IgeEntity()
 			.depth(100)
 			.width(960)
 			.height(540)
-			.mount(this.mobileControls);
+			.mount(this.mobileControls); */
 
 		return this;
 	},
 
-	clearControls: function (newAbilities) {
-		var self = this;
-		for (ix in this.controls) {
-			var uppercaseKey = ix;
-			if (newAbilities && !newAbilities[uppercaseKey]) {
-				var button = self.controls[uppercaseKey];
-				if (typeof button === 'object' && button) {
-					button.destroy();
-				}
-				delete this.controls[uppercaseKey];
+	clearControls: function () {
+
+		for (var key in this.controls) {
+			var control = this.controls[key];
+			if (control && typeof control === 'object') {
+				control.destroy();
 			}
+			delete this.controls[key];
 		}
-		// this.controls = [];
+
+		this.emit('clear-controls');
 	},
 
 	configure: function (abilities) {
@@ -144,9 +141,9 @@ var MobileControlsComponent = IgeEntity.extend({
 
 		var self = this;
 
-		this.clearControls(abilities);
+		this.clearControls();
 
-		Object.keys(abilities).forEach(function (key, index) {
+		Object.keys(abilities).forEach(function (key) {
 			var ability = abilities[key];
 
 			if (ability.mobilePosition && !self.controls[key]) {
@@ -156,6 +153,10 @@ var MobileControlsComponent = IgeEntity.extend({
 				var y = ability.mobilePosition.y * 2;
 
 				self.addControl(key, x, y, 75, 64, ability);
+
+				self.emit('add-control', [
+					key, x, y, 75, 64, ability // TODO callbacks
+				]);
 			}
 		});
 	},
@@ -334,6 +335,8 @@ var MobileControlsComponent = IgeEntity.extend({
 				moveStick._isDown = false;
 				moveStick._isLeft = false;
 				moveStick._isRight = false;
+
+				this.controls[key] = moveStick;
 			}
 
 			if (key == 'lookWheel') {
@@ -362,6 +365,8 @@ var MobileControlsComponent = IgeEntity.extend({
 				});
 				ige.pixi.mobileControls.addChild(lookStick);
 				lookStick.position.set(x + 32, y + 12);
+
+				this.controls[key] = lookStick;
 			}
 
 			if (key == 'lookAndFireWheel') {
@@ -408,6 +413,8 @@ var MobileControlsComponent = IgeEntity.extend({
 				});
 				ige.pixi.mobileControls.addChild(fireStick);
 				fireStick.position.set(x + 32, y + 12);
+
+				this.controls[key] = fireStick;
 			}
 		} else {
 			var text = key.toUpperCase();
@@ -463,6 +470,8 @@ var MobileControlsComponent = IgeEntity.extend({
 					ige.network.send('playerKeyUp', { device: 'key', key: newButton._key });
 				}
 			});
+
+			this.controls[key] = newButton;
 		}
 	},
 	isIframe () {
