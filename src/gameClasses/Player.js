@@ -51,7 +51,6 @@ var Player = IgeEntity.extend({
 			}, ['texture', 'nameLabel']);
 		}
 		if (ige.isClient) {
-			ige.pixi.trackEntityById[entityIdFromServer] = this;
 			ige.entityTrack.trackEntityById[entityIdFromServer] = this;
 		}
 	},
@@ -201,9 +200,9 @@ var Player = IgeEntity.extend({
 			// self._stats.selectedUnitId = unit.id()
 			if (ige.isServer && self._stats.clientId) {
 				ige.network.send('makePlayerCameraTrackUnit', { unitId: unit.id() }, self._stats.clientId);
-			} else if (ige.isClient && self._stats.clientId == ige.network.id() && unit && unit._category == 'unit' && ige.pixi.trackEntityById[unit._id]) {
+			} else if (ige.isClient && self._stats.clientId == ige.network.id() && unit && unit._category == 'unit' && ige.entityTrack.trackEntityById[unit._id]) {
 				ige.client.myPlayer.currentFollowUnit = unit._id;
-				ige.pixi.viewport.follow(ige.pixi.trackEntityById[unit._id]);
+				ige.pixi.viewport.follow(ige.entityTrack.trackEntityById[unit._id]);
 				// ige.client.removeOutsideEntities = true;
 			}
 		}

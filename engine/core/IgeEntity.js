@@ -672,8 +672,6 @@ var IgeEntity = IgeObject.extend({
 			this._pixiContainer.y = defaultData.translate.y;
 			this._pixiTexture.rotation = defaultData.rotate;
 		}
-		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
-
 		ige.entityTrack.trackEntityById[this.entityId] = this._pixiContainer;
 	},
 
@@ -2542,7 +2540,6 @@ var IgeEntity = IgeObject.extend({
 					entity.unMount();
 					entity.destroy();
 					// texture.destroy({ children: true, texture: true });
-					delete ige.pixi.trackEntityById[glueEntity.id];
 
 					delete ige.entityTrack.trackEntityById[glueEntity.id];
 				}
@@ -2551,13 +2548,13 @@ var IgeEntity = IgeObject.extend({
 
 		if (ige.isClient) {
 			var entityId = this.entityId || this.id();
-			if (ige.pixi.trackEntityById[entityId]) {
+			if (ige.entityTrack.trackEntityById[entityId.id]) {
 				// entity.destroy()
 				// ige.pixi.viewport.follow();
 				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
 					ige.pixi.viewport.removePlugin('follow');
 				}
-				var texture = ige.pixi.trackEntityById[entityId]._pixiTexture || ige.pixi.trackEntityById[entityId]._pixiText || ige.pixi.trackEntityById[entityId];
+				var texture = ige.entityTrack.trackEntityById[entityId]._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiText || ige.entityTrack.trackEntityById[entityId];
 				// its not instance of ige
 				if (texture && !texture.componentId && !texture._destroyed) {
 					ige.pixi.world.removeChild(texture);
@@ -2567,9 +2564,6 @@ var IgeEntity = IgeObject.extend({
 						ige.isLog = true;
 					}
 				}
-				ige.pixi.trackEntityById[entityId]._destroyed = true;
-				delete ige.pixi.trackEntityById[entityId];
-
 				ige.entityTrack.trackEntityById[entityId]._destroyed = true;
 				delete ige.entityTrack.trackEntityById[entityId];
 			}
