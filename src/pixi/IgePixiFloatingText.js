@@ -55,6 +55,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 		name.anchor.set(0.5);
 
 		ige.pixi.trackEntityById[this._id] = name;
+		ige.entityTrack.trackEntityById[this._id] = name;
 		this._pixiText = name;
 		this._pixiText._category = 'floating_text';
 		this.category('floatingLabel');

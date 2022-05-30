@@ -51,6 +51,7 @@ var MobileControlsComponent = IgeEntity.extend({
 
 		this.id();
 		ige.pixi.trackEntityById[this.id()] = this;
+		ige.entityTrack.trackEntityById[this.id()] = this;
 		self.addBehaviour('mobileControl', self._behaviour);
 	},
 

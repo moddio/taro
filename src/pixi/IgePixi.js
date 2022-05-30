@@ -219,7 +219,10 @@ var IgeInitPixi = IgeClass.extend({
 		if (!ige.lastTickTime) ige.lastTickTime = currentTime;
 		var tickDelta = currentTime - ige.lastTickTime;
 
+		//console.log('entities count', Object.keys(ige.pixi.trackEntityById).length);
+
 		// var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
+		ige.entityTrack.updateAllEntities();
 		for (var entityId in ige.pixi.trackEntityById) {
 			//this delete _pixiContainer if it is _destroyed - maybe we can emit here destroy phaser sprite in future?
 			if (ige.pixi.trackEntityById[entityId]._destroyed) {

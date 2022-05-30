@@ -52,6 +52,7 @@ var Player = IgeEntity.extend({
 		}
 		if (ige.isClient) {
 			ige.pixi.trackEntityById[entityIdFromServer] = this;
+			ige.entityTrack.trackEntityById[entityIdFromServer] = this;
 		}
 	},
 
