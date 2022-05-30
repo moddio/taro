@@ -38,9 +38,17 @@ declare class IgeEngine extends IgeClass {
 	createFrontBuffer (autoSize: boolean, dontScale?: boolean): void
 	engineStep (): void;
 
-    lastTickTime: number;
+	lastTickTime: number;
 
-    entityTrack: EntityTrack;
+	entityTrack: EntityTrack;
+
+	_currentTime: number;
+
+	_cullCounter: number;
+
+	network: any; //IgeNetIoComponent?
+
+	gameLoopTickHasExecuted: boolean;
 
 	$ (item: number | string | object): any;
 }

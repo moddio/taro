@@ -68,10 +68,13 @@ var IgeInitPixi = IgeClass.extend({
 		PIXI.Ticker.system.stop();
 
 		var self = this;
+
+		// highjacking pixi ticker to call our new frameTick()
 		var frameTick = function () {
-			self.frameTick();
+			ige.entityTrack.frameTick();
 		};
 		this.ticker.add(frameTick);
+		//
 		var sort = function (children) {
 			children.sort(function (a, b) {
 				a.zIndex = a.zIndex || 0;

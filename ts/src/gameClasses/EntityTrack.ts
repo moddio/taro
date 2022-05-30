@@ -1,6 +1,6 @@
 class EntityTrack {
 	trackEntityById: any;
-	timeStamp: any;
+	timeStamp: number;
 
 	constructor() {
 		console.log('EntityTrack');
@@ -8,25 +8,19 @@ class EntityTrack {
 		this.trackEntityById = {};
 	}
 
-	frameTick() {
-		ige.engineStep();
-		ige.input.processInputOnEveryFps();
-		this.timeStamp = Date.now();
+	pixiStuff(): void {
 
-		/*if (this.resizeQueuedAt && this.resizeQueuedAt < ige._currentTime - 250) {
-			this.resize();
-			this.resizeQueuedAt = undefined;
-		}*/
-
-		/*if (this && this.updateAllEntities) {
-			this.updateAllEntities();
-
-			if (this.isUpdateLayersOrderQueued) {
-				this.app.stage.updateLayersOrder();
-				this.isUpdateLayersOrderQueued = false;
-			}
-			ige._renderFrames++;
+		if (ige.pixi.resizeQueuedAt && ige.pixi.resizeQueuedAt < ige._currentTime - 250) {
+			ige.pixi.resize();
+			ige.pixi.resizeQueuedAt = undefined;
 		}
+
+		if (ige.pixi.isUpdateLayersOrderQueued) {
+			ige.pixi.app.stage.updateLayersOrder();
+			ige.pixi.isUpdateLayersOrderQueued = false;
+		}
+		ige._renderFrames++;
+
 		if (ige.pixi.viewport.dirty && ige._cullCounter % 4 == 0) {
 			ige.pixi.cull.cull(ige.pixi.viewport.getVisibleBounds());
 			ige.pixi.viewport.dirty = false;
@@ -34,11 +28,21 @@ class EntityTrack {
 
 		ige._cullCounter++;
 
-		ige.pixi.app.render();*/
+		ige.pixi.app.render();
 		// this.resizeCount = 0;
 	}
 
-	updateAllEntities (/*timeStamp*/) {
+	frameTick(): void {
+		ige.engineStep();
+		ige.input.processInputOnEveryFps();
+		this.timeStamp = Date.now();
+		this.pixiStuff();
+
+		this.updateAllEntities();
+
+	}
+
+	updateAllEntities (/*timeStamp*/): void {
 		var currentTime = Date.now();
 		if (!ige.lastTickTime) ige.lastTickTime = currentTime;
 		var tickDelta = currentTime - ige.lastTickTime;
@@ -57,7 +61,7 @@ class EntityTrack {
 			if (entity) {
 
 				// while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
-				/*if (ige.pixi.viewport.isZooming) {
+				if (ige.pixi.viewport.isZooming) {
 					if (entity.unitNameLabel) {
 						entity.unitNameLabel.updateScale();
 						entity.unitNameLabel.updatePosition();
@@ -69,17 +73,18 @@ class EntityTrack {
 							bar.updateScale();
 							bar.updatePosition();
 						});
-					}*/
+					}
 
-					/*if (openChatBubble[entityId]) {
+					// global nonsense that we should address
+					if (openChatBubble[entityId]) {
 						var chatBubble = ige.$(openChatBubble[entityId]);
 						chatBubble.updateScale();
 						chatBubble.updatePosition();
-					}*/
-				//}
+					}
+				}
 
 				// handle entity behaviour and transformation offsets
-				/*if (ige.gameLoopTickHasExecuted) {
+				if (ige.gameLoopTickHasExecuted) {
 					if (entity._deathTime !== undefined && entity._deathTime <= ige._tickStart) {
 						// Check if the deathCallBack was set
 						if (entity._deathCallBack) {
@@ -112,13 +117,13 @@ class EntityTrack {
 							}
 						}
 					}
-				}*/
+				}
 				// return if entity is culled
 				// if (entity.isCulled) {
 				//     continue;
 				// }
 				// update transformation using incoming network stream
-				/*if (ige.network.stream && ige._renderLatency != undefined) {
+				if (ige.network.stream && ige._renderLatency != undefined) {
 					entity._processTransform();
 				}
 
@@ -158,14 +163,6 @@ class EntityTrack {
 					}
 
 					entity.transformPixiEntity(x, y, rotate);
-					// if (entity._pixiCollider && entity.bodyDef.type != 'static' && entity.bodyDef) {
-					// 	var w_xf = entity._pixiCollider.transform.worldTransform;
-					// 	console.log(
-					// 		`World xy:  (${w_xf.tx}, ${w_xf.ty})` +
-					// 		`\nLocal x-axis slope: ${w_xf.c / w_xf.a}` +
-					// 		`\nLocal y-axis slope: ${w_xf.d / w_xf.b}`
-					// 	);
-					// }
 
 					// handle animation
 					if (entity.pixianimation) {
@@ -181,14 +178,14 @@ class EntityTrack {
 							entity.pixianimation.fpsCount += tickDelta;
 						}
 					}
-				}*/
+				}
 			}
 		}
 
 		ige.lastTickTime = currentTime;
 
-		/*if (ige.gameLoopTickHasExecuted) {
+		if (ige.gameLoopTickHasExecuted) {
 			ige.gameLoopTickHasExecuted = false;
-		}*/
+		}
 	}
 }
