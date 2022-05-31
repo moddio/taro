@@ -2548,7 +2548,7 @@ var IgeEntity = IgeObject.extend({
 
 		if (ige.isClient) {
 			var entityId = this.entityId || this.id();
-			if (ige.entityTrack.trackEntityById[entityId.id]) {
+			if (ige.entityTrack.trackEntityById[entityId]) {
 				// entity.destroy()
 				// ige.pixi.viewport.follow();
 				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
