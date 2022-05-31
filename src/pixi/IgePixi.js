@@ -123,8 +123,6 @@ var IgeInitPixi = IgeClass.extend({
 			this.isUpdateLayersOrderQueued = false;
 		}
 
-		ige._renderFrames++;
-
 		if (ige.pixi.viewport.dirty && ige._cullCounter % 4 == 0) {
 			ige.pixi.cull.cull(ige.pixi.viewport.getVisibleBounds());
 			ige.pixi.viewport.dirty = false;
