@@ -112,9 +112,6 @@ var IgeInitPixi = IgeClass.extend({
 	},
 
 	frameTick: function () {
-		ige.engineStep();
-		ige.input.processInputOnEveryFps();
-		this.timeStamp = Date.now();
 
 		if (this.resizeQueuedAt && this.resizeQueuedAt < ige._currentTime - 250) {
 			this.resize();
