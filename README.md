@@ -38,7 +38,7 @@ Node Versions below [14](https://nodejs.org) are not supported due to package in
 
 ## Running a game server 
 
-- Import you game.json file into /taro/src/ directory
+- Import your game.json file into /taro/src/ directory
 
 To run the game server, execute the following command:
 ```
