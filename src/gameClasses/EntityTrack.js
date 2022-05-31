@@ -3,29 +3,12 @@ var EntityTrack = /** @class */ (function () {
         console.log('EntityTrack');
         this.trackEntityById = {};
     }
-    EntityTrack.prototype.pixiStuff = function () {
-        if (ige.pixi.resizeQueuedAt && ige.pixi.resizeQueuedAt < ige._currentTime - 250) {
-            ige.pixi.resize();
-            ige.pixi.resizeQueuedAt = undefined;
-        }
-        if (ige.pixi.isUpdateLayersOrderQueued) {
-            ige.pixi.app.stage.updateLayersOrder();
-            ige.pixi.isUpdateLayersOrderQueued = false;
-        }
-        ige._renderFrames++;
-        if (ige.pixi.viewport.dirty && ige._cullCounter % 4 == 0) {
-            ige.pixi.cull.cull(ige.pixi.viewport.getVisibleBounds());
-            ige.pixi.viewport.dirty = false;
-        }
-        ige._cullCounter++;
-        ige.pixi.app.render();
-        // this.resizeCount = 0;
-    };
     EntityTrack.prototype.frameTick = function () {
         ige.engineStep();
         ige.input.processInputOnEveryFps();
         this.timeStamp = Date.now();
-        this.pixiStuff();
+        ige.pixi.frameTick();
+        ige._renderFrames++;
         this.updateAllEntities();
     };
     EntityTrack.prototype.updateAllEntities = function ( /*timeStamp*/) {

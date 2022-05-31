@@ -8,4 +8,5 @@ declare class IgeInitPixi extends IgeClass {
 	app: any;
 	cull: any;
 	resize (): void;
+	frameTick (): void;
 }

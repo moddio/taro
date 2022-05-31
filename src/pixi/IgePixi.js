@@ -110,6 +110,35 @@ var IgeInitPixi = IgeClass.extend({
 			});
 		}
 	},
+
+	frameTick: function () {
+		ige.engineStep();
+		ige.input.processInputOnEveryFps();
+		this.timeStamp = Date.now();
+
+		if (this.resizeQueuedAt && this.resizeQueuedAt < ige._currentTime - 250) {
+			this.resize();
+			this.resizeQueuedAt = undefined;
+		}
+
+		if (this.isUpdateLayersOrderQueued) {
+			this.app.stage.updateLayersOrder();
+			this.isUpdateLayersOrderQueued = false;
+		}
+
+		ige._renderFrames++;
+
+		if (ige.pixi.viewport.dirty && ige._cullCounter % 4 == 0) {
+			ige.pixi.cull.cull(ige.pixi.viewport.getVisibleBounds());
+			ige.pixi.viewport.dirty = false;
+		}
+
+		ige._cullCounter++;
+
+		ige.pixi.app.render();
+		// this.resizeCount = 0;
+	},
+
 	resize: function () {
 		if (ige.pixi.viewport && ige.pixi.viewport.scale) {
 			var currentWindowHeight = window.innerHeight;
