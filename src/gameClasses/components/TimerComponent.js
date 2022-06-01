@@ -47,7 +47,7 @@ var TimerComponent = IgeEntity.extend({
 	},
 
 	getTimeLimit: function () {
-		let timeLimitMin = 10; // kill t1 if empty for 10 mins
+		let timeLimitMin = 10; // kill t1/t2 if empty for 10 mins
 		// const totalPlayCount = ige.server.totalPlayCount || 0;
 
 		// // add 1 minute for every 2000 total play count
