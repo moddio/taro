@@ -70,7 +70,9 @@ var IgeInitPixi = IgeClass.extend({
 
 		// highjacking pixi ticker to call our new frameTick()
 		var frameTick = function () {
-			ige.entityTrack.frameTick();
+			// ige.entityTrack.frameTick();
+			ige.client.emit('tick');
+			self.frameTick();
 		};
 		this.ticker.add(frameTick);
 		//

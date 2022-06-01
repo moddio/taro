@@ -1,6 +1,6 @@
-declare class Client extends IgeClass {
+declare class Client extends IgeEventingClass {
 	constructor(options?: object);
-	entityUpdateQueue: any[];
+	entityUpdateQueue: any;
 	myPlayer: any; // Player
 	selectedUnit: any; // Unit
 }

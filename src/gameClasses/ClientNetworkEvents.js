@@ -10,7 +10,6 @@ var ClientNetworkEvents = {
 	},
 
 	_onUpdateAllEntities: function (data) {
-		// console.log("_onUpdateAllEntities", data)
 		for (entityId in data) {
 			var entity = ige.$(entityId);
 			if (ige.client.entityUpdateQueue[entityId] == undefined) {
@@ -19,6 +18,7 @@ var ClientNetworkEvents = {
 
 			if (ige.client.isActiveTab) {
 				var stats = data[entityId];
+
 				for (key in stats) {
 					if (stats[key] != undefined) {
 						// use for mounting offscreen entitys when it starts firing

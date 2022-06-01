@@ -3,13 +3,8 @@ var EntityTrack = /** @class */ (function () {
         console.log('EntityTrack');
         this.trackEntityById = {};
     }
-    EntityTrack.prototype.frameTick = function () {
-        ige.engineStep();
-        ige.input.processInputOnEveryFps();
-        this.timeStamp = Date.now();
-        ige.pixi.frameTick();
-        ige._renderFrames++;
-        this.updateAllEntities();
+    EntityTrack.prototype.applyRendererEvents = function () {
+        ige.client.on('tick', this.frameTick, this);
     };
     EntityTrack.prototype.updateAllEntities = function ( /*timeStamp*/) {
         var currentTime = Date.now();
@@ -60,9 +55,11 @@ var EntityTrack = /** @class */ (function () {
                         entity._behaviour();
                     }
                     // handle streamUpdateData
+                    //
+                    // iterate entityUpdateQueue[entityId] here?
                     if (ige.client.myPlayer) {
                         var updateQueue = ige.client.entityUpdateQueue[entityId];
-                        if (updateQueue && updateQueue.length > 0) {
+                        while (updateQueue && updateQueue.length > 0) {
                             var nextUpdate = updateQueue[0];
                             if (
                             // Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
@@ -140,6 +137,15 @@ var EntityTrack = /** @class */ (function () {
         if (ige.gameLoopTickHasExecuted) {
             ige.gameLoopTickHasExecuted = false;
         }
+    };
+    EntityTrack.prototype.frameTick = function () {
+        ige.engineStep();
+        ige.input.processInputOnEveryFps();
+        this.timeStamp = Date.now();
+        // ige.pixi.frameTick();
+        ige._renderFrames++;
+        console.log('tick', this.timeStamp);
+        this.updateAllEntities();
     };
     return EntityTrack;
 }());

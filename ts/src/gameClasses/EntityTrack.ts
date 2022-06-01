@@ -3,20 +3,13 @@ class EntityTrack {
 	timeStamp: number;
 
 	constructor() {
-		console.log('EntityTrack');
+		console.log('EntityTrack born');
 
 		this.trackEntityById = {};
 	}
 
-	frameTick(): void {
-		ige.engineStep();
-		ige.input.processInputOnEveryFps();
-		this.timeStamp = Date.now();
-		ige.pixi.frameTick();
-		ige._renderFrames++;
-
-		this.updateAllEntities();
-
+	applyRendererEvents(): void {
+		ige.client.on('tick', this.frameTick, this);
 	}
 
 	updateAllEntities (/*timeStamp*/): void {
@@ -76,15 +69,18 @@ class EntityTrack {
 					}
 
 					// handle streamUpdateData
+					//
+					// iterate entityUpdateQueue[entityId] here?
 					if (ige.client.myPlayer) {
 						var updateQueue = ige.client.entityUpdateQueue[entityId];
-						if (updateQueue && updateQueue.length > 0) {
+						while (updateQueue && updateQueue.length > 0) {
 							var nextUpdate = updateQueue[0];
+
 							if (
 							// Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
 								entity._category == 'item' &&
-                                ((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
-                                    ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
+								((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
+									((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
 							) {
 								// console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
 							} else {
@@ -164,5 +160,17 @@ class EntityTrack {
 		if (ige.gameLoopTickHasExecuted) {
 			ige.gameLoopTickHasExecuted = false;
 		}
+	}
+
+	frameTick(): void {
+		ige.engineStep();
+		ige.input.processInputOnEveryFps();
+		this.timeStamp = Date.now();
+		// ige.pixi.frameTick();
+		ige._renderFrames++;
+		// console.log ('tick', this.timeStamp);
+
+		this.updateAllEntities();
+
 	}
 }
