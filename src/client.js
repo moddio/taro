@@ -45,6 +45,7 @@ const Client = IgeEventingClass.extend({
 		this.physicsConfigLoaded = $.Deferred();
 		this.texturesLoaded = $.Deferred();
 		this.mapLoaded = $.Deferred();
+        this.phaserLoaded = $.Deferred();
 
 		// after rewrite then testing, this obviously stayed 'pending' so lets comment it out for now
 		// this.miniMapLoaded = $.Deferred(); // well are we using it
@@ -185,6 +186,7 @@ const Client = IgeEventingClass.extend({
 			// let's try here
 			ige.entityTrack = new EntityTrack();
 			ige.entityTrack.applyRendererEvents();
+            ige.phaser = new PhaserRenderer();
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
 			ige.addComponent(IgeNetIoComponent);
@@ -354,7 +356,7 @@ const Client = IgeEventingClass.extend({
 
 			// added important configuration details for sandbox
 			if (mode == 'sandbox') {
-				$.when(this.mapLoaded)
+				$.when(this.mapLoaded, this.phaserLoaded)
 					.done(() => {
 						ige.mapEditor.scanMapLayers();
 						ige.mapEditor.drawTile();
@@ -403,7 +405,7 @@ const Client = IgeEventingClass.extend({
 		// doing these with this.igeEngineStarted.done()
 		// we can move the Deferred for mapLoaded to before engine start
 		//
-		$.when(this.igeEngineStarted, this.mapLoaded).done(() => {
+		$.when(this.igeEngineStarted, this.mapLoaded, this.phaserLoaded).done(() => {
 			// old comment => 'center camera while loading'
 			const tileWidth = ige.scaleMapDetails.tileWidth;
 			const tileHeight = ige.scaleMapDetails.tileHeight;
@@ -716,14 +718,15 @@ const Client = IgeEventingClass.extend({
 	//
 	setZoom: function(zoom) {
 		// old comment => 'on mobile increase default zoom by 25%'
-		let zoomVar = zoom;
 		if (ige.isMobile) {
-			zoomVar *= 0.75;
+			zoom *= 0.75;
 		}
 
-		ige.pixi.zoom(zoomVar);
+		ige.pixi.zoom(zoom);
 		// there was a bunch of stuff involving viewports and view areas in the old method,
 		// it appeared to be out of use.
+
+		this.emit('zoom', zoom);
 	},
 
 	//
@@ -901,7 +904,9 @@ const Client = IgeEventingClass.extend({
 			console.log('setting gravity: ', gravity); // not in prod please
 			ige.physics.gravity(gravity.x, gravity.y);
 		}
-
+		if (ige.physics.engine == 'CRASH') {
+			ige.physics.addBorders();
+		}
 		ige.physics.createWorld();
 		ige.physics.start();
 

@@ -7,12 +7,7 @@ var IgePixiMap = IgeClass.extend({
 		this.layersGroup = {};
 	},
 	loadJson: function (map, callback) {
-		var mapWidth = map.width;
-		var mapHeight = map.height;
-		var layerArray = map.layers;
-		var layerCount = layerArray ? layerArray.length : 0;
 		var tileSetArray = map.tilesets;
-		var tileSetCount = tileSetArray ? tileSetArray.length : 0;
 		var layersById = {};
 		var layersByKey = {};
 		var self = this;
@@ -164,4 +159,6 @@ var IgePixiMap = IgeClass.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiMap; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgePixiMap;
+}

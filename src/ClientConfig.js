@@ -69,9 +69,24 @@ var igeClientConfig = {
 		'pixi/IgePixiChatBubble.js',
 		'pixi/PixiAttributeBar.js',
 
+		/* Phaser */
+		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',
+		'renderer/phaser/enums/FlipMode.js',
+		'renderer/phaser/classes/PhaserUnit.js',
+		'renderer/phaser/classes/PhaserProjectile.js',
+		'renderer/phaser/classes/PhaserAttributeBar.js',
+		'renderer/phaser/classes/PhaserItem.js',
+		'renderer/phaser/classes/PhaserChatBubble.js',
+		'renderer/phaser/classes/PhaserRegion.js',
+		'renderer/phaser/scenes/GameScene.js',
+		'renderer/phaser/scenes/MobileControlsScene.js',
+		'renderer/phaser/PhaserRenderer.js',
+
 		'/client.js',
 		'/index.js'
 	]
 };
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = igeClientConfig; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = igeClientConfig;
+}

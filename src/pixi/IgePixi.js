@@ -4,7 +4,6 @@ var IgeInitPixi = IgeClass.extend({
 	componentId: 'pixi',
 
 	init: function () {
-		var self = this;
 
 		ige.addComponent(IgeInputComponent);
 		ige.addComponent(IgePixiTexture);
@@ -214,5 +213,5 @@ var IgeInitPixi = IgeClass.extend({
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-	module.exports = IgePixiMap;
+	module.exports = IgeInitPixi;
 }

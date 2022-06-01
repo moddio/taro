@@ -271,6 +271,8 @@ var IgeEntity = IgeObject.extend({
 
 			// default loop to undefined;
 			this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+
+			this.emit('play-animation', animationId);
 		}
 	},
 
@@ -2045,12 +2047,15 @@ var IgeEntity = IgeObject.extend({
 							position.y *= this._b2dRef._scaleRatio;
 						}
 						projectile.defaultData = {
+							//type: effect.projectileType,
 							translate: {
 								x: position.x,
 								y: position.y
 							},
 							rotate: this._rotate.z
 						};
+						//fix added for correct phaser projectile texture
+						projectile.type = effect.projectileType;
 						new Projectile(projectile);
 					}
 				}
@@ -2553,6 +2558,7 @@ var IgeEntity = IgeObject.extend({
 				// ige.pixi.viewport.follow();
 				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
 					ige.pixi.viewport.removePlugin('follow');
+					this.emit('stop-follow');
 				}
 				var texture = ige.entityTrack.trackEntityById[entityId]._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiText || ige.entityTrack.trackEntityById[entityId];
 				// its not instance of ige

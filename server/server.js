@@ -277,6 +277,9 @@ var Server = IgeClass.extend({
 
 		app.use('/assets', express.static(path.resolve('./assets/'), { cacheControl: 7 * 24 * 60 * 60 * 1000 }));
 
+		// dependencies (e.g. Phaser)
+		app.use('/node_modules', express.static(path.resolve('./node_modules/')));
+
 		if (global.isDev) {
 			// needed for source maps
 			app.use('/ts', express.static(path.resolve('./ts/')));

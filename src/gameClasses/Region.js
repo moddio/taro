@@ -74,6 +74,13 @@ var Region = IgeEntityPhysics.extend({
 
 				self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
 
+				//later move phaser render event here
+				//ige.client.emit('create-region', this);
+
+				/*if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
+					
+				}*/
+
 				// self.regionUi.depth(10)
 				//     .layer(2)
 				//     .drawBoundsData(false)

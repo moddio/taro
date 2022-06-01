@@ -1,6 +1,10 @@
 declare class Client extends IgeEventingClass {
+
+	myPlayer: IgeEntity;
+	selectedUnit: IgeEntity;
+	entityUpdateQueue: Record<string, UpdateData[]>;
+
+	phaserLoaded: JQueryDeferred<void>;
+
 	constructor(options?: object);
-	entityUpdateQueue: any;
-	myPlayer: any; // Player
-	selectedUnit: any; // Unit
 }

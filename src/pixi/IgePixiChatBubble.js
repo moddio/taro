@@ -21,6 +21,7 @@ var IgePixiChatBubble = IgeEntity.extend({
 			words = words.substring(0, 40);
 			words += '...';
 		}
+		
 		var style = {
 			fill: '#FFFFFF',
 			// fontFamily: "Verdana",

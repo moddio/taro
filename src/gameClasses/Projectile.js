@@ -85,6 +85,9 @@ var Projectile = IgeEntityPhysics.extend({
 		if (ige.isServer) {
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
+
+			ige.client.emit('create-projectile', this);
+
 			if (currentState) {
 				var defaultAnimation = this._stats.animations[currentState.animation];
 				this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
@@ -188,4 +191,6 @@ var Projectile = IgeEntityPhysics.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Projectile; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Projectile;
+}

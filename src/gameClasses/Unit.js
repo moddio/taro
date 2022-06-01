@@ -78,7 +78,8 @@ var Unit = IgeEntityPhysics.extend({
 			// this.drawCrashCollider(data.defaultData);
 			self.mount(ige.pixi.world);
 			this.transformPixiEntity(this._translate.x, this._translate.y);
-			// console.log(this._id, this._translate);
+
+			ige.client.emit('create-unit', this);
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
@@ -201,6 +202,9 @@ var Unit = IgeEntityPhysics.extend({
 		self.attributeBars = [];
 
 		if (!ownerPlayer) {
+			this.emit('render-attributes', {
+				attrs: attributesToRender
+			});
 			return;
 		}
 
@@ -231,6 +235,10 @@ var Unit = IgeEntityPhysics.extend({
 				index: i
 			});
 		}
+
+		this.emit('render-attributes', {
+			attrs: attributesToRender
+		});
 	},
 
 	updateAttributeBar: function (attr) {
@@ -279,6 +287,11 @@ var Unit = IgeEntityPhysics.extend({
 			if (pixiBar && shouldRender && showOnlyWhenValueChanged) {
 				pixiBar.showValueAndFadeOut();
 			}
+
+			this.emit('update-attribute', {
+				attr: attr,
+				shouldRender: shouldRender
+			});
 		}
 	},
 
@@ -1107,6 +1120,7 @@ var Unit = IgeEntityPhysics.extend({
 		);
 
 		if (hideLabel) {
+			this.emit('hide-label');
 			return;
 		}
 
@@ -1129,6 +1143,12 @@ var Unit = IgeEntityPhysics.extend({
 		self.unitNameLabel._pixiText._style._fontWeight = 599; //recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
 
 		this._pixiContainer.addChild(self.unitNameLabel._pixiText);
+
+		this.emit('update-label', {
+			text: self._stats.name,
+			bold: isMyUnit,
+			color: color
+		});
 	},
 
 	// destroy the existing name label of this unit, and crate a new name label using unit's owner player's name.
@@ -1898,4 +1918,6 @@ var Unit = IgeEntityPhysics.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Unit; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Unit;
+}

@@ -1,6 +1,6 @@
 var EntityTrack = /** @class */ (function () {
     function EntityTrack() {
-        console.log('EntityTrack');
+        console.log('EntityTrack born');
         this.trackEntityById = {};
     }
     EntityTrack.prototype.applyRendererEvents = function () {
@@ -144,7 +144,7 @@ var EntityTrack = /** @class */ (function () {
         this.timeStamp = Date.now();
         // ige.pixi.frameTick();
         ige._renderFrames++;
-        console.log('tick', this.timeStamp);
+        // console.log ('tick', this.timeStamp);
         this.updateAllEntities();
     };
     return EntityTrack;

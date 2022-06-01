@@ -24,7 +24,6 @@ var PixiAttributeBar = IgeEntity.extend({
 		var container = new PIXI.Container();
 		var entity = ige.$(self._stats.parentId);
 		self.index = attributeData.index;
-		self.borderThickness = 2;
 
 		self.pixiBarBorder = new PIXI.Graphics();
 		self.pixiBarMask = new PIXI.Graphics();
