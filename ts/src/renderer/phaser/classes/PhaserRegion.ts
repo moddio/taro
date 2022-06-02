@@ -3,18 +3,29 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 	private width: number;
 	private height: number;
 
+	private updateDimensionsListener: EvtListener;
+
 	constructor (
 		scene: Phaser.Scene,
 		private region: Region
 	) {
 		super(scene);
 
-		const stats = this.region._stats.default
+		// looking at whether to use _stats.default or _stats.currentBody
+		// appears the implementation of currentBody for regions is unfinished,
+		// but everything we should need for rendering is contained in default.
+		//
+		// I believe this is an issue unique to 'Region'
+		const stats = this.region._stats.default;
 
-		// draw rectangle
 		const width = this.width = stats.width;
 		const height = this.height = stats.height;
-		this.fillStyle(0xFF0000, 0.4);
+
+		// Phaser wants a number for these
+		this.fillStyle(
+			Number(`0x${stats.inside.substring(1)}`),
+			stats.alpha / 100 || 0.4
+		);
 		this.fillRect(
 			0,
 			0,
@@ -26,37 +37,47 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		this.y = stats.y;
 
 		scene.add.existing(this);
-		scene.events.on('update', this.update, this);
-	}
 
-	update (/*time: number, delta: number*/): void {
+		this.updateDimensionsListener = region.on('update-region-dimensions', () => {
 
-		const region = this.region;
-		const container = region.regionUi._pixiContainer;
+			const stats = this.region._stats.default;
 
-		if (region._destroyed || container._destroyed) {
-			this.scene.events.off('update', this.update, this);
-			this.destroy();
-			return;
-		}
+			// I didn't want to go too deep on the entity stream/update process, but because of the current logic,
+			// if we stream changes to (3) variables, this will fire (3) times.
+			console.log(`PhaserRegion update ${region._stats.id} ${region._id}`); // TODO: Remove
 
-		const stats = this.region._stats.default
-
-		this.x = stats.x;
-		this.y = stats.y;
-
-		if (this.width !== stats.width || this.height !== stats.height) {
+			this.x = stats.x;
+			this.y = stats.y;
 			this.width = stats.width;
 			this.height = stats.height;
 
 			this.clear();
-			this.fillStyle(0xFF0000, 0.4);
+			this.fillStyle(
+				Number(`0x${stats.inside.substring(1)}`),
+				stats.alpha / 100 || 0.4
+			);
 			this.fillRect(
 				0,
 				0,
 				stats.width,
 				stats.height
 			);
+		});
+
+		scene.events.on('update', this.update, this);
+	}
+
+	update (/*time: number, delta: number*/): void {
+
+		if (this.region._destroyed) {
+
+			this.region.off('update-region-dimensions', this.updateDimensionsListener)
+			this.scene.events.off('update', this.update, this);
+			this.destroy();
+			return;
 		}
+
+
+
 	}
 }

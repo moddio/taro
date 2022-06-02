@@ -1,4 +1,3 @@
-
 var Region = IgeEntityPhysics.extend({
 	classId: 'Region',
 	componentId: 'region',
@@ -9,7 +8,10 @@ var Region = IgeEntityPhysics.extend({
 		// on server regions are offsetted by 2 tile. So adding offset just server
 		// making region work fine on both side
 
+		// TODO: look into the above comment and confirm or deny.
+
 		this.id(entityIdFromServer);
+
 		var self = this;
 		var regionName = typeof data.id === 'string' ? data.id : null;
 
@@ -55,31 +57,64 @@ var Region = IgeEntityPhysics.extend({
 				self._translate.x = regionDimension.x + (regionDimension.width / 2);
 				self._translate.y = regionDimension.y + (regionDimension.height / 2);
 			}
-			
-	
+
 			self.updateBody({
 				translate: { x: self._translate.x, y: self._translate.y}
 			});
+
+			// will leave this for a little while longer. this is sloont's from
+			// drawing Crash Colliders
+
 			// if (ige.isClient) {
 			// 	this._pixiContainer = new PIXI.Container();
 			// 	this.drawCrashCollider(regionDimension);
 			// }
 
+			//
+
 			if (ige.isServer) {
+				// IgeEntity.streamMode(val)
+				// 1 is 'automatic' streaming
 				self.streamMode(1);
 			} else if (ige.isClient) {
-				if (typeof mode === 'string' && mode === 'sandbox') {
-					delete self._stats.value;
+				if ((mode === 'play' && self._stats.default.inside) || mode === 'sandbox') {
+					// o.O TODO: Remove /refactor
+					ige.pixi.trackEntityById[entityIdFromServer] = this;
+					ige.client.emit('create-region', this);
 				}
 
-				self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
+				if (typeof mode === 'string' && mode === 'sandbox') {
+					delete self._stats.value;
 
-				//later move phaser render event here
-				//ige.client.emit('create-region', this);
+					if (ige.game.data.isDeveloper) {
+						// creating region click handler if user is developer
+						// /
+						// need to see if we can do this with simple region instead
+						// of using regionUi because we want to remove it entirely
+						// /
 
-				/*if ((mode === 'play' && (self._stats.default.inside || self._stats.default.outside)) || mode === 'sandbox') {
-					
-				}*/
+						// IgeObject method
+						self.drawMouse(true)
+							// IgeEntity method (IgeUiEntity extends...)
+							.mouseDown(function (event, evc) {
+								if (
+									ige.mapEditor.selectEntities &&
+									event.which === 1 &&
+									!ige.mapEditor.mouseDownOnMiniMap &&
+									!ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY)
+								) {
+									var selectedRegion = self;
+									if (selectedRegion._stats && selectedRegion._stats.id) {
+										ige.regionManager.openRegionModal(selectedRegion._stats, selectedRegion._stats.id, false);
+									}
+								}
+							});
+					}
+				}
+				// removing references to regionUi.
+				// /
+				// self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
+				// /
 
 				// self.regionUi.depth(10)
 				//     .layer(2)
@@ -91,32 +126,13 @@ var Region = IgeEntityPhysics.extend({
 				//     .bounds2d(self._stats.default.width, self._stats.default.height, 0)
 				// .mount(ige.client.rootScene);
 
-				if (mode === 'sandbox') {
-					self.font = new FloatingText(regionName);
-					self.font.colorOverlay('#fff')
-						.translateTo(self._stats.default.x, self._stats.default.y, 0)
-						.mount(ige.client.rootScene)
-						.drawBounds(false);
-
-					if (ige.game.data.isDeveloper) {
-						// creating region click handler if user is developer
-						self.regionUi
-							.drawMouse(true)
-							.mouseDown(function (event, evc) {
-								if (
-									ige.mapEditor.selectEntities &&
-                                    event.which === 1 &&
-                                    !ige.mapEditor.mouseDownOnMiniMap &&
-                                    !ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY)
-								) {
-									var selectedRegion = self;
-									if (selectedRegion._stats && selectedRegion._stats.id) {
-										ige.regionManager.openRegionModal(selectedRegion._stats, selectedRegion._stats.id, false);
-									}
-								}
-							});
-					}
-				}
+				// TODO? I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
+				// Only other reference is AttributeComponent.js:init
+				// self.font = new FloatingText(regionName);
+				// self.font.colorOverlay('#fff')
+				// 	.translateTo(self._stats.default.x, self._stats.default.y, 0)
+				// 	.mount(ige.client.rootScene)
+				// 	.drawBounds(false);
 			}
 		}
 	},
@@ -125,6 +141,7 @@ var Region = IgeEntityPhysics.extend({
 		this.translateTo(regionCordinates.x + (regionCordinates.width / 2), regionCordinates.y + (regionCordinates.height / 2), 0);
 		this.width(regionCordinates.width);
 		this.height(regionCordinates.height);
+
 		if (ige.isServer) {
 			var shapeData = {};
 			var normalizer = 0.45;
@@ -134,17 +151,20 @@ var Region = IgeEntityPhysics.extend({
 			// shapeData.y = regionCordinates.y;
 			this._stats.currentBody.fixtures[0].shape.data = shapeData;
 			this.physicsBody(this._stats.currentBody);
+
+		} else { // isClient
+			this.emit('update-region-dimensions');
 		}
 
-		if (this.regionUi) {
-			this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
-			this.regionUi.width(regionCordinates.width);
-			this.regionUi.height(regionCordinates.height);
-		}
+		// if (this.regionUi) {
+		// 	this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
+		// 	this.regionUi.width(regionCordinates.width);
+		// 	this.regionUi.height(regionCordinates.height);
+		// }
 
-		if (this.font) {
-			this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
-		}
+		// if (this.font) {
+		// 	this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
+		// }
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -163,12 +183,12 @@ var Region = IgeEntityPhysics.extend({
 	},
 
 	deleteRegion: function () {
-		if (this.font) {
-			this.font.destroy();
-		}
-		if (this.regionUi) {
-			this.regionUi.destroy();
-		}
+		// if (this.font) {
+		// 	this.font.destroy();
+		// }
+		// if (this.regionUi) {
+		// 	this.regionUi.destroy();
+		// }
 		this.destroy();
 	}
 });

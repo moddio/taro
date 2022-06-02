@@ -1642,6 +1642,8 @@ var IgeObject = IgeEventingClass.extend({
 				this.viewCheckChildren();
 			}
 			// dont render regions if they are not visible
+
+			// leaving comment to potentially remove or change to just 'region'
 			if (this._category === 'regionUi' && this._stats.default && !(this._stats.default.inside || this._stats.default.outside)) {
 				return;
 			}
