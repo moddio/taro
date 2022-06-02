@@ -115,7 +115,7 @@ var EntityTrack = /** @class */ (function () {
                         y += entity.tween.offset.y;
                         rotate += entity.tween.offset.rotate;
                     }
-                    entity.transformPixiEntity(x, y, rotate);
+                    entity.transformEntity(x, y, rotate);
                     // handle animation
                     if (entity.pixianimation) {
                         if (entity.pixianimation.animating) {

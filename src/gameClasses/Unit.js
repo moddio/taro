@@ -73,11 +73,11 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.isClient) {
-			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
+			this.createTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
 			// new
 			// this.drawCrashCollider(data.defaultData);
 			self.mount(ige.pixi.world);
-			this.transformPixiEntity(this._translate.x, this._translate.y);
+			this.transformEntity(this._translate.x, this._translate.y);
 			// console.log(this._id, this._translate);
 		}
 

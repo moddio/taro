@@ -112,7 +112,36 @@ var IgeInitPixi = IgeEventingClass.extend({
 			});
 		}
 
-		this.on('show', this.show);
+		ige.client.on('show', function (e) {
+			ige.pixi.show(e);
+		});
+		ige.client.on('hide', function (e) {
+			ige.pixi.hide(e);
+		});
+		ige.client.on('applyAnimation', function (e) {
+			ige.pixi.applyAnimation(e);
+		});
+		ige.client.on('createTexture', function (e) {
+			ige.pixi.createTexture(e);
+		});
+		ige.client.on('updateTexture', function () {
+			ige.pixi.updateTexture();
+		});
+		ige.client.on('destroyTexture', function (e) {
+			ige.pixi.destroyTexture(e);
+		});
+		ige.client.on('width', function (e) {
+			ige.pixi.width(e);
+		});
+		ige.client.on('height', function (e) {
+			ige.pixi.height(e);
+		});
+		ige.client.on('transform', function (e) {
+			ige.pixi.transform(e);
+		});
+		ige.client.on('scale', function (e) {
+			ige.pixi.scale(e);
+		});
 	},
 
 	frameTick: function () {
@@ -219,7 +248,151 @@ var IgeInitPixi = IgeEventingClass.extend({
 		if (pixiEntity) {
 			pixiEntity.visible = true;
 		}
-	}
+	},
+	hide: function (entity) {
+		var pixiEntity = entity._pixiText || entity._pixiTexture;
+		if (pixiEntity) {
+			pixiEntity.visible = false;
+		}
+	},
+	applyAnimation: function (info) {
+		var cellSheetAnimId;
+		var entity = info.entity;
+		var cellSheet = info.cellSheet;
+		var animation = info.animation;
+		var animationId = info.animationId;
+		var url = cellSheet.url;
+		var rows = cellSheet.rowCount;
+		var columns = cellSheet.columnCount;
+		cellSheetAnimId = cellSheet.url;
+		var fps = animation.framesPerSecond || 15;
+		var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
+		ige.client.cellSheets[cellSheetAnimId] = entity.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
+		entity.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+	},
+	createTexture: function (info) {
+		var entity = info.entity;
+		var defaultSprite = info.defaultSprite;
+		var defaultData = info.defaultData;
+		var texture = new IgePixiTexture(entity._stats.cellSheet.url, entity._stats.cellSheet.columnCount, entity._stats.cellSheet.rowCount, entity);
+		texture = texture.spriteFromCellSheet(defaultSprite);
+		if (!texture) {
+			return;
+		}
+		texture.width = (entity._stats.currentBody && entity._stats.currentBody.width) || entity._stats.width;
+		texture.height = (entity._stats.currentBody && entity._stats.currentBody.height) || entity._stats.height;
+		if (texture.anchor) {
+			texture.anchor.set(0.5);
+		}
+		entity._pixiContainer.zIndex = (entity._stats.currentBody && entity._stats.currentBody['z-index'] && entity._stats.currentBody['z-index'].layer) || 3;
+		entity._pixiContainer.depth = (entity._stats.currentBody && entity._stats.currentBody['z-index'] && entity._stats.currentBody['z-index'].depth) || 3;
+		entity._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
+		entity._pixiContainer.entityId = entity.entityId;
+		entity._pixiContainer._category = entity._category;
+		entity._pixiTexture = texture;
+		entity._pixiContainer.addChild(texture);
+
+		if (defaultData) {
+			entity._pixiContainer.x = defaultData.translate.x;
+			entity._pixiContainer.y = defaultData.translate.y;
+			entity._pixiTexture.rotation = defaultData.rotate;
+		}
+		ige.entityTrack.trackEntityById[entity.entityId] = entity;
+	},
+	updateTexture: function () {
+		this.isUpdateLayersOrderQueued = true;
+	},
+	destroyTexture: function (entity) {
+		var entityId = entity.entityId || entity.id();
+		if (ige.entityTrack.trackEntityById[entityId] && ige.entityTrack.trackEntityById[entityId]._pixiContainer) {
+			// entity.destroy()
+			// ige.pixi.viewport.follow();
+			if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == entity.id()) {
+				ige.pixi.viewport.removePlugin('follow');
+			}
+			var texture = ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiText || ige.entityTrack.trackEntityById[entityId]._pixiContainer;
+			// its not instance of ige
+			if (texture && !texture.componentId && !texture._destroyed) {
+				ige.pixi.world.removeChild(texture);
+				texture.destroy({ children: true, texture: true });
+
+				if (ige.pixiMap.layersGroup && !ige.pixiMap.layersGroup.floor.parent && !ige.isLog) {
+					ige.isLog = true;
+				}
+			}
+			if (ige.entityTrack.trackEntityById[entityId]._pixiContainer) ige.entityTrack.trackEntityById[entityId]._pixiContainer._destroyed = true;
+			delete ige.entityTrack.trackEntityById[entityId];
+		}
+		if (entity.attributeBars) {
+			for (var attributeBarInfo of entity.attributeBars) {
+				var pixiBarId = attributeBarInfo.id;
+				var pixiBar = ige.$(pixiBarId);
+				pixiBar.destroy();
+			}
+		}
+	},
+	width: function (info) {
+		var entity = info.entity;
+		var px = info.px;
+		if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
+			entity._pixiTexture.width = px;
+		} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
+			entity._pixiContainer.width = px;
+		} else if (entity._pixiText && !entity._pixiText._destroyed) {
+			entity._pixiText.width = px;
+		}
+	},
+	height: function (info) {
+		var entity = info.entity;
+		var px = info.px;
+		if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
+			entity._pixiTexture.height = px;
+		} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
+			entity._pixiContainer.height = px;
+		} else if (entity._pixiText && !entity._pixiText._destroyed) {
+			entity._pixiText.height = px;
+		}
+	},
+	transform: function (info) {
+		var entity = info.entity;
+		var type = info.type;
+		var x = info.x;
+		var y = info.y;
+		var z = info.z;
+		var pixiObject = entity._pixiText || entity._pixiContainer;
+		if (pixiObject && !pixiObject._destroyed) {
+			if (entity._pixiTexture) {
+				entity._pixiTexture.rotation = z;
+			}
+			// new
+			if (entity._pixiCollider) {
+				entity._pixiCollider.rotation = z;
+			}
+			//
+			if (!type) {
+				pixiObject.x = x;
+				pixiObject.y = y;
+			}
+			pixiObject.dirty = true;
+			if (ige.pixi.viewport) {
+				ige.pixi.viewport.dirty = true;
+			}
+		}
+	},
+	scale: function (info) {
+		var entity = info.entity;
+		var x = info.x;
+		var y = info.y;
+		if (x !== undefined && y !== undefined) {
+			if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
+				entity._pixiTexture.scale.set(x, y);
+			} else if (entity._pixiText && !entity._pixiText._destroyed) {
+				entity._pixiText.scale.set(x, y);
+			} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
+				entity._pixiContainer.scale.set(x, y);
+			}
+		}
+	},
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

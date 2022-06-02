@@ -141,7 +141,7 @@ var ClientNetworkEvents = {
 			.layer(3)
 			.depth(3)
 			.colorOverlay(data.color || 'white')
-			.transformPixiEntity(data.position.x, data.position.y)
+			.transformEntity(data.position.x, data.position.y)
 			.mount(ige.pixi.world)
 			.fadeUp();
 	},

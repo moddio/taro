@@ -78,7 +78,7 @@ var Item = IgeEntityPhysics.extend({
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
-			self.createPixiTexture();
+			self.createTexture();
 			self.drawBounds(false);
 		}
 		self.playEffect('create');

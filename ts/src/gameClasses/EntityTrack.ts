@@ -133,7 +133,7 @@ class EntityTrack {
 						rotate += entity.tween.offset.rotate;
 					}
 
-					entity.transformPixiEntity(x, y, rotate);
+					entity.transformEntity(x, y, rotate);
 
 					// handle animation
 					if (entity.pixianimation) {
