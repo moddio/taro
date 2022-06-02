@@ -1,6 +1,6 @@
 var EntityTrack = /** @class */ (function () {
     function EntityTrack() {
-        console.log('EntityTrack');
+        console.log('EntityTrack born');
         this.trackEntityById = {};
     }
     EntityTrack.prototype.applyRendererEvents = function () {
@@ -11,14 +11,12 @@ var EntityTrack = /** @class */ (function () {
         if (!ige.lastTickTime)
             ige.lastTickTime = currentTime;
         var tickDelta = currentTime - ige.lastTickTime;
-        //console.log('entities count', Object.keys(this.trackEntityById).length);
         // var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
         for (var entityId in this.trackEntityById) {
-            //this delete _pixiContainer if it is _destroyed - maybe we can emit here destroy phaser sprite in future?
-            if (this.trackEntityById[entityId]._destroyed) {
+            /*if (this.trackEntityById[entityId]._pixiContainer && this.trackEntityById[entityId]._pixiContainer._destroyed) {
                 delete this.trackEntityById[entityId];
                 break;
-            }
+            }*/
             var entity = ige.$(entityId);
             if (entity) {
                 // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
@@ -144,7 +142,7 @@ var EntityTrack = /** @class */ (function () {
         this.timeStamp = Date.now();
         // ige.pixi.frameTick();
         ige._renderFrames++;
-        console.log('tick', this.timeStamp);
+        // console.log ('tick', this.timeStamp);
         this.updateAllEntities();
     };
     return EntityTrack;

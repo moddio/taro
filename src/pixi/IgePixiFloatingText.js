@@ -156,7 +156,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 
 			if (index > -1) {
 				var glueEntity = parentUnit.gluedEntities[index];
-				ige.entityTrack.trackEntityById[glueEntity.id] && ige.entityTrack.trackEntityById[glueEntity.id].destroy(true);
+				ige.entityTrack.trackEntityById[glueEntity.id] && ige.entityTrack.trackEntityById[glueEntity.id]._pixiContainer.destroy(true);
 				parentUnit.gluedEntities.splice(index, 1);
 			}
 		}

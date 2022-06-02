@@ -672,7 +672,7 @@ var IgeEntity = IgeObject.extend({
 			this._pixiContainer.y = defaultData.translate.y;
 			this._pixiTexture.rotation = defaultData.rotate;
 		}
-		ige.entityTrack.trackEntityById[this.entityId] = this._pixiContainer;
+		ige.entityTrack.trackEntityById[this.entityId] = this;
 	},
 
 	// drawCrashCollider: function (defaultData) {
@@ -2548,13 +2548,13 @@ var IgeEntity = IgeObject.extend({
 
 		if (ige.isClient) {
 			var entityId = this.entityId || this.id();
-			if (ige.entityTrack.trackEntityById[entityId]) {
+			if (ige.entityTrack.trackEntityById[entityId] && ige.entityTrack.trackEntityById[entityId]._pixiContainer) {
 				// entity.destroy()
 				// ige.pixi.viewport.follow();
 				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
 					ige.pixi.viewport.removePlugin('follow');
 				}
-				var texture = ige.entityTrack.trackEntityById[entityId]._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiText || ige.entityTrack.trackEntityById[entityId];
+				var texture = ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiText || ige.entityTrack.trackEntityById[entityId]._pixiContainer;
 				// its not instance of ige
 				if (texture && !texture.componentId && !texture._destroyed) {
 					ige.pixi.world.removeChild(texture);
@@ -2564,7 +2564,7 @@ var IgeEntity = IgeObject.extend({
 						ige.isLog = true;
 					}
 				}
-				ige.entityTrack.trackEntityById[entityId]._destroyed = true;
+				if (ige.entityTrack.trackEntityById[entityId]._pixiContainer) ige.entityTrack.trackEntityById[entityId]._pixiContainer._destroyed = true;
 				delete ige.entityTrack.trackEntityById[entityId];
 			}
 
