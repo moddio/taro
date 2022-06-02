@@ -25,7 +25,14 @@ class PhaserRenderer {
 			scene: [
 				GameScene,
 				MobileControlsScene
-			]
+			],
+			plugins: {
+				global: [{
+					key: 'virtual-joystick',
+					plugin: rexvirtualjoystickplugin,
+					start: true
+				}]
+			}
 		});
 	}
 }

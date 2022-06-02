@@ -69,6 +69,7 @@ var igeClientConfig = {
 
 		/* Phaser */
 		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',
+		'../node_modules/phaser3-rex-plugins/dist/rexvirtualjoystickplugin.js',
 		'renderer/phaser/enums/FlipMode.js',
 		'renderer/phaser/classes/PhaserUnit.js',
 		'renderer/phaser/classes/PhaserProjectile.js',
@@ -77,6 +78,7 @@ var igeClientConfig = {
 		'renderer/phaser/classes/PhaserChatBubble.js',
 		'renderer/phaser/classes/PhaserRegion.js',
 		'renderer/phaser/scenes/GameScene.js',
+		'renderer/phaser/classes/PhaserJoystick.js',
 		'renderer/phaser/scenes/MobileControlsScene.js',
 		'renderer/phaser/PhaserRenderer.js',
 
