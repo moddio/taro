@@ -207,7 +207,7 @@ var PlayerUiComponent = IgeEntity.extend({
 				});
 			}
 		}
-		var isExternal = !["http://modd.io", "https://modd.io", "https://www.modd.io", "http://modd.io"].includes(String(config.url)); 
+		var isExternal = !(new URL(config.url)).hostname.includes("modd.io"); 
 		if(isExternal){
 			swal({
 				html: `You are being redirected to ${config.url}.<br>Are you sure you want to visit this external site?`,
