@@ -106,10 +106,8 @@ var IgeEntity = IgeObject.extend({
 
 			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
 			self._hidden = false;
-			var pixiEntity = self._pixiText || self._pixiTexture;
-			if (pixiEntity) {
-				pixiEntity.visible = true;
-			}
+
+			this.emit('show', this);
 		}
 
 		return this;

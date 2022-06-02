@@ -13,6 +13,7 @@ var EntityTrack = /** @class */ (function () {
         var tickDelta = currentTime - ige.lastTickTime;
         // var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
         for (var entityId in this.trackEntityById) {
+            //need to check if we need it, seems it is not affecting game
             /*if (this.trackEntityById[entityId]._pixiContainer && this.trackEntityById[entityId]._pixiContainer._destroyed) {
                 delete this.trackEntityById[entityId];
                 break;

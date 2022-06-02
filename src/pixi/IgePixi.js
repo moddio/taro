@@ -1,5 +1,5 @@
 // var app, viewport, world;
-var IgeInitPixi = IgeClass.extend({
+var IgeInitPixi = IgeEventingClass.extend({
 	classId: 'IgeInitPixi',
 	componentId: 'pixi',
 
@@ -111,6 +111,8 @@ var IgeInitPixi = IgeClass.extend({
 				eventAction: renderingEngine
 			});
 		}
+
+		this.on('show', this.show);
 	},
 
 	frameTick: function () {
@@ -211,6 +213,13 @@ var IgeInitPixi = IgeClass.extend({
 		ige.pixi.currentZoomValue = value;
 		ige.pixi.viewport.snapZoom({ height: value, ease: 'easeOutQuad' }, true);
 	},
+
+	show: function (entity) {
+		var pixiEntity = entity._pixiText || entity._pixiTexture;
+		if (pixiEntity) {
+			pixiEntity.visible = true;
+		}
+	}
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

@@ -115,7 +115,7 @@ const Client = IgeEventingClass.extend({
 
 		// add utility
 		this.implement(ClientNetworkEvents);
-		ige.addComponent(IgeInitPixi);
+
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
@@ -183,6 +183,7 @@ const Client = IgeEventingClass.extend({
 		promise.then((game) => {
 			ige.game.data = game.data;
 			// let's try here
+			ige.addComponent(IgeInitPixi);
 			ige.entityTrack = new EntityTrack();
 			ige.entityTrack.applyRendererEvents();
 			// add components to ige instance
