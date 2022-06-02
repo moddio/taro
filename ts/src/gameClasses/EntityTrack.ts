@@ -73,6 +73,8 @@ class EntityTrack {
 					// iterate entityUpdateQueue[entityId] here?
 					if (ige.client.myPlayer) {
 						var updateQueue = ige.client.entityUpdateQueue[entityId];
+						var processedUpdates = [];
+
 						while (updateQueue && updateQueue.length > 0) {
 							var nextUpdate = updateQueue[0];
 
@@ -83,12 +85,19 @@ class EntityTrack {
 									((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
 							) {
 								// console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
+								// console.log('we don\'t stream this', nextUpdate);
+								break;
 							} else {
 								// console.log("entityUpdateQueue", entityId, nextUpdate)
-								entity.streamUpdateData([nextUpdate]);
-								ige.client.entityUpdateQueue[entityId].shift();
+								processedUpdates.push(ige.client.entityUpdateQueue[entityId].shift());
 							}
 						}
+
+						if (processedUpdates.length > 0) {
+							// console.log(processedUpdates, entityId);
+							entity.streamUpdateData(processedUpdates);
+						}
+
 					}
 				}
 				// return if entity is culled
