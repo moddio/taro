@@ -12,6 +12,10 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		const key = `projectile/${projectile._stats.type}`;
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
+		const bounds = projectile._bounds2d;
+		sprite.setDisplaySize(bounds.x, bounds.y);
+		sprite.rotation = projectile._rotate.z;
+
 		this.add(sprite);
 
 		scene.add.existing(this);
@@ -27,22 +31,21 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 	update (/*time: number, delta: number*/): void {
 
 		const projectile = this.projectile;
-		const container = projectile._pixiContainer;
-		const texture = projectile._pixiTexture;
 
-		if (projectile._destroyed || container._destroyed) {
+		if (!projectile._alive) {
 			projectile.off('play-animation', this.playAnimationListener);
 			this.playAnimationListener = null;
-
+			this.scene.events.off('update', this.update, this);
 			this.destroy();
 			return;
 		}
 
-		this.x = container.x;
-		this.y = container.y;
+		this.x = projectile._translate.x;
+		this.y = projectile._translate.y;
 
 		const sprite = this.sprite;
-		sprite.rotation = texture.rotation;
-		sprite.setScale(texture.scale.x, texture.scale.y);
+		const bounds = projectile._bounds2d;
+		sprite.setDisplaySize(bounds.x, bounds.y);
+		sprite.rotation = projectile._rotate.z;
 	}
 }

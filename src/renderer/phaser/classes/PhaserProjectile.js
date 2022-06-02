@@ -20,6 +20,9 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.projectile = projectile;
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        var bounds = projectile._bounds2d;
+        sprite.setDisplaySize(bounds.x, bounds.y);
+        sprite.rotation = projectile._rotate.z;
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
@@ -32,19 +35,19 @@ var PhaserProjectile = /** @class */ (function (_super) {
     }
     PhaserProjectile.prototype.update = function ( /*time: number, delta: number*/) {
         var projectile = this.projectile;
-        var container = projectile._pixiContainer;
-        var texture = projectile._pixiTexture;
-        if (projectile._destroyed || container._destroyed) {
+        if (!projectile._alive) {
             projectile.off('play-animation', this.playAnimationListener);
             this.playAnimationListener = null;
+            this.scene.events.off('update', this.update, this);
             this.destroy();
             return;
         }
-        this.x = container.x;
-        this.y = container.y;
+        this.x = projectile._translate.x;
+        this.y = projectile._translate.y;
         var sprite = this.sprite;
-        sprite.rotation = texture.rotation;
-        sprite.setScale(texture.scale.x, texture.scale.y);
+        var bounds = projectile._bounds2d;
+        sprite.setDisplaySize(bounds.x, bounds.y);
+        sprite.rotation = projectile._rotate.z;
     };
     return PhaserProjectile;
 }(Phaser.GameObjects.Container));

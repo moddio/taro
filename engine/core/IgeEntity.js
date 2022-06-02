@@ -2560,7 +2560,7 @@ var IgeEntity = IgeObject.extend({
 					ige.pixi.viewport.removePlugin('follow');
 					this.emit('stop-follow');
 				}
-				var texture = ige.entityTrack.trackEntityById[entityId]._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiText || ige.entityTrack.trackEntityById[entityId];
+				var texture = ige.entityTrack.trackEntityById[entityId]._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiText; // removing this || ige.entityTrack.trackEntityById[entityId];
 				// its not instance of ige
 				if (texture && !texture.componentId && !texture._destroyed) {
 					ige.pixi.world.removeChild(texture);

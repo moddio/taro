@@ -5,9 +5,6 @@ var Projectile = IgeEntityPhysics.extend({
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer);
 		var self = this;
-		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
-		}
 		self.category('projectile');
 		var projectileData = {};
 		if (ige.isClient) {
@@ -88,9 +85,9 @@ var Projectile = IgeEntityPhysics.extend({
 
 			ige.client.emit('create-projectile', this);
 
-			if (currentState) {
-				var defaultAnimation = this._stats.animations[currentState.animation];
-				this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+			if (currentState) { // Do we still need this check?
+				// Updated
+				ige.entityTrack.trackEntityById[this.entityId] = this;
 			}
 			self.drawBounds(false);
 
