@@ -783,6 +783,16 @@ var ServerNetworkEvents = {
 		}
 	},
 
+	_onCustomButtonClick: function (data, clientId) {
+		var player = ige.game.getPlayerByClientId(clientId);
+		if(player) {
+			ige.trigger.fire("playerClicksCustomButton", {
+				playerId: player.id(),
+				buttonId: data.buttonId
+			})
+		}
+	},
+
 	_onSomeBullshit: function () {
 		//bullshit
 	}
