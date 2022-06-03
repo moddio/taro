@@ -195,16 +195,32 @@ var PlayerUiComponent = IgeEntity.extend({
 		var self = this;
 
 		config.isDismissible = config.isDismissible === undefined ? true : !!(config.isDismissible);
-		var newWin = window.open(config.url);
-
-		if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+		function openTab(){
+			var newWin = window.open(config.url);
+			if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+				swal({
+					title: 'Please allow Popups',
+					text: 'Your browser is blocking the content modd.io is trying to display',
+					imageWidth: 300,
+					imageUrl: '/assets/images/enable-popup.gif',
+					imageClass: 'rounded border'
+				});
+			}
+		}
+		var isExternal = !(new URL(config.url)).hostname.includes("modd.io"); 
+		if(isExternal){
 			swal({
-				title: 'Please allow Popups',
-				text: 'Your browser is blocking the content modd.io is trying to display',
-				imageWidth: 300,
-				imageUrl: '/assets/images/enable-popup.gif',
-				imageClass: 'rounded border'
-			});
+				html: `You are being redirected to ${config.url}.<br>Are you sure you want to visit this external site?`,
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+			}).then(result => {
+				if (result.value) {
+					openTab();
+				}
+			})
+		}else{
+			openTab();
 		}
 	},
 	showWebsiteModal: function (config) {
