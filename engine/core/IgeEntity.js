@@ -3135,9 +3135,9 @@ var IgeEntity = IgeObject.extend({
 		return this._entity || this;
 	},
 
-	transformEntity: function (x, y, z, type) {
+	transformTexture: function (x, y, z, type) {
 		if (!ige.isClient) return;
-		ige.client.emit('transform', {entity: this, x: x, y: y, z: z, type: type});
+		ige.client.emit('transformTexture', {entity: this, x: x, y: y, z: z, type: type});
 		return this;
 	},
 
@@ -3349,7 +3349,7 @@ var IgeEntity = IgeObject.extend({
 			this._rotate.x += x;
 			this._rotate.y += y;
 			this._rotate.z += z;
-			this.transformEntity(0, 0, z, 'rotateBy');
+			this.transformTexture(0, 0, z, 'rotateBy');
 		} else {
 			IgeEntity.prototype.log('rotateBy() called with a missing or undefined x, y or z parameter!', 'error');
 		}

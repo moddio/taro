@@ -136,8 +136,8 @@ var IgeInitPixi = IgeEventingClass.extend({
 		ige.client.on('height', function (e) {
 			ige.pixi.height(e);
 		});
-		ige.client.on('transform', function (e) {
-			ige.pixi.transform(e);
+		ige.client.on('transformTexture', function (e) {
+			ige.pixi.transformTexture(e);
 		});
 		ige.client.on('scale', function (e) {
 			ige.pixi.scale(e);
@@ -304,13 +304,14 @@ var IgeInitPixi = IgeEventingClass.extend({
 	},
 	destroyTexture: function (entity) {
 		var entityId = entity.entityId || entity.id();
-		if (ige.entityTrack.trackEntityById[entityId] && ige.entityTrack.trackEntityById[entityId]._pixiContainer) {
+		if (ige.entityTrack.trackEntityById[entityId] && (ige.entityTrack.trackEntityById[entityId]._pixiContainer || ige.entityTrack.trackEntityById[entityId]._pixiText)) {
 			// entity.destroy()
 			// ige.pixi.viewport.follow();
 			if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == entity.id()) {
 				ige.pixi.viewport.removePlugin('follow');
 			}
-			var texture = ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiText || ige.entityTrack.trackEntityById[entityId]._pixiContainer;
+			if (ige.entityTrack.trackEntityById[entityId]._pixiContainer) var texture = ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.entityTrack.trackEntityById[entityId]._pixiContainer._pixiText || ige.entityTrack.trackEntityById[entityId]._pixiContainer;
+			else if (ige.entityTrack.trackEntityById[entityId]._pixiText) var texture = ige.entityTrack.trackEntityById[entityId]._pixiText;
 			// its not instance of ige
 			if (texture && !texture.componentId && !texture._destroyed) {
 				ige.pixi.world.removeChild(texture);
@@ -353,7 +354,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 			entity._pixiText.height = px;
 		}
 	},
-	transform: function (info) {
+	transformTexture: function (info) {
 		var entity = info.entity;
 		var type = info.type;
 		var x = info.x;

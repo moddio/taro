@@ -77,7 +77,7 @@ var Unit = IgeEntityPhysics.extend({
 			// new
 			// this.drawCrashCollider(data.defaultData);
 			self.mount(ige.pixi.world);
-			this.transformEntity(this._translate.x, this._translate.y);
+			this.transformTexture(this._translate.x, this._translate.y);
 			// console.log(this._id, this._translate);
 		}
 
