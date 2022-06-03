@@ -126,6 +126,19 @@ var MobileControlsComponent = IgeEntity.extend({
 	configure: function (abilities) {
 		if (!ige.isMobile || !abilities) return;
 
+		// TODO remove testing data
+		/* abilities['BUTTON2'] = {
+			mobilePosition: {
+				x: 100, y: 100
+			}
+		};
+		abilities['lookAndFireWheel'] = {
+			mobilePosition: {
+				y: 204,
+				x: 221
+			}
+		}; */
+
 		// $("#show-chat").show();
 		$('#show-chat').hide(); // completely disable chat on mobile (app review)
 		$('#chat-box').hide();
@@ -153,10 +166,6 @@ var MobileControlsComponent = IgeEntity.extend({
 				var y = ability.mobilePosition.y * 2;
 
 				self.addControl(key, x, y, 75, 64, ability);
-
-				self.emit('add-control', [
-					key, x, y, 75, 64, ability // TODO callbacks
-				]);
 			}
 		});
 	},
@@ -337,6 +346,10 @@ var MobileControlsComponent = IgeEntity.extend({
 				moveStick._isRight = false;
 
 				this.controls[key] = moveStick;
+
+				self.emit('add-control', [
+					key, x, y, w, h, moveStick.settings
+				]);
 			}
 
 			if (key == 'lookWheel') {
@@ -367,6 +380,10 @@ var MobileControlsComponent = IgeEntity.extend({
 				lookStick.position.set(x + 32, y + 12);
 
 				this.controls[key] = lookStick;
+
+				self.emit('add-control', [
+					key, x, y, w, h, lookStick.settings
+				]);
 			}
 
 			if (key == 'lookAndFireWheel') {
@@ -415,6 +432,10 @@ var MobileControlsComponent = IgeEntity.extend({
 				fireStick.position.set(x + 32, y + 12);
 
 				this.controls[key] = fireStick;
+
+				self.emit('add-control', [
+					key, x, y, w, h, fireStick.settings
+				]);
 			}
 		} else {
 			var text = key.toUpperCase();
@@ -443,6 +464,25 @@ var MobileControlsComponent = IgeEntity.extend({
 				label.position.set(x + (w / 2), y + (h / 2));
 			}
 
+			var settings = {
+				onStart: () => {
+					if (key) {
+						// console.log("Key down:"+newButton._key);
+						ige.network.send('playerKeyDown', {
+							device: 'key', key: newButton._key
+						});
+					}
+				},
+				onEnd: () => {
+					if (key) {
+						// console.log("Key up:"+newButton._key);
+						ige.network.send('playerKeyUp', {
+							device: 'key', key: newButton._key
+						});
+					}
+				}
+			};
+
 			newButton.isButton = true;
 			newButton.interactive = true;
 			newButton.alpha = 0.6;
@@ -453,10 +493,7 @@ var MobileControlsComponent = IgeEntity.extend({
 				let texture = PIXI.Texture.from('https://cache.modd.io/asset/spriteImage/1549614658007_button2.png?version=123', { crossOrigin: true });
 				newButton.texture = texture;
 
-				if (newButton._key) {
-					// console.log("Key down:"+newButton._key);
-					ige.network.send('playerKeyDown', { device: 'key', key: newButton._key });
-				}
+				settings.onStart && settings.onStart();
 			});
 			newButton.on('touchend', function (event) {
 				if (!newButton._isClicked) return; // block repetition
@@ -465,13 +502,14 @@ var MobileControlsComponent = IgeEntity.extend({
 				let texture = PIXI.Texture.from('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png?version=123', { crossOrigin: true });
 				newButton.texture = texture;
 
-				if (newButton._key) {
-					// console.log("Key up:"+newButton._key);
-					ige.network.send('playerKeyUp', { device: 'key', key: newButton._key });
-				}
+				settings.onEnd && settings.onEnd();
 			});
 
 			this.controls[key] = newButton;
+
+			self.emit('add-control', [
+				key, x, y, w, h, settings
+			]);
 		}
 	},
 	isIframe () {
