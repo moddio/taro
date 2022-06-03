@@ -2,7 +2,7 @@ interface JoystickSettings {
 	outer?: Phaser.GameObjects.Graphics;
 	inner?: Phaser.GameObjects.Graphics;
 	redFireZone: boolean;
-	outerScale: { x: number; y: number; }; // TODO remove
+	outerScale: { x: number; y: number; }; // TODO update on refactor
 	innerScale: { x: number; y: number; };
 	onChange(data: {
 		angle: number,
@@ -76,6 +76,12 @@ class PhaserJoystick {
 		this.virtualJoystick.destroy();
 	}
 
+	/**
+	 * needed to apply transform as if joystick
+	 * was child of controls container because
+	 * virtual joystick plugin does not work
+	 * well when joystick elements are nested
+	 **/
 	updateTransform (): void {
 		const virtualJoystick = this.virtualJoystick;
 		const scene = virtualJoystick.scene;

@@ -42,6 +42,12 @@ var PhaserJoystick = /** @class */ (function () {
     PhaserJoystick.prototype.destroy = function () {
         this.virtualJoystick.destroy();
     };
+    /**
+     * needed to apply transform as if joystick
+     * was child of controls container because
+     * virtual joystick plugin does not work
+     * well when joystick elements are nested
+     **/
     PhaserJoystick.prototype.updateTransform = function () {
         var virtualJoystick = this.virtualJoystick;
         var scene = virtualJoystick.scene;
