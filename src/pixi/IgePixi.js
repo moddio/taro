@@ -145,8 +145,14 @@ var IgeInitPixi = IgeEventingClass.extend({
 		ige.client.on('mount', function (e) {
 			ige.pixi.mount(e);
 		});
-		ige.client.on('unMount', function(e) {
+		ige.client.on('unMount', function (e) {
 			ige.pixi.unMount(e);
+		});
+		ige.client.on('setDepth', function (e){
+			ige.pixi.setDepth(e);
+		});
+		ige.client.on('setLayer', function (e) {
+			ige.pixi.setLayer(e);
 		});
 	},
 
@@ -425,7 +431,22 @@ var IgeInitPixi = IgeEventingClass.extend({
 			}
 			return entity;
 		}
+	},
+
+	setDepth: function (info) {
+		var { entity, depth } = info;
+		if (entity._pixiContainer) {
+			entity._pixiContainer.depth = depth;
+		}
+	},
+
+	setLayer: function (info) {
+		var { entity, layer } = info;
+		if (entity._pixiContainer) {
+			entity._pixiContainer.zIndex = layer;
+		}
 	}
+
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

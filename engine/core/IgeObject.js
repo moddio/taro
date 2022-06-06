@@ -1191,9 +1191,8 @@ var IgeObject = IgeEventingClass.extend({
 	layer: function (val) {
 		if (val !== undefined) {
 			this._layer = val;
-			if (this._pixiContainer) {
-				this._pixiContainer.zIndex = val;
-			}
+			if (ige.isClient) ige.client.emit('setLayer', { entity: this, layer: val });
+
 			return this;
 		}
 
@@ -1245,9 +1244,7 @@ var IgeObject = IgeEventingClass.extend({
 	depth: function (val) {
 		if (val !== undefined) {
 			this._depth = val;
-			if (this._pixiContainer) {
-				this._pixiContainer.depth = val;
-			}
+			if (ige.isClient) ige.client.emit('setDepth', { entity: this, depth: val });
 			return this;
 		}
 
