@@ -174,6 +174,7 @@ var IgeInitPixi = IgeClass.extend({
 
 		this.cull = cull;
 		this.viewport = viewport;
+		this.vpStatusLastTick = 0;
 		ige.pixi.resize();
 	},
 
@@ -218,6 +219,13 @@ var IgeInitPixi = IgeClass.extend({
 		var currentTime = Date.now();
 		if (!ige.lastTickTime) ige.lastTickTime = currentTime;
 		var tickDelta = currentTime - ige.lastTickTime;
+
+		// check if need to update entities viewport status in this tick
+		let updateVPTick = false;
+		if (currentTime > this.vpStatusLastTick + 100) {
+			this.vpStatusLastTick = currentTime;
+			updateVPTick = true;
+		}
 
 		// var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
 		for (var entityId in ige.pixi.trackEntityById) {
@@ -271,10 +279,10 @@ var IgeInitPixi = IgeClass.extend({
 						if (updateQueue && updateQueue.length > 0) {
 							var nextUpdate = updateQueue[0];
 							if (
-							// Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
+								// Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
 								entity._category == 'item' &&
-                                ((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
-                                    ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
+								((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
+									((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
 							) {
 								// console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
 							} else {
@@ -289,12 +297,14 @@ var IgeInitPixi = IgeClass.extend({
 				// if (entity.isCulled) {
 				//     continue;
 				// }
-				// update transformation using incoming network stream
-				if (ige.network.stream && ige._renderLatency != undefined) {
-					entity._processTransform();
-				}
+				// check if entity need to render
+				if (updateVPTick) entity.updateEntityViewportStatus(ige.pixi.viewport);
 
-				if (entity._translate && !entity.isHidden()) {
+				if (entity._translate && !entity.isHidden() && entity.isInViewport) {
+					// update transformation using incoming network stream
+					if (ige.network.stream && ige._renderLatency != undefined) {
+						entity._processTransform();
+					}
 					var x = entity._translate.x;
 					var y = entity._translate.y;
 					var rotate = entity._rotate.z;
@@ -363,6 +373,7 @@ var IgeInitPixi = IgeClass.extend({
 			ige.gameLoopTickHasExecuted = false;
 		}
 	}
+
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
