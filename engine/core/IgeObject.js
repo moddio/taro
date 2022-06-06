@@ -887,14 +887,8 @@ var IgeObject = IgeEventingClass.extend({
 				return this;
 			}
 
-			if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				if (this._pixiContainer.parent) {
-					this.unMount();
-				}
-				let pixiEntity = obj._pixiContainer || obj;
-				obj.addChild(this._pixiContainer);
-				return this;
-			}
+			if (ige.isClient) ige.client.emit('mount', { entity: this, parent: obj });
+
 
 			if (obj._children) {
 				// Check that the engine will allow us to register this object
@@ -976,17 +970,8 @@ var IgeObject = IgeEventingClass.extend({
 	 */
 	unMount: function () {
 		var self = this;
-		if (this._pixiContainer) {
-			if (this._pixiContainer.parent && self.entityId) {
-				if (this._pixiTexture.parent.children) {
-					var index = this._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId; });
-					if (index > -1) {
-						this._pixiContainer.parent.removeChildAt(index);
-					}
-				}
-			}
-			return this;
-		}
+		if (ige.isClient) ige.client.emit('unMount', this);
+
 		if (this._parent) {
 			var childArr = this._parent._children;
 			var index = childArr.indexOf(this);
