@@ -22,6 +22,8 @@ var MobileControlsScene = /** @class */ (function (_super) {
     }
     MobileControlsScene.prototype.init = function () {
         var _this = this;
+        // enabling four mobile pointers
+        this.input.addPointer(3);
         var controls = this.controls = this.add.container();
         this.resize();
         this.scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);

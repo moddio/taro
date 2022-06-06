@@ -15,6 +15,9 @@ class MobileControlsScene extends Phaser.Scene {
 
 	init (): void {
 
+		// enabling four mobile pointers
+		this.input.addPointer(3);
+
 		const controls = this.controls = this.add.container();
 		this.resize();
 		this.scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
