@@ -514,7 +514,6 @@ var IgeNetIoClient = {
 
 						obj[entityId] = entityData;
 					} else {
-						// console.log(commandName, entityData);
 						this._networkCommands[commandName](entityData);
 					}
 				}
