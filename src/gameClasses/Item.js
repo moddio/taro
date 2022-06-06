@@ -630,8 +630,8 @@ var Item = IgeEntityPhysics.extend({
 			}
 			return canAffordCost;
 		} else {
-			return false;
 			ItemComponent.prototype.log('can\'t afford cost');
+			return false;
 		}
 	},
 
