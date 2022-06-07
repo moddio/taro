@@ -1,9 +1,6 @@
 /**
  * Creates a new object.
  */
-
-var _pixiCountClient = 0;
-var _bypassPixiCountClient = 0;
 var IgeObject = IgeEventingClass.extend({
 	classId: 'IgeObject',
 
@@ -895,7 +892,7 @@ var IgeObject = IgeEventingClass.extend({
 			if (ige.isClient) {
 				ige.client.emit('mount', { entity: this, parent: obj });
 			}
-			
+
 			if (obj._children) {
 				// Check that the engine will allow us to register this object
 				this.id(); // Generates a new id if none is currently set, and registers it on the object register!
