@@ -65,6 +65,8 @@ const Client = IgeEventingClass.extend({
 		this.scaleMode = 0; //old comment => 'none'
 		this.isActiveTab = true;
 
+		this.isZooming = false;
+
 		this._trackTranslateSmoothing = 15;
 		this.inactiveTabEntityStream = [];
 		this.eventLog = [];

@@ -23,7 +23,8 @@ class EntityTrack {
 			if (entity) {
 
 				// while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
-				if (ige.pixi.viewport.isZooming) {
+				if (ige.client.isZooming) {
+
 					if (entity.unitNameLabel) {
 						entity.unitNameLabel.updateScale();
 						entity.unitNameLabel.updatePosition();

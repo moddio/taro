@@ -3,4 +3,5 @@ declare class Client extends IgeEventingClass {
 	entityUpdateQueue: any;
 	myPlayer: any; // Player
 	selectedUnit: any; // Unit
+	isZooming: boolean;
 }

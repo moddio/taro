@@ -219,11 +219,11 @@ var IgeInitPixi = IgeEventingClass.extend({
 		// .drag();
 
 		viewport.on('snap-zoom-start', function () {
-			self.viewport.isZooming = true;
+			ige.client.isZooming = true;
 		});
 
 		viewport.on('snap-zoom-end', function () {
-			self.viewport.isZooming = false;
+			ige.client.isZooming;
 		});
 
 		viewport.addChild(this.world);
