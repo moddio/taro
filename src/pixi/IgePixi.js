@@ -144,6 +144,9 @@ var IgeInitPixi = IgeEventingClass.extend({
 		ige.client.on('setLayer', function (e) {
 			ige.pixi.setLayer(e);
 		});
+		ige.client.on('followUnit', function (e) {
+			ige.pixi.followUnit(e);
+		});
 	},
 
 	frameTick: function () {
@@ -435,10 +438,16 @@ var IgeInitPixi = IgeEventingClass.extend({
 		if (entity._pixiContainer) {
 			entity._pixiContainer.zIndex = layer;
 		}
+	},
+
+	followUnit: function (entity) {
+		if (entity._pixiContainer) {
+			ige.pixi.viewport.follow(ige.entityTrack.trackEntityById[entity._id]._pixiContainer);
+		}
 	}
 
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-	module.exports = IgePixiMap;
+	module.exports = IgeInitPixi;
 }
