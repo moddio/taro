@@ -887,7 +887,14 @@ var IgeObject = IgeEventingClass.extend({
 				return this;
 			}
 
-			if (ige.isClient) ige.client.emit('mount', { entity: this, parent: obj });
+			if (this._pixiContainer && !this._pixiContainer._destroyed) {
+				if (this._pixiContainer.parent) {
+					this.unMount();
+				}
+				// let pixiEntity = obj._pixiContainer || obj;
+				obj.addChild(this._pixiContainer);
+				return this;
+			}
 
 
 			if (obj._children) {
@@ -970,7 +977,17 @@ var IgeObject = IgeEventingClass.extend({
 	 */
 	unMount: function () {
 		var self = this;
-		if (ige.isClient) ige.client.emit('unMount', this);
+		if (self._pixiContainer) {
+			if (self._pixiContainer.parent && self.entityId) {
+				if (self._pixiTexture.parent.children) {
+					var index = self._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId; });
+					if (index > -1) {
+						self._pixiContainer.parent.removeChildAt(index);
+					}
+				}
+			}
+			return self;
+		}
 
 		if (this._parent) {
 			var childArr = this._parent._children;
