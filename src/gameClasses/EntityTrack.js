@@ -11,13 +11,7 @@ var EntityTrack = /** @class */ (function () {
         if (!ige.lastTickTime)
             ige.lastTickTime = currentTime;
         var tickDelta = currentTime - ige.lastTickTime;
-        // var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
         for (var entityId in this.trackEntityById) {
-            //need to check if we need it, seems it is not affecting game
-            /*if (this.trackEntityById[entityId]._pixiContainer && this.trackEntityById[entityId]._pixiContainer._destroyed) {
-                delete this.trackEntityById[entityId];
-                break;
-            }*/
             var entity = ige.$(entityId);
             if (entity) {
                 // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
@@ -54,8 +48,6 @@ var EntityTrack = /** @class */ (function () {
                         entity._behaviour();
                     }
                     // handle streamUpdateData
-                    //
-                    // iterate entityUpdateQueue[entityId] here?
                     if (ige.client.myPlayer) {
                         var updateQueue = ige.client.entityUpdateQueue[entityId];
                         while (updateQueue && updateQueue.length > 0) {
@@ -66,20 +58,14 @@ var EntityTrack = /** @class */ (function () {
                                 ((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
                                     ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
                             ) {
-                                // console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
                             }
                             else {
-                                // console.log("entityUpdateQueue", entityId, nextUpdate)
                                 entity.streamUpdateData([nextUpdate]);
                                 ige.client.entityUpdateQueue[entityId].shift();
                             }
                         }
                     }
                 }
-                // return if entity is culled
-                // if (entity.isCulled) {
-                //     continue;
-                // }
                 // update transformation using incoming network stream
                 if (ige.network.stream && ige._renderLatency != undefined) {
                     entity._processTransform();
@@ -141,9 +127,7 @@ var EntityTrack = /** @class */ (function () {
         ige.engineStep();
         ige.input.processInputOnEveryFps();
         this.timeStamp = Date.now();
-        // ige.pixi.frameTick();
         ige._renderFrames++;
-        // console.log ('tick', this.timeStamp);
         this.updateAllEntities();
     };
     return EntityTrack;
