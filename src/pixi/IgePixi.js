@@ -1,4 +1,3 @@
-// var app, viewport, world;
 var IgeInitPixi = IgeEventingClass.extend({
 	classId: 'IgeInitPixi',
 	componentId: 'pixi',
@@ -51,26 +50,17 @@ var IgeInitPixi = IgeEventingClass.extend({
 		var scaleToFit = window.innerWidth / 960;
 		this.mobileControls.scale.set(scaleToFit, scaleToFit);
 
-		/*
-		var test1 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png', { crossOrigin: true });
-		test1.alpha = 0.2;
-		this.mobileControls.addChild(test1);
-		*/
-
 		this.ticker = PIXI.Ticker.shared;
 		this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
 
-		// this.ticker.autoStart = false;
-		// this.ticker.stop();
 		this.app.ticker.stop();
 		PIXI.Ticker.system.autoStart = false;
 		PIXI.Ticker.system.stop();
 
 		var self = this;
 
-		// highjacking pixi ticker to call our new frameTick()
+		// this is the client clock
 		var frameTick = function () {
-			// ige.entityTrack.frameTick();
 			ige.client.emit('tick');
 			self.frameTick();
 		};

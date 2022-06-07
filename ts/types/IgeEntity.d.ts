@@ -2,17 +2,7 @@ declare class IgeEntity extends IgeObject {
 
 	_destroyed: boolean;
 	_deathTime: number;
-	_category: string; // TODO more specific values
-	/*_translate: IgePoint3d;
-	_rotate: IgePoint3d;
-	_stats: EntityStats;
-	_bounds2d: IgePoint2d;
-
-	_pixiText: any; // PIXI.Text
-
-	angleToTarget: number;
-	tween: TweenComponent;
-	pixianimation: IgePixiAnimation;*/
+	_category: string; 
 
 	_deathCallBack?: () => void;
 	_behaviour?: () => void;
@@ -21,8 +11,6 @@ declare class IgeEntity extends IgeObject {
 
 	isHidden (): boolean;
 	getOwnerUnit (): IgeEntity | undefined;
-	//streamUpdateData (queuedData: UpdateData[]);
+	
 	transformTexture (x: number, y: number, z: number, type?: boolean);
-
-	//flip (flip: FlipMode): void
 }

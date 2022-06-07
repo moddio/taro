@@ -129,12 +129,8 @@ var IgeEntity = IgeObject.extend({
 
 			*/
 			self._stats.currentBody = self._stats.bodies[newState.body];
-			// if (ige.isSever && ige.physics.engine == 'CRASH') {
-			// 	self._stats.currentBody = self._stats.bodies[newState.body] ? self._stats.bodies[newState.body] : 'none';
-			// }
 		}
 
-		// console.log("setState", stateId, "new body", (newState)?newState.body:"null")
 		if (ige.isServer) {
 			self.streamUpdateData([{ stateId: stateId }]);
 		} else if (ige.isClient) {
@@ -166,8 +162,7 @@ var IgeEntity = IgeObject.extend({
 			this.streamUpdateData([{ isHidden: true }]);
 		} else if (ige.isClient) {
 			// this.disableInterpolation(true)
-			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-			// self.opacity(0)
+
 			self._hidden = true;
 			ige.client.emit('hide', this);
 			self.texture('');
@@ -636,21 +631,6 @@ var IgeEntity = IgeObject.extend({
 		ige.client.emit('createTexture', {entity: this, defaultSprite: defaultSprite, defaultData: defaultData});
 	},
 
-	// drawCrashCollider: function (defaultData) {
-	// 	var collider = new IgePixiCollider(this);
-	// 	collider = collider.drawCollider();
-	// 	this._pixiCollider = collider;
-	// 	this._pixiContainer.addChild(collider);
-
-	// 	if (defaultData) {
-	// 		this._pixiContainer.x = defaultData.translate.x;
-	// 		this._pixiContainer.y = defaultData.translate.y;
-	// 		// new
-	// 		//this._pixiCollider.rotation = defaultData.rotate;
-	// 	}
-	// 	ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
-	// },
-
 	/**
      * Set the object's width to the number of tile width's specified.
      * @param {Number} val Number of tiles.
@@ -848,13 +828,7 @@ var IgeEntity = IgeObject.extend({
 			if (ige.isClient) {
 				ige.client.emit('width', {entity: this, px: px});
 			}
-			/*if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.width = px;
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.width = px;
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				this._pixiText.width = px;
-			}*/
+
 			return this;
 		}
 		if (this._pixiTexture) {
@@ -888,13 +862,7 @@ var IgeEntity = IgeObject.extend({
 			if (ige.isClient) {
 				ige.client.emit('height', {entity: this, px: px});
 			}
-			/*if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.height = px;
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.height = px;
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				return (this._pixiText.height = px);
-			}*/
+
 			return this;
 		}
 

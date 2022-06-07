@@ -10,16 +10,9 @@ declare class IgeEngine extends IgeClass {
 	client: Client;
 	server: Client;
 
-	//network: IgeNetworkComponent;
-
 	input: IgeInputComponent;
 
-	/*gameLoopTickHasExecuted: boolean;
-
-	game: GameComponent;*/
-
 	pixi: IgeInitPixi;
-	//phaser: PhaserRenderer;
 
 	scaleMapDetails: {
 		scaleFactor: {

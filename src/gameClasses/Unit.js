@@ -66,7 +66,7 @@ var Unit = IgeEntityPhysics.extend({
 
 		// initialize body & texture of the unit
 		self.changeUnitType(data.type, data.defaultData);
-		// console.log(data.type, data.defaultData);
+
 		if (this._stats.states) {
 			var currentState = this._stats.states[this._stats.stateId];
 			var defaultAnimation = this._stats.animations[currentState.animation];
@@ -74,11 +74,10 @@ var Unit = IgeEntityPhysics.extend({
 
 		if (ige.isClient) {
 			this.createTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
-			// new
-			// this.drawCrashCollider(data.defaultData);
+
 			self.mount(ige.pixi.world);
 			this.transformTexture(this._translate.x, this._translate.y);
-			// console.log(this._id, this._translate);
+
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
