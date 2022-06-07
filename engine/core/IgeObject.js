@@ -1,6 +1,9 @@
 /**
  * Creates a new object.
  */
+
+var _pixiCountClient = 0;
+var _bypassPixiCountClient = 0;
 var IgeObject = IgeEventingClass.extend({
 	classId: 'IgeObject',
 
@@ -880,23 +883,19 @@ var IgeObject = IgeEventingClass.extend({
 	 *     entity2.mount(entity1);
 	 * @return {*} Returns this on success or false on failure.
 	 */
+
 	mount: function (obj) {
 		if (obj) {
+			
 			if (obj === this) {
 				this.log('Cannot mount an object to itself!', 'error');
 				return this;
 			}
 
-			if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				if (this._pixiContainer.parent) {
-					this.unMount();
-				}
-				// let pixiEntity = obj._pixiContainer || obj;
-				obj.addChild(this._pixiContainer);
-				return this;
+			if (ige.isClient) {
+				ige.client.emit('mount', { entity: this, parent: obj });
 			}
-
-
+			
 			if (obj._children) {
 				// Check that the engine will allow us to register this object
 				this.id(); // Generates a new id if none is currently set, and registers it on the object register!

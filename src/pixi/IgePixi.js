@@ -400,17 +400,18 @@ var IgeInitPixi = IgeEventingClass.extend({
 		}
 	},
 
-	// mount: function (info) {
-	// 	var { entity, parent } = info;
-	// 	if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
-	// 		if (entity._pixiContainer.parent) {
-	// 			entity.unMount();
-	// 		}
-	// 		// let pixiEntity = parent._pixiContainer || parent;
-	// 		parent.addChild(entity._pixiContainer);
-	// 		return entity;
-	// 	}
-	// },
+	mount: function (info) {
+		var { entity, parent } = info;
+		if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
+			if (entity._pixiContainer.parent) {
+				entity.unMount();
+			}
+			// let pixiEntity = parent._pixiContainer || parent;
+			parent.addChild(entity._pixiContainer);
+			console.log('mounting via event');
+			return entity;
+		}
+	},
 
 	// unMount: function (entity) {
 	// 	if (entity._pixiContainer) {
