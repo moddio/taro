@@ -223,7 +223,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 		});
 
 		viewport.on('snap-zoom-end', function () {
-			ige.client.isZooming;
+			ige.client.isZooming = false;
 		});
 
 		viewport.addChild(this.world);
