@@ -64,6 +64,8 @@ class EntityTrack {
 					// handle streamUpdateData
 					if (ige.client.myPlayer) {
 						var updateQueue = ige.client.entityUpdateQueue[entityId];
+						var processedUpdates = [];
+
 						while (updateQueue && updateQueue.length > 0) {
 							var nextUpdate = updateQueue[0];
 
@@ -73,12 +75,15 @@ class EntityTrack {
 								((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
 									((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
 							) {
+								break;
 
 							} else {
-
-								entity.streamUpdateData([nextUpdate]);
-								ige.client.entityUpdateQueue[entityId].shift();
+								processedUpdates.push(ige.client.entityUpdateQueue[entityId].shift());
 							}
+						}
+
+						if (processedUpdates.length > 0) {
+							entity.streamUpdateData(processedUpdates);
 						}
 					}
 				}
