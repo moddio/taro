@@ -103,13 +103,9 @@ var IgeEntity = IgeObject.extend({
 			this.streamUpdateData([{ isHidden: false }]);
 		} else if (ige.isClient) {
 			// this.disableInterpolation(false)
-
 			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
 			self._hidden = false;
-			var pixiEntity = self._pixiText || self._pixiTexture;
-			if (pixiEntity) {
-				pixiEntity.visible = true;
-			}
+			ige.client.emit('show', this);
 		}
 
 		return this;
@@ -133,12 +129,8 @@ var IgeEntity = IgeObject.extend({
 
 			*/
 			self._stats.currentBody = self._stats.bodies[newState.body];
-			// if (ige.isSever && ige.physics.engine == 'CRASH') {
-			// 	self._stats.currentBody = self._stats.bodies[newState.body] ? self._stats.bodies[newState.body] : 'none';
-			// }
 		}
 
-		// console.log("setState", stateId, "new body", (newState)?newState.body:"null")
 		if (ige.isServer) {
 			self.streamUpdateData([{ stateId: stateId }]);
 		} else if (ige.isClient) {
@@ -170,13 +162,9 @@ var IgeEntity = IgeObject.extend({
 			this.streamUpdateData([{ isHidden: true }]);
 		} else if (ige.isClient) {
 			// this.disableInterpolation(true)
-			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-			// self.opacity(0)
+
 			self._hidden = true;
-			var pixiEntity = self._pixiText || self._pixiTexture;
-			if (pixiEntity) {
-				pixiEntity.visible = false;
-			}
+			ige.client.emit('hide', this);
 			self.texture('');
 		}
 		return this;
@@ -260,19 +248,12 @@ var IgeEntity = IgeObject.extend({
 		cellSheet = self._stats.cellSheet;
 		if (animation && cellSheet) {
 			// cell sheet animation id will be concatenation of unit type and animation id
-			var cellSheetAnimId;
-			var url = cellSheet.url;
-			var rows = cellSheet.rowCount;
-			var columns = cellSheet.columnCount;
-			cellSheetAnimId = self._stats.cellSheet.url;
-			ige.client.cellSheets[cellSheetAnimId] = this.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
-			var fps = animation.framesPerSecond || 15;
-			var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
-
 			// default loop to undefined;
+			// TODO: FIX DUPLICATE
 			this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
 
 			this.emit('play-animation', animationId);
+			ige.client.emit('applyAnimation', {entity: this, animation: animation, cellSheet: cellSheet, animationId: animationId});
 		}
 	},
 
@@ -314,7 +295,7 @@ var IgeEntity = IgeObject.extend({
 			this.applyAnimationForState(stateId);
 		}
 
-		ige.pixi.isUpdateLayersOrderQueued = true;
+		ige.client.emit('updateTexture');
 	},
 
 	getDefaultStateId: function () {
@@ -650,47 +631,9 @@ var IgeEntity = IgeObject.extend({
 
 		return this._backgroundPattern;
 	},
-	createPixiTexture: function (defaultSprite = 0, defaultData) {
-		var texture = new IgePixiTexture(this._stats.cellSheet.url, this._stats.cellSheet.columnCount, this._stats.cellSheet.rowCount, this);
-		texture = texture.spriteFromCellSheet(defaultSprite);
-		if (!texture) {
-			return;
-		}
-		texture.width = (this._stats.currentBody && this._stats.currentBody.width) || this._stats.width;
-		texture.height = (this._stats.currentBody && this._stats.currentBody.height) || this._stats.height;
-		if (texture.anchor) {
-			texture.anchor.set(0.5);
-		}
-		this._pixiContainer.zIndex = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].layer) || 3;
-		this._pixiContainer.depth = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].depth) || 3;
-		this._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
-		this._pixiContainer.entityId = this.entityId;
-		this._pixiContainer._category = this._category;
-		this._pixiTexture = texture;
-		this._pixiContainer.addChild(texture);
-
-		if (defaultData) {
-			this._pixiContainer.x = defaultData.translate.x;
-			this._pixiContainer.y = defaultData.translate.y;
-			this._pixiTexture.rotation = defaultData.rotate;
-		}
-		ige.entityTrack.trackEntityById[this.entityId] = this._pixiContainer;
+	createTexture: function (defaultSprite = 0, defaultData) {
+		ige.client.emit('createTexture', {entity: this, defaultSprite: defaultSprite, defaultData: defaultData});
 	},
-
-	// drawCrashCollider: function (defaultData) {
-	// 	var collider = new IgePixiCollider(this);
-	// 	collider = collider.drawCollider();
-	// 	this._pixiCollider = collider;
-	// 	this._pixiContainer.addChild(collider);
-
-	// 	if (defaultData) {
-	// 		this._pixiContainer.x = defaultData.translate.x;
-	// 		this._pixiContainer.y = defaultData.translate.y;
-	// 		// new
-	// 		//this._pixiCollider.rotation = defaultData.rotate;
-	// 	}
-	// 	ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
-	// },
 
 	/**
      * Set the object's width to the number of tile width's specified.
@@ -884,16 +827,12 @@ var IgeEntity = IgeObject.extend({
 				var ratio = px / this._bounds2d.x;
 				this.height(this._bounds2d.y * ratio);
 			}
-
 			this._bounds2d.x = px;
 			this._bounds2d.x2 = px / 2;
-			if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.width = px;
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.width = px;
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				this._pixiText.width = px;
+			if (ige.isClient) {
+				ige.client.emit('width', {entity: this, px: px});
 			}
+
 			return this;
 		}
 		if (this._pixiTexture) {
@@ -922,16 +861,12 @@ var IgeEntity = IgeObject.extend({
 				var ratio = px / this._bounds2d.y;
 				this.width(this._bounds2d.x * ratio);
 			}
-
 			this._bounds2d.y = px;
 			this._bounds2d.y2 = px / 2;
-			if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.height = px;
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.height = px;
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				return (this._pixiText.height = px);
+			if (ige.isClient) {
+				ige.client.emit('height', {entity: this, px: px});
 			}
+
 			return this;
 		}
 
@@ -2583,6 +2518,7 @@ var IgeEntity = IgeObject.extend({
 					pixiBar.destroy();
 				}
 			}
+			ige.client.emit('destroyTexture', this);
 		}
 
 		/**
@@ -3205,27 +3141,9 @@ var IgeEntity = IgeObject.extend({
 		return this._entity || this;
 	},
 
-	transformPixiEntity: function (x, y, z, type) {
+	transformTexture: function (x, y, z, type) {
 		if (!ige.isClient) return;
-		var entity = this._pixiText || this._pixiContainer;
-		if (entity && !entity._destroyed) {
-			if (this._pixiTexture) {
-				this._pixiTexture.rotation = z;
-			}
-			// new
-			if (this._pixiCollider) {
-				this._pixiCollider.rotation = z;
-			}
-			//
-			if (!type) {
-				entity.x = x;
-				entity.y = y;
-			}
-			entity.dirty = true;
-			if (ige.pixi.viewport) {
-				ige.pixi.viewport.dirty = true;
-			}
-		}
+		ige.client.emit('transformTexture', {entity: this, x: x, y: y, z: z, type: type});
 		return this;
 	},
 
@@ -3437,7 +3355,7 @@ var IgeEntity = IgeObject.extend({
 			this._rotate.x += x;
 			this._rotate.y += y;
 			this._rotate.z += z;
-			this.transformPixiEntity(0, 0, z, 'rotateBy');
+			this.transformTexture(0, 0, z, 'rotateBy');
 		} else {
 			IgeEntity.prototype.log('rotateBy() called with a missing or undefined x, y or z parameter!', 'error');
 		}
@@ -3568,21 +3486,8 @@ var IgeEntity = IgeObject.extend({
      *     entity.scaleTo(1, 1, 1);
      * @return {*}
      */
-	pixiScaleTo: function (x, y) {
-		// if (this._category == 'item') {
-		// }
-		if (x !== undefined && y !== undefined) {
-			if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.scale.set(x, y);
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				this._pixiText.scale.set(x, y);
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.scale.set(x, y);
-			}
-		}
-	},
 	scaleTo: function (x, y, z) {
-		this.pixiScaleTo(x, y);
+		if (ige.isClient) ige.client.emit('scale', {entity: this, x: x, y: y});
 		if (this._scale && x !== undefined && y !== undefined && z !== undefined) {
 			this._scale.x = x;
 			this._scale.y = y;

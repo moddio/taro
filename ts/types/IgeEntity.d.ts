@@ -1,5 +1,6 @@
 declare class IgeEntity extends IgeObject {
 
+<<<<<<< HEAD
 	_alive: boolean;
 	_destroyed: boolean;
 	_deathTime: number;
@@ -15,6 +16,11 @@ declare class IgeEntity extends IgeObject {
 	angleToTarget: number;
 	tween: TweenComponent;
 	pixianimation: IgePixiAnimation;
+=======
+	_destroyed: boolean;
+	_deathTime: number;
+	_category: string; 
+>>>>>>> decouple-pixi-and-game-logic
 
 	_deathCallBack?: () => void;
 	_behaviour?: () => void;
@@ -23,8 +29,14 @@ declare class IgeEntity extends IgeObject {
 
 	isHidden (): boolean;
 	getOwnerUnit (): IgeEntity | undefined;
+<<<<<<< HEAD
 	streamUpdateData (queuedData: UpdateData[]);
 	transformPixiEntity (x: number, y: number, z: number, type?: boolean);
 
 	flip (flip: FlipMode): void
 }
+=======
+	
+	transformTexture (x: number, y: number, z: number, type?: boolean);
+}
+>>>>>>> decouple-pixi-and-game-logic

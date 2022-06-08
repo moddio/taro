@@ -66,6 +66,8 @@ const Client = IgeEventingClass.extend({
 		this.scaleMode = 0; //old comment => 'none'
 		this.isActiveTab = true;
 
+		this.isZooming = false;
+
 		this._trackTranslateSmoothing = 15;
 		this.inactiveTabEntityStream = [];
 		this.eventLog = [];
@@ -116,7 +118,7 @@ const Client = IgeEventingClass.extend({
 
 		// add utility
 		this.implement(ClientNetworkEvents);
-		ige.addComponent(IgeInitPixi);
+
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
@@ -184,6 +186,7 @@ const Client = IgeEventingClass.extend({
 		promise.then((game) => {
 			ige.game.data = game.data;
 			// let's try here
+			ige.addComponent(IgeInitPixi);
 			ige.entityTrack = new EntityTrack();
 			ige.entityTrack.applyRendererEvents();
             ige.phaser = new PhaserRenderer();

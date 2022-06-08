@@ -880,20 +880,17 @@ var IgeObject = IgeEventingClass.extend({
 	 *     entity2.mount(entity1);
 	 * @return {*} Returns this on success or false on failure.
 	 */
+
 	mount: function (obj) {
 		if (obj) {
+			
 			if (obj === this) {
 				this.log('Cannot mount an object to itself!', 'error');
 				return this;
 			}
 
-			if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				if (this._pixiContainer.parent) {
-					this.unMount();
-				}
-				let pixiEntity = obj._pixiContainer || obj;
-				obj.addChild(this._pixiContainer);
-				return this;
+			if (ige.isClient) {
+				ige.client.emit('mount', { entity: this, parent: obj });
 			}
 
 			if (obj._children) {
@@ -975,18 +972,10 @@ var IgeObject = IgeEventingClass.extend({
 	 * @return {*} Returns this on success or false on failure.
 	 */
 	unMount: function () {
-		var self = this;
-		if (this._pixiContainer) {
-			if (this._pixiContainer.parent && self.entityId) {
-				if (this._pixiTexture.parent.children) {
-					var index = this._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId; });
-					if (index > -1) {
-						this._pixiContainer.parent.removeChildAt(index);
-					}
-				}
-			}
-			return this;
+		if (ige.isClient) {
+			ige.client.emit('unMount', this);
 		}
+		
 		if (this._parent) {
 			var childArr = this._parent._children;
 			var index = childArr.indexOf(this);
@@ -1206,9 +1195,8 @@ var IgeObject = IgeEventingClass.extend({
 	layer: function (val) {
 		if (val !== undefined) {
 			this._layer = val;
-			if (this._pixiContainer) {
-				this._pixiContainer.zIndex = val;
-			}
+			if (ige.isClient) ige.client.emit('setLayer', { entity: this, layer: val });
+
 			return this;
 		}
 
@@ -1260,9 +1248,7 @@ var IgeObject = IgeEventingClass.extend({
 	depth: function (val) {
 		if (val !== undefined) {
 			this._depth = val;
-			if (this._pixiContainer) {
-				this._pixiContainer.depth = val;
-			}
+			if (ige.isClient) ige.client.emit('setDepth', { entity: this, depth: val });
 			return this;
 		}
 

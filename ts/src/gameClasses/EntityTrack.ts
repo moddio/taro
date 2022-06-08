@@ -1,5 +1,5 @@
 class EntityTrack {
-	trackEntityById: any;
+	trackEntityById: {[key: string]: IgeEntity};
 	timeStamp: number;
 
 	constructor() {
@@ -17,21 +17,14 @@ class EntityTrack {
 		if (!ige.lastTickTime) ige.lastTickTime = currentTime;
 		var tickDelta = currentTime - ige.lastTickTime;
 
-		//console.log('entities count', Object.keys(this.trackEntityById).length);
-
-		// var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
 		for (var entityId in this.trackEntityById) {
-			//this delete _pixiContainer if it is _destroyed - maybe we can emit here destroy phaser sprite in future?
-			if (this.trackEntityById[entityId]._destroyed) {
-				delete this.trackEntityById[entityId];
-				break;
-			}
 
 			var entity = ige.$(entityId);
 			if (entity) {
 
 				// while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
-				if (ige.pixi.viewport.isZooming) {
+				if (ige.client.isZooming) {
+
 					if (entity.unitNameLabel) {
 						entity.unitNameLabel.updateScale();
 						entity.unitNameLabel.updatePosition();
@@ -69,8 +62,6 @@ class EntityTrack {
 					}
 
 					// handle streamUpdateData
-					//
-					// iterate entityUpdateQueue[entityId] here?
 					if (ige.client.myPlayer) {
 						var updateQueue = ige.client.entityUpdateQueue[entityId];
 						var processedUpdates = [];
@@ -84,26 +75,34 @@ class EntityTrack {
 								((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
 									((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
 							) {
+<<<<<<< HEAD
 								// console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
 								// console.log('we don\'t stream this', nextUpdate);
 								break;
 							} else {
 								// console.log("entityUpdateQueue", entityId, nextUpdate)
+=======
+								break;
+
+							} else {
+>>>>>>> decouple-pixi-and-game-logic
 								processedUpdates.push(ige.client.entityUpdateQueue[entityId].shift());
 							}
 						}
 
 						if (processedUpdates.length > 0) {
+<<<<<<< HEAD
 							// console.log(processedUpdates, entityId);
 							entity.streamUpdateData(processedUpdates);
 						}
 
+=======
+							entity.streamUpdateData(processedUpdates);
+						}
+>>>>>>> decouple-pixi-and-game-logic
 					}
 				}
-				// return if entity is culled
-				// if (entity.isCulled) {
-				//     continue;
-				// }
+
 				// update transformation using incoming network stream
 				if (ige.network.stream && ige._renderLatency != undefined) {
 					entity._processTransform();
@@ -144,22 +143,10 @@ class EntityTrack {
 						rotate += entity.tween.offset.rotate;
 					}
 
-					entity.transformPixiEntity(x, y, rotate);
+					entity.transformTexture(x, y, rotate);
 
 					// handle animation
-					if (entity.pixianimation) {
-						if (entity.pixianimation.animating) {
-							if (!entity.pixianimation.fpsCount) {
-								entity.pixianimation.fpsCount = 0;
-							}
-
-							if (entity.pixianimation.fpsCount > entity.pixianimation.fpsSecond) {
-								entity.pixianimation.animationTick();
-								entity.pixianimation.fpsCount = 0;
-							}
-							entity.pixianimation.fpsCount += tickDelta;
-						}
-					}
+					ige.client.emit('playAnimation', {entity: entity, tickDelta: tickDelta});
 				}
 			}
 		}
@@ -175,9 +162,7 @@ class EntityTrack {
 		ige.engineStep();
 		ige.input.processInputOnEveryFps();
 		this.timeStamp = Date.now();
-		// ige.pixi.frameTick();
 		ige._renderFrames++;
-		// console.log ('tick', this.timeStamp);
 
 		this.updateAllEntities();
 

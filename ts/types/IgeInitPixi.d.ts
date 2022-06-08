@@ -1,4 +1,4 @@
-declare class IgeInitPixi extends IgeClass {
+declare class IgeInitPixi extends IgeEventingClass {
 
 	initialWindowWidth: number;
 	initialWindowHeight: number;
@@ -9,4 +9,9 @@ declare class IgeInitPixi extends IgeClass {
 	cull: any;
 	resize (): void;
 	frameTick (): void;
+<<<<<<< HEAD
 }
+=======
+	show(): void;
+}
+>>>>>>> decouple-pixi-and-game-logic

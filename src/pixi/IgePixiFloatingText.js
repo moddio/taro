@@ -51,7 +51,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 		name.depth = depth;
 		name.anchor.set(0.5);
 
-		ige.entityTrack.trackEntityById[this._id] = name;
+		ige.entityTrack.trackEntityById[this._id] = this;
 		this._pixiText = name;
 		this._pixiText._category = 'floating_text';
 		this.category('floatingLabel');
@@ -153,7 +153,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 
 			if (index > -1) {
 				var glueEntity = parentUnit.gluedEntities[index];
-				ige.entityTrack.trackEntityById[glueEntity.id] && ige.entityTrack.trackEntityById[glueEntity.id].destroy(true);
+				ige.entityTrack.trackEntityById[glueEntity.id] && ige.entityTrack.trackEntityById[glueEntity.id]._pixiContainer.destroy(true);
 				parentUnit.gluedEntities.splice(index, 1);
 			}
 		}

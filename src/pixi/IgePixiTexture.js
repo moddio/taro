@@ -77,7 +77,7 @@ var IgePixiTexture = IgeClass.extend({
 		var spacing = 0;
 		var resource = this.get(this._stats.url, {
 			entity: this._entity,
-			cb: 'createPixiTexture',
+			cb: 'createTexture',
 			animationId: gid
 		});
 

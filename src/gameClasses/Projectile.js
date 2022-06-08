@@ -82,12 +82,18 @@ var Projectile = IgeEntityPhysics.extend({
 		if (ige.isServer) {
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
+<<<<<<< HEAD
 
 			ige.client.emit('create-projectile', this);
 
 			if (currentState) { // Do we still need this check?
 				// Updated
 				ige.entityTrack.trackEntityById[this.entityId] = this;
+=======
+			if (currentState) {
+				var defaultAnimation = this._stats.animations[currentState.animation];
+				this.createTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+>>>>>>> decouple-pixi-and-game-logic
 			}
 			self.drawBounds(false);
 
