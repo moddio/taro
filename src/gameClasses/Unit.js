@@ -76,14 +76,10 @@ var Unit = IgeEntityPhysics.extend({
 			this.createTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
 
 			self.mount(ige.pixi.world);
-<<<<<<< HEAD
-			this.transformPixiEntity(this._translate.x, this._translate.y);
 
 			ige.client.emit('create-unit', this);
-=======
 			this.transformTexture(this._translate.x, this._translate.y);
 
->>>>>>> decouple-pixi-and-game-logic
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
