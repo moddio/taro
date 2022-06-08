@@ -450,7 +450,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 	},
 
 	followUnit: function (entity) {
-		if (entity._pixiContainer) {
+		if (entity._pixiContainer && ige.rendererEntities.trackEntityById[entity._id]._pixiContainer) {
 			ige.pixi.viewport.follow(ige.rendererEntities.trackEntityById[entity._id]._pixiContainer);
 		}
 	},

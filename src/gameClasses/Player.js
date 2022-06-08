@@ -192,7 +192,7 @@ var Player = IgeEntity.extend({
 			// self._stats.selectedUnitId = unit.id()
 			if (ige.isServer && self._stats.clientId) {
 				ige.network.send('makePlayerCameraTrackUnit', { unitId: unit.id() }, self._stats.clientId);
-			} else if (ige.isClient && self._stats.clientId == ige.network.id() && unit && unit._category == 'unit' && ige.rendererEntities.trackEntityById[unit._id]._pixiContainer) {
+			} else if (ige.isClient && self._stats.clientId == ige.network.id() && unit && unit._category == 'unit') {
 				ige.client.myPlayer.currentFollowUnit = unit._id;
 				ige.client.emit('followUnit', unit);
 			}
