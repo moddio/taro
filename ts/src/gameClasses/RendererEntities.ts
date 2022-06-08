@@ -4,9 +4,6 @@ class RendererEntities {
 
 	constructor() {
 		this.trackEntityById = {};
-	}
-
-	applyRendererEvents(): void {
 		ige.client.on('tick', this.frameTick, this);
 	}
 

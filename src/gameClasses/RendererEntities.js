@@ -1,10 +1,8 @@
 var RendererEntities = /** @class */ (function () {
     function RendererEntities() {
         this.trackEntityById = {};
-    }
-    RendererEntities.prototype.applyRendererEvents = function () {
         ige.client.on('tick', this.frameTick, this);
-    };
+    }
     RendererEntities.prototype.updateAllEntities = function ( /*timeStamp*/) {
         var currentTime = Date.now();
         if (!ige.lastTickTime)
