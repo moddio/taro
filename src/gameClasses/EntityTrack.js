@@ -107,18 +107,7 @@ var EntityTrack = /** @class */ (function () {
                     }
                     entity.transformTexture(x, y, rotate);
                     // handle animation
-                    if (entity.pixianimation) {
-                        if (entity.pixianimation.animating) {
-                            if (!entity.pixianimation.fpsCount) {
-                                entity.pixianimation.fpsCount = 0;
-                            }
-                            if (entity.pixianimation.fpsCount > entity.pixianimation.fpsSecond) {
-                                entity.pixianimation.animationTick();
-                                entity.pixianimation.fpsCount = 0;
-                            }
-                            entity.pixianimation.fpsCount += tickDelta;
-                        }
-                    }
+                    ige.client.emit('playAnimation', { entity: entity, tickDelta: tickDelta });
                 }
             }
         }
