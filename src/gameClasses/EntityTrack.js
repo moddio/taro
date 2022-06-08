@@ -59,26 +59,13 @@ var EntityTrack = /** @class */ (function () {
                                 ((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
                                     ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
                             ) {
-<<<<<<< HEAD
-                                // console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
-                                // console.log('we don\'t stream this', nextUpdate);
                                 break;
                             }
                             else {
-                                // console.log("entityUpdateQueue", entityId, nextUpdate)
-=======
-                                break;
-                            }
-                            else {
->>>>>>> decouple-pixi-and-game-logic
                                 processedUpdates.push(ige.client.entityUpdateQueue[entityId].shift());
                             }
                         }
                         if (processedUpdates.length > 0) {
-<<<<<<< HEAD
-                            // console.log(processedUpdates, entityId);
-=======
->>>>>>> decouple-pixi-and-game-logic
                             entity.streamUpdateData(processedUpdates);
                         }
                     }
@@ -134,10 +121,6 @@ var EntityTrack = /** @class */ (function () {
         ige.input.processInputOnEveryFps();
         this.timeStamp = Date.now();
         ige._renderFrames++;
-<<<<<<< HEAD
-        // console.log ('tick', this.timeStamp);
-=======
->>>>>>> decouple-pixi-and-game-logic
         this.updateAllEntities();
     };
     return EntityTrack;

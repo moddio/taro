@@ -250,7 +250,7 @@ var IgeEntity = IgeObject.extend({
 			// cell sheet animation id will be concatenation of unit type and animation id
 			// default loop to undefined;
 			// TODO: FIX DUPLICATE
-			this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+			// this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
 
 			this.emit('play-animation', animationId);
 			ige.client.emit('applyAnimation', {entity: this, animation: animation, cellSheet: cellSheet, animationId: animationId});

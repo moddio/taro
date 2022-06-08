@@ -10,7 +10,6 @@ declare class IgeEngine extends IgeClass {
 	client: Client;
 	server: Client;
 
-<<<<<<< HEAD
 	network: IgeNetworkComponent;
 
 	input: IgeInputComponent;
@@ -21,11 +20,6 @@ declare class IgeEngine extends IgeClass {
 
 	pixi: IgeInitPixi;
 	phaser: PhaserRenderer;
-=======
-	input: IgeInputComponent;
-
-	pixi: IgeInitPixi;
->>>>>>> decouple-pixi-and-game-logic
 
 	scaleMapDetails: {
 		scaleFactor: {

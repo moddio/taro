@@ -286,6 +286,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 		if (!texture) {
 			return;
 		}
+		entity._pixiContainer = new PIXI.Container();
 		texture.width = (entity._stats.currentBody && entity._stats.currentBody.width) || entity._stats.width;
 		texture.height = (entity._stats.currentBody && entity._stats.currentBody.height) || entity._stats.height;
 		if (texture.anchor) {
@@ -425,7 +426,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 						function (child) {
 							return child.entityId == this.entityId;
 						});
-						
+
 					if (index > -1) {
 						entity._pixiContainer.parent.removeChildAt(index);
 					}

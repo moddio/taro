@@ -75,31 +75,16 @@ class EntityTrack {
 								((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
 									((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
 							) {
-<<<<<<< HEAD
-								// console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
-								// console.log('we don\'t stream this', nextUpdate);
-								break;
-							} else {
-								// console.log("entityUpdateQueue", entityId, nextUpdate)
-=======
 								break;
 
 							} else {
->>>>>>> decouple-pixi-and-game-logic
 								processedUpdates.push(ige.client.entityUpdateQueue[entityId].shift());
 							}
 						}
 
 						if (processedUpdates.length > 0) {
-<<<<<<< HEAD
-							// console.log(processedUpdates, entityId);
 							entity.streamUpdateData(processedUpdates);
 						}
-
-=======
-							entity.streamUpdateData(processedUpdates);
-						}
->>>>>>> decouple-pixi-and-game-logic
 					}
 				}
 

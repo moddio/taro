@@ -9,9 +9,5 @@ declare class IgeInitPixi extends IgeEventingClass {
 	cull: any;
 	resize (): void;
 	frameTick (): void;
-<<<<<<< HEAD
-}
-=======
 	show(): void;
 }
->>>>>>> decouple-pixi-and-game-logic
