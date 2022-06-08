@@ -972,19 +972,10 @@ var IgeObject = IgeEventingClass.extend({
 	 * @return {*} Returns this on success or false on failure.
 	 */
 	unMount: function () {
-		var self = this;
-		if (self._pixiContainer) {
-			if (self._pixiContainer.parent && self.entityId) {
-				if (self._pixiTexture.parent.children) {
-					var index = self._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId; });
-					if (index > -1) {
-						self._pixiContainer.parent.removeChildAt(index);
-					}
-				}
-			}
-			return self;
+		if (ige.isClient) {
+			ige.client.emit('unMount', this);
 		}
-
+		
 		if (this._parent) {
 			var childArr = this._parent._children;
 			var index = childArr.indexOf(this);

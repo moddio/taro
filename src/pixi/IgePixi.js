@@ -402,30 +402,35 @@ var IgeInitPixi = IgeEventingClass.extend({
 
 	mount: function (info) {
 		var { entity, parent } = info;
+
 		if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
+
 			if (entity._pixiContainer.parent) {
 				entity.unMount();
 			}
 			// let pixiEntity = parent._pixiContainer || parent;
 			parent.addChild(entity._pixiContainer);
-			console.log('mounting via event');
-			return entity;
 		}
 	},
 
-	// unMount: function (entity) {
-	// 	if (entity._pixiContainer) {
-	// 		if (entity._pixiContainer.parent && self.entityId) {
-	// 			if (entity._pixiTexture.parent.children) {
-	// 				var index = entity._pixiContainer.parent.children.findIndex(function (child) { return child.entityId == self.entityId; });
-	// 				if (index > -1) {
-	// 					entity._pixiContainer.parent.removeChildAt(index);
-	// 				}
-	// 			}
-	// 		}
-	// 		return entity;
-	// 	}
-	// },
+	unMount: function (entity) {
+		if (entity._pixiContainer) {
+
+			if (entity._pixiContainer.parent && this.entityId) {
+
+				if (entity._pixiTexture.parent.children) {
+					var index = entity._pixiContainer.parent.children.findIndex(
+						function (child) {
+							return child.entityId == this.entityId;
+						});
+						
+					if (index > -1) {
+						entity._pixiContainer.parent.removeChildAt(index);
+					}
+				}
+			}
+		}
+	},
 
 	setDepth: function (info) {
 		var { entity, depth } = info;
