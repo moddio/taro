@@ -50,7 +50,7 @@ var MobileControlsComponent = IgeEntity.extend({
 		});
 
 		this.id();
-		ige.entityTrack.trackEntityById[this.id()] = this;
+		ige.rendererEntities.trackEntityById[this.id()] = this;
 		self.addBehaviour('mobileControl', self._behaviour);
 	},
 

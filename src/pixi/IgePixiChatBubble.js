@@ -157,7 +157,7 @@ var IgePixiChatBubble = IgeEntity.extend({
 		if (this._pixiContainer && !this._pixiContainer._destroyed) {
 			this._pixiContainer.destroy(true);
 			this._destroyed = true;
-			delete ige.entityTrack.trackEntityById[this._id];
+			delete ige.rendererEntities.trackEntityById[this._id];
 		}
 		IgeEntity.prototype.destroy.call(this);
 	}

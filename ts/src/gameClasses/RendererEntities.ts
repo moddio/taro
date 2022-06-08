@@ -1,10 +1,8 @@
-class EntityTrack {
+class RendererEntities {
 	trackEntityById: {[key: string]: IgeEntity};
 	timeStamp: number;
 
 	constructor() {
-		console.log('EntityTrack born');
-
 		this.trackEntityById = {};
 	}
 

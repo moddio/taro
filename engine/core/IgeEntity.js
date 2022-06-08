@@ -2474,7 +2474,7 @@ var IgeEntity = IgeObject.extend({
 					entity.destroy();
 					// texture.destroy({ children: true, texture: true });
 
-					delete ige.entityTrack.trackEntityById[glueEntity.id];
+					delete ige.rendererEntities.trackEntityById[glueEntity.id];
 				}
 			});
 		}

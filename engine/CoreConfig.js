@@ -30,8 +30,6 @@ var igeCoreConfig = {
 		['csap', 'IgeMouseZoomComponent', 'components/IgeMouseZoomComponent.js'],
 		['csap', 'IgeTiledComponent', 'components/IgeTiledComponent.js'],
 		['csap', 'IgeUiManagerComponent', 'components/IgeUiManagerComponent.js'],
-		['csap', 'IgeEntityManager', 'components/entityManager/IgeEntityManager.js'],
-		['csap', 'IgeEntityManagerComponent', 'components/IgeEntityManagerComponent.js'],
 		['csap', 'IgeEditorComponent', 'components/editor/IgeEditorComponent.js'],
 		/* Network Stream */
 		['csap', 'IgeTimeSyncExtension', 'components/network/IgeTimeSyncExtension.js'],

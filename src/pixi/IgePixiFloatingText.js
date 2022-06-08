@@ -54,7 +54,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 		name.depth = depth;
 		name.anchor.set(0.5);
 
-		ige.entityTrack.trackEntityById[this._id] = this;
+		ige.rendererEntities.trackEntityById[this._id] = this;
 		this._pixiText = name;
 		this._pixiText._category = 'floating_text';
 		this.category('floatingLabel');
@@ -103,7 +103,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 
 		setTimeout(function () {
 			clearInterval(self.interval);
-			delete ige.entityTrack.trackEntityById[self.id];
+			delete ige.rendererEntities.trackEntityById[self.id];
 			if (self._pixiText) {
 				self._pixiText.destroy();
 			}
@@ -156,7 +156,7 @@ var IgePixiFloatingText = IgeEntity.extend({
 
 			if (index > -1) {
 				var glueEntity = parentUnit.gluedEntities[index];
-				ige.entityTrack.trackEntityById[glueEntity.id] && ige.entityTrack.trackEntityById[glueEntity.id]._pixiContainer.destroy(true);
+				ige.rendererEntities.trackEntityById[glueEntity.id] && ige.rendererEntities.trackEntityById[glueEntity.id]._pixiContainer.destroy(true);
 				parentUnit.gluedEntities.splice(index, 1);
 			}
 		}
