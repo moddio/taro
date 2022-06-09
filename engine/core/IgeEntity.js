@@ -2124,13 +2124,31 @@ var IgeEntity = IgeObject.extend({
 		if (ige.isServer) {
 			if (flip != this._stats.flip) {
 				// if (this._category == 'unit' && this._stats.name != 'm0dE')
+				// 	console.log(flip)
 				this.streamUpdateData([{ flip: flip }]);
 			}
 		} else if (ige.isClient) {
 			if (this._stats.flip != flip) {
 				// if (this._category =='unit' && this._stats.name != 'm0dE')
+				// 	console.log("wtf", flip)
 
-				ige.client.emit('flipTexture', {entity: this, flip: flip});
+				var entity = this._pixiTexture;
+				if (entity) {
+					var x = Math.abs(entity.scale.x);
+					var y = Math.abs(entity.scale.y);
+					if (flip == 0) {
+						entity.scale.set(x, y);
+					}
+					if (flip == 1) {
+						entity.scale.set(-x, y);
+					}
+					if (flip == 2) {
+						entity.scale.set(x, -y);
+					}
+					if (flip == 3) {
+						entity.scale.set(-x, -y);
+					}
+				}
 			}
 		}
 		this._stats.flip = flip;
