@@ -1,4 +1,4 @@
-class RendererEntities {
+class EntitiesToRender {
 	trackEntityById: {[key: string]: IgeEntity};
 	timeStamp: number;
 

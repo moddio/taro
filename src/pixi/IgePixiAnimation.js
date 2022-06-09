@@ -88,7 +88,7 @@ var IgePixiAnimation = IgeClass.extend({
 	},
 	select: function (frames, fps = 15, loopCount, cellSheetAnimId, animName) {
 		var self = this;
-		if (ige.rendererEntities.trackEntityById[self._entity.entityId] && ige.rendererEntities.trackEntityById[self._entity.entityId]._pixiContainer) var entity = ige.rendererEntities.trackEntityById[self._entity.entityId]._pixiContainer;
+		if (ige.entitiesToRender.trackEntityById[self._entity.entityId] && ige.entitiesToRender.trackEntityById[self._entity.entityId]._pixiContainer) var entity = ige.entitiesToRender.trackEntityById[self._entity.entityId]._pixiContainer;
 		if (!entity) return;
 
 		var startFrame = frames[0] - 1;

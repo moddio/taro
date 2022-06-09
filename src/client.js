@@ -186,7 +186,7 @@ const Client = IgeEventingClass.extend({
 			ige.game.data = game.data;
 			// let's try here
 			ige.addComponent(IgeInitPixi);
-			ige.rendererEntities = new RendererEntities();
+			ige.entitiesToRender = new EntitiesToRender();
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
 			ige.addComponent(IgeNetIoComponent);

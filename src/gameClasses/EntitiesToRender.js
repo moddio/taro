@@ -1,11 +1,9 @@
-var RendererEntities = /** @class */ (function () {
-    function RendererEntities() {
+var EntitiesToRender = /** @class */ (function () {
+    function EntitiesToRender() {
         this.trackEntityById = {};
-    }
-    RendererEntities.prototype.applyRendererEvents = function () {
         ige.client.on('tick', this.frameTick, this);
-    };
-    RendererEntities.prototype.updateAllEntities = function ( /*timeStamp*/) {
+    }
+    EntitiesToRender.prototype.updateAllEntities = function ( /*timeStamp*/) {
         var currentTime = Date.now();
         if (!ige.lastTickTime)
             ige.lastTickTime = currentTime;
@@ -115,13 +113,13 @@ var RendererEntities = /** @class */ (function () {
             ige.gameLoopTickHasExecuted = false;
         }
     };
-    RendererEntities.prototype.frameTick = function () {
+    EntitiesToRender.prototype.frameTick = function () {
         ige.engineStep();
         ige.input.processInputOnEveryFps();
         this.timeStamp = Date.now();
         ige._renderFrames++;
         this.updateAllEntities();
     };
-    return RendererEntities;
+    return EntitiesToRender;
 }());
-//# sourceMappingURL=EntityTrack.js.map
+//# sourceMappingURL=EntitiesToRender.js.map

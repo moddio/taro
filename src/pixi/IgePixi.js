@@ -305,21 +305,21 @@ var IgeInitPixi = IgeEventingClass.extend({
 			entity._pixiContainer.y = defaultData.translate.y;
 			entity._pixiTexture.rotation = defaultData.rotate;
 		}
-		ige.rendererEntities.trackEntityById[entity.entityId] = entity;
+		ige.entitiesToRender.trackEntityById[entity.entityId] = entity;
 	},
 	updateTexture: function () {
 		this.isUpdateLayersOrderQueued = true;
 	},
 	destroyTexture: function (entity) {
 		var entityId = entity.entityId || entity.id();
-		if (ige.rendererEntities.trackEntityById[entityId] && (ige.rendererEntities.trackEntityById[entityId]._pixiContainer || ige.rendererEntities.trackEntityById[entityId]._pixiText)) {
+		if (ige.entitiesToRender.trackEntityById[entityId] && (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer || ige.entitiesToRender.trackEntityById[entityId]._pixiText)) {
 			// entity.destroy()
 			// ige.pixi.viewport.follow();
 			if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == entity.id()) {
 				ige.pixi.viewport.removePlugin('follow');
 			}
-			if (ige.rendererEntities.trackEntityById[entityId]._pixiContainer) var texture = ige.rendererEntities.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.rendererEntities.trackEntityById[entityId]._pixiContainer._pixiText || ige.rendererEntities.trackEntityById[entityId]._pixiContainer;
-			else if (ige.rendererEntities.trackEntityById[entityId]._pixiText) var texture = ige.rendererEntities.trackEntityById[entityId]._pixiText;
+			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) var texture = ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiText || ige.entitiesToRender.trackEntityById[entityId]._pixiContainer;
+			else if (ige.entitiesToRender.trackEntityById[entityId]._pixiText) var texture = ige.entitiesToRender.trackEntityById[entityId]._pixiText;
 			// its not instance of ige
 			if (texture && !texture.componentId && !texture._destroyed) {
 				ige.pixi.world.removeChild(texture);
@@ -329,8 +329,8 @@ var IgeInitPixi = IgeEventingClass.extend({
 					ige.isLog = true;
 				}
 			}
-			if (ige.rendererEntities.trackEntityById[entityId]._pixiContainer) ige.rendererEntities.trackEntityById[entityId]._pixiContainer._destroyed = true;
-			delete ige.rendererEntities.trackEntityById[entityId];
+			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._destroyed = true;
+			delete ige.entitiesToRender.trackEntityById[entityId];
 		}
 		if (entity.attributeBars) {
 			for (var attributeBarInfo of entity.attributeBars) {
@@ -450,8 +450,8 @@ var IgeInitPixi = IgeEventingClass.extend({
 	},
 
 	followUnit: function (entity) {
-		if (entity._pixiContainer && ige.rendererEntities.trackEntityById[entity._id]._pixiContainer) {
-			ige.pixi.viewport.follow(ige.rendererEntities.trackEntityById[entity._id]._pixiContainer);
+		if (entity._pixiContainer && ige.entitiesToRender.trackEntityById[entity._id]._pixiContainer) {
+			ige.pixi.viewport.follow(ige.entitiesToRender.trackEntityById[entity._id]._pixiContainer);
 		}
 	},
 

@@ -33,7 +33,7 @@ declare class IgeEngine extends IgeClass {
 
 	lastTickTime: number;
 
-	rendererEntities: RendererEntities;
+	entitiesToRender: EntitiesToRender;
 
 	_currentTime: number;
 
