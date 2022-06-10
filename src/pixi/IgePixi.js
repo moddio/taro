@@ -497,7 +497,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 				entityTexture.scale.set(-x, y);
 			}
 			if (flip == 2) {
-				enentityTexturetity.scale.set(x, -y);
+				entityTexture.scale.set(x, -y);
 			}
 			if (flip == 3) {
 				entityTexture.scale.set(-x, -y);
