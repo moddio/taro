@@ -1940,15 +1940,14 @@ var IgeEntity = IgeObject.extend({
 					this.streamUpdateData([{ effect: type }]);
 				}
 			} else if (ige.isClient) {
-				//if (this._pixiContainer && this._pixiContainer._destroyed) {
-				if (!this._alive) {
+				if (!ige.entitiesToRender.trackEntityById[this.id()]) {
 					return;
 				}
 				var position = this._translate;
 
 				if (this._category === 'item' && this._stats.currentBody && (this._stats.currentBody.type === 'spriteOnly' || this._stats.currentBody.type === 'none')) {
 					var ownerUnit = this.getOwnerUnit();
-					position = (ownerUnit && ownerUnit._pixiContainer) || position;
+					position = (ownerUnit && ownerUnit._translate) || position;
 				}
 
 				// if animation is assigned to effect, play it
