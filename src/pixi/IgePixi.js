@@ -264,24 +264,31 @@ var IgeInitPixi = IgeEventingClass.extend({
 		}
 	},
 	applyAnimation: function (info) {
-		var cellSheetAnimId;
-		var entity = info.entity;
-		var cellSheet = info.cellSheet;
-		var animation = info.animation;
-		var animationId = info.animationId;
+		var {
+			entity,
+			cellSheet,
+			animation,
+			animationId
+		} = info;
+		
 		var url = cellSheet.url;
 		var rows = cellSheet.rowCount;
 		var columns = cellSheet.columnCount;
+		// This is quite strange
 		cellSheetAnimId = cellSheet.url;
 		var fps = animation.framesPerSecond || 15;
 		var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
+
 		ige.client.cellSheets[cellSheetAnimId] = entity.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
 		entity.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
 	},
 	createTexture: function (info) {
-		var entity = info.entity;
-		var defaultSprite = info.defaultSprite;
-		var defaultData = info.defaultData;
+		var {
+			entity,
+			defaultSprite,
+			defaultData
+		} = info;
+
 		var texture = new IgePixiTexture(entity._stats.cellSheet.url, entity._stats.cellSheet.columnCount, entity._stats.cellSheet.rowCount, entity);
 		texture = texture.spriteFromCellSheet(defaultSprite);
 		if (!texture) {
@@ -341,8 +348,8 @@ var IgeInitPixi = IgeEventingClass.extend({
 		}
 	},
 	width: function (info) {
-		var entity = info.entity;
-		var px = info.px;
+		var  { entity, px } = info;
+
 		if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
 			entity._pixiTexture.width = px;
 		} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
@@ -352,8 +359,8 @@ var IgeInitPixi = IgeEventingClass.extend({
 		}
 	},
 	height: function (info) {
-		var entity = info.entity;
-		var px = info.px;
+		var  { entity,	px } = info;
+
 		if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
 			entity._pixiTexture.height = px;
 		} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
@@ -363,21 +370,20 @@ var IgeInitPixi = IgeEventingClass.extend({
 		}
 	},
 	transformTexture: function (info) {
-		var entity = info.entity;
-		var type = info.type;
-		var x = info.x;
-		var y = info.y;
-		var z = info.z;
+		var {
+			entity,
+			type,
+			x,
+			y,
+			z // actually a rotation
+		} = info;
+
 		var pixiObject = entity._pixiText || entity._pixiContainer;
 		if (pixiObject && !pixiObject._destroyed) {
 			if (entity._pixiTexture) {
 				entity._pixiTexture.rotation = z;
 			}
-			// new
-			if (entity._pixiCollider) {
-				entity._pixiCollider.rotation = z;
-			}
-			//
+
 			if (!type) {
 				pixiObject.x = x;
 				pixiObject.y = y;
@@ -389,9 +395,8 @@ var IgeInitPixi = IgeEventingClass.extend({
 		}
 	},
 	scale: function (info) {
-		var entity = info.entity;
-		var x = info.x;
-		var y = info.y;
+		var { entity, x, y } = info;
+
 		if (x !== undefined && y !== undefined) {
 			if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
 				entity._pixiTexture.scale.set(x, y);
@@ -419,12 +424,12 @@ var IgeInitPixi = IgeEventingClass.extend({
 	unMount: function (entity) {
 		if (entity._pixiContainer) {
 
-			if (entity._pixiContainer.parent && this.entityId) {
+			if (entity._pixiContainer.parent && entity.entityId) {
 
 				if (entity._pixiTexture.parent.children) {
 					var index = entity._pixiContainer.parent.children.findIndex(
 						function (child) {
-							return child.entityId == this.entityId;
+							return child.entityId == entity.entityId;
 						});
 						
 					if (index > -1) {
@@ -456,8 +461,11 @@ var IgeInitPixi = IgeEventingClass.extend({
 	},
 
 	playAnimation: function (info) {
-		var entity = info.entity;
-		var tickDelta = info.tickDelta;
+		var {
+			entity,
+			tickDelta
+		} = info;
+
 		if (entity.pixianimation) {
 			if (entity.pixianimation.animating) {
 				if (!entity.pixianimation.fpsCount) {
