@@ -39,7 +39,7 @@ var IgePixiAnimation = IgeClass.extend({
 						try {
 							resource.frame = new PIXI.Rectangle(tileX, tileY, spriteWidth, spriteHeight);
 						} catch (e) {
-							console.log(e);
+							console.log(e); //TODO: Remove
 							alert(`animation for ${source} cannot be loaded`);
 						}
 						texturesWithSprites.push(self.setSpriteProperty(resource));
@@ -88,31 +88,29 @@ var IgePixiAnimation = IgeClass.extend({
 	},
 	select: function (frames, fps = 15, loopCount, cellSheetAnimId, animName) {
 		var self = this;
+		// this was some patchy code. I propose a solution that we can work with.
 		if (
 			ige.entitiesToRender.trackEntityById[self._entity.entityId] &&
 			ige.entitiesToRender.trackEntityById[self._entity.entityId]._pixiContainer
 		) {
-			var entity = ige.entitiesToRender.trackEntityById[self._entity.entityId]._pixiContainer;
-		}
-		
-		if (!entity) return;
 
-		var startFrame = frames[0] - 1;
-		var lastFrame = frames[frames.length - 1] - 1;
+			var startFrame = frames[0] - 1;
+			var lastFrame = frames[frames.length - 1] - 1;
 
-		self.i = 0;
-		self.fpsSecond = 1000 / fps;
-		self.frames = frames;
-		self.loopCount = loopCount;
-		self.lastFrame = lastFrame;
-		self.startFrame = startFrame;
-		self.totalNumberOfFrames = frames.length;
-		self._entity.currentAnimId = cellSheetAnimId;
+			self.i = 0;
+			self.fpsSecond = 1000 / fps;
+			self.frames = frames;
+			self.loopCount = loopCount;
+			self.lastFrame = lastFrame;
+			self.startFrame = startFrame;
+			self.totalNumberOfFrames = frames.length;
+			self._entity.currentAnimId = cellSheetAnimId;
 
-		this.resetAnimation();
+			self.resetAnimation();
 
-		if (!this.animating) {
-			this.animating = true;
+			if (!self.animating) {
+				self.animating = true;
+			}
 		}
 	},
 	stopAtFrame: function (frameIndex) {
