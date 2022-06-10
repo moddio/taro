@@ -831,13 +831,6 @@ var IgeEntity = IgeObject.extend({
 
 			return this;
 		}
-		if (this._pixiTexture) {
-			return this._pixiTexture.width;
-		} else if (this._pixiContainer) {
-			return this._pixiContainer.width;
-		} else if (this._pixiText) {
-			return this._pixiText.width;
-		}
 
 		return this._bounds2d.x;
 	},
@@ -866,13 +859,6 @@ var IgeEntity = IgeObject.extend({
 			return this;
 		}
 
-		if (this._pixiTexture) {
-			return this._pixiTexture.height;
-		} else if (this._pixiContainer) {
-			return this._pixiContainer.height;
-		} else if (this._pixiText) {
-			return this._pixiText.height;
-		}
 		return this._bounds2d.y;
 	},
 
@@ -1954,7 +1940,8 @@ var IgeEntity = IgeObject.extend({
 					this.streamUpdateData([{ effect: type }]);
 				}
 			} else if (ige.isClient) {
-				if (this._pixiContainer && this._pixiContainer._destroyed) {
+				//if (this._pixiContainer && this._pixiContainer._destroyed) {
+				if (!this._alive) {
 					return;
 				}
 				var position = this._translate;
@@ -2124,31 +2111,13 @@ var IgeEntity = IgeObject.extend({
 		if (ige.isServer) {
 			if (flip != this._stats.flip) {
 				// if (this._category == 'unit' && this._stats.name != 'm0dE')
-				// 	console.log(flip)
 				this.streamUpdateData([{ flip: flip }]);
 			}
 		} else if (ige.isClient) {
 			if (this._stats.flip != flip) {
 				// if (this._category =='unit' && this._stats.name != 'm0dE')
-				// 	console.log("wtf", flip)
 
-				var entity = this._pixiTexture;
-				if (entity) {
-					var x = Math.abs(entity.scale.x);
-					var y = Math.abs(entity.scale.y);
-					if (flip == 0) {
-						entity.scale.set(x, y);
-					}
-					if (flip == 1) {
-						entity.scale.set(-x, y);
-					}
-					if (flip == 2) {
-						entity.scale.set(x, -y);
-					}
-					if (flip == 3) {
-						entity.scale.set(-x, -y);
-					}
-				}
+				ige.client.emit('flipTexture', {entity: this, flip: flip});
 			}
 		}
 		this._stats.flip = flip;
@@ -2468,11 +2437,9 @@ var IgeEntity = IgeObject.extend({
 		if (this.gluedEntities && this.gluedEntities.length > 0) {
 			this.gluedEntities.forEach(function (glueEntity) {
 				var entity = ige.$(glueEntity.id);
-				if (entity && (entity._pixiText || entity._pixiTexture)) {
-					var texture = entity._pixiText || entity._pixiTexture;
+				if (entity && ige.entitiesToRender.trackEntityById[glueEntity.id]) {
 					entity.unMount();
 					entity.destroy();
-					// texture.destroy({ children: true, texture: true });
 
 					delete ige.entitiesToRender.trackEntityById[glueEntity.id];
 				}

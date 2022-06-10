@@ -150,6 +150,9 @@ var IgeInitPixi = IgeEventingClass.extend({
 		ige.client.on('playAnimation', function (e) {
 			ige.pixi.playAnimation(e);
 		});
+		ige.client.on('flipTexture', function (e) {
+			ige.pixi.flipTexture(e);
+		});
 	},
 
 	frameTick: function () {
@@ -477,6 +480,27 @@ var IgeInitPixi = IgeEventingClass.extend({
 					entity.pixianimation.fpsCount = 0;
 				}
 				entity.pixianimation.fpsCount += tickDelta;
+			}
+		}
+	},
+
+	flipTexture: function (info) {
+		var entityTexture = info.entity._pixiTexture;
+		var flip = info.flip;
+		if (entityTexture) {
+			var x = Math.abs(entityTexture.scale.x);
+			var y = Math.abs(entityTexture.scale.y);
+			if (flip == 0) {
+				entityTexture.scale.set(x, y);
+			}
+			if (flip == 1) {
+				entityTexture.scale.set(-x, y);
+			}
+			if (flip == 2) {
+				enentityTexturetity.scale.set(x, -y);
+			}
+			if (flip == 3) {
+				entityTexture.scale.set(-x, -y);
 			}
 		}
 	}
