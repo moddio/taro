@@ -87,30 +87,28 @@ var IgePixiAnimation = IgeClass.extend({
 		return texturesWithSprites;
 	},
 	select: function (frames, fps = 15, loopCount, cellSheetAnimId, animName) {
-		var self = this;
-		// this was some patchy code. I propose a solution that we can work with.
+
 		if (
-			ige.entitiesToRender.trackEntityById[self._entity.entityId] &&
-			ige.entitiesToRender.trackEntityById[self._entity.entityId]._pixiContainer
-		) {
+			!ige.entitiesToRender.trackEntityById[this._entity.entityId] ||
+			!ige.entitiesToRender.trackEntityById[this._entity.entityId]._pixiContainer
+		) return;
 
-			var startFrame = frames[0] - 1;
-			var lastFrame = frames[frames.length - 1] - 1;
+		var startFrame = frames[0] - 1;
+		var lastFrame = frames[frames.length - 1] - 1;
 
-			self.i = 0;
-			self.fpsSecond = 1000 / fps;
-			self.frames = frames;
-			self.loopCount = loopCount;
-			self.lastFrame = lastFrame;
-			self.startFrame = startFrame;
-			self.totalNumberOfFrames = frames.length;
-			self._entity.currentAnimId = cellSheetAnimId;
+		this.i = 0;
+		this.fpsSecond = 1000 / fps;
+		this.frames = frames;
+		this.loopCount = loopCount;
+		this.lastFrame = lastFrame;
+		this.startFrame = startFrame;
+		this.totalNumberOfFrames = frames.length;
+		this._entity.currentAnimId = cellSheetAnimId;
 
-			self.resetAnimation();
+		this.resetAnimation();
 
-			if (!self.animating) {
-				self.animating = true;
-			}
+		if (!this.animating) {
+			this.animating = true;
 		}
 	},
 	stopAtFrame: function (frameIndex) {
@@ -149,7 +147,7 @@ var IgePixiAnimation = IgeClass.extend({
 		} else {
 			this.stopAtFrame(this.lastFrame);
 			if (this.animating) {
-				this._entity.applyAnimationById('default'); // play default animation if effect isn't set		
+				this._entity.applyAnimationById('default'); // play default animation if effect isn't set
 			}
 			this.resetAnimation();
 		}
