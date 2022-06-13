@@ -89,7 +89,7 @@ var IgeEntity = IgeObject.extend({
 	},
 
 	isRendering() {
-		return ige.isClient && !!ige.entitiesToRender.trackEntityById[this.id()];
+		if (ige.isClient) return !!ige.entitiesToRender.trackEntityById[this.id()];
 	},
 
 	/**
