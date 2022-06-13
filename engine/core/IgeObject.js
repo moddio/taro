@@ -883,7 +883,7 @@ var IgeObject = IgeEventingClass.extend({
 
 	mount: function (obj) {
 		if (obj) {
-			
+
 			if (obj === this) {
 				this.log('Cannot mount an object to itself!', 'error');
 				return this;
@@ -891,6 +891,7 @@ var IgeObject = IgeEventingClass.extend({
 
 			if (ige.isClient) {
 				ige.client.emit('mount', { entity: this, parent: obj });
+				// we will return this later if we chose a valid obj to mount on
 			}
 
 			if (obj._children) {
@@ -974,8 +975,10 @@ var IgeObject = IgeEventingClass.extend({
 	unMount: function () {
 		if (ige.isClient) {
 			ige.client.emit('unMount', this);
+
+			//
 		}
-		
+
 		if (this._parent) {
 			var childArr = this._parent._children;
 			var index = childArr.indexOf(this);
