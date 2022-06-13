@@ -77,8 +77,6 @@ class GameScene extends Phaser.Scene {
 
 	preload (): void {
 
-		this.load.crossOrigin = 'anonymous';
-
 		const data = ige.game.data;
 
 		for (let type in data.unitTypes) {
@@ -94,7 +92,10 @@ class GameScene extends Phaser.Scene {
 		}
 
 		data.map.tilesets.forEach((tileset) => {
-			this.load.image(`tiles/${tileset.name}`, tileset.image);
+			this.load.image(
+				`tiles/${tileset.name}`,
+				`${tileset.image}?version=1`
+			);
 		});
 
 		this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
@@ -147,7 +148,7 @@ class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.load.image(key, cellSheet.url);
+		this.load.image(key, `${cellSheet.url}?version=1`);
 	}
 
 	create (): void {

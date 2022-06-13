@@ -69,7 +69,6 @@ var GameScene = /** @class */ (function (_super) {
     };
     GameScene.prototype.preload = function () {
         var _this = this;
-        this.load.crossOrigin = 'anonymous';
         var data = ige.game.data;
         for (var type in data.unitTypes) {
             this.loadEntity("unit/".concat(type), data.unitTypes[type]);
@@ -81,7 +80,7 @@ var GameScene = /** @class */ (function (_super) {
             this.loadEntity("item/".concat(type), data.itemTypes[type]);
         }
         data.map.tilesets.forEach(function (tileset) {
-            _this.load.image("tiles/".concat(tileset.name), tileset.image);
+            _this.load.image("tiles/".concat(tileset.name), "".concat(tileset.image, "?version=1"));
         });
         this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
     };
@@ -120,7 +119,7 @@ var GameScene = /** @class */ (function (_super) {
                 });
             }
         });
-        this.load.image(key, cellSheet.url);
+        this.load.image(key, "".concat(cellSheet.url, "?version=1"));
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();

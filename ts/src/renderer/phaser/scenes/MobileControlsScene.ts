@@ -118,9 +118,9 @@ class MobileControlsScene extends Phaser.Scene {
 	preload (): void {
 
 		this.load.image('mobile-button-up',
-			'https://cache.modd.io/asset/spriteImage/1549614640644_button1.png');
+			'https://cache.modd.io/asset/spriteImage/1549614640644_button1.png?version=123');
 		this.load.image('mobile-button-down',
-			'https://cache.modd.io/asset/spriteImage/1549614658007_button2.png');
+			'https://cache.modd.io/asset/spriteImage/1549614658007_button2.png?version=123');
 
 		this.load.image('mobile-button-icon',
 			'https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png');
