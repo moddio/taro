@@ -88,6 +88,10 @@ var IgeEntity = IgeObject.extend({
 		this.streamSections(['transform']);
 	},
 
+	isRendering() {
+		return ige.isClient && !!ige.entitiesToRender.trackEntityById[this.id()];
+	},
+
 	/**
      * Sets the entity as visible and able to be interacted with.
      * @example #Show a hidden entity
@@ -1940,7 +1944,7 @@ var IgeEntity = IgeObject.extend({
 					this.streamUpdateData([{ effect: type }]);
 				}
 			} else if (ige.isClient) {
-				if (!ige.entitiesToRender.trackEntityById[this.id()]) {
+				if (!this.isRendering()) {
 					return;
 				}
 				var position = this._translate;
@@ -2436,7 +2440,7 @@ var IgeEntity = IgeObject.extend({
 		if (this.gluedEntities && this.gluedEntities.length > 0) {
 			this.gluedEntities.forEach(function (glueEntity) {
 				var entity = ige.$(glueEntity.id);
-				if (entity && ige.entitiesToRender.trackEntityById[glueEntity.id]) {
+				if (entity && entity.isRendering()) { //ige.entitiesToRender.trackEntityById[glueEntity.id]) {
 					entity.unMount();
 					entity.destroy();
 
