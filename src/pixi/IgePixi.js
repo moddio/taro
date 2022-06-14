@@ -260,12 +260,14 @@ var IgeInitPixi = IgeEventingClass.extend({
 			pixiEntity.visible = true;
 		}
 	},
+
 	hide: function (entity) {
 		var pixiEntity = entity._pixiText || entity._pixiTexture;
 		if (pixiEntity) {
 			pixiEntity.visible = false;
 		}
 	},
+
 	applyAnimation: function (info) {
 		var {
 			entity,
@@ -273,7 +275,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 			animation,
 			animationId
 		} = info;
-		
+
 		var url = cellSheet.url;
 		var rows = cellSheet.rowCount;
 		var columns = cellSheet.columnCount;
@@ -282,9 +284,23 @@ var IgeInitPixi = IgeEventingClass.extend({
 		var fps = animation.framesPerSecond || 15;
 		var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
 
-		ige.client.cellSheets[cellSheetAnimId] = entity.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
-		entity.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+		ige.client.cellSheets[cellSheetAnimId] = entity.pixianimation.define(
+			url,
+			columns,
+			rows,
+			cellSheetAnimId,
+			animationId
+		);
+
+		entity.pixianimation.select(
+			animation.frames,
+			fps,
+			loopCount,
+			cellSheetAnimId,
+			animation.name
+		);
 	},
+
 	createTexture: function (info) {
 		var {
 			entity,
@@ -292,18 +308,44 @@ var IgeInitPixi = IgeEventingClass.extend({
 			defaultData
 		} = info;
 
-		var texture = new IgePixiTexture(entity._stats.cellSheet.url, entity._stats.cellSheet.columnCount, entity._stats.cellSheet.rowCount, entity);
+		var texture = new IgePixiTexture(
+			entity._stats.cellSheet.url,
+			entity._stats.cellSheet.columnCount,
+			entity._stats.cellSheet.rowCount,
+			entity
+		);
+
 		texture = texture.spriteFromCellSheet(defaultSprite);
-		if (!texture) {
-			return;
-		}
-		texture.width = (entity._stats.currentBody && entity._stats.currentBody.width) || entity._stats.width;
-		texture.height = (entity._stats.currentBody && entity._stats.currentBody.height) || entity._stats.height;
+
+		if (!texture) return;
+
+		texture.width = (
+			entity._stats.currentBody && entity._stats.currentBody.width
+		) ||
+			entity._stats.width;
+
+		texture.height = (
+			entity._stats.currentBody && entity._stats.currentBody.height
+		) ||
+			entity._stats.height;
+
 		if (texture.anchor) {
 			texture.anchor.set(0.5);
 		}
-		entity._pixiContainer.zIndex = (entity._stats.currentBody && entity._stats.currentBody['z-index'] && entity._stats.currentBody['z-index'].layer) || 3;
-		entity._pixiContainer.depth = (entity._stats.currentBody && entity._stats.currentBody['z-index'] && entity._stats.currentBody['z-index'].depth) || 3;
+		entity._pixiContainer.zIndex = (
+			entity._stats.currentBody &&
+			entity._stats.currentBody['z-index'] &&
+			entity._stats.currentBody['z-index'].layer
+		) ||
+			3;
+
+		entity._pixiContainer.depth = (
+			entity._stats.currentBody &&
+			entity._stats.currentBody['z-index'] &&
+			entity._stats.currentBody['z-index'].depth
+		) ||
+			3;
+
 		entity._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
 		entity._pixiContainer.entityId = entity.entityId;
 		entity._pixiContainer._category = entity._category;
@@ -315,33 +357,67 @@ var IgeInitPixi = IgeEventingClass.extend({
 			entity._pixiContainer.y = defaultData.translate.y;
 			entity._pixiTexture.rotation = defaultData.rotate;
 		}
+
 		ige.entitiesToRender.trackEntityById[entity.entityId] = entity;
 	},
+
 	updateTexture: function () {
 		this.isUpdateLayersOrderQueued = true;
 	},
+
 	destroyTexture: function (entity) {
+		// distinction made for UiEntities
 		var entityId = entity.entityId || entity.id();
-		if (ige.entitiesToRender.trackEntityById[entityId] && (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer || ige.entitiesToRender.trackEntityById[entityId]._pixiText)) {
+
+		if (
+			ige.entitiesToRender.trackEntityById[entityId] &&
+			(
+				ige.entitiesToRender.trackEntityById[entityId]._pixiContainer ||
+				ige.entitiesToRender.trackEntityById[entityId]._pixiText
+			)
+		) {
 			// entity.destroy()
 			// ige.pixi.viewport.follow();
-			if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == entity.id()) {
+			if (
+				ige.client.myPlayer &&
+				ige.client.myPlayer.currentFollowUnit == entity.id()
+			) {
 				ige.pixi.viewport.removePlugin('follow');
 			}
-			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) var texture = ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiTexture || ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiText || ige.entitiesToRender.trackEntityById[entityId]._pixiContainer;
-			else if (ige.entitiesToRender.trackEntityById[entityId]._pixiText) var texture = ige.entitiesToRender.trackEntityById[entityId]._pixiText;
+
+			var texture;
+
+			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) {
+				// interesting that this has a different heirarchy than that of width and height setters
+				texture = ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiTexture ||
+					ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiText ||
+					ige.entitiesToRender.trackEntityById[entityId]._pixiContainer;
+
+			} else if (ige.entitiesToRender.trackEntityById[entityId]._pixiText) {
+				texture = ige.entitiesToRender.trackEntityById[entityId]._pixiText;
+			}
 			// its not instance of ige
-			if (texture && !texture.componentId && !texture._destroyed) {
+			if (
+				texture &&
+				!texture.componentId &&
+				!texture._destroyed
+			) {
 				ige.pixi.world.removeChild(texture);
+				// this is PIXI's destroy method
 				texture.destroy({ children: true, texture: true });
 
 				if (ige.pixiMap.layersGroup && !ige.pixiMap.layersGroup.floor.parent && !ige.isLog) {
 					ige.isLog = true;
 				}
 			}
-			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._destroyed = true;
+
+			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) {
+				ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._destroyed = true;
+			}
+
 			delete ige.entitiesToRender.trackEntityById[entityId];
 		}
+
 		if (entity.attributeBars) {
 			for (var attributeBarInfo of entity.attributeBars) {
 				var pixiBarId = attributeBarInfo.id;
@@ -350,61 +426,77 @@ var IgeInitPixi = IgeEventingClass.extend({
 			}
 		}
 	},
+
 	width: function (info) {
+		// set width
 		var  { entity, px } = info;
 
 		if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
 			entity._pixiTexture.width = px;
+
 		} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
 			entity._pixiContainer.width = px;
+
 		} else if (entity._pixiText && !entity._pixiText._destroyed) {
 			entity._pixiText.width = px;
 		}
 	},
+
 	height: function (info) {
+		// set height
 		var  { entity,	px } = info;
 
 		if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
 			entity._pixiTexture.height = px;
+
 		} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
 			entity._pixiContainer.height = px;
+
 		} else if (entity._pixiText && !entity._pixiText._destroyed) {
 			entity._pixiText.height = px;
 		}
 	},
+
 	transformTexture: function (info) {
 		var {
 			entity,
-			type,
+			type, // do we know what this is actually doing?
 			x,
 			y,
 			z // actually a rotation
 		} = info;
 
-		var pixiObject = entity._pixiText || entity._pixiContainer;
-		if (pixiObject && !pixiObject._destroyed) {
+		var pixiEntity = entity._pixiText || entity._pixiContainer;
+
+		if (pixiEntity && !pixiEntity._destroyed) {
+			// again, different hierarchy than width/height
 			if (entity._pixiTexture) {
 				entity._pixiTexture.rotation = z;
 			}
 
 			if (!type) {
-				pixiObject.x = x;
-				pixiObject.y = y;
+				pixiEntity.x = x;
+				pixiEntity.y = y;
 			}
-			pixiObject.dirty = true;
+
+			pixiEntity.dirty = true;
+
 			if (ige.pixi.viewport) {
 				ige.pixi.viewport.dirty = true;
 			}
 		}
 	},
+
 	scale: function (info) {
 		var { entity, x, y } = info;
 
 		if (x !== undefined && y !== undefined) {
 			if (entity._pixiTexture && !entity._pixiTexture._destroyed) {
 				entity._pixiTexture.scale.set(x, y);
+
 			} else if (entity._pixiText && !entity._pixiText._destroyed) {
 				entity._pixiText.scale.set(x, y);
+
 			} else if (entity._pixiContainer && !entity._pixiContainer._destroyed) {
 				entity._pixiContainer.scale.set(x, y);
 			}
@@ -432,9 +524,9 @@ var IgeInitPixi = IgeEventingClass.extend({
 				if (entity._pixiTexture.parent.children) {
 					var index = entity._pixiContainer.parent.children.findIndex(
 						function (child) {
-							return child.entityId == entity.entityId;
+							return child.entityId === entity.entityId;
 						});
-						
+
 					if (index > -1) {
 						entity._pixiContainer.parent.removeChildAt(index);
 					}
@@ -445,6 +537,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 
 	setDepth: function (info) {
 		var { entity, depth } = info;
+
 		if (entity._pixiContainer) {
 			entity._pixiContainer.depth = depth;
 		}
@@ -452,13 +545,17 @@ var IgeInitPixi = IgeEventingClass.extend({
 
 	setLayer: function (info) {
 		var { entity, layer } = info;
+
 		if (entity._pixiContainer) {
 			entity._pixiContainer.zIndex = layer;
 		}
 	},
 
 	followUnit: function (entity) {
-		if (entity._pixiContainer && ige.entitiesToRender.trackEntityById[entity._id]._pixiContainer) {
+		if (
+			entity._pixiContainer &&
+			ige.entitiesToRender.trackEntityById[entity._id]._pixiContainer
+		) {
 			ige.pixi.viewport.follow(ige.entitiesToRender.trackEntityById[entity._id]._pixiContainer);
 		}
 	},
@@ -469,37 +566,42 @@ var IgeInitPixi = IgeEventingClass.extend({
 			tickDelta
 		} = info;
 
-		if (entity.pixianimation) {
-			if (entity.pixianimation.animating) {
-				if (!entity.pixianimation.fpsCount) {
-					entity.pixianimation.fpsCount = 0;
-				}
+		if (entity.pixianimation && entity.pixianimation.animating) {
 
-				if (entity.pixianimation.fpsCount > entity.pixianimation.fpsSecond) {
-					entity.pixianimation.animationTick();
-					entity.pixianimation.fpsCount = 0;
-				}
-				entity.pixianimation.fpsCount += tickDelta;
+			if (!entity.pixianimation.fpsCount) {
+				entity.pixianimation.fpsCount = 0;
 			}
+
+			if (entity.pixianimation.fpsCount > entity.pixianimation.fpsSecond) {
+				entity.pixianimation.animationTick();
+				entity.pixianimation.fpsCount = 0;
+			}
+
+			entity.pixianimation.fpsCount += tickDelta;
 		}
 	},
 
 	flipTexture: function (info) {
 		var entityTexture = info.entity._pixiTexture;
 		var flip = info.flip;
+
 		if (entityTexture) {
 			var x = Math.abs(entityTexture.scale.x);
 			var y = Math.abs(entityTexture.scale.y);
-			if (flip == 0) {
+
+			if (flip === 0) {
 				entityTexture.scale.set(x, y);
 			}
-			if (flip == 1) {
+
+			if (flip === 1) {
 				entityTexture.scale.set(-x, y);
 			}
-			if (flip == 2) {
+
+			if (flip === 2) {
 				entityTexture.scale.set(x, -y);
 			}
-			if (flip == 3) {
+
+			if (flip === 3) {
 				entityTexture.scale.set(-x, -y);
 			}
 		}

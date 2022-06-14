@@ -39,7 +39,6 @@ var IgePixiAnimation = IgeClass.extend({
 						try {
 							resource.frame = new PIXI.Rectangle(tileX, tileY, spriteWidth, spriteHeight);
 						} catch (e) {
-							console.log(e); //TODO: Remove
 							alert(`animation for ${source} cannot be loaded`);
 						}
 						texturesWithSprites.push(self.setSpriteProperty(resource));
@@ -88,10 +87,7 @@ var IgePixiAnimation = IgeClass.extend({
 	},
 	select: function (frames, fps = 15, loopCount, cellSheetAnimId, animName) {
 
-		if (!this._entity.isRendering()
-			//!ige.entitiesToRender.trackEntityById[this._entity.entityId] ||
-			//!ige.entitiesToRender.trackEntityById[this._entity.entityId]._pixiContainer
-		) return;
+		if (!this._entity.isRendering()) return;
 
 		var startFrame = frames[0] - 1;
 		var lastFrame = frames[frames.length - 1] - 1;

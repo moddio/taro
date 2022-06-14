@@ -9,17 +9,17 @@ class EntitiesToRender {
 
 	updateAllEntities (/*timeStamp*/): void {
 		var currentTime = Date.now();
+
 		if (!ige.lastTickTime) ige.lastTickTime = currentTime;
+
 		var tickDelta = currentTime - ige.lastTickTime;
 
 		for (var entityId in this.trackEntityById) {
-
 			var entity = ige.$(entityId);
-			if (entity) {
 
+			if (entity) {
 				// while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
 				if (ige.client.isZooming) {
-
 					if (entity.unitNameLabel) {
 						entity.unitNameLabel.updateScale();
 						entity.unitNameLabel.updatePosition();
@@ -49,6 +49,7 @@ class EntitiesToRender {
 							entity._deathCallBack.apply(entity);
 							delete entity._deathCallBack;
 						}
+
 						entity.destroy();
 					}
 
@@ -95,19 +96,23 @@ class EntitiesToRender {
 
 					if (entity._category == 'item') {
 						var ownerUnit = entity.getOwnerUnit();
+
 						if (ownerUnit) {
-							ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
+							// if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
+							ownerUnit._processTransform();
 
 							// immediately rotate items for my own unit
 							if (ownerUnit == ige.client.selectedUnit) {
 								if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
 									rotate = ownerUnit._rotate.z;
+
 								} else if (ownerUnit == ige.client.selectedUnit) {
 									rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
 								}
 							}
 
 							entity.anchoredOffset = entity.getAnchoredOffset(rotate);
+
 							if (entity.anchoredOffset) {
 								x = ownerUnit._translate.x + entity.anchoredOffset.x;
 								y = ownerUnit._translate.y + entity.anchoredOffset.y;
@@ -141,6 +146,7 @@ class EntitiesToRender {
 	frameTick(): void {
 		ige.engineStep();
 		ige.input.processInputOnEveryFps();
+
 		this.timeStamp = Date.now();
 		ige._renderFrames++;
 
