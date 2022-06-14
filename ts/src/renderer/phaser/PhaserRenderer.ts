@@ -26,6 +26,9 @@ class PhaserRenderer {
 				GameScene,
 				MobileControlsScene
 			],
+			loader: {
+				crossOrigin: 'anonymous'
+			},
 			plugins: {
 				global: [{
 					key: 'virtual-joystick',
