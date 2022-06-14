@@ -18,9 +18,10 @@ class MobileControlsScene extends PhaserScene {
 		// enabling four mobile pointers
 		this.input.addPointer(3);
 
+		const scale = this.scale;
 		const controls = this.controls = this.add.container();
 		this.resize();
-		this.scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
+		scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
 
 		const joysticks = this.joysticks;
 
@@ -113,6 +114,18 @@ class MobileControlsScene extends PhaserScene {
 			});
 
 		});
+
+		if (scale.fullscreen.available) {
+			scale.fullscreenTarget =
+				document.getElementById('game-div');
+			document.body.addEventListener('touchstart', () => {
+				if (!scale.isFullscreen) {
+					scale.startFullscreen({
+						// TODO check options in code
+					});
+				}
+			}, true);
+		}
 	}
 
 	preload (): void {
