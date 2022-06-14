@@ -118,6 +118,7 @@ class MobileControlsScene extends PhaserScene {
 		if (scale.fullscreen.available) {
 			scale.fullscreenTarget =
 				document.getElementById('game-div');
+			// TODO also touchend for devices that don't work with touchstart
 			document.body.addEventListener('touchstart', () => {
 				if (!scale.isFullscreen) {
 					scale.startFullscreen({
