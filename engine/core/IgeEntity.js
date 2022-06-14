@@ -2440,7 +2440,7 @@ var IgeEntity = IgeObject.extend({
 		if (this.gluedEntities && this.gluedEntities.length > 0) {
 			this.gluedEntities.forEach(function (glueEntity) {
 				var entity = ige.$(glueEntity.id);
-				if (entity && entity.isRendering()) { //ige.entitiesToRender.trackEntityById[glueEntity.id]) {
+				if (entity && entity.isRendering()) {
 					entity.unMount();
 					entity.destroy();
 
