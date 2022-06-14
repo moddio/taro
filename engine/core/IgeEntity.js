@@ -100,15 +100,15 @@ var IgeEntity = IgeObject.extend({
      * method chaining.
      */
 	show: function () {
-		var self = this;
+		// removed self = this
 
 		if (ige.isServer) {
-			// self._hidden = false; // never hide it, because it'll stop processing stream queue
+			// this._hidden = false; // never hide it, because it'll stop processing stream queue
 			this.streamUpdateData([{ isHidden: false }]);
 		} else if (ige.isClient) {
 			// this.disableInterpolation(false)
 			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-			self._hidden = false;
+			this._hidden = false;
 			ige.client.emit('show', this);
 		}
 
@@ -159,7 +159,7 @@ var IgeEntity = IgeObject.extend({
      * method chaining.
      */
 	hide: function () {
-		var self = this;
+		// removed self = this
 
 		if (ige.isServer) {
 			// self._hidden = true; // never hide it, because it'll stop processing stream queue
@@ -167,9 +167,9 @@ var IgeEntity = IgeObject.extend({
 		} else if (ige.isClient) {
 			// this.disableInterpolation(true)
 
-			self._hidden = true;
+			this._hidden = true;
 			ige.client.emit('hide', this);
-			self.texture('');
+			this.texture('');
 		}
 		return this;
 	},
@@ -241,19 +241,31 @@ var IgeEntity = IgeObject.extend({
 	},
 
 	applyAnimationById: function (animationId) {
-		var self = this;
+		// removed self = this
 		var animation = null;
 
-		if (self._stats.stateId && self._stats.states && self._stats.states[self._stats.stateId] && self._stats.animations[animationId]) {
-			animation = self._stats.animations[animationId];
+		if (
+			this._stats.stateId &&
+			this._stats.states &&
+			this._stats.states[this._stats.stateId] &&
+			this._stats.animations[animationId]
+			// would optional chaining affect our game.js compilation?
+		) {
+			animation = this._stats.animations[animationId];
 		}
-		var cellSheet = null;
 
-		cellSheet = self._stats.cellSheet;
+		var cellSheet = null; // seems unnecessary
+		cellSheet = this._stats.cellSheet;
+
 		if (animation && cellSheet) {
 			// cell sheet animation id will be concatenation of unit type and animation id
 			// default loop to undefined;
-			ige.client.emit('applyAnimation', {entity: this, animation: animation, cellSheet: cellSheet, animationId: animationId});
+			ige.client.emit('applyAnimation', {
+				entity: this,
+				cellSheet: cellSheet,
+				animation: animation,
+				animationId: animationId
+			});
 		}
 	},
 
@@ -287,7 +299,7 @@ var IgeEntity = IgeObject.extend({
 	updateTexture: function () {
 		var stateId = this._stats.stateId;
 		// if state not explicitly set, use default state
-		if (stateId == null) {
+		if (stateId === null) {
 			stateId = this.getDefaultStateId();
 		}
 
@@ -632,7 +644,11 @@ var IgeEntity = IgeObject.extend({
 		return this._backgroundPattern;
 	},
 	createTexture: function (defaultSprite = 0, defaultData) {
-		ige.client.emit('createTexture', {entity: this, defaultSprite: defaultSprite, defaultData: defaultData});
+		ige.client.emit('createTexture', {
+			entity: this,
+			defaultSprite: defaultSprite,
+			defaultData: defaultData
+		});
 	},
 
 	/**
@@ -827,8 +843,10 @@ var IgeEntity = IgeObject.extend({
 				var ratio = px / this._bounds2d.x;
 				this.height(this._bounds2d.y * ratio);
 			}
+
 			this._bounds2d.x = px;
 			this._bounds2d.x2 = px / 2;
+
 			if (ige.isClient) {
 				ige.client.emit('width', {entity: this, px: px});
 			}
@@ -854,8 +872,10 @@ var IgeEntity = IgeObject.extend({
 				var ratio = px / this._bounds2d.y;
 				this.width(this._bounds2d.x * ratio);
 			}
+
 			this._bounds2d.y = px;
 			this._bounds2d.y2 = px / 2;
+
 			if (ige.isClient) {
 				ige.client.emit('height', {entity: this, px: px});
 			}
@@ -1943,30 +1963,46 @@ var IgeEntity = IgeObject.extend({
 				if (type == 'move' || type == 'idle' || type == 'none') {
 					this.streamUpdateData([{ effect: type }]);
 				}
+
 			} else if (ige.isClient) {
-				if (!this.isRendering()) {
-					return;
-				}
+				if (!this.isRendering()) return;
+
 				var position = this._translate;
 
-				if (this._category === 'item' && this._stats.currentBody && (this._stats.currentBody.type === 'spriteOnly' || this._stats.currentBody.type === 'none')) {
+				if (
+					this._category === 'item' &&
+					this._stats.currentBody &&
+					(
+						this._stats.currentBody.type === 'spriteOnly' ||
+						this._stats.currentBody.type === 'none'
+					)
+				) {
 					var ownerUnit = this.getOwnerUnit();
 					position = (ownerUnit && ownerUnit._translate) || position;
 				}
 
 				// if animation is assigned to effect, play it
-				if (effect.animation != undefined && effect.animation != 'none' && effect.animation != '') {
+				if (
+					effect.animation !== undefined &&
+					effect.animation !== 'none' &&
+					effect.animation !== ''
+				) {
 					this.applyAnimationById(effect.animation);
 				}
 
 				if (effect.projectileType) {
 					var projectile = ige.game.getAsset('projectileTypes', effect.projectileType);
+
 					if (projectile) {
-						var position = ige.game.lastProjectileHitPosition || (this.body && this.body.getPosition()) || this._translate;
+						var position = ige.game.lastProjectileHitPosition ||
+							(this.body && this.body.getPosition()) ||
+							this._translate;
+
 						if (this.body) {
 							position.x *= this._b2dRef._scaleRatio;
 							position.y *= this._b2dRef._scaleRatio;
 						}
+
 						projectile.defaultData = {
 							translate: {
 								x: position.x,
@@ -1974,6 +2010,7 @@ var IgeEntity = IgeObject.extend({
 							},
 							rotate: this._rotate.z
 						};
+
 						new Projectile(projectile);
 					}
 				}
@@ -2008,6 +2045,8 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				this.tween.start(effect.tween, angle);
+			// this needs its own PR for fix in master
+			// adding too many variables if we add to PR 334
 			} else if (ige.isServer) {
 				if (effect.runScript) {
 					ige.script.runScript(effect.runScript, {});
@@ -2112,17 +2151,19 @@ var IgeEntity = IgeObject.extend({
 		// }
 		// execute below iff flip orientation changes
 		if (ige.isServer) {
-			if (flip != this._stats.flip) {
+			if (flip !== this._stats.flip) {
 				// if (this._category == 'unit' && this._stats.name != 'm0dE')
 				this.streamUpdateData([{ flip: flip }]);
 			}
+
 		} else if (ige.isClient) {
-			if (this._stats.flip != flip) {
+			if (this._stats.flip !== flip) {
 				// if (this._category =='unit' && this._stats.name != 'm0dE')
 
 				ige.client.emit('flipTexture', {entity: this, flip: flip});
 			}
 		}
+
 		this._stats.flip = flip;
 	},
 
@@ -2496,7 +2537,7 @@ var IgeEntity = IgeObject.extend({
 			default:
 				// Call super-class saveSpecialProp
 				return IgeObject.prototype.saveSpecialProp.call(this, obj, i);
-				break;
+				// break;
 		}
 
 		return undefined;
@@ -2506,15 +2547,15 @@ var IgeEntity = IgeObject.extend({
 		switch (i) {
 			case '_texture':
 				return { _texture: ige.$(obj[i]) };
-				break;
+				// break;
 
 			default:
 				// Call super-class loadSpecialProp
 				return IgeObject.prototype.loadSpecialProp.call(this, obj, i);
-				break;
+				// break;
 		}
 
-		return undefined;
+		// return undefined;
 	},
 
 	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3075,7 +3116,15 @@ var IgeEntity = IgeObject.extend({
 
 	transformTexture: function (x, y, z, type) {
 		if (!ige.isClient) return;
-		ige.client.emit('transformTexture', {entity: this, x: x, y: y, z: z, type: type});
+
+		ige.client.emit('transformTexture', {
+			entity: this,
+			x: x,
+			y: y,
+			z: z,
+			type: type
+		});
+
 		return this;
 	},
 
@@ -3419,18 +3468,27 @@ var IgeEntity = IgeObject.extend({
      * @return {*}
      */
 	scaleTo: function (x, y, z) {
-		if (ige.isClient) ige.client.emit('scale', {entity: this, x: x, y: y});
+		if (ige.isClient) {
+			ige.client.emit('scale', {
+				entity: this,
+				x: x,
+				y: y
+			});
+		}
+
 		if (this._scale && x !== undefined && y !== undefined && z !== undefined) {
 			this._scale.x = x;
 			this._scale.y = y;
 			this._scale.z = z;
 			// IgeEntity.prototype.log("scaling to ", this._scale)
+
 		} else {
 			IgeEntity.prototype.log('scaleTo() called with a missing or undefined x, y or z parameter!', 'error');
 		}
 
 		return this._entity || this;
 	},
+
 	scaleDimensions: function (width, height) {
 		if (this._stats.scaleDimensions) {
 			var originalWidth = this.width();

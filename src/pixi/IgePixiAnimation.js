@@ -39,7 +39,6 @@ var IgePixiAnimation = IgeClass.extend({
 						try {
 							resource.frame = new PIXI.Rectangle(tileX, tileY, spriteWidth, spriteHeight);
 						} catch (e) {
-							console.log(e); //TODO: Remove
 							alert(`animation for ${source} cannot be loaded`);
 						}
 						texturesWithSprites.push(self.setSpriteProperty(resource));
