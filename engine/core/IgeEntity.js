@@ -100,7 +100,6 @@ var IgeEntity = IgeObject.extend({
      * method chaining.
      */
 	show: function () {
-		// removed self = this
 
 		if (ige.isServer) {
 			// this._hidden = false; // never hide it, because it'll stop processing stream queue
@@ -159,8 +158,6 @@ var IgeEntity = IgeObject.extend({
      * method chaining.
      */
 	hide: function () {
-		// removed self = this
-
 		if (ige.isServer) {
 			// self._hidden = true; // never hide it, because it'll stop processing stream queue
 			this.streamUpdateData([{ isHidden: true }]);
@@ -241,7 +238,6 @@ var IgeEntity = IgeObject.extend({
 	},
 
 	applyAnimationById: function (animationId) {
-		// removed self = this
 		var animation = null;
 
 		if (
@@ -249,12 +245,11 @@ var IgeEntity = IgeObject.extend({
 			this._stats.states &&
 			this._stats.states[this._stats.stateId] &&
 			this._stats.animations[animationId]
-			// would optional chaining affect our game.js compilation?
 		) {
 			animation = this._stats.animations[animationId];
 		}
 
-		var cellSheet = null; // seems unnecessary
+		var cellSheet = null;
 		cellSheet = this._stats.cellSheet;
 
 		if (animation && cellSheet) {
@@ -2045,8 +2040,7 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				this.tween.start(effect.tween, angle);
-			// this needs its own PR for fix in master
-			// adding too many variables if we add to PR 334
+
 			} else if (ige.isServer) {
 				if (effect.runScript) {
 					ige.script.runScript(effect.runScript, {});
@@ -2537,7 +2531,6 @@ var IgeEntity = IgeObject.extend({
 			default:
 				// Call super-class saveSpecialProp
 				return IgeObject.prototype.saveSpecialProp.call(this, obj, i);
-				// break;
 		}
 
 		return undefined;
@@ -2547,15 +2540,11 @@ var IgeEntity = IgeObject.extend({
 		switch (i) {
 			case '_texture':
 				return { _texture: ige.$(obj[i]) };
-				// break;
 
 			default:
 				// Call super-class loadSpecialProp
 				return IgeObject.prototype.loadSpecialProp.call(this, obj, i);
-				// break;
 		}
-
-		// return undefined;
 	},
 
 	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////

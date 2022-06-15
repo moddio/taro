@@ -187,7 +187,6 @@ var Player = IgeEntity.extend({
 	},
 
 	cameraTrackUnit: function (unit) {
-		// removed self = this
 		if (unit) {
 			// self._stats.selectedUnitId = unit.id()
 			if (ige.isServer && this._stats.clientId) {
