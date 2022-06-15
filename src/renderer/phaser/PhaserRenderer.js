@@ -18,7 +18,17 @@ var PhaserRenderer = /** @class */ (function () {
             scene: [
                 GameScene,
                 MobileControlsScene
-            ]
+            ],
+            loader: {
+                crossOrigin: 'anonymous'
+            },
+            plugins: {
+                global: [{
+                        key: 'virtual-joystick',
+                        plugin: rexvirtualjoystickplugin,
+                        start: true
+                    }]
+            }
         });
     }
     return PhaserRenderer;

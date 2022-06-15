@@ -7,12 +7,16 @@ declare class IgeEngine extends IgeClass {
 	isClient: boolean;
 	isServer: boolean;
 
+	isMobile: boolean;
+
 	client: Client;
 	server: Client;
 
-	network: IgeNetworkComponent;
+	network: IgeNetIoComponent;
 
 	input: IgeInputComponent;
+
+	mobileControls: MobileControlsComponent;
 
 	gameLoopTickHasExecuted: boolean;
 

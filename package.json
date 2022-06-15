@@ -41,6 +41,7 @@
     "lz-string": "^1.4.4",
     "msgpack-lite": "^0.1.26",
     "phaser": "^3.55.2",
+    "phaser3-rex-plugins": "1.1.70",
     "public-ip": "^2.5.0",
     "q": "^1.5.1",
     "rate-limiter-flexible": "^2.3.7",

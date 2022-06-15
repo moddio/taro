@@ -1,4 +1,4 @@
-class GameScene extends Phaser.Scene {
+class GameScene extends PhaserScene {
 
 	constructor() {
 		super({ key: 'Game' });
@@ -12,6 +12,10 @@ class GameScene extends Phaser.Scene {
 		canvas.style.opacity = '0.5';
 		canvas.style.backgroundColor = 'transparent';
 		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+
+		if (ige.isMobile) {
+			this.scene.launch('MobileControls');
+		}
 
 		const camera = this.cameras.main;
 
@@ -44,11 +48,10 @@ class GameScene extends Phaser.Scene {
 		});
 
 		ige.client.on('fetch-mouse-position', (controlComponent: ControlComponent) => {
-			const currentMouseTransform = [
+			controlComponent.newMousePosition = [
 				this.input.activePointer.worldX,
 				this.input.activePointer.worldY
 			];
-			controlComponent.newMousePosition = currentMouseTransform;
 		});
 
 		ige.client.on('create-unit', (unit: Unit) => {
@@ -74,8 +77,6 @@ class GameScene extends Phaser.Scene {
 
 	preload (): void {
 
-		this.load.crossOrigin = 'anonymous';
-
 		const data = ige.game.data;
 
 		for (let type in data.unitTypes) {
@@ -91,7 +92,10 @@ class GameScene extends Phaser.Scene {
 		}
 
 		data.map.tilesets.forEach((tileset) => {
-			this.load.image(`tiles/${tileset.name}`, tileset.image);
+			this.load.image(
+				`tiles/${tileset.name}`,
+				this.patchAssetUrl(tileset.image)
+			);
 		});
 
 		this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
@@ -144,7 +148,7 @@ class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.load.image(key, cellSheet.url);
+		this.load.image(key, this.patchAssetUrl(cellSheet.url));
 	}
 
 	create (): void {

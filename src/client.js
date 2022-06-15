@@ -192,6 +192,8 @@ const Client = IgeEventingClass.extend({
 
 			ige.addComponent(MenuUiComponent);
 			ige.addComponent(TradeUiComponent); // could we comment this one out?
+
+			// TODO add MobileControlsComponent only if it is mobile
 			ige.addComponent(MobileControlsComponent);
 		})
 			.catch((err) => {

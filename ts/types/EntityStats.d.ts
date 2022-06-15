@@ -24,4 +24,7 @@ declare interface EntityStats {
 	id: string;
 	itemTypeId?: string;
 	flip: FlipMode;
+	controls: {
+		abilities: Record<string, ControlAbility>
+	}
 }
