@@ -90,7 +90,7 @@ var Projectile = IgeEntityPhysics.extend({
 
 			if (currentState) {
 				var defaultAnimation = this._stats.animations[currentState.animation];
-				this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+				this.createTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
 			}
 			self.drawBounds(false);
 

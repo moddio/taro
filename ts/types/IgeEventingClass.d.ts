@@ -20,5 +20,4 @@ declare class IgeEventingClass extends IgeClass {
 		eventName: string,
 		args?: Array<any> | object
 	): number;
-
 }

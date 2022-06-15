@@ -1,5 +1,7 @@
 declare class IgeEngine extends IgeClass {
 
+	constructor(options: object);
+
 	_renderFrames: number;
 	_tickStart: number;
 	_renderLatency: number;
@@ -37,10 +39,18 @@ declare class IgeEngine extends IgeClass {
 		originalTileWidth: number;
 	};
 
-	constructor(options: object);
-
 	createFrontBuffer (autoSize: boolean, dontScale?: boolean): void
 	engineStep (): void;
+
+	$ (item: number | string | object): any;
+
+	lastTickTime: number;
+
+	entitiesToRender: EntitiesToRender;
+
+	_currentTime: number;
+
+	_cullCounter: number;
 
 	$ (item: number | string | object): any;
 }
