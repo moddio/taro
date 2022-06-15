@@ -279,7 +279,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 		var url = cellSheet.url;
 		var rows = cellSheet.rowCount;
 		var columns = cellSheet.columnCount;
-		// This is quite strange
+
 		cellSheetAnimId = cellSheet.url;
 		var fps = animation.framesPerSecond || 15;
 		var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
@@ -388,7 +388,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 			var texture;
 
 			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) {
-				// interesting that this has a different heirarchy than that of width and height setters
 				texture = ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiTexture ||
 					ige.entitiesToRender.trackEntityById[entityId]._pixiContainer._pixiText ||
 					ige.entitiesToRender.trackEntityById[entityId]._pixiContainer;
@@ -460,7 +459,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 	transformTexture: function (info) {
 		var {
 			entity,
-			type, // do we know what this is actually doing?
+			type,
 			x,
 			y,
 			z // actually a rotation
@@ -469,7 +468,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 		var pixiEntity = entity._pixiText || entity._pixiContainer;
 
 		if (pixiEntity && !pixiEntity._destroyed) {
-			// again, different hierarchy than width/height
 			if (entity._pixiTexture) {
 				entity._pixiTexture.rotation = z;
 			}
