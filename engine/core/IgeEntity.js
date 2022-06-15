@@ -88,6 +88,10 @@ var IgeEntity = IgeObject.extend({
 		this.streamSections(['transform']);
 	},
 
+	isRendering() {
+		return ige.isClient && !!ige.entitiesToRender.trackEntityById[this.id()];
+	},
+
 	/**
      * Sets the entity as visible and able to be interacted with.
      * @example #Show a hidden entity
@@ -96,20 +100,15 @@ var IgeEntity = IgeObject.extend({
      * method chaining.
      */
 	show: function () {
-		var self = this;
 
 		if (ige.isServer) {
-			// self._hidden = false; // never hide it, because it'll stop processing stream queue
+			// this._hidden = false; // never hide it, because it'll stop processing stream queue
 			this.streamUpdateData([{ isHidden: false }]);
 		} else if (ige.isClient) {
 			// this.disableInterpolation(false)
-
 			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-			self._hidden = false;
-			var pixiEntity = self._pixiText || self._pixiTexture;
-			if (pixiEntity) {
-				pixiEntity.visible = true;
-			}
+			this._hidden = false;
+			ige.client.emit('show', this);
 		}
 
 		return this;
@@ -133,12 +132,8 @@ var IgeEntity = IgeObject.extend({
 
 			*/
 			self._stats.currentBody = self._stats.bodies[newState.body];
-			// if (ige.isSever && ige.physics.engine == 'CRASH') {
-			// 	self._stats.currentBody = self._stats.bodies[newState.body] ? self._stats.bodies[newState.body] : 'none';
-			// }
 		}
 
-		// console.log("setState", stateId, "new body", (newState)?newState.body:"null")
 		if (ige.isServer) {
 			self.streamUpdateData([{ stateId: stateId }]);
 		} else if (ige.isClient) {
@@ -163,21 +158,15 @@ var IgeEntity = IgeObject.extend({
      * method chaining.
      */
 	hide: function () {
-		var self = this;
-
 		if (ige.isServer) {
 			// self._hidden = true; // never hide it, because it'll stop processing stream queue
 			this.streamUpdateData([{ isHidden: true }]);
 		} else if (ige.isClient) {
 			// this.disableInterpolation(true)
-			// add a little bit of delay before showing the item, so we don't see item translating from old location to new location
-			// self.opacity(0)
-			self._hidden = true;
-			var pixiEntity = self._pixiText || self._pixiTexture;
-			if (pixiEntity) {
-				pixiEntity.visible = false;
-			}
-			self.texture('');
+
+			this._hidden = true;
+			ige.client.emit('hide', this);
+			this.texture('');
 		}
 		return this;
 	},
@@ -249,28 +238,29 @@ var IgeEntity = IgeObject.extend({
 	},
 
 	applyAnimationById: function (animationId) {
-		var self = this;
 		var animation = null;
 
-		if (self._stats.stateId && self._stats.states && self._stats.states[self._stats.stateId] && self._stats.animations[animationId]) {
-			animation = self._stats.animations[animationId];
+		if (
+			this._stats.stateId &&
+			this._stats.states &&
+			this._stats.states[this._stats.stateId] &&
+			this._stats.animations[animationId]
+		) {
+			animation = this._stats.animations[animationId];
 		}
-		var cellSheet = null;
 
-		cellSheet = self._stats.cellSheet;
+		var cellSheet = null;
+		cellSheet = this._stats.cellSheet;
+
 		if (animation && cellSheet) {
 			// cell sheet animation id will be concatenation of unit type and animation id
-			var cellSheetAnimId;
-			var url = cellSheet.url;
-			var rows = cellSheet.rowCount;
-			var columns = cellSheet.columnCount;
-			cellSheetAnimId = self._stats.cellSheet.url;
-			ige.client.cellSheets[cellSheetAnimId] = this.pixianimation.define(url, columns, rows, cellSheetAnimId, animationId);
-			var fps = animation.framesPerSecond || 15;
-			var loopCount = animation.loopCount - 1; // Subtract 1 for Jaeyun convention on front end
-
 			// default loop to undefined;
-			this.pixianimation.select(animation.frames, fps, loopCount, cellSheetAnimId, animation.name);
+			ige.client.emit('applyAnimation', {
+				entity: this,
+				cellSheet: cellSheet,
+				animation: animation,
+				animationId: animationId
+			});
 		}
 	},
 
@@ -304,7 +294,7 @@ var IgeEntity = IgeObject.extend({
 	updateTexture: function () {
 		var stateId = this._stats.stateId;
 		// if state not explicitly set, use default state
-		if (stateId == null) {
+		if (stateId === null) {
 			stateId = this.getDefaultStateId();
 		}
 
@@ -312,7 +302,7 @@ var IgeEntity = IgeObject.extend({
 			this.applyAnimationForState(stateId);
 		}
 
-		ige.pixi.isUpdateLayersOrderQueued = true;
+		ige.client.emit('updateTexture');
 	},
 
 	getDefaultStateId: function () {
@@ -648,47 +638,13 @@ var IgeEntity = IgeObject.extend({
 
 		return this._backgroundPattern;
 	},
-	createPixiTexture: function (defaultSprite = 0, defaultData) {
-		var texture = new IgePixiTexture(this._stats.cellSheet.url, this._stats.cellSheet.columnCount, this._stats.cellSheet.rowCount, this);
-		texture = texture.spriteFromCellSheet(defaultSprite);
-		if (!texture) {
-			return;
-		}
-		texture.width = (this._stats.currentBody && this._stats.currentBody.width) || this._stats.width;
-		texture.height = (this._stats.currentBody && this._stats.currentBody.height) || this._stats.height;
-		if (texture.anchor) {
-			texture.anchor.set(0.5);
-		}
-		this._pixiContainer.zIndex = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].layer) || 3;
-		this._pixiContainer.depth = (this._stats.currentBody && this._stats.currentBody['z-index'] && this._stats.currentBody['z-index'].depth) || 3;
-		this._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
-		this._pixiContainer.entityId = this.entityId;
-		this._pixiContainer._category = this._category;
-		this._pixiTexture = texture;
-		this._pixiContainer.addChild(texture);
-
-		if (defaultData) {
-			this._pixiContainer.x = defaultData.translate.x;
-			this._pixiContainer.y = defaultData.translate.y;
-			this._pixiTexture.rotation = defaultData.rotate;
-		}
-		ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
+	createTexture: function (defaultSprite = 0, defaultData) {
+		ige.client.emit('createTexture', {
+			entity: this,
+			defaultSprite: defaultSprite,
+			defaultData: defaultData
+		});
 	},
-
-	// drawCrashCollider: function (defaultData) {
-	// 	var collider = new IgePixiCollider(this);
-	// 	collider = collider.drawCollider();
-	// 	this._pixiCollider = collider;
-	// 	this._pixiContainer.addChild(collider);
-
-	// 	if (defaultData) {
-	// 		this._pixiContainer.x = defaultData.translate.x;
-	// 		this._pixiContainer.y = defaultData.translate.y;
-	// 		// new
-	// 		//this._pixiCollider.rotation = defaultData.rotate;
-	// 	}
-	// 	ige.pixi.trackEntityById[this.entityId] = this._pixiContainer;
-	// },
 
 	/**
      * Set the object's width to the number of tile width's specified.
@@ -885,21 +841,12 @@ var IgeEntity = IgeObject.extend({
 
 			this._bounds2d.x = px;
 			this._bounds2d.x2 = px / 2;
-			if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.width = px;
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.width = px;
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				this._pixiText.width = px;
+
+			if (ige.isClient) {
+				ige.client.emit('width', {entity: this, px: px});
 			}
+
 			return this;
-		}
-		if (this._pixiTexture) {
-			return this._pixiTexture.width;
-		} else if (this._pixiContainer) {
-			return this._pixiContainer.width;
-		} else if (this._pixiText) {
-			return this._pixiText.width;
 		}
 
 		return this._bounds2d.x;
@@ -923,23 +870,14 @@ var IgeEntity = IgeObject.extend({
 
 			this._bounds2d.y = px;
 			this._bounds2d.y2 = px / 2;
-			if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.height = px;
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.height = px;
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				return (this._pixiText.height = px);
+
+			if (ige.isClient) {
+				ige.client.emit('height', {entity: this, px: px});
 			}
+
 			return this;
 		}
 
-		if (this._pixiTexture) {
-			return this._pixiTexture.height;
-		} else if (this._pixiContainer) {
-			return this._pixiContainer.height;
-		} else if (this._pixiText) {
-			return this._pixiText.height;
-		}
 		return this._bounds2d.y;
 	},
 
@@ -2020,30 +1958,46 @@ var IgeEntity = IgeObject.extend({
 				if (type == 'move' || type == 'idle' || type == 'none') {
 					this.streamUpdateData([{ effect: type }]);
 				}
+
 			} else if (ige.isClient) {
-				if (this._pixiContainer && this._pixiContainer._destroyed) {
-					return;
-				}
+				if (!this.isRendering()) return;
+
 				var position = this._translate;
 
-				if (this._category === 'item' && this._stats.currentBody && (this._stats.currentBody.type === 'spriteOnly' || this._stats.currentBody.type === 'none')) {
+				if (
+					this._category === 'item' &&
+					this._stats.currentBody &&
+					(
+						this._stats.currentBody.type === 'spriteOnly' ||
+						this._stats.currentBody.type === 'none'
+					)
+				) {
 					var ownerUnit = this.getOwnerUnit();
-					position = (ownerUnit && ownerUnit._pixiContainer) || position;
+					position = (ownerUnit && ownerUnit._translate) || position;
 				}
 
 				// if animation is assigned to effect, play it
-				if (effect.animation != undefined && effect.animation != 'none' && effect.animation != '') {
+				if (
+					effect.animation !== undefined &&
+					effect.animation !== 'none' &&
+					effect.animation !== ''
+				) {
 					this.applyAnimationById(effect.animation);
 				}
 
 				if (effect.projectileType) {
 					var projectile = ige.game.getAsset('projectileTypes', effect.projectileType);
+
 					if (projectile) {
-						var position = ige.game.lastProjectileHitPosition || (this.body && this.body.getPosition()) || this._translate;
+						var position = ige.game.lastProjectileHitPosition ||
+							(this.body && this.body.getPosition()) ||
+							this._translate;
+
 						if (this.body) {
 							position.x *= this._b2dRef._scaleRatio;
 							position.y *= this._b2dRef._scaleRatio;
 						}
+
 						projectile.defaultData = {
 							translate: {
 								x: position.x,
@@ -2051,6 +2005,7 @@ var IgeEntity = IgeObject.extend({
 							},
 							rotate: this._rotate.z
 						};
+
 						new Projectile(projectile);
 					}
 				}
@@ -2085,6 +2040,7 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				this.tween.start(effect.tween, angle);
+
 			} else if (ige.isServer) {
 				if (effect.runScript) {
 					ige.script.runScript(effect.runScript, {});
@@ -2189,35 +2145,19 @@ var IgeEntity = IgeObject.extend({
 		// }
 		// execute below iff flip orientation changes
 		if (ige.isServer) {
-			if (flip != this._stats.flip) {
+			if (flip !== this._stats.flip) {
 				// if (this._category == 'unit' && this._stats.name != 'm0dE')
-				// 	console.log(flip)
 				this.streamUpdateData([{ flip: flip }]);
 			}
-		} else if (ige.isClient) {
-			if (this._stats.flip != flip) {
-				// if (this._category =='unit' && this._stats.name != 'm0dE')
-				// 	console.log("wtf", flip)
 
-				var entity = this._pixiTexture;
-				if (entity) {
-					var x = Math.abs(entity.scale.x);
-					var y = Math.abs(entity.scale.y);
-					if (flip == 0) {
-						entity.scale.set(x, y);
-					}
-					if (flip == 1) {
-						entity.scale.set(-x, y);
-					}
-					if (flip == 2) {
-						entity.scale.set(x, -y);
-					}
-					if (flip == 3) {
-						entity.scale.set(-x, -y);
-					}
-				}
+		} else if (ige.isClient) {
+			if (this._stats.flip !== flip) {
+				// if (this._category =='unit' && this._stats.name != 'm0dE')
+
+				ige.client.emit('flipTexture', {entity: this, flip: flip});
 			}
 		}
+
 		this._stats.flip = flip;
 	},
 
@@ -2535,47 +2475,17 @@ var IgeEntity = IgeObject.extend({
 		if (this.gluedEntities && this.gluedEntities.length > 0) {
 			this.gluedEntities.forEach(function (glueEntity) {
 				var entity = ige.$(glueEntity.id);
-				if (entity && (entity._pixiText || entity._pixiTexture)) {
-					var texture = entity._pixiText || entity._pixiTexture;
+				if (entity && entity.isRendering()) {
 					entity.unMount();
 					entity.destroy();
-					// texture.destroy({ children: true, texture: true });
-					delete ige.pixi.trackEntityById[glueEntity.id];
+
+					delete ige.entitiesToRender.trackEntityById[glueEntity.id];
 				}
 			});
 		}
 
 		if (ige.isClient) {
-			var entityId = this.entityId || this.id();
-			if (ige.pixi.trackEntityById[entityId]) {
-				// entity.destroy()
-				// ige.pixi.viewport.follow();
-				if (ige.client.myPlayer && ige.client.myPlayer.currentFollowUnit == this.id()) {
-					ige.pixi.viewport.removePlugin('follow');
-				}
-				var texture = ige.pixi.trackEntityById[entityId]._pixiTexture || ige.pixi.trackEntityById[entityId]._pixiText || ige.pixi.trackEntityById[entityId];
-				// its not instance of ige
-				if (texture && !texture.componentId && !texture._destroyed) {
-					ige.pixi.world.removeChild(texture);
-					texture.destroy({ children: true, texture: true });
-
-					if (ige.pixiMap.layersGroup && !ige.pixiMap.layersGroup.floor.parent && !ige.isLog) {
-						ige.isLog = true;
-					}
-				}
-				ige.pixi.trackEntityById[entityId]._destroyed = true;
-				delete ige.pixi.trackEntityById[entityId];
-			}
-
-			// destory attribute bars
-			if (this.attributeBars) {
-				for (var attributeBarInfo of this.attributeBars) {
-					var pixiBarId = attributeBarInfo.id;
-					var pixiBar = ige.$(pixiBarId);
-
-					pixiBar.destroy();
-				}
-			}
+			ige.client.emit('destroyTexture', this);
 		}
 
 		/**
@@ -2621,7 +2531,6 @@ var IgeEntity = IgeObject.extend({
 			default:
 				// Call super-class saveSpecialProp
 				return IgeObject.prototype.saveSpecialProp.call(this, obj, i);
-				break;
 		}
 
 		return undefined;
@@ -2631,15 +2540,11 @@ var IgeEntity = IgeObject.extend({
 		switch (i) {
 			case '_texture':
 				return { _texture: ige.$(obj[i]) };
-				break;
 
 			default:
 				// Call super-class loadSpecialProp
 				return IgeObject.prototype.loadSpecialProp.call(this, obj, i);
-				break;
 		}
-
-		return undefined;
 	},
 
 	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3198,27 +3103,17 @@ var IgeEntity = IgeObject.extend({
 		return this._entity || this;
 	},
 
-	transformPixiEntity: function (x, y, z, type) {
+	transformTexture: function (x, y, z, type) {
 		if (!ige.isClient) return;
-		var entity = this._pixiText || this._pixiContainer;
-		if (entity && !entity._destroyed) {
-			if (this._pixiTexture) {
-				this._pixiTexture.rotation = z;
-			}
-			// new
-			if (this._pixiCollider) {
-				this._pixiCollider.rotation = z;
-			}
-			//
-			if (!type) {
-				entity.x = x;
-				entity.y = y;
-			}
-			entity.dirty = true;
-			if (ige.pixi.viewport) {
-				ige.pixi.viewport.dirty = true;
-			}
-		}
+
+		ige.client.emit('transformTexture', {
+			entity: this,
+			x: x,
+			y: y,
+			z: z,
+			type: type
+		});
+
 		return this;
 	},
 
@@ -3430,7 +3325,7 @@ var IgeEntity = IgeObject.extend({
 			this._rotate.x += x;
 			this._rotate.y += y;
 			this._rotate.z += z;
-			this.transformPixiEntity(0, 0, z, 'rotateBy');
+			this.transformTexture(0, 0, z, 'rotateBy');
 		} else {
 			IgeEntity.prototype.log('rotateBy() called with a missing or undefined x, y or z parameter!', 'error');
 		}
@@ -3561,32 +3456,28 @@ var IgeEntity = IgeObject.extend({
      *     entity.scaleTo(1, 1, 1);
      * @return {*}
      */
-	pixiScaleTo: function (x, y) {
-		// if (this._category == 'item') {
-		// }
-		if (x !== undefined && y !== undefined) {
-			if (this._pixiTexture && !this._pixiTexture._destroyed) {
-				this._pixiTexture.scale.set(x, y);
-			} else if (this._pixiText && !this._pixiText._destroyed) {
-				this._pixiText.scale.set(x, y);
-			} else if (this._pixiContainer && !this._pixiContainer._destroyed) {
-				this._pixiContainer.scale.set(x, y);
-			}
-		}
-	},
 	scaleTo: function (x, y, z) {
-		this.pixiScaleTo(x, y);
+		if (ige.isClient) {
+			ige.client.emit('scale', {
+				entity: this,
+				x: x,
+				y: y
+			});
+		}
+
 		if (this._scale && x !== undefined && y !== undefined && z !== undefined) {
 			this._scale.x = x;
 			this._scale.y = y;
 			this._scale.z = z;
 			// IgeEntity.prototype.log("scaling to ", this._scale)
+
 		} else {
 			IgeEntity.prototype.log('scaleTo() called with a missing or undefined x, y or z parameter!', 'error');
 		}
 
 		return this._entity || this;
 	},
+
 	scaleDimensions: function (width, height) {
 		if (this._stats.scaleDimensions) {
 			var originalWidth = this.width();
