@@ -2013,12 +2013,20 @@ var IgeEntity = IgeObject.extend({
 		}
 	},
 	playEffect: function (type) {
-		if (this._stats && this._stats.effects && this._stats.effects[type]) {
+		if (
+			this._stats &&
+			this._stats.effects &&
+			this._stats.effects[type]
+		) {
 			var effect = this._stats.effects[type];
 
 			if (ige.isServer) {
 				if (type == 'move' || type == 'idle' || type == 'none') {
 					this.streamUpdateData([{ effect: type }]);
+
+					if (effect.runScript) {
+						ige.script.runScript(effect.runScript, {});
+					}
 				}
 			} else if (ige.isClient) {
 				if (this._pixiContainer && this._pixiContainer._destroyed) {
@@ -2085,10 +2093,6 @@ var IgeEntity = IgeObject.extend({
 				}
 
 				this.tween.start(effect.tween, angle);
-			} else if (ige.isServer) {
-				if (effect.runScript) {
-					ige.script.runScript(effect.runScript, {});
-				}
 			}
 		}
 	},
