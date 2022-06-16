@@ -185,9 +185,9 @@ const Client = IgeEventingClass.extend({
 
 		promise.then((game) => {
 			ige.game.data = game.data;
-            ige.phaser = new PhaserRenderer();
 			// location of add IgeInitPixi was moved to accomodate EntitiesToRender
 			ige.addComponent(IgeInitPixi);
+            ige.phaser = new PhaserRenderer();
 			ige.entitiesToRender = new EntitiesToRender();
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
