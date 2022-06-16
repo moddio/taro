@@ -49,7 +49,10 @@ var Player = IgeEntity.extend({
 			self.redrawUnits(function (unit) {
 				return unit && unit.getOwner() && unit.getOwner().id() === self.id();
 			}, ['texture', 'nameLabel']);
+
+			ige.entitiesToRender.trackEntityById[entityIdFromServer] = this;
 		}
+
 	},
 
 	// move to UI
