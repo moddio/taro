@@ -3,6 +3,7 @@ var ActionComponent = IgeEntity.extend({
 	componentId: 'action',
 
 	init: function () {
+		console.log('222😋😋😋😋');
 		this.entityCategories = ['unit', 'item', 'projectile', 'debris', 'region', 'wall'];
 	},
 
