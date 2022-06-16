@@ -120,6 +120,9 @@ var ActionComponent = IgeEntity.extend({
 						}
 
 						break;
+					case 'switchCondition':
+						console.log('😋😋😋😋');
+						break;
 
 					case 'transformRegionDimensions':
 						var region = ige.variable.getValue(action.region, vars);
@@ -172,7 +175,7 @@ var ActionComponent = IgeEntity.extend({
 
 						// ensure we aren't sending more than 30 POST requests within 10 seconds
 						ige.server.postReqTimestamps.push(ige.currentTime());
-						var oldestReqTimestamp = ige.server.postReqTimestamps[0]
+						var oldestReqTimestamp = ige.server.postReqTimestamps[0];
 						while (Date.now() - oldestReqTimestamp > 10000 && ige.server.postReqTimestamps.length > 0) {
 							oldestReqTimestamp = ige.server.postReqTimestamps.shift();
 						}
@@ -197,7 +200,7 @@ var ActionComponent = IgeEntity.extend({
 									ige.game.data.variables[varName].value = newValue;
 								}
 							} catch (err) {
-								console.error(err)
+								console.error(err);
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = 'error';
 								}
@@ -2244,9 +2247,9 @@ var ActionComponent = IgeEntity.extend({
 							entity.addAttributeBuff(attrId, value, time, true); // update attribute, and check for attribute becoming 0
 						}
 						break;
-					
+
 					case 'removeAllAttributeBuffs':
-						var unit = ige.variable.getValue(action.unit, vars)
+						var unit = ige.variable.getValue(action.unit, vars);
 						if(unit && unit._stats && unit._stats.buffs){
 							for(let i = 0; i < unit._stats.buffs.length; i++){
 								unit._stats.buffs[i].timeLimit = 0;
@@ -2267,7 +2270,7 @@ var ActionComponent = IgeEntity.extend({
 						var entity = ige.variable.getValue(action.entity, vars);
 
 						if (this._category == 'item' && this._stats.name == 'Floaty') {
-							console.trace()
+							console.trace();
 						}
 
 						if (entity && self.entityCategories.indexOf(entity._category) > -1) {
@@ -2615,4 +2618,6 @@ var ActionComponent = IgeEntity.extend({
 
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = ActionComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = ActionComponent;
+}

@@ -74,7 +74,7 @@ var Server = IgeClass.extend({
 		self.totalProjectilesCreated = 0;
 		self.retryCount = 0;
 		self.maxRetryCount = 3;
-		self.postReqTimestamps = []
+		self.postReqTimestamps = [];
 		self.started_at = new Date();
 		self.lastSnapshot = [];
 
@@ -498,6 +498,7 @@ var Server = IgeClass.extend({
 						ige.addComponent(GameTextComponent);
 						ige.addComponent(ScriptComponent);
 						ige.addComponent(ConditionComponent);
+						ige.addComponent(SwitchConditionComponent);
 						ige.addComponent(ActionComponent);
 						ige.addComponent(AdComponent);
 						ige.addComponent(SoundComponent);
@@ -643,7 +644,7 @@ var Server = IgeClass.extend({
 		if (ige.clusterClient) {
 			ige.clusterClient.unpublish(msg);
 		}
-		
+
 		process.exit(0);
 	},
 
@@ -678,7 +679,7 @@ var Server = IgeClass.extend({
 
 	giveCoinToUser: function (player, coin, itemName) {
 		if (coin && player._stats && player._stats.userId && (ige.game.data.defaultData.tier == 3 || ige.game.data.defaultData.tier == 4)) {
-			
+
 			ige.clusterClient && ige.clusterClient.giveCoinToUser({
 				creatorId: ige.game.data.defaultData.owner,
 				userId: player._stats.userId,
