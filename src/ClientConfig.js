@@ -55,6 +55,8 @@ var igeClientConfig = {
 		/* Standard game scripts */
 		'/gameClasses/Cursor.js',
 
+		'/gameClasses/EntitiesToRender.js',
+
 		/* PIXI */
 		'pixi/pixi-viewport.js',
 		'pixi/pixi-cull.js',
