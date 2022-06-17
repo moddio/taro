@@ -2049,9 +2049,6 @@ var IgeEngine = IgeEntity.extend({
 			ige.tickCount = 0;
 			ige.updateTransform = 0;
 			ige.inViewCount = 0;
-			ige.entityManagerUpdateBehaviour = 0;
-			ige.entityManagerUpdateorphan = 0;
-			ige.entityManagerUpdateChildren = 0;
 			ige.totalChildren = 0;
 			ige.totalOrphans = 0;
 
@@ -2108,7 +2105,6 @@ var IgeEngine = IgeEntity.extend({
 				}
 			}
 
-			// console.log(ige.updateCount, ige.tickCount, ige.updateTransform, ige.inViewCount, ige.entityManagerUpdateBehaviour, ige.entityManagerUpdateorphan, ige.entityManagerUpdateChildren, ige.totalOrphans, ige.totalChildren)
 			// console.log(ige.updateCount, ige.tickCount, ige.updateTransform,"inView", ige.inViewCount);
 			// Record the lastTick value so we can
 			// calculate delta on the next tick
