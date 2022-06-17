@@ -120,6 +120,22 @@ var ActionComponent = IgeEntity.extend({
 						}
 
 						break;
+					case 'switchCondition':
+						var caseValue = ige.switchCondition.run(action.conditions, vars)
+						if(caseValue.value){
+							var brk = self.run(action[`case${caseValue.case}`], vars);
+						}
+						else {
+							var brk = self.run(action.default, vars);
+						}
+						if (brk == 'break') {
+							return 'break';
+						} else if (brk == 'return') {
+							return 'return';
+						} else if (brk == 'continue') {
+							return 'continue';
+						}
+						break;
 
 					case 'transformRegionDimensions':
 						var region = ige.variable.getValue(action.region, vars);
