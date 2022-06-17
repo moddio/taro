@@ -39,7 +39,6 @@ var SwitchComponent = IgeEntity.extend({
 			elemState = elem
 			if(leftVar == rightVar) break;
 		}
-		console.log('pppp😋😋😋😋', {value : leftVar == rightVar, case: elemState } )
 		return {value : leftVar == rightVar, case: elemState }// stringify is important for comparisons like region comparison
 		
 		
