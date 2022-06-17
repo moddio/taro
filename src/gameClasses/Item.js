@@ -81,7 +81,7 @@ var Item = IgeEntityPhysics.extend({
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
-			self.createPixiTexture();
+			self.createTexture();
 			self.drawBounds(false);
 
 			ige.client.emit('create-item', this);
@@ -642,8 +642,8 @@ var Item = IgeEntityPhysics.extend({
 			}
 			return canAffordCost;
 		} else {
-			return false;
 			ItemComponent.prototype.log('can\'t afford cost');
+			return false;
 		}
 	},
 

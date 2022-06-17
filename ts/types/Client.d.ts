@@ -6,5 +6,7 @@ declare class Client extends IgeEventingClass {
 
 	phaserLoaded: JQueryDeferred<void>;
 
+	isZooming: boolean;
+
 	constructor(options?: object);
 }

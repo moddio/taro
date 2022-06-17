@@ -18,7 +18,6 @@ const Client = IgeEventingClass.extend({
 
 	init: function() {
 		//
-
 		this.data = [];
 		this.previousScore = 0;
 		this.host = window.isStandalone ? 'https://www.modd.io' : '';
@@ -66,6 +65,8 @@ const Client = IgeEventingClass.extend({
 		this.resolution = 0; //old comment => 'autosize'
 		this.scaleMode = 0; //old comment => 'none'
 		this.isActiveTab = true;
+
+		this.isZooming = false;
 
 		this._trackTranslateSmoothing = 15;
 		this.inactiveTabEntityStream = [];
@@ -117,7 +118,7 @@ const Client = IgeEventingClass.extend({
 
 		// add utility
 		this.implement(ClientNetworkEvents);
-		ige.addComponent(IgeInitPixi);
+
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
@@ -184,7 +185,10 @@ const Client = IgeEventingClass.extend({
 
 		promise.then((game) => {
 			ige.game.data = game.data;
+			ige.addComponent(IgeInitPixi);
+			ige.entitiesToRender = new EntitiesToRender();
             ige.phaser = new PhaserRenderer();
+			// let's try here
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
 			ige.addComponent(IgeNetIoComponent);
@@ -192,6 +196,8 @@ const Client = IgeEventingClass.extend({
 
 			ige.addComponent(MenuUiComponent);
 			ige.addComponent(TradeUiComponent); // could we comment this one out?
+
+			// TODO add MobileControlsComponent only if it is mobile
 			ige.addComponent(MobileControlsComponent);
 		})
 			.catch((err) => {

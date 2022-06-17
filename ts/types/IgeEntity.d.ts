@@ -24,7 +24,7 @@ declare class IgeEntity extends IgeObject {
 	isHidden (): boolean;
 	getOwnerUnit (): IgeEntity | undefined;
 	streamUpdateData (queuedData: UpdateData[]);
-	transformPixiEntity (x: number, y: number, z: number, type?: boolean);
+	transformTexture (x: number, y: number, z: number, type?: boolean);
 
 	flip (flip: FlipMode): void
 }
