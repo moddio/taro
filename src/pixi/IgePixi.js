@@ -331,33 +331,33 @@ var IgeInitPixi = IgeEventingClass.extend({
 		if (texture.anchor) {
 			texture.anchor.set(0.5);
 		}
-		entity._pixiContainer.zIndex = (
-			entity._stats.currentBody &&
-			entity._stats.currentBody['z-index'] &&
-			entity._stats.currentBody['z-index'].layer
-		) ||
-			3;
-
-		entity._pixiContainer.depth = (
-			entity._stats.currentBody &&
-			entity._stats.currentBody['z-index'] &&
-			entity._stats.currentBody['z-index'].depth
-		) ||
-			3;
-
-		entity._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
-		entity._pixiContainer.entityId = entity.entityId;
-		entity._pixiContainer._category = entity._category;
-		entity._pixiTexture = texture;
-		entity._pixiContainer.addChild(texture);
-
-		if (defaultData) {
-			entity._pixiContainer.x = defaultData.translate.x;
-			entity._pixiContainer.y = defaultData.translate.y;
-			entity._pixiTexture.rotation = defaultData.rotate;
+		if (entity._pixiContainer) {
+			entity._pixiContainer.zIndex = (
+				entity._stats.currentBody &&
+				entity._stats.currentBody['z-index'] &&
+				entity._stats.currentBody['z-index'].layer
+			) ||
+				3;
+	
+			entity._pixiContainer.depth = (
+				entity._stats.currentBody &&
+				entity._stats.currentBody['z-index'] &&
+				entity._stats.currentBody['z-index'].depth
+			) ||
+				3;
+	
+			entity._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
+			entity._pixiContainer.entityId = entity.entityId;
+			entity._pixiContainer._category = entity._category;
+			entity._pixiTexture = texture;
+			entity._pixiContainer.addChild(texture);
+	
+			if (defaultData) {
+				entity._pixiContainer.x = defaultData.translate.x;
+				entity._pixiContainer.y = defaultData.translate.y;
+				entity._pixiTexture.rotation = defaultData.rotate;
+			}
 		}
-
-		ige.entitiesToRender.trackEntityById[entity.entityId] = entity;
 	},
 
 	updateTexture: function () {

@@ -641,6 +641,7 @@ var IgeEntity = IgeObject.extend({
 		return this._backgroundPattern;
 	},
 	createTexture: function (defaultSprite = 0, defaultData) {
+		ige.entitiesToRender.trackEntityById[this.id()] = this;
 		ige.client.emit('createTexture', {
 			entity: this,
 			defaultSprite: defaultSprite,
