@@ -640,7 +640,7 @@ var IgeEntity = IgeObject.extend({
 
 		return this._backgroundPattern;
 	},
-	createTexture: function (defaultSprite = 0, defaultData) {
+	addToRenderer: function (defaultSprite = 0, defaultData) {
 		ige.entitiesToRender.trackEntityById[this.id()] = this;
 		ige.client.emit('createTexture', {
 			entity: this,
@@ -2491,6 +2491,7 @@ var IgeEntity = IgeObject.extend({
 
 		if (ige.isClient) {
 			ige.client.emit('destroyTexture', this);
+			this.emit('destroy');
 		}
 
 		/**
@@ -3119,6 +3120,12 @@ var IgeEntity = IgeObject.extend({
 			type: type
 		});
 
+		this.emit('transform', {
+			x: x,
+			y: y,
+			rotation: z,
+		});
+
 		return this;
 	},
 
@@ -3465,6 +3472,10 @@ var IgeEntity = IgeObject.extend({
 		if (ige.isClient) {
 			ige.client.emit('scale', {
 				entity: this,
+				x: x,
+				y: y
+			});
+			this.emit('scale', {
 				x: x,
 				y: y
 			});
@@ -4031,6 +4042,7 @@ var IgeEntity = IgeObject.extend({
 			}
 		}
 	},
+	//mouseEvents for sandbox mode only, but sandbox not use pixi
 	mouseEvents: function (defaultData) {
 		var self = this;
 		if (typeof mode === 'string' && mode === 'sandbox') {

@@ -91,15 +91,16 @@ var Projectile = IgeEntityPhysics.extend({
 				//ige.entitiesToRender.trackEntityById[this.entityId] = undefined;
 
 				var defaultAnimation = this._stats.animations[currentState.animation];
-				this.createTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+				this.addToRenderer(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
 			}
 			self.drawBounds(false);
 
 			// self.addComponent(AttributeBarsContainerComponent);
 			self.updateLayer();
 			self.updateTexture();
+			//mouseEvents for sandbox mode only, but sandbox not use pixi
 			self.mouseEvents();
-			self.mount(ige.pixi.world);
+
 		}
 		this.playEffect('create');
 

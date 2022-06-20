@@ -26,29 +26,31 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
+        _this.transformListener = projectile.on('transform', function (info) {
+            _this.x = info.x;
+            _this.y = info.y;
+            _this.sprite.rotation = info.rotation;
+        });
+        _this.scaleListener = projectile.on('scale', function (info) {
+            console.log('scale listener', info);
+            _this.sprite.setDisplaySize(info.x, info.y);
+        });
         _this.playAnimationListener =
             projectile.on('play-animation', function (animationId) {
                 console.log('PhaserProjectile play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
                 sprite.play("".concat(key, "/").concat(animationId));
             });
+        _this.destroyListener = projectile.on('destroy', function () {
+            projectile.off('play-animation', _this.playAnimationListener);
+            _this.transformListener = null;
+            _this.scaleListener = null;
+            _this.playAnimationListener = null;
+            _this.destroyListener = null;
+            _this.scene.events.off('update', _this.update, _this);
+            _this.destroy();
+        });
         return _this;
     }
-    PhaserProjectile.prototype.update = function ( /*time: number, delta: number*/) {
-        var projectile = this.projectile;
-        if (!projectile._alive) {
-            projectile.off('play-animation', this.playAnimationListener);
-            this.playAnimationListener = null;
-            this.scene.events.off('update', this.update, this);
-            this.destroy();
-            return;
-        }
-        this.x = projectile._translate.x;
-        this.y = projectile._translate.y;
-        var sprite = this.sprite;
-        var bounds = projectile._bounds2d;
-        sprite.setDisplaySize(bounds.x, bounds.y);
-        sprite.rotation = projectile._rotate.z;
-    };
     return PhaserProjectile;
 }(Phaser.GameObjects.Container));
 //# sourceMappingURL=PhaserProjectile.js.map
