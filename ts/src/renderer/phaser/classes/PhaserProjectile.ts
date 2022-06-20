@@ -26,12 +26,12 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		scene.add.existing(this);
 		scene.events.on('update', this.update, this);
 
-		this.transformListener = projectile.on('transform', (data) => {
+		this.transformListener = projectile.on('transform', (data: EntityTransform) => {
 			this.setPosition(data.x, data.y);
 			this.sprite.rotation = data.rotation;
 		});
 
-		this.scaleListener = projectile.on('scale', (data) => {
+		this.scaleListener = projectile.on('scale', (data: EntityScale) => {
 			this.sprite.setDisplaySize(data.x, data.y);
 		});
 
