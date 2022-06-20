@@ -21,6 +21,8 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         var bounds = projectile._bounds2d;
+        _this.x = projectile._translate.x;
+        _this.y = projectile._translate.y;
         sprite.setDisplaySize(bounds.x, bounds.y);
         sprite.rotation = projectile._rotate.z;
         _this.add(sprite);
