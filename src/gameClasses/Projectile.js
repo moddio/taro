@@ -5,9 +5,6 @@ var Projectile = IgeEntityPhysics.extend({
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer);
 		var self = this;
-		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
-		}
 		self.category('projectile');
 		var projectileData = {};
 		if (ige.isClient) {
@@ -85,19 +82,21 @@ var Projectile = IgeEntityPhysics.extend({
 		if (ige.isServer) {
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
+
+			ige.client.emit('create-projectile', this);
+
 			if (currentState) {
 				var defaultAnimation = this._stats.animations[currentState.animation];
-				this.createPixiTexture(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
+				this.addToRenderer(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
 			}
 			self.drawBounds(false);
 
 			// self.addComponent(AttributeBarsContainerComponent);
 			self.updateLayer();
 			self.updateTexture();
+			//mouseEvents for sandbox mode only, but sandbox not use pixi
 			self.mouseEvents();
-			self.mount(ige.pixi.world);
 
-			ige.client.emit('create-projectile', this);
 		}
 		this.playEffect('create');
 
@@ -190,4 +189,6 @@ var Projectile = IgeEntityPhysics.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Projectile; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = Projectile;
+}

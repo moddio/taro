@@ -27,6 +27,9 @@ var GameScene = /** @class */ (function (_super) {
         canvas.style.opacity = '0.5';
         canvas.style.backgroundColor = 'transparent';
         //canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
+        if (ige.isMobile) {
+            this.scene.launch('MobileControls');
+        }
         var camera = this.cameras.main;
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
@@ -42,11 +45,10 @@ var GameScene = /** @class */ (function (_super) {
             camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
         });
         ige.client.on('fetch-mouse-position', function (controlComponent) {
-            var currentMouseTransform = [
+            controlComponent.newMousePosition = [
                 _this.input.activePointer.worldX,
                 _this.input.activePointer.worldY
             ];
-            controlComponent.newMousePosition = currentMouseTransform;
         });
         ige.client.on('create-unit', function (unit) {
             console.log('create-unit', unit); // TODO remove
@@ -67,7 +69,6 @@ var GameScene = /** @class */ (function (_super) {
     };
     GameScene.prototype.preload = function () {
         var _this = this;
-        this.load.crossOrigin = 'anonymous';
         var data = ige.game.data;
         for (var type in data.unitTypes) {
             this.loadEntity("unit/".concat(type), data.unitTypes[type]);
@@ -79,9 +80,9 @@ var GameScene = /** @class */ (function (_super) {
             this.loadEntity("item/".concat(type), data.itemTypes[type]);
         }
         data.map.tilesets.forEach(function (tileset) {
-            _this.load.image("tiles/".concat(tileset.name), tileset.image);
+            _this.load.image("tiles/".concat(tileset.name), _this.patchAssetUrl(tileset.image));
         });
-        this.load.tilemapTiledJSON('map', data.map);
+        this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
     };
     GameScene.prototype.loadEntity = function (key, data) {
         var _this = this;
@@ -109,7 +110,7 @@ var GameScene = /** @class */ (function (_super) {
                     animationFrames.push(frames_1[i] - 1);
                 }
                 _this.anims.create({
-                    key: "".concat(key, "/").concat(animation.name),
+                    key: "".concat(key, "/").concat(animationsKey),
                     frames: _this.anims.generateFrameNumbers(key, {
                         frames: animationFrames
                     }),
@@ -118,12 +119,13 @@ var GameScene = /** @class */ (function (_super) {
                 });
             }
         });
-        this.load.image(key, cellSheet.url);
+        this.load.image(key, this.patchAssetUrl(cellSheet.url));
     };
     GameScene.prototype.create = function () {
         ige.client.phaserLoaded.resolve();
         var map = this.make.tilemap({ key: 'map' });
         var data = ige.game.data;
+        var scaleFactor = ige.scaleMapDetails.scaleFactor;
         data.map.tilesets.forEach(function (tileset) {
             map.addTilesetImage(tileset.name, "tiles/".concat(tileset.name));
         });
@@ -132,12 +134,33 @@ var GameScene = /** @class */ (function (_super) {
                 return;
             }
             console.log(layer.name);
-            map.createLayer(layer.name, map.tilesets[0], 0, 0);
+            var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
+            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
         });
         var camera = this.cameras.main;
-        camera.centerOn(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2);
+        camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
         camera.zoom = this.scale.width / 800;
     };
+    GameScene.prototype.patchMapData = function (map) {
+        /**
+         * map data gets patched in place
+         * to not make a copy of a huge object
+         **/
+        var tilecount = map.tilesets[0].tilecount;
+        map.layers.forEach(function (layer) {
+            if (layer.type !== 'tilelayer') {
+                return;
+            }
+            for (var i = 0; i < layer.data.length; i++) {
+                var value = layer.data[i];
+                if (value > tilecount) {
+                    console.warn("map data error: layer[".concat(layer.name, "], index[").concat(i, "], value[").concat(value, "]."));
+                    layer.data[i] = 0;
+                }
+            }
+        });
+        return map;
+    };
     return GameScene;
-}(Phaser.Scene));
+}(PhaserScene));
 //# sourceMappingURL=GameScene.js.map

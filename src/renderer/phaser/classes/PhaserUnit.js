@@ -28,7 +28,11 @@ var PhaserUnit = /** @class */ (function (_super) {
         scene.add.existing(_this);
         _this.followListener = unit.on('follow', function () {
             console.log('PhaserUnit follow', unit.id()); // TODO remove
-            scene.cameras.main.startFollow(_this, true, 0.05, 0.05);
+            var camera = scene.cameras.main;
+            if (camera._follow === _this) {
+                return;
+            }
+            camera.startFollow(_this, true, 0.05, 0.05);
         });
         _this.stopFollowListener = unit.on('stop-follow', function () {
             console.log('PhaserUnit stop-follow', unit.id()); // TODO remove
@@ -172,7 +176,10 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.chat.update(this.x, this.y);
         var sprite = this.sprite;
         sprite.rotation = texture.rotation;
-        sprite.setScale(texture.scale.x, texture.scale.y);
+        var bounds = unit._bounds2d;
+        var flip = unit._stats.flip;
+        sprite.setDisplaySize(bounds.x, bounds.y);
+        sprite.setFlip(flip % 2 === 1, flip > 1);
     };
     return PhaserUnit;
 }(Phaser.GameObjects.Container));

@@ -3,6 +3,8 @@ declare interface EntityStats {
 	name: string;
 	currentBody: {
 		jointType: string;
+		width: number;
+		height: number;
 	}
 	cellSheet: {
 		url: string;
@@ -25,4 +27,8 @@ declare interface EntityStats {
 	type: string;
 	id: string;
 	itemTypeId?: string;
+	flip: FlipMode;
+	controls: {
+		abilities: Record<string, ControlAbility>
+	}
 }

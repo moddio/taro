@@ -4,15 +4,22 @@ declare class IgeEngine extends IgeClass {
 	_tickStart: number;
 	_renderLatency: number;
 
-    isClient: boolean;
-    isServer: boolean;
+	_currentTime: number;
+	_cullCounter: number;
 
-    client: Client;
-    server: Client;
+	isClient: boolean;
+	isServer: boolean;
 
-	network: IgeNetworkComponent;
+	isMobile: boolean;
+
+	client: Client;
+	server: Client;
+
+	network: IgeNetIoComponent;
 
 	input: IgeInputComponent;
+
+	mobileControls: MobileControlsComponent;
 
 	gameLoopTickHasExecuted: boolean;
 
@@ -20,6 +27,22 @@ declare class IgeEngine extends IgeClass {
 
 	pixi: IgeInitPixi;
 	phaser: PhaserRenderer;
+
+	scaleMapDetails: {
+		scaleFactor: {
+			x: number;
+			y: number;
+		};
+		shouldScaleTilesheet: boolean;
+		tileWidth: number;
+		tileHeight: number;
+		originalTileHeight: number;
+		originalTileWidth: number;
+	};
+
+	lastTickTime: number;
+
+	entitiesToRender: EntitiesToRender;
 
 	constructor(options: object);
 
