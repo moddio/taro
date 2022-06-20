@@ -22,20 +22,18 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         var translate = projectile._translate;
         var bounds = projectile._bounds2d;
-        _this.x = translate.x;
-        _this.y = translate.y;
+        _this.setPosition(translate.x, translate.y);
         sprite.rotation = projectile._rotate.z;
         sprite.setDisplaySize(bounds.x, bounds.y);
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);
-        _this.transformListener = projectile.on('transform', function (info) {
-            _this.x = info.x;
-            _this.y = info.y;
-            _this.sprite.rotation = info.rotation;
+        _this.transformListener = projectile.on('transform', function (data) {
+            _this.setPosition(data.x, data.y);
+            _this.sprite.rotation = data.rotation;
         });
-        _this.scaleListener = projectile.on('scale', function (info) {
-            _this.sprite.setDisplaySize(info.x, info.y);
+        _this.scaleListener = projectile.on('scale', function (data) {
+            _this.sprite.setDisplaySize(data.x, data.y);
         });
         _this.playAnimationListener =
             projectile.on('play-animation', function (animationId) {
@@ -43,15 +41,14 @@ var PhaserProjectile = /** @class */ (function (_super) {
                 sprite.play("".concat(key, "/").concat(animationId));
             });
         _this.destroyListener = projectile.on('destroy', function () {
-            projectile.off('transform', _this.playAnimationListener);
+            projectile.off('transform', _this.transformListener);
             _this.transformListener = null;
-            projectile.off('scale', _this.playAnimationListener);
+            projectile.off('scale', _this.scaleListener);
             _this.scaleListener = null;
             projectile.off('play-animation', _this.playAnimationListener);
             _this.playAnimationListener = null;
-            projectile.off('destroy', _this.playAnimationListener);
+            projectile.off('destroy', _this.destroyListener);
             _this.destroyListener = null;
-            _this.scene.events.off('update', _this.update, _this);
             _this.destroy();
         });
         return _this;

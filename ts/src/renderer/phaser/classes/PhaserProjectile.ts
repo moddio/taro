@@ -17,8 +17,7 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
 		const translate = projectile._translate;
 		const bounds = projectile._bounds2d;
-		this.x = translate.x;
-		this.y = translate.y;
+		this.setPosition(translate.x, translate.y);
 		sprite.rotation = projectile._rotate.z;
 		sprite.setDisplaySize(bounds.x, bounds.y);
 
@@ -27,14 +26,13 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		scene.add.existing(this);
 		scene.events.on('update', this.update, this);
 
-		this.transformListener = projectile.on('transform', (info) => {
-			this.x = info.x;
-			this.y = info.y;
-			this.sprite.rotation = info.rotation;
+		this.transformListener = projectile.on('transform', (data) => {
+			this.setPosition(data.x, data.y);
+			this.sprite.rotation = data.rotation;
 		});
 
-		this.scaleListener = projectile.on('scale', (info) => {
-			this.sprite.setDisplaySize(info.x, info.y);
+		this.scaleListener = projectile.on('scale', (data) => {
+			this.sprite.setDisplaySize(data.x, data.y);
 		});
 
 		this.playAnimationListener =
@@ -44,17 +42,15 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 			});
 
 		this.destroyListener = projectile.on('destroy', () => {
-			projectile.off('transform', this.playAnimationListener);
+			projectile.off('transform', this.transformListener);
 			this.transformListener = null;
-			projectile.off('scale', this.playAnimationListener);
+			projectile.off('scale', this.scaleListener);
 			this.scaleListener = null;
 			projectile.off('play-animation', this.playAnimationListener);
 			this.playAnimationListener = null;
-			projectile.off('destroy', this.playAnimationListener);
+			projectile.off('destroy', this.destroyListener);
 			this.destroyListener = null;
-			this.scene.events.off('update', this.update, this);
 			this.destroy();
 		});
-
 	}
 }
