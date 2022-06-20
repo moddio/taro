@@ -306,6 +306,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 			defaultSprite,
 			defaultData
 		} = info;
+		if (entity._pixiContainer) {
 
 		var texture = new IgePixiTexture(
 			entity._stats.cellSheet.url,
@@ -331,7 +332,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 		if (texture.anchor) {
 			texture.anchor.set(0.5);
 		}
-		if (entity._pixiContainer) {
+		
 			entity._pixiContainer.zIndex = (
 				entity._stats.currentBody &&
 				entity._stats.currentBody['z-index'] &&
