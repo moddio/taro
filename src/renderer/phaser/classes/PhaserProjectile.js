@@ -20,11 +20,12 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.projectile = projectile;
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        var translate = projectile._translate;
         var bounds = projectile._bounds2d;
-        _this.x = projectile._translate.x;
-        _this.y = projectile._translate.y;
-        sprite.setDisplaySize(bounds.x, bounds.y);
+        _this.x = translate.x;
+        _this.y = translate.y;
         sprite.rotation = projectile._rotate.z;
+        sprite.setDisplaySize(bounds.x, bounds.y);
         _this.add(sprite);
         scene.add.existing(_this);
         scene.events.on('update', _this.update, _this);

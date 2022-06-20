@@ -86,10 +86,6 @@ var Projectile = IgeEntityPhysics.extend({
 			ige.client.emit('create-projectile', this);
 
 			if (currentState) {
-				/* TEMPORARY */
-				//TODO - add new logic for trackEntityById and updating entities with out PIXI in EntityManager
-				//ige.entitiesToRender.trackEntityById[this.entityId] = undefined;
-
 				var defaultAnimation = this._stats.animations[currentState.animation];
 				this.addToRenderer(defaultAnimation && defaultAnimation.frames[0] - 1, data.defaultData);
 			}
