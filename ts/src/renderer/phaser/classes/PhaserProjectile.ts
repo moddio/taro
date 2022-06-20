@@ -34,7 +34,6 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 		});
 
 		this.scaleListener = projectile.on('scale', (info) => {
-			console.log('scale listener', info);
 			this.sprite.setDisplaySize(info.x, info.y);
 		});
 
@@ -45,10 +44,13 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 			});
 
 		this.destroyListener = projectile.on('destroy', () => {
-			projectile.off('play-animation', this.playAnimationListener);
+			projectile.off('transform', this.playAnimationListener);
 			this.transformListener = null;
+			projectile.off('scale', this.playAnimationListener);
 			this.scaleListener = null;
+			projectile.off('play-animation', this.playAnimationListener);
 			this.playAnimationListener = null;
+			projectile.off('destroy', this.playAnimationListener);
 			this.destroyListener = null;
 			this.scene.events.off('update', this.update, this);
 			this.destroy();

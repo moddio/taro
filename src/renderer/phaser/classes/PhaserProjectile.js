@@ -35,7 +35,6 @@ var PhaserProjectile = /** @class */ (function (_super) {
             _this.sprite.rotation = info.rotation;
         });
         _this.scaleListener = projectile.on('scale', function (info) {
-            console.log('scale listener', info);
             _this.sprite.setDisplaySize(info.x, info.y);
         });
         _this.playAnimationListener =
@@ -44,10 +43,13 @@ var PhaserProjectile = /** @class */ (function (_super) {
                 sprite.play("".concat(key, "/").concat(animationId));
             });
         _this.destroyListener = projectile.on('destroy', function () {
-            projectile.off('play-animation', _this.playAnimationListener);
+            projectile.off('transform', _this.playAnimationListener);
             _this.transformListener = null;
+            projectile.off('scale', _this.playAnimationListener);
             _this.scaleListener = null;
+            projectile.off('play-animation', _this.playAnimationListener);
             _this.playAnimationListener = null;
+            projectile.off('destroy', _this.playAnimationListener);
             _this.destroyListener = null;
             _this.scene.events.off('update', _this.update, _this);
             _this.destroy();
