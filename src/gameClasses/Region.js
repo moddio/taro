@@ -79,7 +79,7 @@ var Region = IgeEntityPhysics.extend({
 			} else if (ige.isClient) {
 				if ((mode === 'play' && self._stats.default.inside) || mode === 'sandbox') {
 					// o.O TODO: Remove /refactor
-					ige.pixi.trackEntityById[entityIdFromServer] = this;
+					ige.entitiesToRender.trackEntityById[entityIdFromServer] = this;
 					ige.client.emit('create-region', this);
 				}
 

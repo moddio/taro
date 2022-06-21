@@ -1,8 +1,5 @@
 class PhaserRegion extends Phaser.GameObjects.Graphics {
 
-	private width: number;
-	private height: number;
-
 	private updateDimensionsListener: EvtListener;
 
 	constructor (
@@ -11,15 +8,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 	) {
 		super(scene);
 
-		// looking at whether to use _stats.default or _stats.currentBody
-		// appears the implementation of currentBody for regions is unfinished,
-		// but everything we should need for rendering is contained in default.
-		//
-		// I believe this is an issue unique to 'Region'
 		const stats = this.region._stats.default;
-
-		const width = this.width = stats.width;
-		const height = this.height = stats.height;
 
 		// Phaser wants a number for these
 		this.fillStyle(
@@ -29,8 +18,8 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		this.fillRect(
 			0,
 			0,
-			width,
-			height
+			stats.width,
+			stats.height
 		);
 
 		this.x = stats.x;
@@ -42,14 +31,10 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 
 			const stats = this.region._stats.default;
 
-			// I didn't want to go too deep on the entity stream/update process, but because of the current logic,
-			// if we stream changes to (3) variables, this will fire (3) times.
 			console.log(`PhaserRegion update ${region._stats.id} ${region._id}`); // TODO: Remove
 
 			this.x = stats.x;
 			this.y = stats.y;
-			this.width = stats.width;
-			this.height = stats.height;
 
 			this.clear();
 			this.fillStyle(
@@ -76,8 +61,6 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 			this.destroy();
 			return;
 		}
-
-
 
 	}
 }
