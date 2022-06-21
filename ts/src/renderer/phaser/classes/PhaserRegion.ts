@@ -1,6 +1,7 @@
 class PhaserRegion extends Phaser.GameObjects.Graphics {
 
 	private updateDimensionsListener: EvtListener;
+	private destroyListener: EvtListener;
 
 	constructor (
 		scene: Phaser.Scene,
@@ -26,6 +27,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 		this.y = stats.y;
 
 		scene.add.existing(this);
+		scene.events.on('update', this.update, this);
 
 		this.updateDimensionsListener = region.on('update-region-dimensions', () => {
 
@@ -49,18 +51,14 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 			);
 		});
 
-		scene.events.on('update', this.update, this);
-	}
+		this.destroyListener = region.on('destroy', () => {
+			region.off('update-region-dimensions', this.updateDimensionsListener);
+			this.updateDimensionsListener = null;
 
-	update (/*time: number, delta: number*/): void {
+			region.off('destroy', this.destroyListener);
+			this.destroyListener = null;
 
-		if (this.region._destroyed) {
-
-			this.region.off('update-region-dimensions', this.updateDimensionsListener)
-			this.scene.events.off('update', this.update, this);
 			this.destroy();
-			return;
-		}
-
+		});
 	}
 }
