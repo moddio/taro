@@ -948,7 +948,12 @@ var Unit = IgeEntityPhysics.extend({
 	renderMobileControl: function () {
 		var self = this;
 
-		if (ige.mobileControls && self._stats && ige.network.id() == self._stats.clientId && ige.client.myPlayer && ige.client.myPlayer._stats.selectedUnitId == this.id() && this._stats.controls) {
+		if (ige.mobileControls &&
+			self._stats &&
+			ige.network.id() == self._stats.clientId &&
+			ige.client.myPlayer &&
+			ige.client.myPlayer._stats.selectedUnitId == this.id() &&
+			this._stats.controls) {
 			ige.mobileControls.configure(this._stats.controls.abilities);
 		}
 	},
@@ -1907,8 +1912,8 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.physics && ige.physics.engine != 'CRASH') {
-				this.processBox2dQueue();
-			}
+			this.processBox2dQueue();
+		}
 	},
 
 	destroy: function () {

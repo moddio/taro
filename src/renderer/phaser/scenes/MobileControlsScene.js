@@ -94,6 +94,8 @@ var MobileControlsScene = /** @class */ (function (_super) {
         this.load.image('mobile-button-icon', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png'));
     };
     MobileControlsScene.prototype.resize = function () {
+        // make the mobileControls container
+        // fit the width and be anchored to the bottom
         var controls = this.controls;
         var scale = this.scale;
         controls.y = scale.height - 540;

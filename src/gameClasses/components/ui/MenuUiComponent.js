@@ -572,7 +572,7 @@ var MenuUiComponent = IgeEntity.extend({
 			}
 			$('#modd-shop-modal').css({ fontSize: 11 });
 			// hide mobile controls
-			var allControls = ige.mobileControls.controls;
+			var allControls = ige.mobileControls && ige.mobileControls.controls;
 			if (allControls) {
 				for (var k in allControls) {
 					var control = allControls[k];
