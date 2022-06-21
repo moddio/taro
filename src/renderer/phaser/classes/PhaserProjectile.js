@@ -15,42 +15,62 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserProjectile = /** @class */ (function (_super) {
     __extends(PhaserProjectile, _super);
+    /*sprite: Phaser.GameObjects.Sprite;
+
+    private playAnimationListener: EvtListener;
+    private transformListener: EvtListener;
+    private scaleListener: EvtListener;
+    private destroyListener: EvtListener;*/
     function PhaserProjectile(scene, projectile) {
-        var _this = _super.call(this, scene) || this;
+        var _this = _super.call(this, scene, projectile) || this;
         _this.projectile = projectile;
-        var key = "projectile/".concat(projectile._stats.type);
-        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
-        var translate = projectile._translate;
-        var bounds = projectile._bounds2d;
-        _this.setPosition(translate.x, translate.y);
+        return _this;
+        /*const key = `projectile/${projectile._stats.type}`;
+
+        const sprite = this.sprite = scene.add.sprite(0, 0, key);
+        const translate = projectile._translate;
+        const bounds = projectile._bounds2d;
+        this.setPosition(translate.x, translate.y);
         sprite.rotation = projectile._rotate.z;
         sprite.setDisplaySize(bounds.x, bounds.y);
-        _this.add(sprite);
-        scene.add.existing(_this);
-        _this.transformListener = projectile.on('transform', function (data) {
-            _this.setPosition(data.x, data.y);
+
+        this.add(sprite);
+
+        scene.add.existing(this);
+
+        this.transformListener = projectile.on('transform', (data: {
+            x: number,
+            y: number,
+            rotation: number
+        }) => {
+            this.setPosition(data.x, data.y);
             sprite.rotation = data.rotation;
         });
-        _this.scaleListener = projectile.on('scale', function (data) {
+
+        this.scaleListener = projectile.on('scale', (data: {
+            x: number,
+            y: number
+        }) => {
             sprite.setScale(data.x, data.y);
         });
-        _this.playAnimationListener =
-            projectile.on('play-animation', function (animationId) {
-                sprite.play("".concat(key, "/").concat(animationId));
+
+        this.playAnimationListener =
+            projectile.on('play-animation', (animationId: string) => {
+                sprite.play(`${key}/${animationId}`);
             });
-        _this.destroyListener = projectile.on('destroy', function () {
-            projectile.off('transform', _this.transformListener);
-            _this.transformListener = null;
-            projectile.off('scale', _this.scaleListener);
-            _this.scaleListener = null;
-            projectile.off('play-animation', _this.playAnimationListener);
-            _this.playAnimationListener = null;
-            projectile.off('destroy', _this.destroyListener);
-            _this.destroyListener = null;
-            _this.destroy();
-        });
-        return _this;
+
+        this.destroyListener = projectile.on('destroy', () => {
+            projectile.off('transform', this.transformListener);
+            this.transformListener = null;
+            projectile.off('scale', this.scaleListener);
+            this.scaleListener = null;
+            projectile.off('play-animation', this.playAnimationListener);
+            this.playAnimationListener = null;
+            projectile.off('destroy', this.destroyListener);
+            this.destroyListener = null;
+            this.destroy();
+        });*/
     }
     return PhaserProjectile;
-}(Phaser.GameObjects.Container));
+}(PhaserEntity));
 //# sourceMappingURL=PhaserProjectile.js.map

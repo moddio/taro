@@ -1,18 +1,18 @@
-class PhaserProjectile extends Phaser.GameObjects.Container {
+class PhaserProjectile extends PhaserEntity {
 
-	sprite: Phaser.GameObjects.Sprite;
+	/*sprite: Phaser.GameObjects.Sprite;
 
 	private playAnimationListener: EvtListener;
 	private transformListener: EvtListener;
 	private scaleListener: EvtListener;
-	private destroyListener: EvtListener;
+	private destroyListener: EvtListener;*/
 
 	constructor (scene: Phaser.Scene,
 				 private projectile: Projectile) {
 
-		super(scene);
+		super(scene, projectile);
 
-		const key = `projectile/${projectile._stats.type}`;
+		/*const key = `projectile/${projectile._stats.type}`;
 
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
 		const translate = projectile._translate;
@@ -56,6 +56,6 @@ class PhaserProjectile extends Phaser.GameObjects.Container {
 			projectile.off('destroy', this.destroyListener);
 			this.destroyListener = null;
 			this.destroy();
-		});
+		});*/
 	}
 }
