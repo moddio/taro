@@ -18,13 +18,13 @@ var PhaserEntity = /** @class */ (function (_super) {
     function PhaserEntity(scene, entity) {
         var _this = _super.call(this, scene) || this;
         _this.entity = entity;
-        var key = "projectile/".concat(entity._stats.type);
-        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        //const key = `projectile/${entity._stats.type}`;
+        var sprite = _this.sprite = scene.add.sprite(0, 0, null);
         var translate = entity._translate;
-        var bounds = entity._bounds2d;
+        //const bounds = entity._bounds2d;
         _this.setPosition(translate.x, translate.y);
         sprite.rotation = entity._rotate.z;
-        sprite.setDisplaySize(bounds.x, bounds.y);
+        //sprite.setDisplaySize(bounds.x, bounds.y);
         _this.add(sprite);
         scene.add.existing(_this);
         _this.transformListener = entity.on('transform', function (data) {
@@ -35,7 +35,7 @@ var PhaserEntity = /** @class */ (function (_super) {
             sprite.setScale(data.x, data.y);
         });
         _this.playAnimationListener = entity.on('play-animation', function (animationId) {
-            sprite.play("".concat(key, "/").concat(animationId));
+            sprite.play("".concat(_this.key, "/").concat(animationId));
         });
         _this.destroyListener = entity.on('destroy', function () {
             entity.off('transform', _this.transformListener);

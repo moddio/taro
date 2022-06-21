@@ -24,11 +24,12 @@ var PhaserProjectile = /** @class */ (function (_super) {
     function PhaserProjectile(scene, projectile) {
         var _this = _super.call(this, scene, projectile) || this;
         _this.projectile = projectile;
+        var key = _this.key = "projectile/".concat(projectile._stats.type);
+        _this.sprite.setTexture(key);
+        var bounds = projectile._bounds2d;
+        _this.sprite.setDisplaySize(bounds.x, bounds.y);
         return _this;
-        /*const key = `projectile/${projectile._stats.type}`;
-
-        const sprite = this.sprite = scene.add.sprite(0, 0, key);
-        const translate = projectile._translate;
+        /*const translate = projectile._translate;
         const bounds = projectile._bounds2d;
         this.setPosition(translate.x, translate.y);
         sprite.rotation = projectile._rotate.z;

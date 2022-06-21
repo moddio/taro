@@ -1,6 +1,7 @@
 abstract class PhaserEntity extends Phaser.GameObjects.Container {
 
 	sprite: Phaser.GameObjects.Sprite;
+    key: any;
 
 	private playAnimationListener: EvtListener;
 	private transformListener: EvtListener;
@@ -12,14 +13,14 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 
 		super(scene);
 
-		const key = `projectile/${entity._stats.type}`;
+		//const key = `projectile/${entity._stats.type}`;
 
-		const sprite = this.sprite = scene.add.sprite(0, 0, key);
+		const sprite = this.sprite = scene.add.sprite(0, 0, null);
 		const translate = entity._translate;
-		const bounds = entity._bounds2d;
+		//const bounds = entity._bounds2d;
 		this.setPosition(translate.x, translate.y);
 		sprite.rotation = entity._rotate.z;
-		sprite.setDisplaySize(bounds.x, bounds.y);
+		//sprite.setDisplaySize(bounds.x, bounds.y);
 
 		this.add(sprite);
 
@@ -42,7 +43,7 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 		});
 
 		this.playAnimationListener = entity.on('play-animation', (animationId: string) => {
-        	sprite.play(`${key}/${animationId}`);
+        	sprite.play(`${this.key}/${animationId}`);
 		});
 
 		this.destroyListener = entity.on('destroy', () => {

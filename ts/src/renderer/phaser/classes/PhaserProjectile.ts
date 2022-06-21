@@ -12,10 +12,12 @@ class PhaserProjectile extends PhaserEntity {
 
 		super(scene, projectile);
 
-		/*const key = `projectile/${projectile._stats.type}`;
+		const key = this.key = `projectile/${projectile._stats.type}`;
+		this.sprite.setTexture(key);
+		const bounds = projectile._bounds2d;
+		this.sprite.setDisplaySize(bounds.x, bounds.y);
 
-		const sprite = this.sprite = scene.add.sprite(0, 0, key);
-		const translate = projectile._translate;
+		/*const translate = projectile._translate;
 		const bounds = projectile._bounds2d;
 		this.setPosition(translate.x, translate.y);
 		sprite.rotation = projectile._rotate.z;
