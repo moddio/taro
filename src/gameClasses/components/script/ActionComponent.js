@@ -2271,10 +2271,6 @@ var ActionComponent = IgeEntity.extend({
 					case 'destroyEntity':
 						var entity = ige.variable.getValue(action.entity, vars);
 
-						if (this._category == 'item' && this._stats.name == 'Floaty') {
-							console.trace()
-						}
-
 						if (entity && self.entityCategories.indexOf(entity._category) > -1) {
 							entity.remove();
 						} else {

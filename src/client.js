@@ -874,6 +874,12 @@ const Client = IgeEventingClass.extend({
 				) {
 					//
 					ige.menuUi.kickPlayerFromGame(entityBeingDestroyed.id()); // this is inside the 'Moderate' menu
+				} else {
+					try {
+						entityBeingDestroyed.remove();
+					} catch (e) {
+						console.log('* ERROR * trying to destroy entity\n', e);
+					}
 				}
 			});
 

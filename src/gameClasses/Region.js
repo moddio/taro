@@ -98,6 +98,7 @@ var Region = IgeEntityPhysics.extend({
 				}
 			}
 		}
+		self.addBehaviour('regionBehaviour', self._behaviour);
 	},
 	updateDimension: function () {
 		var regionCordinates = this._stats.default;
@@ -113,7 +114,7 @@ var Region = IgeEntityPhysics.extend({
 			// shapeData.x = regionCordinates.x;
 			// shapeData.y = regionCordinates.y;
 			this._stats.currentBody.fixtures[0].shape.data = shapeData;
-			this.physicsBody(this._stats.currentBody);
+			this.updateBody(this._stats.currentBody);
 
 		} else { // isClient
 			this.emit('update-region-dimensions');
@@ -135,8 +136,12 @@ var Region = IgeEntityPhysics.extend({
 		this.updateDimension();
 	},
 
-	deleteRegion: function () {
-		this.destroy();
+	_behaviour: function(ctx) {
+		if (this._alive === false) {
+			this.destroy();
+		}
+
+		this.processBox2dQueue();
 	}
 });
 
