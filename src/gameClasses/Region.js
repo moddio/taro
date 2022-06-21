@@ -5,11 +5,6 @@ var Region = IgeEntityPhysics.extend({
 	init: function (data, entityIdFromServer) {
 		IgeEntityPhysics.prototype.init.call(this);
 
-		// on server regions are offsetted by 2 tile. So adding offset just server
-		// making region work fine on both side
-
-		// TODO: look into the above comment and confirm or deny.
-
 		this.id(entityIdFromServer);
 
 		var self = this;
@@ -62,16 +57,6 @@ var Region = IgeEntityPhysics.extend({
 				translate: { x: self._translate.x, y: self._translate.y}
 			});
 
-			// will leave this for a little while longer. this is sloont's from
-			// drawing Crash Colliders
-
-			// if (ige.isClient) {
-			// 	this._pixiContainer = new PIXI.Container();
-			// 	this.drawCrashCollider(regionDimension);
-			// }
-
-			//
-
 			if (ige.isServer) {
 				// IgeEntity.streamMode(val)
 				// 1 is 'automatic' streaming
@@ -111,28 +96,6 @@ var Region = IgeEntityPhysics.extend({
 							});
 					}
 				}
-				// removing references to regionUi.
-				// /
-				// self.regionUi = new RegionUi(JSON.parse(JSON.stringify(self._stats)), regionName, this);
-				// /
-
-				// self.regionUi.depth(10)
-				//     .layer(2)
-				//     .drawBoundsData(false)
-				//     .drawBounds(false)
-				//     .translateTo(self._stats.default.x + (self._stats.default.width / 2), self._stats.default.y + (self._stats.default.height / 2), 0)
-				//     .height(self._stats.default.height)
-				//     .width(self._stats.default.width)
-				//     .bounds2d(self._stats.default.width, self._stats.default.height, 0)
-				// .mount(ige.client.rootScene);
-
-				// TODO? I am concerned about these references to 'FloatingText' and not 'igePixiFloatingText'
-				// Only other reference is AttributeComponent.js:init
-				// self.font = new FloatingText(regionName);
-				// self.font.colorOverlay('#fff')
-				// 	.translateTo(self._stats.default.x, self._stats.default.y, 0)
-				// 	.mount(ige.client.rootScene)
-				// 	.drawBounds(false);
 			}
 		}
 	},
@@ -155,16 +118,6 @@ var Region = IgeEntityPhysics.extend({
 		} else { // isClient
 			this.emit('update-region-dimensions');
 		}
-
-		// if (this.regionUi) {
-		// 	this.regionUi.translateTo(regionCordinates.x, regionCordinates.y, 0);
-		// 	this.regionUi.width(regionCordinates.width);
-		// 	this.regionUi.height(regionCordinates.height);
-		// }
-
-		// if (this.font) {
-		// 	this.font.translateTo(regionCordinates.x + (this._stats.id.length / 2 * 11), regionCordinates.y + 15, 0);
-		// }
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -183,12 +136,6 @@ var Region = IgeEntityPhysics.extend({
 	},
 
 	deleteRegion: function () {
-		// if (this.font) {
-		// 	this.font.destroy();
-		// }
-		// if (this.regionUi) {
-		// 	this.regionUi.destroy();
-		// }
 		this.destroy();
 	}
 });

@@ -25,6 +25,7 @@ var PhaserRegion = /** @class */ (function (_super) {
         _this.x = stats.x;
         _this.y = stats.y;
         scene.add.existing(_this);
+        scene.events.on('update', _this.update, _this);
         _this.updateDimensionsListener = region.on('update-region-dimensions', function () {
             var stats = _this.region._stats.default;
             console.log("PhaserRegion update ".concat(region._stats.id, " ").concat(region._id)); // TODO: Remove
@@ -34,17 +35,15 @@ var PhaserRegion = /** @class */ (function (_super) {
             _this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
             _this.fillRect(0, 0, stats.width, stats.height);
         });
-        scene.events.on('update', _this.update, _this);
+        _this.destroyListener = region.on('destroy', function () {
+            region.off('update-region-dimensions', _this.updateDimensionsListener);
+            _this.updateDimensionsListener = null;
+            region.off('destroy', _this.destroyListener);
+            _this.destroyListener = null;
+            _this.destroy();
+        });
         return _this;
     }
-    PhaserRegion.prototype.update = function ( /*time: number, delta: number*/) {
-        if (this.region._destroyed) {
-            this.region.off('update-region-dimensions', this.updateDimensionsListener);
-            this.scene.events.off('update', this.update, this);
-            this.destroy();
-            return;
-        }
-    };
     return PhaserRegion;
 }(Phaser.GameObjects.Graphics));
 //# sourceMappingURL=PhaserRegion.js.map
