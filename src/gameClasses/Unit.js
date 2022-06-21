@@ -73,7 +73,7 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.isClient) {
-			this.createTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
+			this.addToRenderer(defaultAnimation && (defaultAnimation.frames[0] - 1));
 
 			self.mount(ige.pixi.world);
 			this.transformTexture(this._translate.x, this._translate.y);

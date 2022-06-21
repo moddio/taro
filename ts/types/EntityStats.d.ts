@@ -3,6 +3,8 @@ declare interface EntityStats {
 	name: string;
 	currentBody: {
 		jointType: string;
+		width: number;
+		height: number;
 	}
 	cellSheet: {
 		url: string;

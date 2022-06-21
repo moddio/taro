@@ -306,58 +306,59 @@ var IgeInitPixi = IgeEventingClass.extend({
 			defaultSprite,
 			defaultData
 		} = info;
+		if (entity._pixiContainer) {
 
-		var texture = new IgePixiTexture(
-			entity._stats.cellSheet.url,
-			entity._stats.cellSheet.columnCount,
-			entity._stats.cellSheet.rowCount,
-			entity
-		);
+			var texture = new IgePixiTexture(
+				entity._stats.cellSheet.url,
+				entity._stats.cellSheet.columnCount,
+				entity._stats.cellSheet.rowCount,
+				entity
+			);
 
-		texture = texture.spriteFromCellSheet(defaultSprite);
+			texture = texture.spriteFromCellSheet(defaultSprite);
 
-		if (!texture) return;
+			if (!texture) return;
 
-		texture.width = (
-			entity._stats.currentBody && entity._stats.currentBody.width
-		) ||
+			texture.width = (
+				entity._stats.currentBody && entity._stats.currentBody.width
+			) ||
 			entity._stats.width;
 
-		texture.height = (
-			entity._stats.currentBody && entity._stats.currentBody.height
-		) ||
+			texture.height = (
+				entity._stats.currentBody && entity._stats.currentBody.height
+			) ||
 			entity._stats.height;
 
-		if (texture.anchor) {
-			texture.anchor.set(0.5);
+			if (texture.anchor) {
+				texture.anchor.set(0.5);
+			}
+
+			entity._pixiContainer.zIndex = (
+				entity._stats.currentBody &&
+				entity._stats.currentBody['z-index'] &&
+				entity._stats.currentBody['z-index'].layer
+			) ||
+				3;
+
+			entity._pixiContainer.depth = (
+				entity._stats.currentBody &&
+				entity._stats.currentBody['z-index'] &&
+				entity._stats.currentBody['z-index'].depth
+			) ||
+				3;
+
+			entity._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
+			entity._pixiContainer.entityId = entity.entityId;
+			entity._pixiContainer._category = entity._category;
+			entity._pixiTexture = texture;
+			entity._pixiContainer.addChild(texture);
+
+			if (defaultData) {
+				entity._pixiContainer.x = defaultData.translate.x;
+				entity._pixiContainer.y = defaultData.translate.y;
+				entity._pixiTexture.rotation = defaultData.rotate;
+			}
 		}
-		entity._pixiContainer.zIndex = (
-			entity._stats.currentBody &&
-			entity._stats.currentBody['z-index'] &&
-			entity._stats.currentBody['z-index'].layer
-		) ||
-			3;
-
-		entity._pixiContainer.depth = (
-			entity._stats.currentBody &&
-			entity._stats.currentBody['z-index'] &&
-			entity._stats.currentBody['z-index'].depth
-		) ||
-			3;
-
-		entity._pixiContainer.depth += parseInt(Math.random() * 1000) / 1000;
-		entity._pixiContainer.entityId = entity.entityId;
-		entity._pixiContainer._category = entity._category;
-		entity._pixiTexture = texture;
-		entity._pixiContainer.addChild(texture);
-
-		if (defaultData) {
-			entity._pixiContainer.x = defaultData.translate.x;
-			entity._pixiContainer.y = defaultData.translate.y;
-			entity._pixiTexture.rotation = defaultData.rotate;
-		}
-
-		ige.entitiesToRender.trackEntityById[entity.entityId] = entity;
 	},
 
 	updateTexture: function () {

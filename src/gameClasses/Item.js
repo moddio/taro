@@ -81,7 +81,7 @@ var Item = IgeEntityPhysics.extend({
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
-			self.createTexture();
+			self.addToRenderer();
 			self.drawBounds(false);
 
 			ige.client.emit('create-item', this);

@@ -20,32 +20,37 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.projectile = projectile;
         var key = "projectile/".concat(projectile._stats.type);
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        var translate = projectile._translate;
+        var bounds = projectile._bounds2d;
+        _this.setPosition(translate.x, translate.y);
+        sprite.rotation = projectile._rotate.z;
+        sprite.setDisplaySize(bounds.x, bounds.y);
         _this.add(sprite);
         scene.add.existing(_this);
-        scene.events.on('update', _this.update, _this);
+        _this.transformListener = projectile.on('transform', function (data) {
+            _this.setPosition(data.x, data.y);
+            sprite.rotation = data.rotation;
+        });
+        _this.scaleListener = projectile.on('scale', function (data) {
+            sprite.setScale(data.x, data.y);
+        });
         _this.playAnimationListener =
             projectile.on('play-animation', function (animationId) {
-                console.log('PhaserProjectile play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
                 sprite.play("".concat(key, "/").concat(animationId));
             });
+        _this.destroyListener = projectile.on('destroy', function () {
+            projectile.off('transform', _this.transformListener);
+            _this.transformListener = null;
+            projectile.off('scale', _this.scaleListener);
+            _this.scaleListener = null;
+            projectile.off('play-animation', _this.playAnimationListener);
+            _this.playAnimationListener = null;
+            projectile.off('destroy', _this.destroyListener);
+            _this.destroyListener = null;
+            _this.destroy();
+        });
         return _this;
     }
-    PhaserProjectile.prototype.update = function ( /*time: number, delta: number*/) {
-        var projectile = this.projectile;
-        var container = projectile._pixiContainer;
-        var texture = projectile._pixiTexture;
-        if (projectile._destroyed || container._destroyed) {
-            projectile.off('play-animation', this.playAnimationListener);
-            this.playAnimationListener = null;
-            this.destroy();
-            return;
-        }
-        this.x = container.x;
-        this.y = container.y;
-        var sprite = this.sprite;
-        sprite.rotation = texture.rotation;
-        sprite.setScale(texture.scale.x, texture.scale.y);
-    };
     return PhaserProjectile;
 }(Phaser.GameObjects.Container));
 //# sourceMappingURL=PhaserProjectile.js.map
