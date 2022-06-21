@@ -368,7 +368,6 @@ var VariableComponent = IgeEntity.extend({
 				case 'getTriggeringRegion':
 					if (vars && vars.triggeredBy && vars.triggeredBy.region) {
 						returnValue = vars.triggeredBy.region;
-						console.log(returnValue); // TODO: REMOVE
 					}
 					break;
 
