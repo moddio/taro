@@ -49,9 +49,8 @@ var Player = IgeEntity.extend({
 			self.redrawUnits(function (unit) {
 				return unit && unit.getOwner() && unit.getOwner().id() === self.id();
 			}, ['texture', 'nameLabel']);
-		}
-		if (ige.isClient) {
-			ige.pixi.trackEntityById[entityIdFromServer] = this;
+
+			ige.entitiesToRender.trackEntityById[entityIdFromServer] = this;
 		}
 	},
 
@@ -104,7 +103,6 @@ var Player = IgeEntity.extend({
 					name: self._stats.name
 				});
 
-			// console.log("player.createUnit", data)
 			var unit = new Unit(data);
 			unit.setOwnerPlayer(self.id());
 
@@ -151,13 +149,9 @@ var Player = IgeEntity.extend({
 
 		if (ige.isClient) {
 			var unit = ige.$(unitId);
-			// console.log(self._stats.name, "is selecting unit", unit._stats.type)
 
 			if (self._stats.clientId == ige.network.id() && unit && unit._category == 'unit') {
-				// unit._pixiTexture.interactive = true;
-				// unit._pixiTexture.mousemove = function (e) {
-				// 	ige.client.newMousePosition = e.data.getLocalPosition(ige.client.mouseMove)
-				// }
+
 				if (unit.inventory) {
 					unit.inventory.createInventorySlots();
 				}
@@ -195,15 +189,23 @@ var Player = IgeEntity.extend({
 	},
 
 	cameraTrackUnit: function (unit) {
-		var self = this;
 		if (unit) {
 			// self._stats.selectedUnitId = unit.id()
-			if (ige.isServer && self._stats.clientId) {
-				ige.network.send('makePlayerCameraTrackUnit', { unitId: unit.id() }, self._stats.clientId);
-			} else if (ige.isClient && self._stats.clientId == ige.network.id() && unit && unit._category == 'unit' && ige.pixi.trackEntityById[unit._id]) {
+			if (ige.isServer && this._stats.clientId) {
+				ige.network.send(
+					'makePlayerCameraTrackUnit',
+					{ unitId: unit.id() },
+					this._stats.clientId
+				);
+
+			} else if (
+				ige.isClient &&
+				this._stats.clientId == ige.network.id()
+				&& unit
+				&& unit._category == 'unit'
+			) {
 				ige.client.myPlayer.currentFollowUnit = unit._id;
-				ige.pixi.viewport.follow(ige.pixi.trackEntityById[unit._id]);
-				// ige.client.removeOutsideEntities = true;
+				ige.client.emit('followUnit', unit);
 			}
 		}
 	},
@@ -229,7 +231,7 @@ var Player = IgeEntity.extend({
 	},
 
 	getSelectedUnit: function () {
-		// console.log(ige.$(this._stats.selectedUnitId).id())
+
 		return ige.$(this._stats.selectedUnitId);
 	},
 
