@@ -20,9 +20,7 @@ var PhaserRegion = /** @class */ (function (_super) {
         _this.region = region;
         _this.transform();
         scene.add.existing(_this);
-        _this.transformListener = region.on('transform', function () {
-            _this.transform();
-        });
+        _this.transformListener = region.on('transform', _this.transform, _this, false); // hack for now
         _this.destroyListener = region.on('destroy', function () {
             region.off('transform', _this.transformListener);
             _this.transformListener = null;

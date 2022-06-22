@@ -13,11 +13,7 @@ class PhaserRegion extends Phaser.GameObjects.Graphics {
 
 		scene.add.existing(this);
 
-		this.transformListener = region.on('transform', () => {
-
-			this.transform();
-
-		});
+		this.transformListener = region.on('transform', this.transform, this, false); // hack for now
 
 		this.destroyListener = region.on('destroy', () => {
 			region.off('transform', this.transformListener);
