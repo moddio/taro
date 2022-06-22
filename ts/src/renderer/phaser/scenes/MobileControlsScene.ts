@@ -113,6 +113,10 @@ class MobileControlsScene extends PhaserScene {
 			});
 
 		});
+
+		ige.mobileControls.on('visible', (value: boolean) => {
+			this.scene.setVisible(value);
+		});
 	}
 
 	preload (): void {

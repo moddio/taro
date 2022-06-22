@@ -430,8 +430,10 @@ var MobileControlsComponent = IgeEntity.extend({
 		// return ige._bounds2d.x < ige._bounds2d.y;
 		// return window.orientation === 0 || window.orientation == undefined;
 		return this.canvas.width < this.canvas.height;
+	},
+	setVisible: function (value) {
+		this.emit('visible', value);
 	}
-
 });
 
 // client side only

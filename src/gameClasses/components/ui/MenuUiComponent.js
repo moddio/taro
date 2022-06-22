@@ -572,12 +572,8 @@ var MenuUiComponent = IgeEntity.extend({
 			}
 			$('#modd-shop-modal').css({ fontSize: 11 });
 			// hide mobile controls
-			var allControls = ige.mobileControls && ige.mobileControls.controls;
-			if (allControls) {
-				for (var k in allControls) {
-					var control = allControls[k];
-					control && control.opacity && control.opacity(isMenuVisible ? 0 : 0.5);
-				}
+			if (ige.mobileControls) {
+				ige.mobileControls.setVisible(!isMenuVisible);
 			}
 
 			// hide minimap here by setting width to 0

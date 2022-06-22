@@ -87,6 +87,9 @@ var MobileControlsScene = /** @class */ (function (_super) {
                 c.destroy();
             });
         });
+        ige.mobileControls.on('visible', function (value) {
+            _this.scene.setVisible(value);
+        });
     };
     MobileControlsScene.prototype.preload = function () {
         this.load.image('mobile-button-up', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png'));
