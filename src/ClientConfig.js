@@ -27,7 +27,6 @@ var igeClientConfig = {
 		'/gameClasses/components/TweenComponent.js',
 
 		'/gameClasses/components/ui/MenuUiComponent.js',
-		'/gameClasses/components/ui/RegionUi.js',
 		'/gameClasses/components/ui/ThemeComponent.js',
 		'/gameClasses/components/ui/PlayerUiComponent.js',
 		'/gameClasses/components/ui/GameTextComponent.js',

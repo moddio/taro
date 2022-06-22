@@ -285,6 +285,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 			defaultSprite,
 			defaultData
 		} = info;
+
 		if (entity._pixiContainer) {
 
 			var texture = new IgePixiTexture(

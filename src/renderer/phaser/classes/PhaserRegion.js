@@ -18,36 +18,27 @@ var PhaserRegion = /** @class */ (function (_super) {
     function PhaserRegion(scene, region) {
         var _this = _super.call(this, scene) || this;
         _this.region = region;
-        var stats = _this.region._stats.default;
-        // draw rectangle
-        var width = _this.width = stats.width;
-        var height = _this.height = stats.height;
-        _this.fillStyle(0xFF0000, 0.4);
-        _this.fillRect(0, 0, width, height);
-        _this.x = stats.x;
-        _this.y = stats.y;
+        _this.transform();
         scene.add.existing(_this);
-        scene.events.on('update', _this.update, _this);
+        _this.transformListener = region.on('transform', function () {
+            _this.transform();
+        });
+        _this.destroyListener = region.on('destroy', function () {
+            region.off('transform', _this.transformListener);
+            _this.transformListener = null;
+            region.off('destroy', _this.destroyListener);
+            _this.destroyListener = null;
+            _this.destroy();
+        });
         return _this;
     }
-    PhaserRegion.prototype.update = function ( /*time: number, delta: number*/) {
-        var region = this.region;
-        var container = region.regionUi._pixiContainer;
-        if (region._destroyed || container._destroyed) {
-            this.scene.events.off('update', this.update, this);
-            this.destroy();
-            return;
-        }
+    PhaserRegion.prototype.transform = function () {
         var stats = this.region._stats.default;
         this.x = stats.x;
         this.y = stats.y;
-        if (this.width !== stats.width || this.height !== stats.height) {
-            this.width = stats.width;
-            this.height = stats.height;
-            this.clear();
-            this.fillStyle(0xFF0000, 0.4);
-            this.fillRect(0, 0, stats.width, stats.height);
-        }
+        this.clear();
+        this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
+        this.fillRect(0, 0, stats.width, stats.height);
     };
     return PhaserRegion;
 }(Phaser.GameObjects.Graphics));
