@@ -56,16 +56,16 @@
     "@babel/eslint-parser": "^7.18.2",
     "@types/jquery": "2.0.46",
     "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.28.0",
-    "@typescript-eslint/parser": "^5.28.0",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.17.0",
+    "eslint": "^8.18.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "node-arguments": "^0.0.1",
     "rollbar": "^2.25.0",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.4"
   }
 }
