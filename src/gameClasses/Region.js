@@ -117,7 +117,7 @@ var Region = IgeEntityPhysics.extend({
 			this.updateBody(this._stats.currentBody);
 
 		} else { // isClient
-			this.emit('update-region-dimensions');
+			this.emit('transform');
 		}
 	},
 

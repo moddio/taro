@@ -18,32 +18,28 @@ var PhaserRegion = /** @class */ (function (_super) {
     function PhaserRegion(scene, region) {
         var _this = _super.call(this, scene) || this;
         _this.region = region;
-        var stats = _this.region._stats.default;
-        // Phaser wants a number for these
-        _this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
-        _this.fillRect(0, 0, stats.width, stats.height);
-        _this.x = stats.x;
-        _this.y = stats.y;
+        _this.transform();
         scene.add.existing(_this);
-        scene.events.on('update', _this.update, _this);
-        _this.updateDimensionsListener = region.on('update-region-dimensions', function () {
-            var stats = _this.region._stats.default;
-            console.log("PhaserRegion update ".concat(region._stats.id, " ").concat(region._id)); // TODO: Remove
-            _this.x = stats.x;
-            _this.y = stats.y;
-            _this.clear();
-            _this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
-            _this.fillRect(0, 0, stats.width, stats.height);
+        _this.transformListener = region.on('transform', function () {
+            _this.transform();
         });
         _this.destroyListener = region.on('destroy', function () {
-            region.off('update-region-dimensions', _this.updateDimensionsListener);
-            _this.updateDimensionsListener = null;
+            region.off('transform', _this.transformListener);
+            _this.transformListener = null;
             region.off('destroy', _this.destroyListener);
             _this.destroyListener = null;
             _this.destroy();
         });
         return _this;
     }
+    PhaserRegion.prototype.transform = function () {
+        var stats = this.region._stats.default;
+        this.x = stats.x;
+        this.y = stats.y;
+        this.clear();
+        this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
+        this.fillRect(0, 0, stats.width, stats.height);
+    };
     return PhaserRegion;
 }(Phaser.GameObjects.Graphics));
 //# sourceMappingURL=PhaserRegion.js.map
