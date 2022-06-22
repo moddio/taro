@@ -14,9 +14,7 @@ abstract class PhaserAnimatedEntity extends PhaserEntity {
 		sprite.rotation = entity._rotate.z;
 		this.add(sprite);
 
-		this.playAnimationListener = entity.on('play-animation', (data) => {
-			this.playAnimation(data);
-		});
+		this.playAnimationListener = entity.on('play-animation', this.playAnimation, this, false);
 	}
 
 	transformEntity (data: {x: number,y: number,rotation: number}): void {
@@ -37,14 +35,19 @@ abstract class PhaserAnimatedEntity extends PhaserEntity {
 
 	destroyEntity(): void {
 		const entity = this.entity;
+
 		entity.off('transform', this.transformListener);
 		this.transformListener = null;
+
 		entity.off('scale', this.scaleListener);
 		this.scaleListener = null;
+
 		entity.off('play-animation', this.playAnimationListener);
 		this.playAnimationListener = null;
+
 		entity.off('destroy', this.destroyListener);
 		this.destroyListener = null;
+
 		this.destroy();
 	}
 }

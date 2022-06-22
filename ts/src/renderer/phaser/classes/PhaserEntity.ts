@@ -17,34 +17,38 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 
 		scene.add.existing(this);
 
-		this.transformListener = entity.on('transform', (data) => {
-			this.transformEntity(data);
-		});
-		this.scaleListener = entity.on('scale', (data) => {
-			this.scaleEntity(data);
-		});
-		this.destroyListener = entity.on('destroy', () => {
-			this.destroyEntity();
-		});
+		this.transformListener = entity.on('transform', this.transformEntity, this, false);
+
+		this.scaleListener = entity.on('scale', this.scaleEntity, this, false);
+
+		this.destroyListener = entity.on('destroy', this.destroyEntity, this, false);
 	}
 
-	transformEntity (data: {x: number,y: number,rotation: number}): void {
+	transformEntity(data: {
+			x: number,
+			y: number,
+			rotation: number
+	}): void {
 		this.setPosition(data.x, data.y);
 	}
 
-	abstract scaleEntity (data: {
+	abstract scaleEntity(data: {
 		x: number,
 		y: number
 	}): void
 
 	destroyEntity(): void {
 		const entity = this.entity;
+
 		entity.off('transform', this.transformListener);
 		this.transformListener = null;
+
 		entity.off('scale', this.scaleListener);
 		this.scaleListener = null;
+
 		entity.off('destroy', this.destroyListener);
 		this.destroyListener = null;
+
 		this.destroy();
 	}
 }

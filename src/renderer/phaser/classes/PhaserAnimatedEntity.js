@@ -20,9 +20,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         var sprite = _this.sprite = scene.add.sprite(0, 0, null);
         sprite.rotation = entity._rotate.z;
         _this.add(sprite);
-        _this.playAnimationListener = entity.on('play-animation', function (data) {
-            _this.playAnimation(data);
-        });
+        _this.playAnimationListener = entity.on('play-animation', _this.playAnimation, _this, false);
         return _this;
     }
     PhaserAnimatedEntity.prototype.transformEntity = function (data) {

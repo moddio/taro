@@ -21,15 +21,9 @@ var PhaserEntity = /** @class */ (function (_super) {
         var translate = entity._translate;
         _this.setPosition(translate.x, translate.y);
         scene.add.existing(_this);
-        _this.transformListener = entity.on('transform', function (data) {
-            _this.transformEntity(data);
-        });
-        _this.scaleListener = entity.on('scale', function (data) {
-            _this.scaleEntity(data);
-        });
-        _this.destroyListener = entity.on('destroy', function () {
-            _this.destroyEntity();
-        });
+        _this.transformListener = entity.on('transform', _this.transformEntity, _this, false);
+        _this.scaleListener = entity.on('scale', _this.scaleEntity, _this, false);
+        _this.destroyListener = entity.on('destroy', _this.destroyEntity, _this, false);
         return _this;
     }
     PhaserEntity.prototype.transformEntity = function (data) {
