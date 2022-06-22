@@ -27,17 +27,15 @@ var PhaserProjectile = /** @class */ (function (_super) {
         sprite.setDisplaySize(bounds.x, bounds.y);
         _this.add(sprite);
         scene.add.existing(_this);
-        scene.events.on('update', _this.update, _this);
         _this.transformListener = projectile.on('transform', function (data) {
             _this.setPosition(data.x, data.y);
-            _this.sprite.rotation = data.rotation;
+            sprite.rotation = data.rotation;
         });
         _this.scaleListener = projectile.on('scale', function (data) {
-            _this.sprite.setDisplaySize(data.x, data.y);
+            sprite.setScale(data.x, data.y);
         });
         _this.playAnimationListener =
             projectile.on('play-animation', function (animationId) {
-                console.log('PhaserProjectile play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
                 sprite.play("".concat(key, "/").concat(animationId));
             });
         _this.destroyListener = projectile.on('destroy', function () {
