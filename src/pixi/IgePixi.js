@@ -30,7 +30,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 		this.app.renderer.autoDensity = true;
 		this.initialWindowWidth = 800;
 		this.initialWindowHeight = 600;
-		this.currentZoomValue = 0;
 
 		this.world = new PIXI.Container();
 		this.box2dDebug = new PIXI.Container();
@@ -38,13 +37,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 		this.box2dDebug.tileMap = true;
 		this.world.addChild(this.box2dDebug);
 		this.isUpdateLayersOrderQueued = false;
-
-		this.resizeCount = 0;
-
-		// make the mobileControls container fit to width and anchored to bottom
-		this.mobileControls.y = window.innerHeight - 540;
-		var scaleToFit = window.innerWidth / 960;
-		this.mobileControls.scale.set(scaleToFit, scaleToFit);
 
 		this.ticker = PIXI.Ticker.shared;
 		this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
@@ -237,9 +229,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 	},
 
 	zoom: function (value) {
-		// value = -value;
-		// ige.pixi.viewport.zoom(-this.currentZoomValue);
-		ige.pixi.currentZoomValue = value;
 		ige.pixi.viewport.snapZoom({ height: value, ease: 'easeOutQuad' }, true);
 	},
 
