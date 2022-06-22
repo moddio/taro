@@ -12,11 +12,13 @@ var SwitchComponent = IgeEntity.extend({
 		}
 		let elemState;
 
-		left = items[1]
+		const {argument, cases} = items;
+
+		left = argument
 
 		// loop over all cases 
-		for(let elem in items[2]){
-			right = items[2][elem]
+		for(let elem in cases){
+			right = `case${cases[elem].value}`
 			var leftVar = ige.variable.getValue(left, vars);
 			var rightVar = ige.variable.getValue(right, vars);
 			// if the operands are igeEntities, then compare their id's
