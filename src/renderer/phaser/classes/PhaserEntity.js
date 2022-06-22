@@ -19,6 +19,7 @@ var PhaserEntity = /** @class */ (function (_super) {
         var _this = _super.call(this, scene) || this;
         _this.entity = entity;
         //const key = `projectile/${entity._stats.type}`;
+        _this.entity = entity;
         var sprite = _this.sprite = scene.add.sprite(0, 0, null);
         var translate = entity._translate;
         //const bounds = entity._bounds2d;
@@ -28,28 +29,41 @@ var PhaserEntity = /** @class */ (function (_super) {
         _this.add(sprite);
         scene.add.existing(_this);
         _this.transformListener = entity.on('transform', function (data) {
-            _this.setPosition(data.x, data.y);
-            sprite.rotation = data.rotation;
+            _this.transformEntity(data);
         });
         _this.scaleListener = entity.on('scale', function (data) {
-            sprite.setScale(data.x, data.y);
+            _this.scaleEntity(data);
         });
-        _this.playAnimationListener = entity.on('play-animation', function (animationId) {
-            sprite.play("".concat(_this.key, "/").concat(animationId));
+        _this.playAnimationListener = entity.on('play-animation', function (data) {
+            _this.playAnimation(data);
         });
         _this.destroyListener = entity.on('destroy', function () {
-            entity.off('transform', _this.transformListener);
-            _this.transformListener = null;
-            entity.off('scale', _this.scaleListener);
-            _this.scaleListener = null;
-            entity.off('play-animation', _this.playAnimationListener);
-            _this.playAnimationListener = null;
-            entity.off('destroy', _this.destroyListener);
-            _this.destroyListener = null;
-            _this.destroy();
+            _this.destroyEntity();
         });
         return _this;
     }
+    PhaserEntity.prototype.transformEntity = function (data) {
+        this.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
+    };
+    PhaserEntity.prototype.scaleEntity = function (data) {
+        this.sprite.setScale(data.x, data.y);
+    };
+    PhaserEntity.prototype.playAnimation = function (animationId) {
+        this.sprite.play("".concat(this.key, "/").concat(animationId));
+    };
+    PhaserEntity.prototype.destroyEntity = function () {
+        var entity = this.entity;
+        entity.off('transform', this.transformListener);
+        this.transformListener = null;
+        entity.off('scale', this.scaleListener);
+        this.scaleListener = null;
+        entity.off('play-animation', this.playAnimationListener);
+        this.playAnimationListener = null;
+        entity.off('destroy', this.destroyListener);
+        this.destroyListener = null;
+        this.destroy();
+    };
     return PhaserEntity;
 }(Phaser.GameObjects.Container));
 //# sourceMappingURL=PhaserEntity.js.map
