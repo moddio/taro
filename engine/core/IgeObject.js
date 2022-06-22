@@ -1633,7 +1633,12 @@ var IgeObject = IgeEventingClass.extend({
 				this.viewCheckChildren();
 			}
 			// dont render regions if they are not visible
-			if (this._category === 'regionUi' && this._stats.default && !(this._stats.default.inside || this._stats.default.outside)) {
+
+			if (
+				this._category === 'region' &&
+				this._stats.default &&
+				!this._stats.default.inside
+			) {
 				return;
 			}
 			// Loop the child objects of this object

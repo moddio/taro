@@ -1,15 +1,11 @@
-interface JoystickSettings {
-	outer?: Phaser.GameObjects.Graphics;
-	inner?: Phaser.GameObjects.Graphics;
-	redFireZone: boolean;
-	outerScale: { x: number; y: number; }; // TODO update on refactor
-	innerScale: { x: number; y: number; };
-	onChange(data: {
+interface MobileControlSettings {
+	redFireZone?: boolean;
+	onChange?(data: {
 		angle: number,
 		power: number
 	}): void;
 	onStart?(): void;
-	onEnd(): void;
+	onEnd?(): void;
 }
 
 class PhaserJoystick {
@@ -28,7 +24,7 @@ class PhaserJoystick {
 		scene: MobileControlsScene,
 		private x: number,
 		private y: number,
-		settings: JoystickSettings
+		settings: MobileControlSettings
 	) {
 		const radius = 72;
 

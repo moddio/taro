@@ -30,7 +30,7 @@ class MobileControlsScene extends PhaserScene {
 			y: number,
 			w: number,
 			h: number,
-			settings: JoystickSettings
+			settings: MobileControlSettings
 		) => {
 
 			switch (key) {
@@ -113,6 +113,10 @@ class MobileControlsScene extends PhaserScene {
 			});
 
 		});
+
+		ige.mobileControls.on('visible', (value: boolean) => {
+			this.scene.setVisible(value);
+		});
 	}
 
 	preload (): void {
@@ -130,7 +134,8 @@ class MobileControlsScene extends PhaserScene {
 	}
 
 	private resize() {
-
+		// make the mobileControls container
+		// fit the width and be anchored to the bottom
 		const controls = this.controls;
 		const scale = this.scale;
 		controls.y = scale.height - 540;

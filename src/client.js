@@ -197,8 +197,9 @@ const Client = IgeEventingClass.extend({
 			ige.addComponent(MenuUiComponent);
 			ige.addComponent(TradeUiComponent); // could we comment this one out?
 
-			// TODO add MobileControlsComponent only if it is mobile
-			ige.addComponent(MobileControlsComponent);
+			if (ige.isMobile) {
+				ige.addComponent(MobileControlsComponent);
+			}
 		})
 			.catch((err) => {
 				console.error(err);
@@ -537,16 +538,6 @@ const Client = IgeEventingClass.extend({
 						.drawBounds(false)
 						.mount(ige);
 
-					// old comment => 'Create the UI scene'
-					// never used
-					/* this.uiScene = new IgeScene2d()
-						.id('uiScene')
-						.depth(1000)
-						.ignoreCamera(true)
-						.mount(this.rootScene);
-
-					ige.mobileControls.attach(this.uiScene); */
-
 					// sandbox check for minimap
 					if (mode == 'sandbox') {
 						//
@@ -874,6 +865,12 @@ const Client = IgeEventingClass.extend({
 				) {
 					//
 					ige.menuUi.kickPlayerFromGame(entityBeingDestroyed.id()); // this is inside the 'Moderate' menu
+				} else {
+					try {
+						entityBeingDestroyed.remove();
+					} catch (e) {
+						console.log('* ERROR * trying to destroy entity\n', e);
+					}
 				}
 			});
 

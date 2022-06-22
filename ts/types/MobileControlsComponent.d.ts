@@ -12,8 +12,6 @@ interface ControlAbility {
 
 declare class MobileControlsComponent extends IgeEntity {
 
-	controls: Record<string, { // PIXI.Container
-		settings?: JoystickSettings;
-	}>;
+	controls: Record<MobileControlKey, MobileControlSettings>;
 
 }

@@ -30,24 +30,13 @@ var IgeInitPixi = IgeEventingClass.extend({
 		this.app.renderer.autoDensity = true;
 		this.initialWindowWidth = 800;
 		this.initialWindowHeight = 600;
-		this.currentZoomValue = 0;
 
 		this.world = new PIXI.Container();
 		this.box2dDebug = new PIXI.Container();
-		this.mobileControls = new PIXI.Container();
-		this.mobileControls.zIndex = 10;
 		this.box2dDebug.zIndex = 10;
 		this.box2dDebug.tileMap = true;
 		this.world.addChild(this.box2dDebug);
-		// this.world.addChild(this.mobileControls);
 		this.isUpdateLayersOrderQueued = false;
-
-		this.resizeCount = 0;
-
-		// make the mobileControls container fit to width and anchored to bottom
-		this.mobileControls.y = window.innerHeight - 540;
-		var scaleToFit = window.innerWidth / 960;
-		this.mobileControls.scale.set(scaleToFit, scaleToFit);
 
 		this.ticker = PIXI.Ticker.shared;
 		this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
@@ -174,7 +163,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 		ige._cullCounter++;
 
 		ige.pixi.app.render();
-		// this.resizeCount = 0;
 	},
 
 	resize: function () {
@@ -191,9 +179,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 			ige.pixi.app.renderer.resize(currentWindowWidth, currentWindowHeight);
 			ige.pixi.initialWindowWidth = currentWindowWidth;
 			ige.pixi.initialWIndowHeight = currentWindowHeight;
-
-			// mobile controls anchor
-			ige.pixi.mobileControls.y = window.innerHeight - 540;
 		}
 	},
 	viewport: function () {
@@ -234,9 +219,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 		viewport.addChild(this.world);
 		this.app.stage.addChild(viewport);
 
-		// mobile controls should not follow the viewport...
-		this.app.stage.addChild(this.mobileControls);
-
 		var cull = new PIXI.extras.cull.Simple();
 		cull.addList(this.world.children);
 		cull.cull(viewport.getVisibleBounds());
@@ -247,9 +229,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 	},
 
 	zoom: function (value) {
-		// value = -value;
-		// ige.pixi.viewport.zoom(-this.currentZoomValue);
-		ige.pixi.currentZoomValue = value;
 		ige.pixi.viewport.snapZoom({ height: value, ease: 'easeOutQuad' }, true);
 	},
 
@@ -306,6 +285,7 @@ var IgeInitPixi = IgeEventingClass.extend({
 			defaultSprite,
 			defaultData
 		} = info;
+
 		if (entity._pixiContainer) {
 
 			var texture = new IgePixiTexture(
