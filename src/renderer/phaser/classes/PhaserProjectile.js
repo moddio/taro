@@ -73,5 +73,5 @@ var PhaserProjectile = /** @class */ (function (_super) {
         });*/
     }
     return PhaserProjectile;
-}(PhaserEntity));
+}(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserProjectile.js.map

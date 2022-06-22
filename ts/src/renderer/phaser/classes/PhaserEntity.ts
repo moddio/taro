@@ -1,28 +1,19 @@
 abstract class PhaserEntity extends Phaser.GameObjects.Container {
 
-	sprite: Phaser.GameObjects.Sprite;
-    key: any;
+	entity: IgeEntity;
 
-	private playAnimationListener: EvtListener;
-	private transformListener: EvtListener;
-	private scaleListener: EvtListener;
-	private destroyListener: EvtListener;
+	transformListener: EvtListener;
+	scaleListener: EvtListener;
+	destroyListener: EvtListener;
 
 	constructor (scene: Phaser.Scene,
-				 private entity: IgeEntity) {
+				  entity: IgeEntity) {
 
 		super(scene);
 
-		//const key = `projectile/${entity._stats.type}`;
 		this.entity = entity;
-		const sprite = this.sprite = scene.add.sprite(0, 0, null);
 		const translate = entity._translate;
-		//const bounds = entity._bounds2d;
 		this.setPosition(translate.x, translate.y);
-		sprite.rotation = entity._rotate.z;
-		//sprite.setDisplaySize(bounds.x, bounds.y);
-
-		this.add(sprite);
 
 		scene.add.existing(this);
 
@@ -32,9 +23,6 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 		this.scaleListener = entity.on('scale', (data) => {
 			this.scaleEntity(data);
 		});
-		this.playAnimationListener = entity.on('play-animation', (data) => {
-			this.playAnimation(data);
-		});
 		this.destroyListener = entity.on('destroy', () => {
 			this.destroyEntity();
 		});
@@ -42,19 +30,12 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 
 	transformEntity (data: {x: number,y: number,rotation: number}): void {
 		this.setPosition(data.x, data.y);
-		this.sprite.rotation = data.rotation;
 	}
 
-	scaleEntity (data: {
+	abstract scaleEntity (data: {
 		x: number,
 		y: number
-	}): void {
-		this.sprite.setScale(data.x, data.y);
-	}
-
-	playAnimation(animationId: string): void {
-		this.sprite.play(`${this.key}/${animationId}`);
-	}
+	}): void
 
 	destroyEntity(): void {
 		const entity = this.entity;
@@ -62,8 +43,6 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 		this.transformListener = null;
 		entity.off('scale', this.scaleListener);
 		this.scaleListener = null;
-		entity.off('play-animation', this.playAnimationListener);
-		this.playAnimationListener = null;
 		entity.off('destroy', this.destroyListener);
 		this.destroyListener = null;
 		this.destroy();

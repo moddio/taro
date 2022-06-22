@@ -73,6 +73,7 @@ var igeClientConfig = {
 		'../node_modules/phaser3-rex-plugins/dist/rexvirtualjoystickplugin.min.js',
 		'renderer/phaser/enums/FlipMode.js',
 		'renderer/phaser/classes/PhaserEntity.js',
+		'renderer/phaser/classes/PhaserAnimatedEntity.js',
 		'renderer/phaser/classes/PhaserUnit.js',
 		'renderer/phaser/classes/PhaserProjectile.js',
 		'renderer/phaser/classes/PhaserAttributeBar.js',

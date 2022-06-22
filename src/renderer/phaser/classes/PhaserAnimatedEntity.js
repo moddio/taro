@@ -13,38 +13,40 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var PhaserEntity = /** @class */ (function (_super) {
-    __extends(PhaserEntity, _super);
-    function PhaserEntity(scene, entity) {
-        var _this = _super.call(this, scene) || this;
-        _this.entity = entity;
-        var translate = entity._translate;
-        _this.setPosition(translate.x, translate.y);
-        scene.add.existing(_this);
-        _this.transformListener = entity.on('transform', function (data) {
-            _this.transformEntity(data);
-        });
-        _this.scaleListener = entity.on('scale', function (data) {
-            _this.scaleEntity(data);
-        });
-        _this.destroyListener = entity.on('destroy', function () {
-            _this.destroyEntity();
+var PhaserAnimatedEntity = /** @class */ (function (_super) {
+    __extends(PhaserAnimatedEntity, _super);
+    function PhaserAnimatedEntity(scene, entity) {
+        var _this = _super.call(this, scene, entity) || this;
+        var sprite = _this.sprite = scene.add.sprite(0, 0, null);
+        sprite.rotation = entity._rotate.z;
+        _this.add(sprite);
+        _this.playAnimationListener = entity.on('play-animation', function (data) {
+            _this.playAnimation(data);
         });
         return _this;
     }
-    PhaserEntity.prototype.transformEntity = function (data) {
+    PhaserAnimatedEntity.prototype.transformEntity = function (data) {
         this.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
     };
-    PhaserEntity.prototype.destroyEntity = function () {
+    PhaserAnimatedEntity.prototype.scaleEntity = function (data) {
+        this.sprite.setScale(data.x, data.y);
+    };
+    PhaserAnimatedEntity.prototype.playAnimation = function (animationId) {
+        this.sprite.play("".concat(this.key, "/").concat(animationId));
+    };
+    PhaserAnimatedEntity.prototype.destroyEntity = function () {
         var entity = this.entity;
         entity.off('transform', this.transformListener);
         this.transformListener = null;
         entity.off('scale', this.scaleListener);
         this.scaleListener = null;
+        entity.off('play-animation', this.playAnimationListener);
+        this.playAnimationListener = null;
         entity.off('destroy', this.destroyListener);
         this.destroyListener = null;
         this.destroy();
     };
-    return PhaserEntity;
-}(Phaser.GameObjects.Container));
-//# sourceMappingURL=PhaserEntity.js.map
+    return PhaserAnimatedEntity;
+}(PhaserEntity));
+//# sourceMappingURL=PhaserAnimatedEntity.js.map

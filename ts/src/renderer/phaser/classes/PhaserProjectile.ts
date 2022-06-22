@@ -1,4 +1,4 @@
-class PhaserProjectile extends PhaserEntity {
+class PhaserProjectile extends PhaserAnimatedEntity {
 
 	/*sprite: Phaser.GameObjects.Sprite;
 
