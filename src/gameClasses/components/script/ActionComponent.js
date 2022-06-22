@@ -120,6 +120,32 @@ var ActionComponent = IgeEntity.extend({
 						}
 
 						break;
+					case 'switchCondition':
+						var caseValue = ige.switchCondition.run(action, vars)
+						if(caseValue.value){
+							for(let elem in action.cases){
+								if(action.cases[elem].value === caseValue.case){
+									var brk = self.run(action.cases[elem][`case${caseValue.case}`], vars);
+									//if(action.cases[elem].break) return 'break' 
+								}
+							}
+						}
+						else {
+							for(let elem in action.cases){
+								if(action.cases[elem].value === "default"){
+									var brk = self.run(action.cases[elem].default, vars);
+									//if(action.cases[elem].break) return 'break' 
+								}
+							}
+						}
+						if (brk == 'break') {
+							return 'break';
+						} else if (brk == 'return') {
+							return 'return';
+						} else if (brk == 'continue') {
+							return 'continue';
+						}
+						break;
 
 					case 'transformRegionDimensions':
 						var region = ige.variable.getValue(action.region, vars);
@@ -248,7 +274,6 @@ var ActionComponent = IgeEntity.extend({
 						if (player && player._category == 'player' && player._stats.attributes && player._stats.attributes[attrId] != undefined) {
 							var max = {};
 							max[attrId] = maxValue;
-
 							player.streamUpdateData([{ attributesMax: max }]);
 						}
 

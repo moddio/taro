@@ -911,6 +911,7 @@ const Client = IgeEventingClass.extend({
 		// ige.addComponent(VariableComponent); // this appears twice
 		ige.addComponent(ScriptComponent);
 		ige.addComponent(ConditionComponent);
+		ige.addComponent(SwitchComponent);
 		ige.addComponent(ActionComponent);
 
 		if (typeof mode == 'string' && mode == 'sandbox') {

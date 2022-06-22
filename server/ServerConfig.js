@@ -14,6 +14,7 @@ var defaultConfig = [
 	{ name: 'TriggerComponent', path: '../src/gameClasses/components/script/TriggerComponent' },
 
 	{ name: 'ConditionComponent', path: '../src/gameClasses/components/script/ConditionComponent' },
+	{ name: 'SwitchComponent', path: '../src/gameClasses/components/script/SwitchComponent' },
 	{ name: 'ActionComponent', path: '../src/gameClasses/components/script/ActionComponent' },
 	{ name: 'VariableComponent', path: '../src/gameClasses/components/script/VariableComponent' },
 

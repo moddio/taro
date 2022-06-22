@@ -498,6 +498,7 @@ var Server = IgeClass.extend({
 						ige.addComponent(GameTextComponent);
 						ige.addComponent(ScriptComponent);
 						ige.addComponent(ConditionComponent);
+						ige.addComponent(SwitchComponent);
 						ige.addComponent(ActionComponent);
 						ige.addComponent(AdComponent);
 						ige.addComponent(SoundComponent);
