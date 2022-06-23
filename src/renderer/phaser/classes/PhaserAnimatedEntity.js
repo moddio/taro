@@ -15,16 +15,21 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserAnimatedEntity = /** @class */ (function (_super) {
     __extends(PhaserAnimatedEntity, _super);
-    function PhaserAnimatedEntity(scene, entity) {
+    function PhaserAnimatedEntity(scene, entity, key) {
         var _this = _super.call(this, scene, entity) || this;
-        var sprite = _this.sprite = scene.add.sprite(0, 0, null);
+        _this.key = key;
+        var bounds = entity._bounds2d;
+        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
+        sprite.setDisplaySize(bounds.x, bounds.y);
         sprite.rotation = entity._rotate.z;
         _this.add(sprite);
-        _this.playAnimationListener = entity.on('play-animation', _this.playAnimation, _this, false);
+        Object.assign(_this.evtListeners, {
+            'play-animation': entity.on('play-animation', _this.playAnimation, _this, false)
+        });
         return _this;
     }
     PhaserAnimatedEntity.prototype.transformEntity = function (data) {
-        this.setPosition(data.x, data.y);
+        _super.prototype.transformEntity.call(this, data);
         this.sprite.rotation = data.rotation;
     };
     PhaserAnimatedEntity.prototype.scaleEntity = function (data) {
@@ -34,16 +39,8 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         this.sprite.play("".concat(this.key, "/").concat(animationId));
     };
     PhaserAnimatedEntity.prototype.destroyEntity = function () {
-        var entity = this.entity;
-        entity.off('transform', this.transformListener);
-        this.transformListener = null;
-        entity.off('scale', this.scaleListener);
-        this.scaleListener = null;
-        entity.off('play-animation', this.playAnimationListener);
-        this.playAnimationListener = null;
-        entity.off('destroy', this.destroyListener);
-        this.destroyListener = null;
-        this.destroy();
+        this.sprite = null;
+        _super.prototype.destroyEntity.call(this);
     };
     return PhaserAnimatedEntity;
 }(PhaserEntity));

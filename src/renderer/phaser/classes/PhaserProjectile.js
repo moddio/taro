@@ -15,12 +15,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserProjectile = /** @class */ (function (_super) {
     __extends(PhaserProjectile, _super);
-    function PhaserProjectile(scene, projectile) {
-        var _this = _super.call(this, scene, projectile) || this;
-        var key = _this.key = "projectile/".concat(projectile._stats.type);
-        _this.sprite.setTexture(key);
-        var bounds = projectile._bounds2d;
-        _this.sprite.setDisplaySize(bounds.x, bounds.y);
+    function PhaserProjectile(scene, entity) {
+        var _this = _super.call(this, scene, entity, "projectile/".concat(entity._stats.type)) || this;
+        _this.entity = entity;
         return _this;
     }
     return PhaserProjectile;
