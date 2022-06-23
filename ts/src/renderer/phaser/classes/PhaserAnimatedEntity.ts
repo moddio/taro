@@ -1,53 +1,48 @@
 abstract class PhaserAnimatedEntity extends PhaserEntity {
 
-	sprite: Phaser.GameObjects.Sprite;
-	key: string;
+	protected sprite: Phaser.GameObjects.Sprite;
 
-	playAnimationListener: EvtListener;
-
-	constructor (scene: Phaser.Scene,
-				 entity: IgeEntity) {
+	protected constructor (scene: Phaser.Scene,
+						   entity: IgeEntity,
+						   protected key: string) {
 
 		super(scene, entity);
 
-		const sprite = this.sprite = scene.add.sprite(0, 0, null);
+		const bounds = entity._bounds2d;
+		const sprite = this.sprite = scene.add.sprite(0, 0, key);
+		sprite.setDisplaySize(bounds.x, bounds.y);
 		sprite.rotation = entity._rotate.z;
 		this.add(sprite);
 
-		this.playAnimationListener = entity.on('play-animation', this.playAnimation, this, false);
+		Object.assign(this.evtListeners, { // TODO remove oneShot once fixed
+			'play-animation': entity.on('play-animation', this.playAnimation, this, false)
+		});
 	}
 
-	transformEntity (data: {x: number,y: number,rotation: number}): void {
-		this.setPosition(data.x, data.y);
+	protected transformEntity (data: {
+		x: number,
+		y: number,
+		rotation: number
+	}): void {
+		super.transformEntity(data);
 		this.sprite.rotation = data.rotation;
 	}
 
-	scaleEntity (data: {
+	protected scaleEntity (data: {
 		x: number,
 		y: number
 	}): void {
 		this.sprite.setScale(data.x, data.y);
 	}
 
-	playAnimation(animationId: string): void {
+	protected playAnimation(animationId: string): void {
 		this.sprite.play(`${this.key}/${animationId}`);
 	}
 
-	destroyEntity(): void {
-		const entity = this.entity;
+	protected destroyEntity(): void {
 
-		entity.off('transform', this.transformListener);
-		this.transformListener = null;
+		this.sprite = null;
 
-		entity.off('scale', this.scaleListener);
-		this.scaleListener = null;
-
-		entity.off('play-animation', this.playAnimationListener);
-		this.playAnimationListener = null;
-
-		entity.off('destroy', this.destroyListener);
-		this.destroyListener = null;
-
-		this.destroy();
+		super.destroyEntity();
 	}
 }

@@ -18,25 +18,28 @@ var PhaserEntity = /** @class */ (function (_super) {
     function PhaserEntity(scene, entity) {
         var _this = _super.call(this, scene) || this;
         _this.entity = entity;
+        _this.evtListeners = {};
         var translate = entity._translate;
         _this.setPosition(translate.x, translate.y);
         scene.add.existing(_this);
-        _this.transformListener = entity.on('transform', _this.transformEntity, _this, false);
-        _this.scaleListener = entity.on('scale', _this.scaleEntity, _this, false);
-        _this.destroyListener = entity.on('destroy', _this.destroyEntity, _this, false);
+        Object.assign(_this.evtListeners, {
+            transform: entity.on('transform', _this.transformEntity, _this, false),
+            scale: entity.on('scale', _this.scaleEntity, _this, false),
+            destroy: entity.on('destroy', _this.destroyEntity, _this, false)
+        });
         return _this;
     }
     PhaserEntity.prototype.transformEntity = function (data) {
         this.setPosition(data.x, data.y);
     };
     PhaserEntity.prototype.destroyEntity = function () {
-        var entity = this.entity;
-        entity.off('transform', this.transformListener);
-        this.transformListener = null;
-        entity.off('scale', this.scaleListener);
-        this.scaleListener = null;
-        entity.off('destroy', this.destroyListener);
-        this.destroyListener = null;
+        var _this = this;
+        Object.keys(this.evtListeners).forEach(function (key) {
+            _this.entity.off(key, _this.evtListeners[key]);
+            delete _this.evtListeners[key];
+        });
+        this.evtListeners = null;
+        this.entity = null;
         this.destroy();
     };
     return PhaserEntity;
