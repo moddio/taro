@@ -11,10 +11,10 @@ abstract class PhaserEntity extends Phaser.GameObjects.Container {
 
 		scene.add.existing(this);
 
-		Object.assign(this.evtListeners, { // TODO remove oneShot once fixed
-			transform: entity.on('transform', this.transformEntity, this, false),
-			scale: entity.on('scale', this.scaleEntity, this, false),
-			destroy: entity.on('destroy', this.destroyEntity, this, false)
+		Object.assign(this.evtListeners, {
+			transform: entity.on('transform', this.transformEntity, this),
+			scale: entity.on('scale', this.scaleEntity, this),
+			destroy: entity.on('destroy', this.destroyEntity, this)
 		});
 	}
 

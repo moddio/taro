@@ -14,8 +14,8 @@ abstract class PhaserAnimatedEntity extends PhaserEntity {
 		sprite.rotation = entity._rotate.z;
 		this.add(sprite);
 
-		Object.assign(this.evtListeners, { // TODO remove oneShot once fixed
-			'play-animation': entity.on('play-animation', this.playAnimation, this, false)
+		Object.assign(this.evtListeners, {
+			'play-animation': entity.on('play-animation', this.playAnimation, this)
 		});
 	}
 

@@ -24,7 +24,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         sprite.rotation = entity._rotate.z;
         _this.add(sprite);
         Object.assign(_this.evtListeners, {
-            'play-animation': entity.on('play-animation', _this.playAnimation, _this, false)
+            'play-animation': entity.on('play-animation', _this.playAnimation, _this)
         });
         return _this;
     }

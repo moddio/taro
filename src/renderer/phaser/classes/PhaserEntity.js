@@ -23,9 +23,9 @@ var PhaserEntity = /** @class */ (function (_super) {
         _this.setPosition(translate.x, translate.y);
         scene.add.existing(_this);
         Object.assign(_this.evtListeners, {
-            transform: entity.on('transform', _this.transformEntity, _this, false),
-            scale: entity.on('scale', _this.scaleEntity, _this, false),
-            destroy: entity.on('destroy', _this.destroyEntity, _this, false)
+            transform: entity.on('transform', _this.transformEntity, _this),
+            scale: entity.on('scale', _this.scaleEntity, _this),
+            destroy: entity.on('destroy', _this.destroyEntity, _this)
         });
         return _this;
     }
