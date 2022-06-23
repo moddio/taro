@@ -263,7 +263,7 @@ var IgeEntityPhysics = IgeEntity.extend({
 	},
 
 	on: function () {
-		if (arguments.length === 3) {
+		if (arguments.length === 3 && typeof arguments[1] === 'string') {
 			var evName = arguments[0];
 			var target = arguments[1];
 			var callback = arguments[2];
