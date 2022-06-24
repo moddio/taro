@@ -33,8 +33,6 @@ var MapComponent = IgeEntity.extend({
 
 					var mapArray = layersById.floor.map._gameData;
 
-					// create debris
-
 					self.createRegions();
 				});
 
@@ -68,22 +66,6 @@ var MapComponent = IgeEntity.extend({
 										.width(mapWidth)
 										.bounds2d(mapWidth, mapHeight, 0);
 								}
-								// we're not iterating, and in the previous structure, this logic
-								// was never actually reached
-								// if (IgeLayerArray[i].name !== 'debris') {
-								// 	ige.devLog(`layer ${i}`);
-								// 	IgeLayerArray[i]
-								// 		.layer(self.layersZIndex[IgeLayerArray[i].name])
-								// 		.autoSection(20)
-								// 		.drawBounds(false)
-								// 		.drawBoundsData(false)
-								// 		.drawBounds(false)
-								// 		.mount(ige.client.rootScene)
-								// 		.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
-								// 		.height(mapHeight)
-								// 		.width(mapWidth)
-								// 		.bounds2d(mapWidth, mapHeight, 0);
-								// }
 								ige.client.mapLoaded.resolve();
 								delete ige.pixi.mapLoader;
 							});
