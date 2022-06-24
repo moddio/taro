@@ -18,8 +18,8 @@ var defaultConfig = [
 	{ name: 'VariableComponent', path: '../src/gameClasses/components/script/VariableComponent' },
 
 	{ name: 'Player', path: '../src/gameClasses/Player' },
-	// { name: 'Unit', path: '../src/gameClasses/Unit' },
-	// { name: 'Sensor', path: '../src/gameClasses/Sensor' },
+	{ name: 'Unit', path: '../src/gameClasses/Unit' },
+	{ name: 'Sensor', path: '../src/gameClasses/Sensor' },
 
 	{ name: 'MapComponent', path: '../src/gameClasses/components/MapComponent' },
 	{ name: 'ShopComponent', path: '../src/gameClasses/components/ShopComponent' },
