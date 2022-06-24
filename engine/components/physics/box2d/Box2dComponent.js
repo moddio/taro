@@ -331,7 +331,7 @@ var PhysicsComponent = IgeEventingClass.extend({
 						},
 						filter: {
 							filterCategoryBits: 0x0001, // i am
-							filterMaskBits: 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020 // i collide with everything except with each other (walls)
+							filterMaskBits: 0x0002 /*| 0x0004*/ | 0x0008 | 0x0010 | 0x0020 // i collide with everything except with each other (walls)
 						},
 						igeId: wall.id()
 					}]
