@@ -1,3 +1,3 @@
 module.exports = {
-	BE_URL: 'http://localhost:8080'
+	BE_URL: 'http://localhost:8081'
 };

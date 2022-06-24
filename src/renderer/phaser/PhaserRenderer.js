@@ -11,14 +11,24 @@ var PhaserRenderer = /** @class */ (function () {
                 mode: Phaser.Scale.ScaleModes.RESIZE
             },
             render: {
-                pixelArt: true,
+                pixelArt: false,
                 transparent: !false,
                 mipmapFilter: 'NEAREST'
             },
             scene: [
                 GameScene,
                 MobileControlsScene
-            ]
+            ],
+            loader: {
+                crossOrigin: 'anonymous'
+            },
+            plugins: {
+                global: [{
+                        key: 'virtual-joystick',
+                        plugin: rexvirtualjoystickplugin,
+                        start: true
+                    }]
+            }
         });
     }
     return PhaserRenderer;

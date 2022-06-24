@@ -5,7 +5,7 @@ var MenuUiComponent = IgeEntity.extend({
 	init: function () {
 		var self = this;
 		// adding event for taro engine button
-		var playButtonClick = document.querySelector("#play-game-button")
+		var playButtonClick = document.querySelector('#play-game-button');
 
 		if (ige.isClient) {
 			console.log('initializing UI elements...');
@@ -190,6 +190,9 @@ var MenuUiComponent = IgeEntity.extend({
 			// this should only be a temporary solution
 			// we need to find a better way to implement the callbacks
 			// all related to clicking the Play Game button
+			//
+			// added connectPlayer event dispatch from index.ejs for local env
+			//
 			playButtonClick.addEventListener('connectPlayer', function () {
 				if (this.innerText.includes('Connection Failed')) {
 					var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
@@ -216,35 +219,6 @@ var MenuUiComponent = IgeEntity.extend({
 				}
 				$('#play-game-button-wrapper').addClass('d-none-important');
 			});
-
-			if (window.location.hostname == 'localhost') {
-				$('#play-game-button').on('click', function () {
-					if (this.innerText.includes('Connection Failed')) {
-						var serverLength = $('#server-list') && $('#server-list')[0] && $('#server-list')[0].children.length;
-						$('#server-list').attr('size', serverLength);
-						$('#server-list').focus();
-					} else {
-						// did user tried to change server
-						var isServerChanged = window.connectedServer && ige.client.server.id !== window.connectedServer.id;
-
-						if (isServerChanged) {
-							window.location = `${window.location.pathname}?serverId=${ige.client.server.id}&joinGame=true`;
-							return;
-						}
-
-						if (ige.game && ige.game.isGameStarted) {
-							var wasGamePaused = this.innerText.includes('Continue');
-							self.playGame(wasGamePaused);
-							self.setResolution();
-						} else {
-							$('#play-game-button').attr('disabled', true);
-							self.startLoading();
-							ige.client.connectToServer();
-						}
-					}
-					$('#play-game-button-wrapper').addClass('d-none-important');
-				});
-			}
 
 			$('#help-button').on('click', function () {
 				$('#help-modal').modal('show');
@@ -340,7 +314,9 @@ var MenuUiComponent = IgeEntity.extend({
 
 	kickPlayerFromGame: function (excludeEntity) {
 		var self = this;
-		var players = ige.$$('player').filter(function (player) { if (player && player._stats && player._stats.controlledBy === 'human' && player._alive && player.id() !== excludeEntity) return true; });
+		var players = ige.$$('player').filter(function (player) {
+			if (player && player._stats && player._stats.controlledBy === 'human' && player._alive && player.id() !== excludeEntity) return true;
+		});
 		var html = '<table class="table table-hover">';
 		html += '<tr class="border-bottom">';
 		html += '<th class="border-top-0">Name</th>';
@@ -378,7 +354,7 @@ var MenuUiComponent = IgeEntity.extend({
 				return $('#menu-wrapper').removeClass('d-none').addClass('d-flex');
 			}
 
-			if (!ige.mobileControls || !ige.mobileControls.isMobile) {
+			if (!ige.isMobile) {
 				$('#friends-panel').removeClass('d-none');
 			}
 
@@ -561,7 +537,7 @@ var MenuUiComponent = IgeEntity.extend({
 	},
 
 	changesForMobile: function (isMenuVisible) {
-		if (ige.mobileControls && ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			var loginDiv = $('#login-div');
 			var myScoreDiv = $('#my-score-div');
 			var leaderBoard = $('#leaderboard');
@@ -596,12 +572,8 @@ var MenuUiComponent = IgeEntity.extend({
 			}
 			$('#modd-shop-modal').css({ fontSize: 11 });
 			// hide mobile controls
-			var allControls = ige.mobileControls.controls;
-			if (allControls) {
-				for (var k in allControls) {
-					var control = allControls[k];
-					control && control.opacity && control.opacity(isMenuVisible ? 0 : 0.5);
-				}
+			if (ige.mobileControls) {
+				ige.mobileControls.setVisible(!isMenuVisible);
 			}
 
 			// hide minimap here by setting width to 0
@@ -615,7 +587,7 @@ var MenuUiComponent = IgeEntity.extend({
 	hideMenu: function () {
 		$('#menu-wrapper').removeClass('d-flex').addClass('d-none');
 
-		if (!ige.mobileControls || !ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			$('#friends-panel').addClass('d-none');
 		}
 
@@ -679,7 +651,7 @@ var MenuUiComponent = IgeEntity.extend({
 	onDisconnectFromServer: function (src, message) {
 		console.log('modal shown from', src, message);
 
-		if (ige.mobileControls.isMobile) return;
+		if (ige.isMobile) return;
 
 		var defaultContent = 'Lost connection to the game server. Please refresh this page or visit our homepage.';
 		ige.client.disconnected = true;
@@ -689,12 +661,12 @@ var MenuUiComponent = IgeEntity.extend({
 
 		// refreshIn("connection-lost-refresh", 5);
 
-		$('#more-games')
-			.removeClass('slidedown-menu-animation')
-			.addClass('slideup-menu-animation');
+		// $('#more-games')
+		// 	.removeClass('slidedown-menu-animation')
+		// 	.addClass('slideup-menu-animation');
 	},
 	setResolution: function () {
-		if (ige.mobileControls.isMobile) return;
+		if (ige.isMobile) return;
 		var resolution = localStorage.getItem('resolution') || 'high';
 		if (resolution == 'high') {
 			ige.client.resolutionQuality = 'high';
@@ -712,4 +684,6 @@ var MenuUiComponent = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = MenuUiComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = MenuUiComponent;
+}

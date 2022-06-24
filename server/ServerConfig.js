@@ -1,11 +1,12 @@
 var moddioConfig =
-    process.env.ENV === 'standalone'
-    	? []
-    	: [
-    		{ name: 'ClusterClientComponent', path: '../../ClusterClientComponent' },
-    		{ name: 'ClusterServerComponent', path: '../../ClusterServerComponent' },
-    		{ name: 'HttpComponent', path: '../../HttpComponent' }
-    	];
+	process.env.ENV === 'standalone'
+		? []
+		: [
+			{ name: 'ClusterClientComponent', path: '../../ClusterClientComponent' },
+			{ name: 'ClusterServerComponent', path: '../../ClusterServerComponent' },
+			{ name: 'HttpComponent', path: '../../HttpComponent' },
+			{ name: 'betterFilter', path: '../../moderation/betterFilter' }
+		];
 var defaultConfig = [
 	{ name: 'ServerNetworkEvents', path: '../server/ServerNetworkEvents' },
 
@@ -20,7 +21,7 @@ var defaultConfig = [
 	// { name: 'Unit', path: '../src/gameClasses/Unit' },
 	// { name: 'Sensor', path: '../src/gameClasses/Sensor' },
 
-	// { name: 'MapComponent', path: '../src/gameClasses/components/MapComponent' },
+	{ name: 'MapComponent', path: '../src/gameClasses/components/MapComponent' },
 	{ name: 'ShopComponent', path: '../src/gameClasses/components/ShopComponent' },
 	{ name: 'GameComponent', path: '../src/gameClasses/components/GameComponent' },
 	{ name: 'ItemComponent', path: '../src/gameClasses/components/ItemComponent' },
@@ -31,7 +32,6 @@ var defaultConfig = [
 	{ name: 'GameTextComponent', path: '../src/gameClasses/components/ui/GameTextComponent' },
 	{ name: 'ScoreboardComponent', path: '../src/gameClasses/components/ui/ScoreboardComponent' },
 	{ name: 'AdComponent', path: '../src/gameClasses/components/ui/AdComponent' },
-	{ name: 'RegionUi', path: '../src/gameClasses/components/ui/RegionUi' },
 	{ name: 'VideoChatComponent', path: '../src/gameClasses/components/ui/VideoChatComponent' },
 	{ name: 'SoundComponent', path: '../src/gameClasses/components/SoundComponent' },
 
@@ -39,9 +39,9 @@ var defaultConfig = [
 	{ name: 'AttributeComponent', path: '../src/gameClasses/components/unit/AttributeComponent' },
 	{ name: 'AIComponent', path: '../src/gameClasses/components/unit/AIComponent' },
 
-	// { name: 'Item', path: '../src/gameClasses/Item' },
-	// { name: 'Projectile', path: '../src/gameClasses/Projectile' },
-	// { name: 'Region', path: '../src/gameClasses/Region' },
+	{ name: 'Item', path: '../src/gameClasses/Item' },
+	{ name: 'Projectile', path: '../src/gameClasses/Projectile' },
+	{ name: 'Region', path: '../src/gameClasses/Region' },
 	{ name: 'RegionManager', path: '../src/gameClasses/components/RegionManager' }
 ];
 

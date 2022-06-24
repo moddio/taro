@@ -123,19 +123,24 @@ var ActionComponent = IgeEntity.extend({
 
 					case 'transformRegionDimensions':
 						var region = ige.variable.getValue(action.region, vars);
+						// regionId seems like unnecessary stream data
 						var regionId = action.region.variableName;
 						if (region) {
 							var x = ige.variable.getValue(action.x, vars);
 							var y = ige.variable.getValue(action.y, vars);
 							var width = ige.variable.getValue(action.width, vars);
 							var height = ige.variable.getValue(action.height, vars);
+							// this change makes it so we don't stream data that is unchanged
+							var data = [
+								{ x: x !== region._stats.default.x ? x : null },
+								{ y: y !== region._stats.default.y ? y : null },
+								{ width: width !== region._stats.default.width ? width : null },
+								{ height: height !== region._stats.default.height ? height : null }
+							];
+							// there's gotta be a better way to do this, i'm just blind right now
+							data = data.filter(obj => obj[Object.keys(obj)[0]] !== null);
 
-							region.streamUpdateData([
-								{ x: x },
-								{ y: y },
-								{ width: width },
-								{ height: height }
-							]);
+							region.streamUpdateData(data);
 						}
 
 						break;
@@ -168,6 +173,16 @@ var ActionComponent = IgeEntity.extend({
 						} catch (err) {
 							console.error(err);
 							return;
+						}
+
+						// ensure we aren't sending more than 30 POST requests within 10 seconds
+						ige.server.postReqTimestamps.push(ige.currentTime());
+						var oldestReqTimestamp = ige.server.postReqTimestamps[0]
+						while (Date.now() - oldestReqTimestamp > 10000 && ige.server.postReqTimestamps.length > 0) {
+							oldestReqTimestamp = ige.server.postReqTimestamps.shift();
+						}
+						if (ige.server.postReqTimestamps.length > 30) {
+							ige.server.unpublish('Game server is sending too many POST requests. You cannot send more than 30 req per every 10s.');
 						}
 
 						ige.server.request.post({
@@ -2207,7 +2222,7 @@ var ActionComponent = IgeEntity.extend({
 					case 'removeAllAttributeBuffs':
 						var unit = ige.variable.getValue(action.unit, vars)
 						if(unit && unit._stats && unit._stats.buffs){
-							for(var i = 0; i < unit._stats.buffs.length; i++){
+							for(let i = 0; i < unit._stats.buffs.length; i++){
 								unit._stats.buffs[i].timeLimit = 0;
 							}
 						}
@@ -2224,10 +2239,6 @@ var ActionComponent = IgeEntity.extend({
 						break;
 					case 'destroyEntity':
 						var entity = ige.variable.getValue(action.entity, vars);
-
-						if (this._category == 'item' && this._stats.name == 'Floaty') {
-							console.trace()
-						}
 
 						if (entity && self.entityCategories.indexOf(entity._category) > -1) {
 							entity.remove();

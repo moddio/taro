@@ -1,3 +1,3 @@
-declare class Unit extends IgeEntityBox2d {
+declare class Unit extends IgeEntityPhysics {
 
 }

@@ -66,18 +66,17 @@ var Unit = IgeEntityPhysics.extend({
 
 		// initialize body & texture of the unit
 		self.changeUnitType(data.type, data.defaultData);
-		// console.log(data.type, data.defaultData);
+
 		if (this._stats.states) {
 			var currentState = this._stats.states[this._stats.stateId];
 			var defaultAnimation = this._stats.animations[currentState.animation];
 		}
 
 		if (ige.isClient) {
-			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
-			// new
-			// this.drawCrashCollider(data.defaultData);
+			this.addToRenderer(defaultAnimation && (defaultAnimation.frames[0] - 1));
+
 			self.mount(ige.pixi.world);
-			this.transformPixiEntity(this._translate.x, this._translate.y);
+			this.transformTexture(this._translate.x, this._translate.y);
 
 			ige.client.emit('create-unit', this);
 		}
@@ -949,7 +948,12 @@ var Unit = IgeEntityPhysics.extend({
 	renderMobileControl: function () {
 		var self = this;
 
-		if (ige.mobileControls && self._stats && ige.network.id() == self._stats.clientId && ige.client.myPlayer && ige.client.myPlayer._stats.selectedUnitId == this.id() && this._stats.controls) {
+		if (ige.mobileControls &&
+			self._stats &&
+			ige.network.id() == self._stats.clientId &&
+			ige.client.myPlayer &&
+			ige.client.myPlayer._stats.selectedUnitId == this.id() &&
+			this._stats.controls) {
 			ige.mobileControls.configure(this._stats.controls.abilities);
 		}
 	},
@@ -1254,8 +1258,6 @@ var Unit = IgeEntityPhysics.extend({
 					/*item._hasMoved = true;
 					item._translateTo(defaultData.translate.x, defaultData.translate.y)*/
 				}
-
-				console.log('default data', defaultData)
 
 				item.setState('dropped', defaultData);
 				item.setOwnerUnit(undefined);
@@ -1910,8 +1912,8 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.physics && ige.physics.engine != 'CRASH') {
-				this.processBox2dQueue();
-			}
+			this.processBox2dQueue();
+		}
 	},
 
 	destroy: function () {

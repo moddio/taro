@@ -1,4 +1,4 @@
-declare class Item extends IgeEntityBox2d {
+declare class Item extends IgeEntityPhysics {
 
 	anchoredOffset: OffsetData;
 

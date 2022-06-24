@@ -18,7 +18,6 @@ const Client = IgeEventingClass.extend({
 
 	init: function() {
 		//
-
 		this.data = [];
 		this.previousScore = 0;
 		this.host = window.isStandalone ? 'https://www.modd.io' : '';
@@ -66,6 +65,8 @@ const Client = IgeEventingClass.extend({
 		this.resolution = 0; //old comment => 'autosize'
 		this.scaleMode = 0; //old comment => 'none'
 		this.isActiveTab = true;
+
+		this.isZooming = false;
 
 		this._trackTranslateSmoothing = 15;
 		this.inactiveTabEntityStream = [];
@@ -117,7 +118,7 @@ const Client = IgeEventingClass.extend({
 
 		// add utility
 		this.implement(ClientNetworkEvents);
-		ige.addComponent(IgeInitPixi);
+
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
@@ -184,7 +185,10 @@ const Client = IgeEventingClass.extend({
 
 		promise.then((game) => {
 			ige.game.data = game.data;
+			ige.addComponent(IgeInitPixi);
+			ige.entitiesToRender = new EntitiesToRender();
             ige.phaser = new PhaserRenderer();
+			// let's try here
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
 			ige.addComponent(IgeNetIoComponent);
@@ -192,7 +196,10 @@ const Client = IgeEventingClass.extend({
 
 			ige.addComponent(MenuUiComponent);
 			ige.addComponent(TradeUiComponent); // could we comment this one out?
-			ige.addComponent(MobileControlsComponent);
+
+			if (ige.isMobile) {
+				ige.addComponent(MobileControlsComponent);
+			}
 		})
 			.catch((err) => {
 				console.error(err);
@@ -267,24 +274,13 @@ const Client = IgeEventingClass.extend({
 		const clientPhysicsEngine = ige.game.data.defaultData.clientPhysicsEngine;
 		const serverPhysicsEngine = ige.game.data.defaultData.physicsEngine;
 
-
-		window.igeLoader.loadPhysicsConfig(
+		if (clientPhysicsEngine) {
 			//
-			clientPhysicsEngine,
-			serverPhysicsEngine,
-			// this callback fires when we have loaded all of the files
-			() => {
-				//
-				// console.log('Physics engine files loaded');
-				if (clientPhysicsEngine) {
-					//
-					ige.addComponent(PhysicsComponent)
-						.physics.sleep(true);
-				}
-				// we want as little as possible in here so we can start our other loading
-				this.physicsConfigLoaded.resolve();
-			}
-		);
+			ige.addComponent(PhysicsComponent)
+				.physics.sleep(true);
+		}
+
+		this.physicsConfigLoaded.resolve();
 	},
 
 	loadMap: function() {
@@ -463,8 +459,8 @@ const Client = IgeEventingClass.extend({
 			window.activatePlayGame = true; // is there a reason this line was repeated?
 
 			$('#play-game-button-wrapper').removeClass('d-none-important');
-			// $('.modal-videochat-backdrop, .modal-videochat').removeClass('d-none'); // hmmm
-			// $('.modal-videochat').show(); // no
+			$('.modal-videochat-backdrop, .modal-videochat').removeClass('d-none'); // hmmm
+			$('.modal-videochat').show(); // no...yes?
 
 			//
 			$('.modal-step-link[data-step=2]').click(); // ok this is going to have to be explained
@@ -541,15 +537,6 @@ const Client = IgeEventingClass.extend({
 						.scene(this.rootScene)
 						.drawBounds(false)
 						.mount(ige);
-
-					// old comment => 'Create the UI scene'
-					this.uiScene = new IgeScene2d()
-						.id('uiScene')
-						.depth(1000)
-						.ignoreCamera(true)
-						.mount(this.rootScene);
-
-					ige.mobileControls.attach(this.uiScene);
 
 					// sandbox check for minimap
 					if (mode == 'sandbox') {
@@ -679,11 +666,15 @@ const Client = IgeEventingClass.extend({
 					if (cellSheet && !ige.client.loadedTextures[cellSheet.url]) {
 						//
 						ige.client.loadedTextures[cellSheet.url] = cellSheet;
-						pixiLoader.add(
-							cellSheet.url,
-							`${cellSheet.url}?version=${version}`,
-							{ crossOrigin: true }
-						);
+
+						// check if the cell sheet url is a valid url
+						if (cellSheet.url && cellSheet.url.indexOf('http') === 0) {
+							pixiLoader.add(
+								cellSheet.url,
+								`${cellSheet.url}?version=${version}`,
+								{ crossOrigin: true }
+							);
+						}
 					}
 				}
 			};
@@ -722,7 +713,7 @@ const Client = IgeEventingClass.extend({
 	//
 	setZoom: function(zoom) {
 		// old comment => 'on mobile increase default zoom by 25%'
-		if (ige.mobileControls.isMobile) {
+		if (ige.isMobile) {
 			zoom *= 0.75;
 		}
 
@@ -874,6 +865,12 @@ const Client = IgeEventingClass.extend({
 				) {
 					//
 					ige.menuUi.kickPlayerFromGame(entityBeingDestroyed.id()); // this is inside the 'Moderate' menu
+				} else {
+					try {
+						entityBeingDestroyed.remove();
+					} catch (e) {
+						console.log('* ERROR * trying to destroy entity\n', e);
+					}
 				}
 			});
 
@@ -1029,7 +1026,7 @@ const Client = IgeEventingClass.extend({
 			data._id = userId;
 		}
 
-		if (ige.mobileControls && !ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			//
 			$('.game-ui').show();
 		}
@@ -1067,7 +1064,7 @@ const Client = IgeEventingClass.extend({
 		}
 
 		// old comment => 'show popover on settings icon for low fram rate'
-		if (!ige.mobileControls.isMobile) {
+		if (!ige.isMobile) {
 			//
 			setTimeout(() => {
 				//

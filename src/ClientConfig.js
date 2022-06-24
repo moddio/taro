@@ -5,18 +5,18 @@ var igeClientConfig = {
 		'/lib/msgpack.min.js',
 
 		'/gameClasses/Player.js',
-		// '/gameClasses/Unit.js',
+		'/gameClasses/Unit.js',
 		'/gameClasses/ClientScore.js',
 		'/gameClasses/MinimapUnit.js',
-		// '/gameClasses/Region.js',
+		'/gameClasses/Region.js',
 
-		// '/gameClasses/Item.js',
-		// '/gameClasses/Projectile.js',
-		// '/gameClasses/Particle.js',
+		'/gameClasses/Item.js',
+		'/gameClasses/Projectile.js',
+		'/gameClasses/Particle.js',
 
 		'/gameClasses/ClientNetworkEvents.js',
 		'/gameClasses/components/GameComponent.js',
-		// '/gameClasses/components/MapComponent.js',
+		'/gameClasses/components/MapComponent.js',
 		'/gameClasses/components/InventoryComponent.js',
 		'/gameClasses/components/SoundComponent.js',
 		'/gameClasses/components/ControlComponent.js',
@@ -27,7 +27,6 @@ var igeClientConfig = {
 		'/gameClasses/components/TweenComponent.js',
 
 		'/gameClasses/components/ui/MenuUiComponent.js',
-		'/gameClasses/components/ui/RegionUi.js',
 		'/gameClasses/components/ui/ThemeComponent.js',
 		'/gameClasses/components/ui/PlayerUiComponent.js',
 		'/gameClasses/components/ui/GameTextComponent.js',
@@ -53,6 +52,8 @@ var igeClientConfig = {
 		/* Standard game scripts */
 		'/gameClasses/Cursor.js',
 
+		'/gameClasses/EntitiesToRender.js',
+
 		/* PIXI */
 		'pixi/pixi-viewport.js',
 		'pixi/pixi-cull.js',
@@ -67,12 +68,17 @@ var igeClientConfig = {
 
 		/* Phaser */
 		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',
+		'../node_modules/phaser3-rex-plugins/dist/rexvirtualjoystickplugin.min.js',
+		'renderer/phaser/enums/FlipMode.js',
 		'renderer/phaser/classes/PhaserUnit.js',
 		'renderer/phaser/classes/PhaserProjectile.js',
 		'renderer/phaser/classes/PhaserAttributeBar.js',
 		'renderer/phaser/classes/PhaserItem.js',
 		'renderer/phaser/classes/PhaserChatBubble.js',
+		'renderer/phaser/classes/PhaserRegion.js',
+		'renderer/phaser/scenes/PhaserScene.js',
 		'renderer/phaser/scenes/GameScene.js',
+		'renderer/phaser/classes/PhaserJoystick.js',
 		'renderer/phaser/scenes/MobileControlsScene.js',
 		'renderer/phaser/PhaserRenderer.js',
 

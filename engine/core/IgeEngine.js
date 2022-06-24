@@ -22,6 +22,32 @@ var IgeEngine = IgeEntity.extend({
 		// Determine the environment we are executing in
 		this.isServer = (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined');
 		this.isClient = !this.isServer;
+
+		this.isMobile = this.isClient && (function () {  // cache value
+			// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+			var isMobile = {
+				Android: function () {
+					return navigator.userAgent.match(/Android/i);
+				},
+				BlackBerry: function () {
+					return navigator.userAgent.match(/BlackBerry/i);
+				},
+				iOS: function () {
+					return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+				},
+				Opera: function () {
+					return navigator.userAgent.match(/Opera Mini/i);
+				},
+				Windows: function () {
+					return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+				},
+				any: function () {
+					return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+				}
+			};
+			return isMobile.any() != null;
+		})();
+
 		this.banIpsList = [];
 
 		// Assign ourselves to the global variable
@@ -56,7 +82,7 @@ var IgeEngine = IgeEntity.extend({
 		if (this.isServer) {
 			// this._idCounter = 0
 			this.sanitizer = require('sanitizer').sanitize;
-			this.emptyTimeLimit = 3 * 60 * 1000; // in ms
+			this.emptyTimeLimit = 10 * 60 * 1000; // in ms - kill t1/t2 if empty for 10 mins
 			this.lastCheckedAt = Date.now();
 		}
 
@@ -176,7 +202,7 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	getIdleTimeoutMs: function () {
-		var defaultValue = 5;
+		var defaultValue = 10; // kill t1/t2 if empty for 10 mins
 		var idleTimeoutHours = ige.server.tier == '0' ? ige.game.data.defaultData.privateServerIdleTimeout : 0;
 		var timeoutMins = idleTimeoutHours ? idleTimeoutHours * 60 : defaultValue;
 
@@ -412,7 +438,9 @@ var IgeEngine = IgeEntity.extend({
 				self._requireScriptLoaded(this);
 
 				if (callback) {
-					setTimeout(function () { callback(); }, 100);
+					setTimeout(function () {
+						callback();
+					}, 100);
 				}
 			});
 
@@ -656,7 +684,9 @@ var IgeEngine = IgeEntity.extend({
 			if (this.isServer) {
 				// Server-side implementation
 				requestAnimFrame = function (callback, element) {
-					setTimeout(function () { callback(new Date().getTime()); }, 1000 / fpsRate);
+					setTimeout(function () {
+						callback(new Date().getTime());
+					}, 1000 / fpsRate);
 				};
 			} else {
 				// Client-side implementation
@@ -664,7 +694,9 @@ var IgeEngine = IgeEntity.extend({
 					if (typeof mode === 'string' && mode === 'sandbox') {
 						fpsRate = 20;
 					}
-					setTimeout(function () { callback(new Date().getTime()); }, 1000 / fpsRate); // client will always run at 60 fps.
+					setTimeout(function () {
+						callback(new Date().getTime());
+					}, 1000 / fpsRate); // client will always run at 60 fps.
 				};
 			}
 		}
@@ -995,7 +1027,9 @@ var IgeEngine = IgeEntity.extend({
 					}
 				} else {
 					// Start a timer to keep checking dependencies
-					setTimeout(function () { ige.start(callback); }, 200);
+					setTimeout(function () {
+						ige.start(callback);
+					}, 200);
 				}
 			}
 		}
@@ -1402,8 +1436,12 @@ var IgeEngine = IgeEntity.extend({
 				// Make sure we can divide the new width and height by 2...
 				// otherwise minus 1 so we get an even number so that we
 				// negate the blur effect of sub-pixel rendering
-				if (newWidth % 2) { newWidth--; }
-				if (newHeight % 2) { newHeight--; }
+				if (newWidth % 2) {
+					newWidth--;
+				}
+				if (newHeight % 2) {
+					newHeight--;
+				}
 
 				if (ige.client && ige.client.resolutionQuality === 'low') {
 					ige._canvas.width = newWidth * ige._deviceFinalDrawRatio / 2;
@@ -1461,8 +1499,12 @@ var IgeEngine = IgeEntity.extend({
 						// Make sure we can divide the new width and height by 2...
 						// otherwise minus 1 so we get an even number so that we
 						// negate the blur effect of sub-pixel rendering
-						if (newWidth % 2) { newWidth--; }
-						if (newHeight % 2) { newHeight--; }
+						if (newWidth % 2) {
+							newWidth--;
+						}
+						if (newHeight % 2) {
+							newHeight--;
+						}
 
 						// ige._canvas.width = newWidth * ige._deviceFinalDrawRatio;
 						// ige._canvas.height = newHeight * ige._deviceFinalDrawRatio;
@@ -1655,7 +1697,9 @@ var IgeEngine = IgeEntity.extend({
 	 * want to disable the trace for.
 	 */
 	traceSetOff: function (object, propName) {
-		Object.defineProperty(object, propName, { set: function (val) { this.___igeTraceCurrentVal[propName] = val; } });
+		Object.defineProperty(object, propName, { set: function (val) {
+			this.___igeTraceCurrentVal[propName] = val;
+		} });
 	},
 
 	/**
@@ -1766,7 +1810,7 @@ var IgeEngine = IgeEntity.extend({
 		// console.log("increment time", this._currentTime, now, this._timeScaleLastTimestamp, (now - this._timeScaleLastTimestamp))
 		this._currentTime = (now + this.timeDiscrepancy) * this._timeScale;
 		this.renderTime = this._currentTime - 100;
-		
+
 		// this.incrementCount++;
 		// if (now - this._aSecondAgo > 1000) {
 		// 	console.log((this._currentTime - this.lastIncrementAt), this.incrementCount, (this._currentTime - this.lastIncrementAt) / this.incrementCount)
@@ -2005,9 +2049,6 @@ var IgeEngine = IgeEntity.extend({
 			ige.tickCount = 0;
 			ige.updateTransform = 0;
 			ige.inViewCount = 0;
-			ige.entityManagerUpdateBehaviour = 0;
-			ige.entityManagerUpdateorphan = 0;
-			ige.entityManagerUpdateChildren = 0;
 			ige.totalChildren = 0;
 			ige.totalOrphans = 0;
 
@@ -2064,7 +2105,6 @@ var IgeEngine = IgeEntity.extend({
 				}
 			}
 
-			// console.log(ige.updateCount, ige.tickCount, ige.updateTransform, ige.inViewCount, ige.entityManagerUpdateBehaviour, ige.entityManagerUpdateorphan, ige.entityManagerUpdateChildren, ige.totalOrphans, ige.totalChildren)
 			// console.log(ige.updateCount, ige.tickCount, ige.updateTransform,"inView", ige.inViewCount);
 			// Record the lastTick value so we can
 			// calculate delta on the next tick
@@ -2077,16 +2117,17 @@ var IgeEngine = IgeEntity.extend({
 					self.lastCheckedAt = self.now;
 
 					// kill tier 1 servers that has been empty for over 15 minutes
-					var playerCount = ige.$$('player').filter(function (player) { return player._stats.controlledBy == 'human'; }).length;
+					var playerCount = ige.$$('player').filter(function (player) {
+						return player._stats.controlledBy == 'human';
+					}).length;
 
 					if (playerCount <= 0) {
-						// console.log('self.emptyTimeLimit', self.emptyTimeLimit);
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}
-
-						if (self.now - self.serverEmptySince > self.emptyTimeLimit) {
-							ige.server.kill('game\'s been empty for too long (15 min)');
+						// Kill T1 and T2 servers if it's been empty for 10+ mins.
+						if ((ige.server.tier === '1' || ige.server.tier === '2') && self.now - self.serverEmptySince > self.emptyTimeLimit) {
+							ige.server.kill('game\'s been empty for too long (10 min)');
 						}
 					} else {
 						self.serverEmptySince = null;
@@ -2337,30 +2378,6 @@ var IgeEngine = IgeEntity.extend({
 
 		return item;
 	},
-	isMobileDevice: function () {
-		// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
-		var isMobile = {
-			Android: function () {
-				return navigator.userAgent.match(/Android/i);
-			},
-			BlackBerry: function () {
-				return navigator.userAgent.match(/BlackBerry/i);
-			},
-			iOS: function () {
-				return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-			},
-			Opera: function () {
-				return navigator.userAgent.match(/Opera Mini/i);
-			},
-			Windows: function () {
-				return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
-			},
-			any: function () {
-				return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-			}
-		};
-		return isMobile.any() != null;
-	},
 
 	/**
 	 * Walks the scene graph and outputs a console map of the graph.
@@ -2372,7 +2389,9 @@ var IgeEngine = IgeEntity.extend({
 		var arr;
 		var arrCount;
 
-		if (currentDepth === undefined) { currentDepth = 0; }
+		if (currentDepth === undefined) {
+			currentDepth = 0;
+		}
 
 		if (!obj) {
 			// Set the obj to the main ige instance
@@ -2599,4 +2618,6 @@ var IgeEngine = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEngine; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeEngine;
+}
