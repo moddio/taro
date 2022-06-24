@@ -5,39 +5,12 @@ var MapComponent = IgeEntity.extend({
 	init: function (entity, options) {
 		var self = this;
 		self.minimapLayers = [];
-		self.debrisProperty = [
-			'x', 'y', 'height', 'width', 'rotation', 'visible', 'type', 'id', 'name', 'gid', 'type', 'density', 'friction', 'restitution'
-		];
 		self.layersZIndex = {
 			floor: 0,
 			floor2: 1,
 			walls: 3,
 			trees: 4
 		};
-		if (ige.isClient) {
-			// Declared events for debris modal
-			if (mode === 'sandbox') {
-				$('#debris-form').on('submit', function (e) {
-					e.preventDefault();
-					self.onSubmit();
-				});
-
-				$('#debris-form').on('keypress', function (e) {
-					if (e.charCode === 13) {
-						e.preventDefault();
-						self.onSubmit();
-					}
-				});
-
-				$('#debris-delete').on('click', function (e) {
-					e.preventDefault();
-					var updatedDebris = {
-						deleteId: $('#debris-id').val()
-					};
-					self.updateDebrisToDb(updatedDebris);
-				});
-			}
-		}
 	},
 
 	load: function (data) {
@@ -46,14 +19,6 @@ var MapComponent = IgeEntity.extend({
 		if (data.layers) {
 			for (var i = 0; i < data.layers.length; i++) {
 				var layer = data.layers[i];
-				if (layer.name === 'debris' && layer.objects) {
-					for (var j = 0; j < layer.objects.length; j++) {
-						var debris = layer.objects[j];
-						if (!debris.type) {
-							debris.type = 'dynamic';
-						}
-					}
-				}
 			}
 		}
 
@@ -67,8 +32,6 @@ var MapComponent = IgeEntity.extend({
 					ige.physics.staticsFromMap(layersById.walls);
 
 					var mapArray = layersById.floor.map._gameData;
-
-					// create debris
 
 					self.createRegions();
 				});
@@ -103,22 +66,6 @@ var MapComponent = IgeEntity.extend({
 										.width(mapWidth)
 										.bounds2d(mapWidth, mapHeight, 0);
 								}
-								// we're not iterating, and in the previous structure, this logic
-								// was never actually reached
-								// if (IgeLayerArray[i].name !== 'debris') {
-								// 	ige.devLog(`layer ${i}`);
-								// 	IgeLayerArray[i]
-								// 		.layer(self.layersZIndex[IgeLayerArray[i].name])
-								// 		.autoSection(20)
-								// 		.drawBounds(false)
-								// 		.drawBoundsData(false)
-								// 		.drawBounds(false)
-								// 		.mount(ige.client.rootScene)
-								// 		.translateTo(0 + (mapWidth / 2), 0 + (mapHeight / 2), 0)
-								// 		.height(mapHeight)
-								// 		.width(mapWidth)
-								// 		.bounds2d(mapWidth, mapHeight, 0);
-								// }
 								ige.client.mapLoaded.resolve();
 								delete ige.pixi.mapLoader;
 							});
@@ -142,157 +89,6 @@ var MapComponent = IgeEntity.extend({
 					data.id = regionName;
 					new Region(data);
 				}
-			}
-		}
-	},
-	createDebris: function (debrisLayer) {
-		var self = this;
-
-		// if debrisLayer not present return;
-		if (!debrisLayer) return;
-
-		// debris cell sheets
-		var cellSheets = [];
-		for (var i = 0; i < self.data.tilesets.length; i++) {
-			var tileset = self.data.tilesets[i];
-			var imageUrl = tileset.image;
-
-			cellSheets.push([
-				imageUrl, // temporary until images locations are converted to URL
-				tileset.imagewidth / tileset.tilewidth,
-				tileset.imageheight / tileset.tileheight,
-				tileset.firstgid
-			]);
-		}
-
-		for (var i = 0; i < debrisLayer.length; i++) {
-			var gid = debrisLayer[i].gid;
-
-			// dont display debris which has visible as false
-			// if(!debrisLayer[i].visible) return;
-			// find texture
-			var cellSheet = cellSheets[cellSheets.length - 1];
-			for (var j = 0; j < cellSheets.length - 1; j++) {
-				var currentCellSheet = cellSheets[j];
-				var nextCellSheet = cellSheets[j + 1];
-				if (currentCellSheet[3] <= gid && gid < nextCellSheet[3]) {
-					var cellSheet = currentCellSheet;
-				}
-			}
-
-			var original = JSON.parse(JSON.stringify(debrisLayer[i]));
-			original.cellSheet = cellSheet;
-			original.defaultData = {
-				translate: { x: original.x, y: original.y },
-				rotate: Math.radians(original.rotation)
-			};
-			var debris = new Debris(original);
-
-			debrisLayer[i].igeId = debris.id(); // for future reference for script's conditional checks (e.g. if debrisVariable == triggeringDebris)
-
-			if (ige.isClient && typeof mode === 'string' && mode === 'sandbox') {
-				debris
-					.mount(ige.client.rootScene)
-					.drawBoundsData(false);
-				if (ige.game.data.isDeveloper) {
-					debris.drawMouse(true)
-						.mouseDown(function (event, evc) {
-							var isMiniMapClicked = ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY);
-
-							if (!$('#eraser').hasClass('editordiv-hover') &&
-								!$('#brush').hasClass('editordiv-hover') &&
-								!$('#add_region').hasClass('editordiv-hover') &&
-								event.which === 1 && !isMiniMapClicked) {
-								this.openDebrisModal();
-							}
-						});
-				}
-			}
-		}
-	},
-	onSubmit: function () {
-		var self = this;
-		var updatedDebris = {};
-		for (var i = 0; i < ige.map.debrisProperty.length; i++) {
-			var value = '';
-			if (ige.map.debrisProperty[i] === 'visible') {
-				value = $('#visible-true').hasClass('active');
-			} else {
-				value = $(`#debris-${ige.map.debrisProperty[i]}`).val();
-			}
-
-			if (Number(value)) {
-				value = Number(value);
-			}
-
-			if (ige.map.debrisProperty[i] === 'type' && value == '') {
-				value = 'static';
-			}
-			updatedDebris[ige.map.debrisProperty[i]] = value;
-		}
-		self.updateDebrisToDb(updatedDebris);
-	},
-	updateDebrisToDb: function (updatedDebris) {
-		var self = this;
-		if (!updatedDebris || Object.keys(updatedDebris).length <= 0) return;
-		$.ajax({
-			url: `/api/game-client/${gameId}/updatedebris/${ige.game.data.releaseId}`,
-			dataType: 'html',
-			type: 'POST',
-			dataType: 'json',
-			data: { data: JSON.stringify(updatedDebris) },
-			success: function (data) {
-				if (data.status === 'success') {
-					$('#debris-modal').modal('hide');
-					if (updatedDebris.deleteId) {
-						var debris = self.getDebrisData(updatedDebris.deleteId);
-						debris.destroy();
-					} else {
-						var debris = self.getDebrisData(updatedDebris.id);
-						if (debris && debris._stats) {
-							for (var i = 0; i < ige.map.debrisProperty.length; i++) {
-								var property = ige.map.debrisProperty[i];
-								if (updatedDebris[property]) {
-									debris._stats[property] = updatedDebris[property];
-								}
-							}
-							debris.resetPosition();
-						}
-					}
-					window.updateReactGameState(false, updatedDebris);
-					self.updateDebrisToMapObject(updatedDebris);
-				}
-			}
-		});
-	},
-	// Note. We're using ID of debris given by map editor. Not igeId
-	getDebrisData: function (id) {
-		return ige.$$('debris').find(function (debris) {
-			return debris._stats && debris._stats.id == id;
-		});
-	},
-
-	updateDebrisToMapObject: function (updatedDebris) {
-		var layers = ige.map.data.layers;
-		var debris = layers.find(function (layer) {
-			if (layer.name == 'debris') return true;
-		});
-		if (debris) {
-			if (updatedDebris.deleteId) {
-				var index = debris.objects.findIndex(function (debri) {
-					return debri.id == updatedDebris.deleteId;
-				});
-				debris.objects.splice(index, 1);
-			} else {
-				debris.objects.forEach(function (debri, key) {
-					if (debri.id == updatedDebris.id) {
-						for (var i in debri) {
-							if (updatedDebris[i] != undefined) {
-								debri[i] = updatedDebris[i];
-							}
-						}
-					}
-				});
 			}
 		}
 	},

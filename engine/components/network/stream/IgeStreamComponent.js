@@ -97,7 +97,7 @@ var IgeStreamComponent = IgeEventingClass.extend({
 	},
 
 	/**
-	 * update entity-attributes (unit, debris, player, and projectiles)
+	 * update entity-attributes (unit, player, and projectiles)
 	 */
 	updateEntityAttributes: function () {
 		var data = {};

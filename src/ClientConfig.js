@@ -49,8 +49,6 @@ var igeClientConfig = {
 		'/gameClasses/components/unit/AbilityComponent.js',
 		'/gameClasses/components/unit/AttributeComponent.js',
 
-		'/gameClasses/Debris.js',
-
 		/* Standard game scripts */
 		'/gameClasses/Cursor.js',
 

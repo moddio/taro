@@ -77,8 +77,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		var filterCategoryBits = 0x0002;
 		if (this._category === 'units') {
 			filterCategoryBits = 0x0002;
-		} else if (this._category === 'debris') {
-			filterCategoryBits = 0x0004;
 		} else if (this._category === 'item') {
 			filterCategoryBits = 0x0008;
 		} else if (this._category === 'projectile') {
@@ -109,7 +107,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 					filterCategoryBits: filterCategoryBits,
 					filterMaskBits: ((collidesWith.walls) ? 0x0001 : 0) |
                                     ((collidesWith.units) ? 0x0002 : 0) |
-                                    ((collidesWith.debris) ? 0x0004 : 0) |
                                     ((collidesWith.items) ? 0x0008 : 0) |
                                     ((collidesWith.projectiles) ? 0x0010 : 0) |
                                     ((this._category != 'sensor') ? 0x0020 : 0) | // all entities aside from sensor will collide with regions
