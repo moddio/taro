@@ -142,8 +142,10 @@ var MenuUiComponent = IgeEntity.extend({
 			$('#server-list').on('change', function () {
 				var gameSlug = $(this).attr('game-slug');
 				ige.client.gameSlug = gameSlug;
-				const isLobbyServer = document.querySelector("#server-list").innerText.includes("LobbyServer");
-				if(isLobbyServer){
+				const serverListOptions = document.querySelector("#server-list > option")
+				if (serverListOptions.length !== ige.client.servers.length) {
+					// server options have been added/removed dynamically
+					// refresh the server list
 					ige.client.servers = ige.client.getServersArray();
 				}
 				if (ige.client.servers) {
