@@ -1,47 +1,41 @@
-abstract class PhaserEntity extends Phaser.GameObjects.Container {
+/* eslint-disable @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars */
+class PhaserEntity {
 
+	protected gameObject: Phaser.GameObjects.GameObject;
 	protected evtListeners: Record<string, EvtListener> = {};
 
-	protected constructor (scene: Phaser.Scene,
-						   protected entity: IgeEntity) {
-		super(scene);
-
-		const translate = entity._translate;
-		this.setPosition(translate.x, translate.y);
-
-		scene.add.existing(this);
-
+	protected constructor (
+		protected entity: IgeEntity
+	) {
 		Object.assign(this.evtListeners, {
-			transform: entity.on('transform', this.transformEntity, this),
-			scale: entity.on('scale', this.scaleEntity, this),
-			destroy: entity.on('destroy', this.destroyEntity, this)
+			transform: entity.on('transform', this.transform, this),
+			scale: entity.on('scale', this.scale, this),
+			destroy: entity.on('destroy', this.destroy, this)
 		});
 	}
 
-	protected transformEntity(data: {
+	protected transform (data: {
 		x: number,
 		y: number,
 		rotation: number
-	}): void {
-		this.setPosition(data.x, data.y);
-	}
+	}): void { }
 
-	protected abstract scaleEntity(data: {
+	protected scale (data: {
 		x: number,
 		y: number
-	}): void
+	}): void { }
 
-	protected destroyEntity(): void {
+	protected destroy (): void {
 
 		Object.keys(this.evtListeners).forEach((key) => {
 			this.entity.off(key, this.evtListeners[key]);
 			delete this.evtListeners[key];
 		});
 
+		this.gameObject.destroy();
+
+		this.gameObject = null;
 		this.evtListeners = null;
-
 		this.entity = null;
-
-		this.destroy();
 	}
 }

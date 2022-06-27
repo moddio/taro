@@ -15,29 +15,22 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserRegion = /** @class */ (function (_super) {
     __extends(PhaserRegion, _super);
-    function PhaserRegion(scene, region) {
-        var _this = _super.call(this, scene) || this;
-        _this.region = region;
+    function PhaserRegion(scene, entity) {
+        var _this = _super.call(this, entity) || this;
+        _this.gameObject = scene.add.graphics();
         _this.transform();
-        scene.add.existing(_this);
-        _this.transformListener = region.on('transform', _this.transform, _this);
-        _this.destroyListener = region.on('destroy', function () {
-            region.off('transform', _this.transformListener);
-            _this.transformListener = null;
-            region.off('destroy', _this.destroyListener);
-            _this.destroyListener = null;
-            _this.destroy();
-        });
         return _this;
     }
     PhaserRegion.prototype.transform = function () {
-        var stats = this.region._stats.default;
-        this.x = stats.x;
-        this.y = stats.y;
-        this.clear();
-        this.fillStyle(Number("0x".concat(stats.inside.substring(1))), stats.alpha / 100 || 0.4);
-        this.fillRect(0, 0, stats.width, stats.height);
+        var graphics = this.gameObject;
+        var stats = this.entity._stats.default;
+        graphics.setPosition(stats.x, stats.y);
+        graphics.clear();
+        graphics.fillStyle(Number("0x".concat(stats.inside.substring(1))), 
+        // TODO this can throw an error if alpha is undefined
+        stats.alpha / 100 || 0.4);
+        graphics.fillRect(0, 0, stats.width, stats.height);
     };
     return PhaserRegion;
-}(Phaser.GameObjects.Graphics));
+}(PhaserEntity));
 //# sourceMappingURL=PhaserRegion.js.map

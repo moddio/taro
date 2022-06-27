@@ -1,42 +1,32 @@
-class PhaserRegion extends Phaser.GameObjects.Graphics {
+class PhaserRegion extends PhaserEntity {
 
-	private transformListener: EvtListener;
-	private destroyListener: EvtListener;
+	protected gameObject: Phaser.GameObjects.Graphics;
+	protected entity: Region;
 
 	constructor (
 		scene: Phaser.Scene,
-		private region: Region
+		entity: Region
 	) {
-		super(scene);
+		super(entity);
+
+		this.gameObject = scene.add.graphics();
 
 		this.transform();
-
-		scene.add.existing(this);
-
-		this.transformListener = region.on('transform', this.transform, this);
-		this.destroyListener = region.on('destroy', () => {
-			region.off('transform', this.transformListener);
-			this.transformListener = null;
-
-			region.off('destroy', this.destroyListener);
-			this.destroyListener = null;
-
-			this.destroy();
-		});
 	}
 
-	 transform (): void {
-		const stats = this.region._stats.default;
+	protected transform (): void {
+		const graphics = this.gameObject;
+		const stats = this.entity._stats.default;
 
-		this.x = stats.x;
-		this.y = stats.y;
+		graphics.setPosition(stats.x, stats.y);
 
-		this.clear();
-		this.fillStyle(
+		graphics.clear();
+		graphics.fillStyle(
 			Number(`0x${stats.inside.substring(1)}`),
+			// TODO this can throw an error if alpha is undefined
 			stats.alpha / 100 || 0.4
 		);
-		this.fillRect(
+		graphics.fillRect(
 			0,
 			0,
 			stats.width,
