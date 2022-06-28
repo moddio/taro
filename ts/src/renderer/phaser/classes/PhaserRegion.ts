@@ -23,7 +23,6 @@ class PhaserRegion extends PhaserEntity {
 		graphics.clear();
 		graphics.fillStyle(
 			Number(`0x${stats.inside.substring(1)}`),
-			// TODO this can throw an error if alpha is undefined
 			(stats.alpha || 40 ) / 100
 		);
 		graphics.fillRect(
