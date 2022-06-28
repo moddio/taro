@@ -15,42 +15,19 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserProjectile = /** @class */ (function (_super) {
     __extends(PhaserProjectile, _super);
-    function PhaserProjectile(scene, projectile) {
-        var _this = _super.call(this, scene) || this;
-        _this.projectile = projectile;
-        var key = "projectile/".concat(projectile._stats.type);
-        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
-        var translate = projectile._translate;
-        var bounds = projectile._bounds2d;
-        _this.setPosition(translate.x, translate.y);
-        sprite.rotation = projectile._rotate.z;
-        sprite.setDisplaySize(bounds.x, bounds.y);
-        _this.add(sprite);
-        scene.add.existing(_this);
-        _this.transformListener = projectile.on('transform', function (data) {
-            _this.setPosition(data.x, data.y);
-            sprite.rotation = data.rotation;
-        });
-        _this.scaleListener = projectile.on('scale', function (data) {
-            sprite.setScale(data.x, data.y);
-        });
-        _this.playAnimationListener =
-            projectile.on('play-animation', function (animationId) {
-                sprite.play("".concat(key, "/").concat(animationId));
-            });
-        _this.destroyListener = projectile.on('destroy', function () {
-            projectile.off('transform', _this.transformListener);
-            _this.transformListener = null;
-            projectile.off('scale', _this.scaleListener);
-            _this.scaleListener = null;
-            projectile.off('play-animation', _this.playAnimationListener);
-            _this.playAnimationListener = null;
-            projectile.off('destroy', _this.destroyListener);
-            _this.destroyListener = null;
-            _this.destroy();
-        });
+    function PhaserProjectile(scene, entity) {
+        var _this = _super.call(this, scene, entity, "projectile/".concat(entity._stats.type)) || this;
+        var translate = entity._translate;
+        _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         return _this;
     }
+    PhaserProjectile.prototype.transform = function (data) {
+        this.gameObject.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
+    };
+    PhaserProjectile.prototype.scale = function (data) {
+        this.sprite.setScale(data.x, data.y);
+    };
     return PhaserProjectile;
-}(Phaser.GameObjects.Container));
+}(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserProjectile.js.map
