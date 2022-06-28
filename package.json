@@ -41,7 +41,7 @@
     "lz-string": "^1.4.4",
     "msgpack-lite": "^0.1.26",
     "phaser": "^3.55.2",
-    "public-ip": "^2.5.0",
+    "public-ip": "^6.0.1",
     "q": "^1.5.1",
     "rate-limiter-flexible": "^2.3.7",
     "request": "^2.88.2",
