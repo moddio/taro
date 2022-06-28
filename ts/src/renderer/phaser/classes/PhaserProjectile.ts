@@ -1,61 +1,35 @@
-class PhaserProjectile extends Phaser.GameObjects.Container {
+class PhaserProjectile extends PhaserAnimatedEntity {
 
-	sprite: Phaser.GameObjects.Sprite;
+	protected gameObject: Phaser.GameObjects.Container;
+	protected entity: Projectile;
 
-	private playAnimationListener: EvtListener;
-	private transformListener: EvtListener;
-	private scaleListener: EvtListener;
-	private destroyListener: EvtListener;
+	constructor (
+		scene: Phaser.Scene,
+		entity: Projectile
+	) {
+		super(scene, entity, `projectile/${entity._stats.type}`);
 
-	constructor (scene: Phaser.Scene,
-				 private projectile: Projectile) {
+		const translate = entity._translate;
+		this.gameObject = scene.add.container(
+			translate.x,
+			translate.y,
+			[ this.sprite ]
+		);
+	}
 
-		super(scene);
+	protected transform (data: {
+		x: number;
+		y: number;
+		rotation: number
+	}): void {
+		this.gameObject.setPosition(data.x, data.y);
+		this.sprite.rotation = data.rotation;
+	}
 
-		const key = `projectile/${projectile._stats.type}`;
-
-		const sprite = this.sprite = scene.add.sprite(0, 0, key);
-		const translate = projectile._translate;
-		const bounds = projectile._bounds2d;
-		this.setPosition(translate.x, translate.y);
-		sprite.rotation = projectile._rotate.z;
-		sprite.setDisplaySize(bounds.x, bounds.y);
-
-		this.add(sprite);
-
-		scene.add.existing(this);
-
-		this.transformListener = projectile.on('transform', (data: {
-			x: number,
-			y: number,
-			rotation: number
-		}) => {
-			this.setPosition(data.x, data.y);
-			sprite.rotation = data.rotation;
-		});
-
-		this.scaleListener = projectile.on('scale', (data: {
-			x: number,
-			y: number
-		}) => {
-			sprite.setScale(data.x, data.y);
-		});
-
-		this.playAnimationListener =
-			projectile.on('play-animation', (animationId: string) => {
-				sprite.play(`${key}/${animationId}`);
-			});
-
-		this.destroyListener = projectile.on('destroy', () => {
-			projectile.off('transform', this.transformListener);
-			this.transformListener = null;
-			projectile.off('scale', this.scaleListener);
-			this.scaleListener = null;
-			projectile.off('play-animation', this.playAnimationListener);
-			this.playAnimationListener = null;
-			projectile.off('destroy', this.destroyListener);
-			this.destroyListener = null;
-			this.destroy();
-		});
+	protected scale (data: {
+		x: number;
+		y: number
+	}): void {
+		this.sprite.setScale(data.x, data.y);
 	}
 }
