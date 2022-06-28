@@ -28,7 +28,7 @@ var PhaserRegion = /** @class */ (function (_super) {
         graphics.clear();
         graphics.fillStyle(Number("0x".concat(stats.inside.substring(1))), 
         // TODO this can throw an error if alpha is undefined
-        stats.alpha / 100 || 0.4);
+        (stats.alpha || 40) / 100);
         graphics.fillRect(0, 0, stats.width, stats.height);
     };
     return PhaserRegion;
