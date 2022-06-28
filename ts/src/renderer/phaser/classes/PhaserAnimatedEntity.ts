@@ -1,4 +1,4 @@
-abstract class PhaserAnimatedEntity extends PhaserEntity {
+class PhaserAnimatedEntity extends PhaserEntity {
 
 	protected sprite: Phaser.GameObjects.Sprite;
 
