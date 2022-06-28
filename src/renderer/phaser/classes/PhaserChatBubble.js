@@ -53,8 +53,8 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         triangle.lineStyle(2, 0x000000, 1);
         triangle.x = -2.5;
         triangle.y = 18.5;
-        _this.x = unit.x;
-        _this.y = unit.y - _this.offset;
+        //this.x = unit.x;
+        //this.y = unit.y - this.offset;
         _this.add(triangle);
         _this.add(bubble);
         _this.add(text);

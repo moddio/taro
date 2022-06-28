@@ -2,7 +2,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 
 	private static pool: Phaser.GameObjects.Group;
 
-	static get(unit: PhaserUnit): PhaserAttributeBar {
+	/*static get(unit: PhaserUnit): PhaserAttributeBar {
 
 		if (!this.pool) {
 			this.pool = unit.scene.make.group({});
@@ -20,9 +20,9 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		bar.setVisible(true);
 
 		return bar;
-	}
+	}*/
 
-	static release (bar: PhaserAttributeBar): void {
+	/*static release (bar: PhaserAttributeBar): void {
 
 		bar.resetFadeOut();
 
@@ -33,7 +33,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		bar.name = null;
 
 		bar.setActive(false);
-	}
+	}*/
 
 	private readonly bar: Phaser.GameObjects.Graphics;
 	private readonly text: Phaser.GameObjects.Text;
@@ -41,7 +41,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 	private fadeTimerEvent: Phaser.Time.TimerEvent;
 	private fadeTween: Phaser.Tweens.Tween;
 
-	private constructor(private unit: PhaserUnit) {
+	/*private constructor(private unit: PhaserUnit) {
 
 		const scene = unit.scene;
 
@@ -61,7 +61,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		this.add(text);
 
 		unit.add(this);
-	}
+	}*/
 
 	render (data: AttributeData): void {
 
@@ -100,11 +100,11 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 			(typeof data.value === 'number' ?
 				data.value.toFixed(0) : '0') : '');
 
-		const sprite = this.unit.sprite;
+		/*const sprite = this.unit.sprite;
 		this.y = 25 +
 			Math.max(sprite.displayHeight, sprite.displayWidth) / 2
 			+ data.index * h*1.1;
-
+		*/
 		this.resetFadeOut();
 
 		if ((data.showWhen instanceof Array &&
@@ -131,7 +131,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 
 					this.fadeTween = null;
 
-					const unit = this.unit;
+					/*const unit = this.unit;
 					if (unit) {
 
 						const attributes = unit.attributes;
@@ -141,7 +141,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 							attributes.splice(index, 1);
 							PhaserAttributeBar.release(this);
 						}
-					}
+					}*/
 				}
 			});
 		});
