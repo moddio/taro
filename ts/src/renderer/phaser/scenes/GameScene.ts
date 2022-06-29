@@ -47,11 +47,11 @@ class GameScene extends PhaserScene {
 			);
 		});
 
-		ige.client.on('fetch-mouse-position', (controlComponent: ControlComponent) => {
-			controlComponent.newMousePosition = [
-				this.input.activePointer.worldX,
-				this.input.activePointer.worldY
-			];
+		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+			ige.input.emit('pointermove', [{
+				x: pointer.worldX,
+				y: pointer.worldY
+			}]);
 		});
 
 		ige.client.on('create-unit', (unit: Unit) => {

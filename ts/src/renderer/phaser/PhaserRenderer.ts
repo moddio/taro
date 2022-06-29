@@ -37,5 +37,8 @@ class PhaserRenderer {
 				}]
 			}
 		});
+
+		// Ask the input component to setup any listeners it has
+		ige.input.setupListeners(this.game.canvas);
 	}
 }

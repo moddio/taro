@@ -25,7 +25,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 		this.timeStamp = Date.now();
 		this.app.view.id = 'igeFrontBuffer';
 		document.getElementById('game-div').appendChild(this.app.view);
-		ige.createFrontBuffer(true);
 		// PIXI.settings.PRECISION_FRAGMENT = 'highp';
 		this.app.renderer.autoDensity = true;
 		this.initialWindowWidth = 800;

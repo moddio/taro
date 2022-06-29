@@ -38,8 +38,13 @@ var Player = IgeEntity.extend({
 				self.addComponent(ControlComponent);
 
 				// mouse move listener
-				ige.client.vp1.mouseMove(function (event, control) {
-					self.control.mouseMove();
+				ige.input.on('pointermove', function (point) {
+					if (ige.client.myPlayer) {
+						self.control.newMousePosition = [
+							point.x,
+							point.y
+						];
+					}
 				});
 
 				this.setChatMute(this._stats.banChat);
