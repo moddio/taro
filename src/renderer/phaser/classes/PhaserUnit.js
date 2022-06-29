@@ -124,6 +124,27 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.chat = new PhaserChatBubble(this.scene, text, this);
         }
     };
+    PhaserUnit.prototype.destroy = function () {
+        var _this = this;
+        if (this.chat)
+            this.chat.destroy();
+        // release all instantiated attribute bars
+        this.attributes.forEach(function (a) {
+            PhaserAttributeBar.release(a);
+        });
+        this.attributes.length = 0;
+        this.attributes = null;
+        this.label = null;
+        this.sprite = null;
+        Object.keys(this.evtListeners).forEach(function (key) {
+            _this.entity.off(key, _this.evtListeners[key]);
+            delete _this.evtListeners[key];
+        });
+        this.gameObject.destroy();
+        this.gameObject = null;
+        this.evtListeners = null;
+        this.entity = null;
+    };
     return PhaserUnit;
 }(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserUnit.js.map

@@ -157,6 +157,31 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}
 	}
 
+	protected destroy (): void {
+		if (this.chat) this.chat.destroy();
+
+		// release all instantiated attribute bars
+		this.attributes.forEach((a) => {
+			PhaserAttributeBar.release(a);
+		});
+		this.attributes.length = 0;
+		this.attributes = null;
+
+		this.label = null;
+		this.sprite = null;
+
+		Object.keys(this.evtListeners).forEach((key) => {
+			this.entity.off(key, this.evtListeners[key]);
+			delete this.evtListeners[key];
+		});
+
+		this.gameObject.destroy();
+
+		this.gameObject = null;
+		this.evtListeners = null;
+		this.entity = null;
+	}
+
 	/*update (/*time: number, delta: number*//*): void {
 
 		/*const unit = this.unit;
