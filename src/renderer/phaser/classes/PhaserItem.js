@@ -19,10 +19,6 @@ var PhaserItem = /** @class */ (function (_super) {
         var _this = _super.call(this, scene, entity, "item/".concat(entity._stats.itemTypeId)) || this;
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
-        Object.assign(_this.evtListeners, {
-            'hide': entity.on('hide', _this.hide, _this),
-            'show': entity.on('show', _this.show, _this)
-        });
         return _this;
     }
     PhaserItem.prototype.transform = function (data) {
@@ -31,12 +27,6 @@ var PhaserItem = /** @class */ (function (_super) {
     };
     PhaserItem.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);
-    };
-    PhaserItem.prototype.hide = function () {
-        this.sprite.setActive(false).setVisible(false);
-    };
-    PhaserItem.prototype.show = function () {
-        this.sprite.setActive(true).setVisible(true);
     };
     return PhaserItem;
 }(PhaserAnimatedEntity));

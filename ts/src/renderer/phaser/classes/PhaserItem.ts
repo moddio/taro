@@ -15,11 +15,6 @@ class PhaserItem extends PhaserAnimatedEntity {
 			translate.y,
 			[ this.sprite ]
 		);
-
-		Object.assign(this.evtListeners, {
-			'hide': entity.on('hide', this.hide, this),
-			'show': entity.on('show', this.show, this)
-		});
 	}
 
 	protected transform (data: {
@@ -36,13 +31,5 @@ class PhaserItem extends PhaserAnimatedEntity {
 		y: number
 	}): void {
 		this.sprite.setScale(data.x, data.y);
-	}
-
-	protected hide (): void {
-		this.sprite.setActive(false).setVisible(false);
-	}
-
-	protected show (): void {
-		this.sprite.setActive(true).setVisible(true);
 	}
 }

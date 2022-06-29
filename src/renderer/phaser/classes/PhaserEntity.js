@@ -6,11 +6,19 @@ var PhaserEntity = /** @class */ (function () {
         Object.assign(this.evtListeners, {
             transform: entity.on('transform', this.transform, this),
             scale: entity.on('scale', this.scale, this),
-            destroy: entity.on('destroy', this.destroy, this)
+            destroy: entity.on('destroy', this.destroy, this),
+            hide: entity.on('hide', this.hide, this),
+            show: entity.on('show', this.show, this)
         });
     }
     PhaserEntity.prototype.transform = function (data) { };
     PhaserEntity.prototype.scale = function (data) { };
+    PhaserEntity.prototype.hide = function () {
+        this.gameObject.setActive(false);
+    };
+    PhaserEntity.prototype.show = function () {
+        this.gameObject.setActive(true);
+    };
     PhaserEntity.prototype.destroy = function () {
         var _this = this;
         Object.keys(this.evtListeners).forEach(function (key) {

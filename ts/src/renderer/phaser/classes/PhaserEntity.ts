@@ -10,7 +10,10 @@ class PhaserEntity {
 		Object.assign(this.evtListeners, {
 			transform: entity.on('transform', this.transform, this),
 			scale: entity.on('scale', this.scale, this),
-			destroy: entity.on('destroy', this.destroy, this)
+			destroy: entity.on('destroy', this.destroy, this),
+			hide: entity.on('hide', this.hide, this),
+			show: entity.on('show', this.show, this)
+
 		});
 	}
 
@@ -24,6 +27,14 @@ class PhaserEntity {
 		x: number,
 		y: number
 	}): void { }
+
+	protected hide (): void {
+		this.gameObject.setActive(false);
+	}
+
+	protected show (): void {
+		this.gameObject.setActive(true);
+	}
 
 	protected destroy (): void {
 

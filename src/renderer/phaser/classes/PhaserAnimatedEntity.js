@@ -30,6 +30,14 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     PhaserAnimatedEntity.prototype.playAnimation = function (animationId) {
         this.sprite.play("".concat(this.key, "/").concat(animationId));
     };
+    PhaserAnimatedEntity.prototype.hide = function () {
+        _super.prototype.hide.call(this);
+        this.sprite.setVisible(false);
+    };
+    PhaserAnimatedEntity.prototype.show = function () {
+        _super.prototype.show.call(this);
+        this.sprite.setVisible(true);
+    };
     PhaserAnimatedEntity.prototype.destroy = function () {
         this.sprite = null;
         _super.prototype.destroy.call(this);

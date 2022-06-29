@@ -123,7 +123,6 @@ var Item = IgeEntityPhysics.extend({
 			if (ige.isClient) {
 				this.emit('show');
 				self.updateTexture();
-				self.mount(ige.pixi.world);
 			}
 		} else {
 			ige.devLog('hide & destroyBody.');
@@ -909,17 +908,6 @@ var Item = IgeEntityPhysics.extend({
 
 							// attaching entities
 							self._scaleBox2dBody(newValue);
-
-							// for (var entityId in attachedEntities) {
-							// 	var entity = ige.$(entityId);
-							// 	// attaching item to owner
-							// 	if (entity && entity._category == 'unit') {
-							// 		var owner = self.getOwnerUnit();
-							// 		if (owner.id() == entity.id()) {
-							// 			self.mount(owner._pixiTexture);
-							// 		}
-							// 	}
-							// }
 						}
 						break;
 

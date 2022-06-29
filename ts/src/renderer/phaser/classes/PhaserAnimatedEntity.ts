@@ -23,6 +23,16 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		this.sprite.play(`${this.key}/${animationId}`);
 	}
 
+	protected hide (): void {
+		super.hide();
+		this.sprite.setVisible(false);
+	}
+
+	protected show (): void {
+		super.show();
+		this.sprite.setVisible(true);
+	}
+
 	protected destroy (): void {
 
 		this.sprite = null;
