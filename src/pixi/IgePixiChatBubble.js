@@ -73,7 +73,6 @@ var IgePixiChatBubble = IgeEntity.extend({
 		container.y = offset;
 		this._pixiContainer = container;
 		this.scaleTo(1 / camera.scale.x, 1 / camera.scale.y, 1);
-		// ige.pixi.trackEntityById[this._id] = container;
 		this.mount(owner._pixiContainer);
 
 		return this;
@@ -158,7 +157,7 @@ var IgePixiChatBubble = IgeEntity.extend({
 		if (this._pixiContainer && !this._pixiContainer._destroyed) {
 			this._pixiContainer.destroy(true);
 			this._destroyed = true;
-			delete ige.pixi.trackEntityById[this._id];
+			delete ige.entitiesToRender.trackEntityById[this._id];
 		}
 		IgeEntity.prototype.destroy.call(this);
 	}

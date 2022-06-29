@@ -13,12 +13,11 @@ $(document).mousedown(function() {
 
 const statsPanels = {}; // will we need this?
 
-const Client = IgeClass.extend({
+const Client = IgeEventingClass.extend({
 	classId: 'Client',
 
 	init: function() {
 		//
-
 		this.data = [];
 		this.previousScore = 0;
 		this.host = window.isStandalone ? 'https://www.modd.io' : '';
@@ -65,6 +64,8 @@ const Client = IgeClass.extend({
 		this.resolution = 0; //old comment => 'autosize'
 		this.scaleMode = 0; //old comment => 'none'
 		this.isActiveTab = true;
+
+		this.isZooming = false;
 
 		this._trackTranslateSmoothing = 15;
 		this.inactiveTabEntityStream = [];
@@ -116,7 +117,7 @@ const Client = IgeClass.extend({
 
 		// add utility
 		this.implement(ClientNetworkEvents);
-		ige.addComponent(IgeInitPixi);
+
 
 		$('#dev-error-button').on('click', () => {
 			$('#error-log-modal').modal('show');
@@ -183,6 +184,9 @@ const Client = IgeClass.extend({
 
 		promise.then((game) => {
 			ige.game.data = game.data;
+			// let's try here
+			ige.addComponent(IgeInitPixi);
+			ige.entitiesToRender = new EntitiesToRender();
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
 			ige.addComponent(IgeNetIoComponent);

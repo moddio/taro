@@ -37,7 +37,7 @@ var Debris = IgeEntityPhysics.extend({
 				rowCount: cellSheet[2]
 			};
 			this.entityId = entityIdFromServer;
-			this.createPixiTexture(self._stats.gid - cellSheet[3]);
+			this.createTexture(self._stats.gid - cellSheet[3]);
 			this.mount(ige.pixi.world);
 			// ige.pixi.world.addChild(this._pixiTexture);
 			// Define the texture this entity will use
