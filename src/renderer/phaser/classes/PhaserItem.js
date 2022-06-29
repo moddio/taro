@@ -15,49 +15,29 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserItem = /** @class */ (function (_super) {
     __extends(PhaserItem, _super);
-    function PhaserItem(scene, item) {
-        var _this = _super.call(this, scene) || this;
-        _this.item = item;
-        var key = "item/".concat(item._stats.itemTypeId);
-        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
-        _this.add(sprite);
-        scene.add.existing(_this);
-        _this.hide = item.on('hide', function () {
-            _this.sprite.setActive(false).setVisible(false);
+    function PhaserItem(scene, entity) {
+        var _this = _super.call(this, scene, entity, "item/".concat(entity._stats.itemTypeId)) || this;
+        var translate = entity._translate;
+        _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        Object.assign(_this.evtListeners, {
+            'hide': entity.on('hide', _this.hide, _this),
+            'show': entity.on('show', _this.show, _this)
         });
-        _this.show = item.on('show', function () {
-            _this.sprite.setActive(true).setVisible(true);
-        });
-        _this.playAnimationListener =
-            item.on('play-animation', function (animationId) {
-                console.log('PhaserItem play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
-                sprite.play("".concat(key, "/").concat(animationId));
-            });
-        scene.events.on('update', _this.update, _this);
         return _this;
     }
-    PhaserItem.prototype.update = function ( /*time: number, delta: number*/) {
-        var item = this.item;
-        var container = item._pixiContainer;
-        var texture = item._pixiTexture;
-        if (item._destroyed || container._destroyed) {
-            item.off('hide', this.hide);
-            this.hide = null;
-            item.off('show', this.show);
-            this.show = null;
-            item.off('play-animation', this.playAnimationListener);
-            this.playAnimationListener = null;
-            this.scene.events.off('update', this.update, this);
-            this.sprite = null;
-            this.destroy();
-            return;
-        }
-        this.x = container.x;
-        this.y = container.y;
-        var sprite = this.sprite;
-        sprite.rotation = texture.rotation;
-        sprite.setScale(texture.scale.x, texture.scale.y);
+    PhaserItem.prototype.transform = function (data) {
+        this.gameObject.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
+    };
+    PhaserItem.prototype.scale = function (data) {
+        this.sprite.setScale(data.x, data.y);
+    };
+    PhaserItem.prototype.hide = function () {
+        this.sprite.setActive(false).setVisible(false);
+    };
+    PhaserItem.prototype.show = function () {
+        this.sprite.setActive(true).setVisible(true);
     };
     return PhaserItem;
-}(Phaser.GameObjects.Container));
+}(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserItem.js.map

@@ -4,9 +4,7 @@ var Item = IgeEntityPhysics.extend({
 	init: function (data, entityIdFromServer) {
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer); // ensure that entityId is consistent between server & client
-		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
-		}
+
 		var self = this;
 		self._stats = {};
 		self.anchorOffset = { x: 0, y: 0, rotate: 0 };

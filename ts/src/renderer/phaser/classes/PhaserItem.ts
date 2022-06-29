@@ -1,71 +1,48 @@
-class PhaserItem extends Phaser.GameObjects.Container {
+class PhaserItem extends PhaserAnimatedEntity {
+	// can probably just be a sprite
+	protected gameObject: Phaser.GameObjects.Container;
+	protected entity: Item;
 
-	sprite: Phaser.GameObjects.Sprite;
+	constructor (
+		scene: Phaser.Scene,
+		entity: Item
+	) {
+		super(scene, entity, `item/${entity._stats.itemTypeId}`);
 
-	private playAnimationListener: EvtListener;
-	private hide: EvtListener;
-	private show: EvtListener;
+		const translate = entity._translate;
+		this.gameObject = scene.add.container(
+			translate.x,
+			translate.y,
+			[ this.sprite ]
+		);
 
-	constructor (scene: Phaser.Scene,
-				 private item: Item) {
-
-		super(scene);
-
-		const key = `item/${item._stats.itemTypeId}`;
-
-		const sprite = this.sprite = scene.add.sprite(0, 0, key);
-		this.add(sprite);
-
-		scene.add.existing(this);
-
-		this.hide = item.on('hide', () => {
-			this.sprite.setActive(false).setVisible(false);
+		Object.assign(this.evtListeners, {
+			'hide': entity.on('hide', this.hide, this),
+			'show': entity.on('show', this.show, this)
 		});
-
-		this.show = item.on('show', () => {
-			this.sprite.setActive(true).setVisible(true);
-		});
-
-		this.playAnimationListener =
-			item.on('play-animation', (animationId: string) => {
-				console.log('PhaserItem play-animation', `${key}/${animationId}`);  // TODO remove
-				sprite.play(`${key}/${animationId}`);
-			});
-
-		scene.events.on('update', this.update, this);
 	}
 
-	update (/*time: number, delta: number*/): void {
+	protected transform (data: {
+		x: number;
+		y: number;
+		rotation: number
+	}): void {
+		this.gameObject.setPosition(data.x, data.y);
+		this.sprite.rotation = data.rotation;
+	}
 
-		const item = this.item;
-		const container = item._pixiContainer;
-		const texture = item._pixiTexture;
+	protected scale (data: {
+		x: number;
+		y: number
+	}): void {
+		this.sprite.setScale(data.x, data.y);
+	}
 
-		if (item._destroyed || container._destroyed) {
+	protected hide (): void {
+		this.sprite.setActive(false).setVisible(false);
+	}
 
-			item.off('hide', this.hide);
-			this.hide = null;
-
-			item.off('show', this.show);
-			this.show = null;
-
-			item.off('play-animation', this.playAnimationListener);
-			this.playAnimationListener = null;
-
-			this.scene.events.off('update', this.update, this);
-
-			this.sprite = null;
-
-			this.destroy();
-
-			return;
-		}
-
-		this.x = container.x;
-		this.y = container.y;
-
-		const sprite = this.sprite;
-		sprite.rotation = texture.rotation;
-		sprite.setScale(texture.scale.x, texture.scale.y);
+	protected show (): void {
+		this.sprite.setActive(true).setVisible(true);
 	}
 }
