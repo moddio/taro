@@ -15,96 +15,26 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserUnit = /** @class */ (function (_super) {
     __extends(PhaserUnit, _super);
-    function PhaserUnit(scene, unit) {
-        var _this = _super.call(this, scene, unit, "unit/".concat(unit._stats.type)) || this;
-        _this.unit = unit;
+    function PhaserUnit(scene, entity) {
+        var _this = _super.call(this, scene, entity, "unit/".concat(entity._stats.type)) || this;
         _this.attributes = [];
         _this.scene = scene;
-        var translate = unit._translate;
+        var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
-        var attributes = _this.attributes;
+        //const attributes = this.attributes;
         Object.assign(_this.evtListeners, {
-            followListener: unit.on('follow', _this.followListener, _this),
-            stopFollowListener: unit.on('stop-follow', _this.stopFollowListener, _this),
-            updateLabelListener: unit.on('update-label', _this.updateLabelListener, _this),
-            hideLabelListener: unit.on('hide-label', _this.hideLabelListener, _this),
-            renderAttributesListener: unit.on('render-attributes', _this.renderAttributesListener, _this),
-            updateAttributeListener: unit.on('update-attribute', _this.updateAttributeListener, _this),
+            followListener: entity.on('follow', _this.followListener, _this),
+            stopFollowListener: entity.on('stop-follow', _this.stopFollowListener, _this),
+            updateLabelListener: entity.on('update-label', _this.updateLabelListener, _this),
+            hideLabelListener: entity.on('hide-label', _this.hideLabelListener, _this),
+            renderAttributesListener: entity.on('render-attributes', _this.renderAttributesListener, _this),
+            updateAttributeListener: entity.on('update-attribute', _this.updateAttributeListener, _this),
+            renderChatListener: entity.on('render-chat-bubble', _this.renderChatListener, _this),
         });
-        /*this.renderAttributesListener =
-            unit.on('render-attributes', (data: {
-                attrs: AttributeData[]
-            }) => {
-                console.log('PhaserUnit render-attributes', data); // TODO remove
-
-                // release all existing attribute bars
-                attributes.forEach((a) => {
-                    PhaserAttributeBar.release(a);
-                });
-                attributes.length = 0;
-
-                // add attribute bars based on passed data
-                data.attrs.forEach((ad) => {
-                    const a = PhaserAttributeBar.get(this);
-                    a.render(ad);
-                    attributes.push(a);
-                });
-            });*/
-        _this.updateAttributeListener =
-            unit.on('update-attribute', function (data) {
-                console.log('PhaserUnit update-attribute', data); // TODO remove
-                var a;
-                var i = 0;
-                for (; i < attributes.length; i++) {
-                    if (attributes[i].name === data.attr.type) {
-                        a = attributes[i];
-                        break;
-                    }
-                }
-                if (!data.shouldRender) {
-                    if (a) {
-                        PhaserAttributeBar.release(a);
-                        attributes.splice(i, 1);
-                    }
-                    return;
-                }
-                if (!a) {
-                    a = PhaserAttributeBar.get(_this);
-                    attributes.push(a);
-                }
-                a.render(data.attr);
-            });
         return _this;
-        /*this.renderChatListener = unit.on('render-chat-bubble', (text) => {
-            console.log('create-chat', text); // TODO remove
-            if (this.chat) {
-                this.chat.showMessage(text);
-            } else {
-                this.chat = new PhaserChatBubble(scene, text, this);
-            }
-        });*/
-        /*this.renderChatBubble =
-            unit.on('render-chat-bubble', (data: {
-                attrs: AttributeData[]
-            }) => {
-                console.log('PhaserUnit render-attributes', data); // TODO remove
-
-                // release all existing attribute bars
-                attributes.forEach((a) => {
-                    PhaserAttributeBar.release(a);
-                });
-                attributes.length = 0;
-
-                // add attribute bars based on passed data
-                data.attrs.forEach((ad) => {
-                    const a = PhaserAttributeBar.get(this);
-                    a.render(ad);
-                    attributes.push(a);
-                });
-            });*/
     }
     PhaserUnit.prototype.transform = function (data) {
         this.gameObject.setPosition(data.x, data.y);
@@ -114,7 +44,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         this.sprite.setScale(data.x, data.y);
     };
     PhaserUnit.prototype.followListener = function () {
-        console.log('PhaserUnit follow', this.unit.id()); // TODO remove
+        console.log('PhaserUnit follow', this.entity.id()); // TODO remove
         var camera = this.scene.cameras.main;
         if (camera._follow === this.gameObject) {
             return;
@@ -122,11 +52,11 @@ var PhaserUnit = /** @class */ (function (_super) {
         camera.startFollow(this.gameObject, true, 0.05, 0.05);
     };
     PhaserUnit.prototype.stopFollowListener = function () {
-        console.log('PhaserUnit stop-follow', this.unit.id()); // TODO remove
+        console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
         this.scene.cameras.main.stopFollow();
     };
     PhaserUnit.prototype.updateLabelListener = function (config) {
-        console.log('PhaserUnit update-label', this.unit.id()); // TODO remove
+        console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
         var label = this.label;
         label.visible = true;
         label.setFontFamily('Verdana');
@@ -142,7 +72,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         label.setScale(1.25);
     };
     PhaserUnit.prototype.hideLabelListener = function () {
-        console.log('PhaserUnit hide-label', this.unit.id()); // TODO remove
+        console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
         this.label.visible = false;
     };
     PhaserUnit.prototype.renderAttributesListener = function (data) {
@@ -184,6 +114,15 @@ var PhaserUnit = /** @class */ (function (_super) {
             attributes.push(a);
         }
         a.render(data.attr);
+    };
+    PhaserUnit.prototype.renderChatListener = function (text) {
+        console.log('create-chat', text); // TODO remove
+        if (this.chat) {
+            this.chat.showMessage(text);
+        }
+        else {
+            this.chat = new PhaserChatBubble(this.scene, text, this);
+        }
     };
     return PhaserUnit;
 }(PhaserAnimatedEntity));

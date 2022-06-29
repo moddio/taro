@@ -1,27 +1,22 @@
 class PhaserUnit extends PhaserAnimatedEntity {
 
+	scene: Phaser.Scene;
 	sprite: Phaser.GameObjects.Sprite;
 	label: Phaser.GameObjects.Text;
 	chat: PhaserChatBubble;
 
 	gameObject: Phaser.GameObjects.Container;
-
 	attributes: PhaserAttributeBar[] = [];
 
-	scene: Phaser.Scene;
 
-	//private renderAttributesListener: EvtListener;
-	//private updateAttributeListener: EvtListener;
-
-	private renderChatListener: EvtListener;
 
 	constructor (scene: Phaser.Scene,
-				 private unit: Unit) {
+				 entity: Unit) {
 
-		super(scene, unit, `unit/${unit._stats.type}`);
+		super(scene, entity, `unit/${entity._stats.type}`);
 
 		this.scene = scene;
-		const translate = unit._translate;
+		const translate = entity._translate;
 		this.gameObject = scene.add.container(
 			translate.x,
 			translate.y,
@@ -32,93 +27,17 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		label.setOrigin(0.5);
 		this.gameObject.add(label);
 
-		const attributes = this.attributes;
+		//const attributes = this.attributes;
 
 		Object.assign(this.evtListeners, {
-			followListener: unit.on('follow', this.followListener, this),
-			stopFollowListener: unit.on('stop-follow', this.stopFollowListener, this),
-			updateLabelListener: unit.on('update-label', this.updateLabelListener, this),
-			hideLabelListener: unit.on('hide-label', this.hideLabelListener, this),
-			renderAttributesListener: unit.on('render-attributes', this.renderAttributesListener, this),
-			updateAttributeListener: unit.on('update-attribute', this.updateAttributeListener, this),
+			followListener: entity.on('follow', this.followListener, this),
+			stopFollowListener: entity.on('stop-follow', this.stopFollowListener, this),
+			updateLabelListener: entity.on('update-label', this.updateLabelListener, this),
+			hideLabelListener: entity.on('hide-label', this.hideLabelListener, this),
+			renderAttributesListener: entity.on('render-attributes', this.renderAttributesListener, this),
+			updateAttributeListener: entity.on('update-attribute', this.updateAttributeListener, this),
+			renderChatListener: entity.on('render-chat-bubble', this.renderChatListener, this),
 		});
-
-		/*this.renderAttributesListener =
-			unit.on('render-attributes', (data: {
-				attrs: AttributeData[]
-			}) => {
-				console.log('PhaserUnit render-attributes', data); // TODO remove
-
-				// release all existing attribute bars
-				attributes.forEach((a) => {
-					PhaserAttributeBar.release(a);
-				});
-				attributes.length = 0;
-
-				// add attribute bars based on passed data
-				data.attrs.forEach((ad) => {
-					const a = PhaserAttributeBar.get(this);
-					a.render(ad);
-					attributes.push(a);
-				});
-			});*/
-
-		this.updateAttributeListener =
-			unit.on('update-attribute', (data: {
-				attr: AttributeData;
-				shouldRender: boolean;
-			}) => {
-				console.log('PhaserUnit update-attribute', data); // TODO remove
-				let a: PhaserAttributeBar;
-				let i = 0;
-				for (; i < attributes.length; i++) {
-					if (attributes[i].name === data.attr.type) {
-						a = attributes[i];
-						break;
-					}
-				}
-				if (!data.shouldRender) {
-					if (a) {
-						PhaserAttributeBar.release(a);
-						attributes.splice(i, 1);
-					}
-					return;
-				}
-				if (!a) {
-					a = PhaserAttributeBar.get(this);
-					attributes.push(a);
-				}
-				a.render(data.attr);
-			});
-
-		/*this.renderChatListener = unit.on('render-chat-bubble', (text) => {
-			console.log('create-chat', text); // TODO remove
-			if (this.chat) {
-				this.chat.showMessage(text);
-			} else {
-				this.chat = new PhaserChatBubble(scene, text, this);
-			}
-		});*/
-
-		/*this.renderChatBubble =
-			unit.on('render-chat-bubble', (data: {
-				attrs: AttributeData[]
-			}) => {
-				console.log('PhaserUnit render-attributes', data); // TODO remove
-
-				// release all existing attribute bars
-				attributes.forEach((a) => {
-					PhaserAttributeBar.release(a);
-				});
-				attributes.length = 0;
-
-				// add attribute bars based on passed data
-				data.attrs.forEach((ad) => {
-					const a = PhaserAttributeBar.get(this);
-					a.render(ad);
-					attributes.push(a);
-				});
-			});*/
 	}
 
 	protected transform (data: {
@@ -138,7 +57,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}
 
 	private followListener (): void {
-		console.log('PhaserUnit follow', this.unit.id()); // TODO remove
+		console.log('PhaserUnit follow', this.entity.id()); // TODO remove
 		const camera = this.scene.cameras.main as Phaser.Cameras.Scene2D.Camera & {
 				_follow: Phaser.GameObjects.GameObject
 			};
@@ -149,7 +68,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}
 
 	private stopFollowListener (): void {
-		console.log('PhaserUnit stop-follow', this.unit.id()); // TODO remove
+		console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
 		this.scene.cameras.main.stopFollow();
 	}
 
@@ -158,7 +77,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		bold?: boolean;
 		color?: string;
 	}): void {
-		console.log('PhaserUnit update-label', this.unit.id()); // TODO remove
+		console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
 		const label = this.label;
 		label.visible = true;
 
@@ -179,7 +98,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}
 
 	private hideLabelListener (): void {
-		console.log('PhaserUnit hide-label', this.unit.id()); // TODO remove
+		console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
 		this.label.visible = false;
 	}
 
@@ -227,6 +146,15 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			attributes.push(a);
 		}
 		a.render(data.attr);
+	}
+
+	private renderChatListener (text): void {
+		console.log('create-chat', text); // TODO remove
+		if (this.chat) {
+			this.chat.showMessage(text);
+		} else {
+			this.chat = new PhaserChatBubble(this.scene, text, this);
+		}
 	}
 
 	/*update (/*time: number, delta: number*//*): void {
