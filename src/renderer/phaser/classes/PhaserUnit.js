@@ -39,6 +39,10 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.transform = function (data) {
         this.gameObject.setPosition(data.x, data.y);
         this.sprite.rotation = data.rotation;
+        if (this.chat)
+            this.chat.update(this.gameObject.x, this.gameObject.y);
+        var flip = this.entity._stats.flip;
+        this.sprite.setFlip(flip % 2 === 1, flip > 1);
     };
     PhaserUnit.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);

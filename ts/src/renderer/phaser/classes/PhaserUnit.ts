@@ -47,6 +47,10 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}): void {
 		this.gameObject.setPosition(data.x, data.y);
 		this.sprite.rotation = data.rotation;
+		if (this.chat) this.chat.update(this.gameObject.x, this.gameObject.y);
+
+		const flip = this.entity._stats.flip;
+		this.sprite.setFlip(flip % 2 === 1, flip > 1);
 	}
 
 	protected scale (data: {
@@ -181,69 +185,5 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.evtListeners = null;
 		this.entity = null;
 	}
-
-	/*update (/*time: number, delta: number*//*): void {
-
-		/*const unit = this.unit;
-		const container = unit._pixiContainer;
-		const texture = unit._pixiTexture;*/
-
-	/*if (unit._destroyed || container._destroyed) {
-
-			/*unit.off('follow', this.followListener);
-			this.followListener = null;
-
-			unit.off('stop-follow', this.stopFollowListener);
-			this.stopFollowListener = null;
-
-			unit.off('play-animation', this.playAnimationListener);
-			this.playAnimationListener = null;
-
-			unit.off('update-label', this.updateLabelListener);
-			this.updateLabelListener = null;
-
-			unit.off('hide-label', this.hideLabelListener);
-			this.hideLabelListener = null;
-
-			unit.off('render-attributes', this.renderAttributesListener);
-			this.renderAttributesListener = null;
-
-			unit.off('update-attribute', this.updateAttributeListener);
-			this.updateAttributeListener = null;
-
-			unit.off('render-chat-bubble', this.renderChatListener);
-			this.renderChatListener = null;*/
-	/*if (this.chat) this.chat.destroy();
-
-			// release all instantiated attribute bars
-			/*this.attributes.forEach((a) => {
-				PhaserAttributeBar.release(a);
-			});
-			this.attributes.length = 0;
-			this.attributes = null;*/
-
-	//this.scene.events.off('update', this.update, this);
-
-	/*this.label = null;
-			this.sprite = null;
-
-			this.destroy();
-
-			return;
-		}*/
-
-	/*this.gameObject.x = container.x;
-		this.gameObject.y = container.y;
-
-		//if (this.chat) this.chat.update(this.x, this.y);
-
-		const sprite = this.sprite;
-		sprite.rotation = texture.rotation;
-
-		const bounds = unit._bounds2d;
-		const flip = unit._stats.flip;
-		sprite.setDisplaySize(bounds.x, bounds.y);
-		sprite.setFlip(flip % 2 === 1, flip > 1);*/
-	//}
 }
 
