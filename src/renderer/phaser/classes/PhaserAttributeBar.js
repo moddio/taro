@@ -15,19 +15,14 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserAttributeBar = /** @class */ (function (_super) {
     __extends(PhaserAttributeBar, _super);
-    function PhaserAttributeBar() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    /*private constructor(private unit: PhaserUnit) {
-
-        const scene = unit.scene;
-
-        super(scene);
-
-        const bar = this.bar = scene.add.graphics();
-        this.add(bar);
-
-        const text = this.text = scene.add.text(0, 0, '', {
+    function PhaserAttributeBar(unit) {
+        var _this = this;
+        var scene = unit.scene;
+        _this = _super.call(this, scene) || this;
+        _this.unit = unit;
+        var bar = _this.bar = scene.add.graphics();
+        _this.add(bar);
+        var text = _this.text = scene.add.text(0, 0, '', {
             fontFamily: 'Arial',
             color: '#000000',
             align: 'center'
@@ -35,10 +30,33 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         text.setFontStyle('bold');
         text.setFontSize(14);
         text.setOrigin(0.5);
-        this.add(text);
-
-        unit.add(this);
-    }*/
+        _this.add(text);
+        unit.gameObject.add(_this);
+        return _this;
+    }
+    PhaserAttributeBar.get = function (unit) {
+        if (!this.pool) {
+            this.pool = unit.scene.make.group({});
+        }
+        var bar = this.pool.getFirstDead(false);
+        if (!bar) {
+            bar = new PhaserAttributeBar(unit);
+            this.pool.add(bar);
+        }
+        bar.setActive(true);
+        bar.unit = unit;
+        unit.gameObject.add(bar);
+        bar.setVisible(true);
+        return bar;
+    };
+    PhaserAttributeBar.release = function (bar) {
+        bar.resetFadeOut();
+        bar.setVisible(false);
+        bar.unit.gameObject.remove(bar);
+        bar.unit = null;
+        bar.name = null;
+        bar.setActive(false);
+    };
     PhaserAttributeBar.prototype.render = function (data) {
         this.name = data.type || data.key;
         var bar = this.bar;
@@ -56,11 +74,10 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         text.setText(data.displayValue ?
             (typeof data.value === 'number' ?
                 data.value.toFixed(0) : '0') : '');
-        /*const sprite = this.unit.sprite;
+        var sprite = this.unit.sprite;
         this.y = 25 +
             Math.max(sprite.displayHeight, sprite.displayWidth) / 2
-            + data.index * h*1.1;
-        */
+            + data.index * h * 1.1;
         this.resetFadeOut();
         if ((data.showWhen instanceof Array &&
             data.showWhen.indexOf('valueChanges') > -1) ||
@@ -79,17 +96,15 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
                 duration: 500,
                 onComplete: function () {
                     _this.fadeTween = null;
-                    /*const unit = this.unit;
+                    var unit = _this.unit;
                     if (unit) {
-
-                        const attributes = unit.attributes;
-                        const index = attributes.indexOf(this);
-
+                        var attributes = unit.attributes;
+                        var index = attributes.indexOf(_this);
                         if (index !== -1) {
                             attributes.splice(index, 1);
-                            PhaserAttributeBar.release(this);
+                            PhaserAttributeBar.release(_this);
                         }
-                    }*/
+                    }
                 }
             });
         });
