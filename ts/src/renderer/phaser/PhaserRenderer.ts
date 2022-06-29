@@ -1,6 +1,4 @@
-class PhaserRenderer {
-
-	private game: Phaser.Game;
+class PhaserRenderer extends Phaser.Game {
 
 	constructor () {
 
@@ -8,14 +6,16 @@ class PhaserRenderer {
 			localStorage.getItem('forceCanvas')
 		) || {};
 
-		this.game = new Phaser.Game({
+		super({
 			type: forceCanvas[gameId] ?
 				Phaser.CANVAS : Phaser.AUTO,
 			scale: {
 				width: ige.pixi.initialWindowWidth,
 				height: ige.pixi.initialWindowHeight,
 				parent: 'game-div',
-				mode: Phaser.Scale.ScaleModes.RESIZE
+				mode: Phaser.Scale.ScaleModes.RESIZE,
+				autoRound: true,
+				resizeInterval: 100
 			},
 			render: {
 				pixelArt: false,
@@ -39,6 +39,6 @@ class PhaserRenderer {
 		});
 
 		// Ask the input component to setup any listeners it has
-		ige.input.setupListeners(this.game.canvas);
+		ige.input.setupListeners(this.canvas);
 	}
 }
