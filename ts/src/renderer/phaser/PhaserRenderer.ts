@@ -2,18 +2,20 @@ class PhaserRenderer extends Phaser.Game {
 
 	constructor () {
 
-		/*const forceCanvas = JSON.parse(
+		const forceCanvas = JSON.parse(
 			localStorage.getItem('forceCanvas')
-		) || {};*/
+		) || {};
 
 		super({
-			type: /*forceCanvas[gameId] ?*/
-				Phaser.CANVAS /*: Phaser.AUTO*/,
+			type: forceCanvas[gameId] ?
+				Phaser.CANVAS : Phaser.AUTO,
 			scale: {
 				width: ige.pixi.initialWindowWidth,
 				height: ige.pixi.initialWindowHeight,
 				parent: 'game-div',
-				mode: Phaser.Scale.ScaleModes.RESIZE
+				mode: Phaser.Scale.ScaleModes.RESIZE,
+				autoRound: true,
+				resizeInterval: 100
 			},
 			render: {
 				pixelArt: false,

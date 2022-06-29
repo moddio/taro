@@ -16,16 +16,18 @@ var __extends = (this && this.__extends) || (function () {
 var PhaserRenderer = /** @class */ (function (_super) {
     __extends(PhaserRenderer, _super);
     function PhaserRenderer() {
-        /*const forceCanvas = JSON.parse(
-            localStorage.getItem('forceCanvas')
-        ) || {};*/
-        var _this = _super.call(this, {
-            type: /*forceCanvas[gameId] ?*/ Phaser.CANVAS /*: Phaser.AUTO*/,
+        var _this = this;
+        var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
+        _this = _super.call(this, {
+            type: forceCanvas[gameId] ?
+                Phaser.CANVAS : Phaser.AUTO,
             scale: {
                 width: ige.pixi.initialWindowWidth,
                 height: ige.pixi.initialWindowHeight,
                 parent: 'game-div',
-                mode: Phaser.Scale.ScaleModes.RESIZE
+                mode: Phaser.Scale.ScaleModes.RESIZE,
+                autoRound: true,
+                resizeInterval: 100
             },
             render: {
                 pixelArt: false,
