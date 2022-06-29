@@ -1097,46 +1097,6 @@ var IgeEngine = IgeEntity.extend({
 	},
 
 	/**
-	 * Creates a front-buffer or "drawing surface" for the renderer.
-	 *
-	 * @param {Boolean} autoSize Determines if the canvas will auto-resize
-	 * when the browser window changes dimensions. If true the canvas will
-	 * automatically fill the window when it is resized.
-	 *
-	 * @param {Boolean=} dontScale If set to true, IGE will ignore device
-	 * pixel ratios when setting the width and height of the canvas and will
-	 * therefore not take into account "retina", high-definition displays or
-	 * those whose pixel ratio is different from 1 to 1.
-	 */
-	createFrontBuffer: function (autoSize, dontScale) {
-		var self = this;
-		if (this.isClient) {
-			if (!this._canvas) {
-				this._createdFrontBuffer = true;
-				this._pixelRatioScaling = !dontScale;
-
-				this._frontBufferSetup(autoSize, dontScale);
-			}
-		}
-	},
-
-	_frontBufferSetup: function (autoSize, dontScale) {
-		// Create a new canvas element to use as the
-		// rendering front-buffer
-		if (ige.isServer) {
-			// var tempCanvas = document.createElement('canvas');
-			// tempCanvas.id = 'igeFrontBuffer';
-			this.canvas(tempCanvas, autoSize);
-			document.getElementById('game-div').appendChild(tempCanvas);
-		} else {
-			var tempCanvas = document.getElementById('igeFrontBuffer');
-			this.canvas(tempCanvas, autoSize);
-		}
-
-		// Set the canvas element id
-	},
-
-	/**
 	 * Sets the canvas element that will be used as the front-buffer.
 	 * @param elem The canvas element.
 	 * @param autoSize If set to true, the engine will automatically size
@@ -1150,53 +1110,6 @@ var IgeEngine = IgeEntity.extend({
 		}
 		var contex = this._canvas.getContext('webgl2', { alpha: alpha }) || this._canvas.getContext('webgl', { alpha: alpha }) || this._canvas.getContext('2d', { alpha: alpha });
 		this._ctx = contex.canvas;
-	},
-
-	canvas: function (elem, autoSize) {
-		if (elem !== undefined) {
-			if (!this._canvas) {
-				// Setup front-buffer canvas element
-				this._canvas = elem;
-				this.getCtx();
-
-				// Handle pixel ratio settings
-				if (this._pixelRatioScaling) {
-					// Support high-definition devices and "retina" (stupid marketing name)
-					// displays by adjusting for device and back store pixels ratios
-					this._devicePixelRatio = window.devicePixelRatio || 1;
-					this._backingStoreRatio = this._ctx.webkitBackingStorePixelRatio ||
-						this._ctx.mozBackingStorePixelRatio ||
-						this._ctx.msBackingStorePixelRatio ||
-						this._ctx.oBackingStorePixelRatio ||
-						this._ctx.backingStorePixelRatio || 1;
-
-					this._deviceFinalDrawRatio = this._devicePixelRatio / this._backingStoreRatio;
-				} else {
-					// No auto-scaling
-					this._devicePixelRatio = 1;
-					this._backingStoreRatio = 1;
-					this._deviceFinalDrawRatio = 1;
-				}
-
-				if (autoSize) {
-					this._autoSize = autoSize;
-				}
-
-				// Add some event listeners even if autosize is off
-				window.addEventListener('resize', this._resizeEvent);
-
-				// Fire the resize event for the first time
-				// which sets up initial canvas dimensions
-				this._resizeEvent();
-				this.getCtx();
-				this._headless = false;
-
-				// Ask the input component to setup any listeners it has
-				this.input.setupListeners(this._canvas);
-			}
-		}
-
-		return this._canvas;
 	},
 
 	/**
