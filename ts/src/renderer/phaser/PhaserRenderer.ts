@@ -1,16 +1,14 @@
-class PhaserRenderer {
-
-	private game: Phaser.Game;
+class PhaserRenderer extends Phaser.Game {
 
 	constructor () {
 
-		const forceCanvas = JSON.parse(
+		/*const forceCanvas = JSON.parse(
 			localStorage.getItem('forceCanvas')
-		) || {};
+		) || {};*/
 
-		this.game = new Phaser.Game({
-			type: forceCanvas[gameId] ?
-				Phaser.CANVAS : Phaser.AUTO,
+		super({
+			type: /*forceCanvas[gameId] ?*/
+				Phaser.CANVAS /*: Phaser.AUTO*/,
 			scale: {
 				width: ige.pixi.initialWindowWidth,
 				height: ige.pixi.initialWindowHeight,
@@ -39,6 +37,6 @@ class PhaserRenderer {
 		});
 
 		// Ask the input component to setup any listeners it has
-		ige.input.setupListeners(this.game.canvas);
+		ige.input.setupListeners(this.canvas);
 	}
 }
