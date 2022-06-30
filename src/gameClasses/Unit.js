@@ -1138,7 +1138,7 @@ var Unit = IgeEntityPhysics.extend({
 		//     color = '#99FF00';
 		// }
 
-		self.unitNameLabel = new IgePixiFloatingText(self._stats.name, {
+		/*self.unitNameLabel = new IgePixiFloatingText(self._stats.name, {
 			shouldBeBold: isMyUnit,
 			parentUnit: self.id(),
 			gluedIndex: 0,
@@ -1146,7 +1146,7 @@ var Unit = IgeEntityPhysics.extend({
 		});
 		self.unitNameLabel._pixiText._style._fontWeight = 599; //recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
 
-		this._pixiContainer.addChild(self.unitNameLabel._pixiText);
+		this._pixiContainer.addChild(self.unitNameLabel._pixiText);*/
 
 		this.emit('update-label', {
 			text: self._stats.name,

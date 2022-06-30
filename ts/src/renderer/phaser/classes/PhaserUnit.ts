@@ -8,8 +8,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	gameObject: Phaser.GameObjects.Container;
 	attributes: PhaserAttributeBar[] = [];
 
-
-
 	constructor (scene: Phaser.Scene,
 				 entity: Unit) {
 
@@ -26,8 +24,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		const label = this.label = scene.add.text(0, 0, 'cccccc');
 		label.setOrigin(0.5);
 		this.gameObject.add(label);
-
-		//const attributes = this.attributes;
 
 		Object.assign(this.evtListeners, {
 			followListener: entity.on('follow', this.followListener, this),
@@ -174,16 +170,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.label = null;
 		this.sprite = null;
 
-		Object.keys(this.evtListeners).forEach((key) => {
-			this.entity.off(key, this.evtListeners[key]);
-			delete this.evtListeners[key];
-		});
-
-		this.gameObject.destroy();
-
-		this.gameObject = null;
-		this.evtListeners = null;
-		this.entity = null;
+		super.destroy();
 	}
 }
 

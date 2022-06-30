@@ -24,7 +24,6 @@ var PhaserUnit = /** @class */ (function (_super) {
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
-        //const attributes = this.attributes;
         Object.assign(_this.evtListeners, {
             followListener: entity.on('follow', _this.followListener, _this),
             stopFollowListener: entity.on('stop-follow', _this.stopFollowListener, _this),
@@ -129,7 +128,6 @@ var PhaserUnit = /** @class */ (function (_super) {
         }
     };
     PhaserUnit.prototype.destroy = function () {
-        var _this = this;
         if (this.chat)
             this.chat.destroy();
         // release all instantiated attribute bars
@@ -140,14 +138,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         this.attributes = null;
         this.label = null;
         this.sprite = null;
-        Object.keys(this.evtListeners).forEach(function (key) {
-            _this.entity.off(key, _this.evtListeners[key]);
-            delete _this.evtListeners[key];
-        });
-        this.gameObject.destroy();
-        this.gameObject = null;
-        this.evtListeners = null;
-        this.entity = null;
+        _super.prototype.destroy.call(this);
     };
     return PhaserUnit;
 }(PhaserAnimatedEntity));
