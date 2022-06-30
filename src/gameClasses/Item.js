@@ -153,7 +153,7 @@ var Item = IgeEntityPhysics.extend({
 				// mount texture on the unit in a correct position
 				if (ige.isClient) {
 					// avoid transforming box2d body by calling prototype
-					IgeEntity.prototype.mount.call(this, obj);
+					// IgeEntity.prototype.mount.call(this, obj);
 					var unitAnchorX = body.unitAnchor.x;
 					var unitAnchorY = body.unitAnchor.y;
 					IgeEntity.prototype.translateTo.call(this, unitAnchorX, (-1 * unitAnchorY), 0);
@@ -167,7 +167,7 @@ var Item = IgeEntityPhysics.extend({
 				this.width(body.width);
 				this.height(body.height);
 			}
-			IgeEntity.prototype.mount.call(this, obj);
+			if (ige.isServer) IgeEntity.prototype.mount.call(this, obj);
 		}
 	},
 
@@ -192,8 +192,9 @@ var Item = IgeEntityPhysics.extend({
 
 		self.show();
 		this.emit('show');
-
+		// leave because it is taro not renderer
 		self.updateLayer();
+		// leave because it updates state for animation
 		IgeEntity.prototype.updateTexture.call(this);
 	},
 
