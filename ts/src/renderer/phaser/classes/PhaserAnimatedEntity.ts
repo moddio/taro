@@ -25,6 +25,15 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		this.sprite.play(`${this.key}/${animationId}`);
 	}
 
+	protected transform (data: {
+		x: number;
+		y: number;
+		rotation: number
+	}): void {
+		this.sprite.setPosition(data.x, data.y);
+		this.sprite.rotation = data.rotation;
+	}
+
 	protected hide (): void {
 		super.hide();
 		this.sprite.setVisible(false);
@@ -35,6 +44,7 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		this.sprite.setVisible(true);
 	}
 
+	// considering making these setScale instead of setDisplaySize.
 	protected width (width: number) {
 		if (this.sprite?.displayHeight) {
 			this.sprite.setDisplaySize(width, this.sprite.displayHeight);

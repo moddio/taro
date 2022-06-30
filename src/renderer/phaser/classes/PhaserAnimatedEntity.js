@@ -32,6 +32,10 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     PhaserAnimatedEntity.prototype.playAnimation = function (animationId) {
         this.sprite.play("".concat(this.key, "/").concat(animationId));
     };
+    PhaserAnimatedEntity.prototype.transform = function (data) {
+        this.sprite.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
+    };
     PhaserAnimatedEntity.prototype.hide = function () {
         _super.prototype.hide.call(this);
         this.sprite.setVisible(false);
@@ -40,6 +44,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         _super.prototype.show.call(this);
         this.sprite.setVisible(true);
     };
+    // considering making these setScale instead of setDisplaySize.
     PhaserAnimatedEntity.prototype.width = function (width) {
         var _a;
         if ((_a = this.sprite) === null || _a === void 0 ? void 0 : _a.displayHeight) {

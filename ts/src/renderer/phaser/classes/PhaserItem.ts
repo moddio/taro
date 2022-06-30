@@ -16,21 +16,4 @@ class PhaserItem extends PhaserAnimatedEntity {
 			[ this.sprite ]
 		);
 	}
-
-	protected transform (data: {
-		x: number;
-		y: number;
-		rotation: number
-	}): void {
-		this.gameObject.setPosition(data.x, data.y);
-		this.sprite.rotation = data.rotation;
-	}
-
-	// we may not need this after all
-	protected scale (data: {
-		x: number;
-		y: number
-	}): void {
-		this.sprite.setScale(data.x, data.y);
-	}
 }

@@ -21,14 +21,6 @@ var PhaserItem = /** @class */ (function (_super) {
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         return _this;
     }
-    PhaserItem.prototype.transform = function (data) {
-        this.gameObject.setPosition(data.x, data.y);
-        this.sprite.rotation = data.rotation;
-    };
-    // we may not need this after all
-    PhaserItem.prototype.scale = function (data) {
-        this.sprite.setScale(data.x, data.y);
-    };
     return PhaserItem;
 }(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserItem.js.map
