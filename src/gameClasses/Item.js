@@ -874,6 +874,21 @@ var Item = IgeEntityPhysics.extend({
 						if (ige.isClient) {
 							self._stats.scale = newValue;
 							self._scaleTexture();
+
+						} else {
+							// finding all attach entities before changing body dimensions
+							if (self.jointsAttached) {
+								var attachedEntities = {};
+								for (var entityId in self.jointsAttached) {
+									var entity = self.jointsAttached[entityId];
+									if (entityId != self.id()) {
+										attachedEntities[entityId] = true;
+									}
+								}
+							}
+
+							// attaching entities
+							self._scaleBox2dBody(newValue);
 						}
 						break;
 					// case 'use':
@@ -891,24 +906,6 @@ var Item = IgeEntityPhysics.extend({
 								self.show();
 								this.emit('show');
 							}
-						}
-						break;
-
-					case 'scaleBody':
-						if (ige.isServer) {
-							// finding all attach entities before changing body dimensions
-							if (self.jointsAttached) {
-								var attachedEntities = {};
-								for (var entityId in self.jointsAttached) {
-									var entity = self.jointsAttached[entityId];
-									if (entityId != self.id()) {
-										attachedEntities[entityId] = true;
-									}
-								}
-							}
-
-							// attaching entities
-							self._scaleBox2dBody(newValue);
 						}
 						break;
 
