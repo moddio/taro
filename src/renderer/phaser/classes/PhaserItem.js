@@ -25,6 +25,7 @@ var PhaserItem = /** @class */ (function (_super) {
         this.gameObject.setPosition(data.x, data.y);
         this.sprite.rotation = data.rotation;
     };
+    // we may not need this after all
     PhaserItem.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);
     };

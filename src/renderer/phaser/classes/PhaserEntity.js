@@ -8,7 +8,7 @@ var PhaserEntity = /** @class */ (function () {
             scale: entity.on('scale', this.scale, this),
             destroy: entity.on('destroy', this.destroy, this),
             hide: entity.on('hide', this.hide, this),
-            show: entity.on('show', this.show, this)
+            show: entity.on('show', this.show, this),
         });
     }
     PhaserEntity.prototype.transform = function (data) { };

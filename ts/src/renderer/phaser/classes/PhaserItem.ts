@@ -26,6 +26,7 @@ class PhaserItem extends PhaserAnimatedEntity {
 		this.sprite.rotation = data.rotation;
 	}
 
+	// we may not need this after all
 	protected scale (data: {
 		x: number;
 		y: number

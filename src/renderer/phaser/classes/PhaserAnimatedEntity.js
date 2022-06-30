@@ -23,7 +23,9 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         sprite.setDisplaySize(bounds.x, bounds.y);
         sprite.rotation = entity._rotate.z;
         Object.assign(_this.evtListeners, {
-            'play-animation': entity.on('play-animation', _this.playAnimation, _this)
+            'play-animation': entity.on('play-animation', _this.playAnimation, _this),
+            width: entity.on('width', _this.width, _this),
+            height: entity.on('height', _this.height, _this)
         });
         return _this;
     }
@@ -37,6 +39,18 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     PhaserAnimatedEntity.prototype.show = function () {
         _super.prototype.show.call(this);
         this.sprite.setVisible(true);
+    };
+    PhaserAnimatedEntity.prototype.width = function (width) {
+        var _a;
+        if ((_a = this.sprite) === null || _a === void 0 ? void 0 : _a.displayHeight) {
+            this.sprite.setDisplaySize(width, this.sprite.displayHeight);
+        }
+    };
+    PhaserAnimatedEntity.prototype.height = function (height) {
+        var _a;
+        if ((_a = this.sprite) === null || _a === void 0 ? void 0 : _a.displayWidth) {
+            this.sprite.setDisplaySize(this.sprite.displayWidth, height);
+        }
     };
     PhaserAnimatedEntity.prototype.destroy = function () {
         this.sprite = null;
