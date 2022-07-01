@@ -99,7 +99,6 @@ var Item = IgeEntityPhysics.extend({
 
 		if (ige.isServer) {
 			if (this._stats.stateId == 'dropped') {
-				// console.log('item is dropping', this)	// fix this
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1);
@@ -109,7 +108,6 @@ var Item = IgeEntityPhysics.extend({
 					if (body.jointType != 'weldJoint') {
 						this.streamMode(1); // item that revolutes around unit
 					} else {
-						// if (body.jointType === 'weldJoint' ) {
 						this.streamMode(2);
 					}
 				}
@@ -153,7 +151,10 @@ var Item = IgeEntityPhysics.extend({
 				// mount texture on the unit in a correct position
 				if (ige.isClient) {
 					// avoid transforming box2d body by calling prototype
+
+					// Leaving this commented line until pixi is fully removed
 					// IgeEntity.prototype.mount.call(this, obj);
+
 					var unitAnchorX = body.unitAnchor.x;
 					var unitAnchorY = body.unitAnchor.y;
 					IgeEntity.prototype.translateTo.call(this, unitAnchorX, (-1 * unitAnchorY), 0);
@@ -167,7 +168,9 @@ var Item = IgeEntityPhysics.extend({
 				this.width(body.width);
 				this.height(body.height);
 			}
-			if (ige.isServer) IgeEntity.prototype.mount.call(this, obj);
+			if (ige.isServer) {
+				IgeEntity.prototype.mount.call(this, obj);
+			}
 		}
 	},
 
@@ -730,7 +733,7 @@ var Item = IgeEntityPhysics.extend({
 
 	/**
 	 * get item's position based on its itemAnchor, unitAnchor, and current rotation value.
-	 * @param {int} froceRedraw offsets item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
+	 * @param rotate item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
 	 */
 	getAnchoredOffset: function (rotate) {
 		var self = this;
@@ -816,7 +819,9 @@ var Item = IgeEntityPhysics.extend({
 		}
 
 		IgeEntityPhysics.prototype.remove.call(this);
-		// this.destroy()
+		// The above line calls all other destroy()
+		// Below makes sure we call playEffect('destroy')
+		this.destroy()
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -880,7 +885,6 @@ var Item = IgeEntityPhysics.extend({
 							if (self.jointsAttached) {
 								var attachedEntities = {};
 								for (var entityId in self.jointsAttached) {
-									// var entity = self.jointsAttached[entityId];
 									if (entityId != self.id()) {
 										attachedEntities[entityId] = true;
 									}
@@ -944,6 +948,8 @@ var Item = IgeEntityPhysics.extend({
 						break;
 					case 'slotIndex':
 						var owner = self.getOwnerUnit();
+						// Leaving this until pixi is full removed
+
 						// if (ige.isClient && owner) {
 						// 	// unmount item when item is in backpack
 						// 	if (newValue >= owner._stats.inventorySize) {
@@ -1029,7 +1035,6 @@ var Item = IgeEntityPhysics.extend({
 	},
 	destroy: function () {
 		this.playEffect('destroy');
-		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
 
