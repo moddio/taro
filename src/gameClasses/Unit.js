@@ -1222,7 +1222,6 @@ var Unit = IgeEntityPhysics.extend({
 
 					self.emit('fading-text', {
 						text: fadingTextConfig.text,
-						//bold: isMyUnit,
 						color: fadingTextConfig.color || DEFAULT_COLOR
 					});
 				}
