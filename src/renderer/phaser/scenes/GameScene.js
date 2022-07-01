@@ -66,6 +66,10 @@ var GameScene = /** @class */ (function (_super) {
             console.log('create-region', region); // TODO remove
             new PhaserRegion(_this, region);
         });
+        ige.client.on('floating-text', function (data) {
+            console.log('create-floating-text', data); // TODO remove
+            new PhaserFloatingText(_this, data);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;

@@ -144,6 +144,12 @@ var ClientNetworkEvents = {
 			.transformTexture(data.position.x, data.position.y)
 			.mount(ige.pixi.world)
 			.fadeUp();
+		ige.client.emit('floating-text', {
+			text: data.text,
+			x: data.position.x,
+			y: data.position.y,
+			color: data.color || 'white'
+		});
 	},
 
 	_onOpenDialogue: function (data) {
