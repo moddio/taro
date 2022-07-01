@@ -880,13 +880,12 @@ var Item = IgeEntityPhysics.extend({
 							if (self.jointsAttached) {
 								var attachedEntities = {};
 								for (var entityId in self.jointsAttached) {
-									var entity = self.jointsAttached[entityId];
+									// var entity = self.jointsAttached[entityId];
 									if (entityId != self.id()) {
 										attachedEntities[entityId] = true;
 									}
 								}
 							}
-
 							// attaching entities
 							self._scaleBox2dBody(newValue);
 						}
@@ -945,14 +944,14 @@ var Item = IgeEntityPhysics.extend({
 						break;
 					case 'slotIndex':
 						var owner = self.getOwnerUnit();
-						if (ige.isClient && owner) {
-							// unmount item when item is in backpack
-							if (newValue >= owner._stats.inventorySize) {
-								self.unMount();
-							} else {
-								self.mount(ige.pixi.world);
-							}
-						}
+						// if (ige.isClient && owner) {
+						// 	// unmount item when item is in backpack
+						// 	if (newValue >= owner._stats.inventorySize) {
+						// 		self.unMount();
+						// 	} else {
+						// 		self.mount(ige.pixi.world);
+						// 	}
+						// }
 						break;
 				}
 			}
@@ -981,7 +980,7 @@ var Item = IgeEntityPhysics.extend({
 			var y = ownerUnit._translate.y + self.anchoredOffset.y;
 
 			self.translateTo(x, y);
-			
+
 			if (ige.isClient && ige.client.selectedUnit == ownerUnit) {
 				if (self._stats.controls && self._stats.controls.mouseBehaviour) {
 					if (self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
@@ -1013,7 +1012,6 @@ var Item = IgeEntityPhysics.extend({
 		}
 	},
 
-	// what does this do? - Jaeyun
 	loadPersistentData: function (persistData) {
 		var self = this;
 		if (persistData) {

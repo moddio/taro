@@ -21,6 +21,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         var bounds = entity._bounds2d;
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         sprite.setDisplaySize(bounds.x, bounds.y);
+        // {0,1} is 0 radians | {0,-1} is pi radians
         sprite.rotation = entity._rotate.z;
         Object.assign(_this.evtListeners, {
             'play-animation': entity.on('play-animation', _this.playAnimation, _this),
