@@ -6,9 +6,9 @@ var PhaserEntity = /** @class */ (function () {
         Object.assign(this.evtListeners, {
             transform: entity.on('transform', this.transform, this),
             scale: entity.on('scale', this.scale, this),
-            destroy: entity.on('destroy', this.destroy, this),
             hide: entity.on('hide', this.hide, this),
-            show: entity.on('show', this.show, this)
+            show: entity.on('show', this.show, this),
+            destroy: entity.on('destroy', this.destroy, this)
         });
     }
     PhaserEntity.prototype.transform = function (data) { };
