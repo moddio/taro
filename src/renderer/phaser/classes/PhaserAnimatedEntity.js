@@ -21,12 +21,10 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         var bounds = entity._bounds2d;
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         sprite.setDisplaySize(bounds.x, bounds.y);
-        // {0,1} is 0 radians | {0,-1} is pi radians
         sprite.rotation = entity._rotate.z;
         Object.assign(_this.evtListeners, {
             'play-animation': entity.on('play-animation', _this.playAnimation, _this),
-            width: entity.on('width', _this.width, _this),
-            height: entity.on('height', _this.height, _this)
+            size: entity.on('size', _this.size, _this),
         });
         return _this;
     }
@@ -45,18 +43,8 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         _super.prototype.show.call(this);
         this.sprite.setVisible(true);
     };
-    // considering making these setScale instead of setDisplaySize.
-    PhaserAnimatedEntity.prototype.width = function (width) {
-        var _a;
-        if ((_a = this.sprite) === null || _a === void 0 ? void 0 : _a.displayHeight) {
-            this.sprite.setDisplaySize(width, this.sprite.displayHeight);
-        }
-    };
-    PhaserAnimatedEntity.prototype.height = function (height) {
-        var _a;
-        if ((_a = this.sprite) === null || _a === void 0 ? void 0 : _a.displayWidth) {
-            this.sprite.setDisplaySize(this.sprite.displayWidth, height);
-        }
+    PhaserAnimatedEntity.prototype.size = function (data) {
+        this.sprite.setDisplaySize(data.width, data.height);
     };
     PhaserAnimatedEntity.prototype.destroy = function () {
         this.sprite = null;
