@@ -67,29 +67,43 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.fadingTextListener =
             unit.on('fading-text', function (config) {
                 console.log('PhaserUnit fading-text', unit.id()); // TODO remove
-                var text = scene.add.text(0, 0, config.text || '');
+                var data = {
+                    text: config.text || '',
+                    x: 0,
+                    y: 0,
+                    color: config.color || '#fff'
+                };
+                var text = new PhaserFloatingText(_this.scene, data, _this);
+                /*text.y = -25 -
+                    Math.max(sprite.displayHeight, sprite.displayWidth) / 2;*/
+                /*const text = scene.add.text(0, 0, config.text || '');
                 text.setOrigin(0.5);
-                _this.add(text);
+                this.add(text);
+
                 text.setFontFamily('Verdana');
                 text.setFontSize(16);
                 text.setFontStyle('bold');
+
                 text.setFill(config.color || '#fff');
-                var strokeThickness = ige.game.data.settings
+
+                const strokeThickness = ige.game.data.settings
                     .addStrokeToNameAndAttributes !== false ? 4 : 0;
                 text.setStroke('#000', strokeThickness);
+
                 text.y = -25 -
                     Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
                 //text.setScale(1.5);
-                var fadeTween = scene.tweens.add({
+
+                let fadeTween = scene.tweens.add({
                     targets: text,
                     alpha: 0.5,
                     duration: 2500,
-                    y: text.y - 40,
-                    onComplete: function () {
+                    y: text.y -40,
+                    onComplete: () => {
                         fadeTween = null;
                         text.destroy();
                     }
-                });
+                });*/
             });
         var attributes = _this.attributes;
         _this.renderAttributesListener =

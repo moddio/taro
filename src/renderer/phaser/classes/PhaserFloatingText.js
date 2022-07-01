@@ -15,7 +15,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserFloatingText = /** @class */ (function (_super) {
     __extends(PhaserFloatingText, _super);
-    function PhaserFloatingText(scene, data) {
+    function PhaserFloatingText(scene, data, unit) {
+        if (unit === void 0) { unit = null; }
         var _this = _super.call(this, scene, data.x, data.y, data.text, { fontFamily: 'Verdana' }) || this;
         _this.setOrigin(0.5);
         _this.setFontSize(16);
@@ -24,13 +25,23 @@ var PhaserFloatingText = /** @class */ (function (_super) {
         var strokeThickness = ige.game.data.settings
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         _this.setStroke('#000', strokeThickness);
+        //let targetY;
         //this.setScale(1.5);
-        scene.add.existing(_this);
+        if (unit) {
+            unit.add(_this);
+            _this.y = -25 -
+                Math.max(unit.sprite.displayHeight, unit.sprite.displayWidth) / 2;
+            //targetY = this.y -40;
+        }
+        else {
+            scene.add.existing(_this);
+            //targetY = this.y -40;
+        }
         var fadeTween = scene.tweens.add({
             targets: _this,
             alpha: 0.5,
             duration: 2500,
-            y: _this.y - 50,
+            y: _this.y - 40,
             onComplete: function () {
                 fadeTween = null;
                 _this.destroy();

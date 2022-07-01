@@ -92,38 +92,17 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 		this.fadingTextListener =
 			unit.on('fading-text', (config: {
-				text? : string;
+				text: string;
 				color?: string;
 			}) => {
 				console.log('PhaserUnit fading-text', unit.id()); // TODO remove
-				const text = scene.add.text(0, 0, config.text || '');
-				text.setOrigin(0.5);
-				this.add(text);
-
-				text.setFontFamily('Verdana');
-				text.setFontSize(16);
-				text.setFontStyle('bold');
-
-				text.setFill(config.color || '#fff');
-
-				const strokeThickness = ige.game.data.settings
-					.addStrokeToNameAndAttributes !== false ? 4 : 0;
-				text.setStroke('#000', strokeThickness);
-
-				text.y = -25 -
-					Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
-				//text.setScale(1.5);
-
-				let fadeTween = scene.tweens.add({
-					targets: text,
-					alpha: 0.5,
-					duration: 2500,
-					y: text.y -40,
-					onComplete: () => {
-						fadeTween = null;
-						text.destroy();
-					}
-				});
+				const data = {
+					text : config.text || '',
+					x: 0,
+					y: 0,
+					color: config.color || '#fff'
+				};
+				new PhaserFloatingText(this.scene, data, this);
 			});
 
 		const attributes = this.attributes;
