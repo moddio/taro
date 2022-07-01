@@ -1599,14 +1599,6 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
-				case 'numberToString':
-					var num = self.getValue(text.number, vars);
-
-					if(!isNaN(num)) {
-						returnValue = num.toString();
-					}
-					break;
-
 				case 'substringOf':
 					var string = self.getValue(text.string, vars);
 					var fromIndex = self.getValue(text.fromIndex, vars);
