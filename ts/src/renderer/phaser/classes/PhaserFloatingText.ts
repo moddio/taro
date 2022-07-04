@@ -1,8 +1,5 @@
 class PhaserFloatingText extends Phaser.GameObjects.Text {
 
-	protected gameObject: Phaser.GameObjects.Container;
-	protected entity: Projectile;
-
 	constructor (
 		scene: Phaser.Scene,
 		data: {
@@ -11,7 +8,7 @@ class PhaserFloatingText extends Phaser.GameObjects.Text {
 			y: number,
 			color: string
 		},
-		unit: PhaserUnit = null
+		unit?: PhaserUnit
 	) {
 		super(scene, data.x, data.y, data.text, { fontFamily: 'Verdana' });
 
@@ -33,13 +30,12 @@ class PhaserFloatingText extends Phaser.GameObjects.Text {
 		}
 
 
-		let fadeTween = scene.tweens.add({
+		scene.tweens.add({
 			targets: this,
 			alpha: 0.5,
 			duration: 2500,
 			y: this.y - 40,
 			onComplete: () => {
-				fadeTween = null;
 				this.destroy();
 			}
 		});
