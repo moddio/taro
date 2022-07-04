@@ -73,6 +73,16 @@ class GameScene extends PhaserScene {
 			console.log('create-region', region); // TODO remove
 			new PhaserRegion(this, region);
 		});
+
+		ige.client.on('floating-text', (data: {
+			text: string,
+			x: number,
+			y: number,
+			color: string
+		}) => {
+			console.log('create-floating-text', data); // TODO remove
+			new PhaserFloatingText(this, data);
+		});
 	}
 
 	preload (): void {

@@ -44,17 +44,17 @@ var PhaserUnit = /** @class */ (function (_super) {
                 sprite.play("".concat(key, "/").concat(animationId));
             });
         _this.updateLabelListener =
-            unit.on('update-label', function (config) {
+            unit.on('update-label', function (data) {
                 console.log('PhaserUnit update-label', unit.id()); // TODO remove
                 label.visible = true;
                 label.setFontFamily('Verdana');
                 label.setFontSize(16);
-                label.setFontStyle(config.bold ? 'bold' : 'normal');
-                label.setFill(config.color || '#fff');
+                label.setFontStyle(data.bold ? 'bold' : 'normal');
+                label.setFill(data.color || '#fff');
                 var strokeThickness = ige.game.data.settings
                     .addStrokeToNameAndAttributes !== false ? 4 : 0;
                 label.setStroke('#000', strokeThickness);
-                label.setText(config.text || '');
+                label.setText(data.text || '');
                 label.y = -25 -
                     Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
                 label.setScale(1.25);
@@ -63,6 +63,16 @@ var PhaserUnit = /** @class */ (function (_super) {
             unit.on('hide-label', function () {
                 console.log('PhaserUnit hide-label', unit.id()); // TODO remove
                 label.visible = false;
+            });
+        _this.fadingTextListener =
+            unit.on('fading-text', function (data) {
+                console.log('PhaserUnit fading-text', unit.id()); // TODO remove
+                new PhaserFloatingText(_this.scene, {
+                    text: data.text || '',
+                    x: 0,
+                    y: 0,
+                    color: data.color || '#fff'
+                }, _this);
             });
         var attributes = _this.attributes;
         _this.renderAttributesListener =
