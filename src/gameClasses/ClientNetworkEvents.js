@@ -584,26 +584,6 @@ var ClientNetworkEvents = {
 		} else if (data && data.type == 'hide') {
 			$('#more-games').removeClass('slideup-menu-animation').addClass('slidedown-menu-animation');
 		}
-	},
-
-	_onMinimapEvent: function (data) {
-		if (data) {
-			switch (data.type) {
-				case 'showUnit':
-					var unit = ige.$(data.unitId);
-					if (unit) {
-						unit.showMinimapUnit(data.color);
-					}
-					break;
-
-				case 'hideUnit':
-					var unit = ige.$(data.unitId);
-					if (unit) {
-						unit.hideMinimapUnit();
-					}
-					break;
-			}
-		}
 	}
 };
 

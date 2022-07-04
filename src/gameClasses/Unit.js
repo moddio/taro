@@ -122,15 +122,9 @@ var Unit = IgeEntityPhysics.extend({
 					ige.playerUi.updateAttrBar(i, self.attr[i], self.max[i]);
 				}
 
-				self.showMinimapUnit();
-
 				if (window.adBlockEnabled) {
 					// self.unEquipSkin(null, true);
 				}
-			}
-
-			if (self._stats.minimapUnitVisibleToClients && self._stats.minimapUnitVisibleToClients[networkId]) {
-				self.showMinimapUnit(self._stats.minimapUnitVisibleToClients[networkId]);
 			}
 
 			self._scaleTexture();
@@ -1529,13 +1523,6 @@ var Unit = IgeEntityPhysics.extend({
 		IgeEntity.prototype.tick.call(this, ctx);
 	},
 
-	showMinimapUnit: function (color) {
-		var self = this;
-
-		self.hideMinimapUnit();
-		self.minimapUnit = new MiniMapUnit(color);
-	},
-
 	// apply texture based on state
 	updateTexture: function () {
 		var self = this;
@@ -1621,14 +1608,6 @@ var Unit = IgeEntityPhysics.extend({
 				self._stats.cellSheet.url = defaultUnit.cellSheet.url;
 			}
 			self.updateTexture();
-		}
-	},
-
-	hideMinimapUnit: function () {
-		var self = this;
-
-		if (self.minimapUnit) {
-			self.minimapUnit.destroy();
 		}
 	},
 
