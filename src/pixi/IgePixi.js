@@ -385,10 +385,6 @@ var IgeInitPixi = IgeEventingClass.extend({
 				ige.pixi.world.removeChild(texture);
 				// this is PIXI's destroy method
 				texture.destroy({ children: true, texture: true });
-
-				if (ige.pixiMap.layersGroup && !ige.pixiMap.layersGroup.floor.parent && !ige.isLog) {
-					ige.isLog = true;
-				}
 			}
 
 			if (ige.entitiesToRender.trackEntityById[entityId]._pixiContainer) {
