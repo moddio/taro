@@ -580,12 +580,6 @@ var MenuUiComponent = IgeEntity.extend({
 			if (ige.mobileControls) {
 				ige.mobileControls.setVisible(!isMenuVisible);
 			}
-
-			// hide minimap here by setting width to 0
-			if (ige.miniMap && ige.miniMap.miniMap) {
-				var newWidth = isMenuVisible ? 0 : ige.miniMap.maxMapDimension.width;
-				ige.miniMap.miniMap.width(newWidth);
-			}
 		}
 	},
 
@@ -676,13 +670,11 @@ var MenuUiComponent = IgeEntity.extend({
 		if (resolution == 'high') {
 			ige.client.resolutionQuality = 'high';
 			ige._resizeEvent();
-			ige.miniMap.updateMiniMap();
 			$('#resolution-high').addClass('btn-success').removeClass('btn-light');
 			$('#resolution-low').removeClass('btn-success').addClass('btn-light');
 		} else {
 			ige.client.resolutionQuality = 'low';
 			ige._resizeEvent();
-			ige.miniMap.updateMiniMap();
 			$('#resolution-low').addClass('btn-success').removeClass('btn-light');
 			$('#resolution-high').removeClass('btn-success').addClass('btn-light');
 		}
