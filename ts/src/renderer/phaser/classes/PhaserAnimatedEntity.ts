@@ -1,10 +1,5 @@
 class PhaserAnimatedEntity extends PhaserEntity {
 
-	protected gameObject:
-		Phaser.GameObjects.GameObject &
-		Phaser.GameObjects.Components.Transform &
-		Phaser.GameObjects.Components.Visible;
-
 	protected sprite: Phaser.GameObjects.Sprite;
 
 	protected constructor (
@@ -37,16 +32,6 @@ class PhaserAnimatedEntity extends PhaserEntity {
 	}): void {
 		this.gameObject.setPosition(data.x, data.y);
 		this.sprite.rotation = data.rotation;
-	}
-
-	protected hide (): void {
-		super.hide();
-		this.gameObject.setVisible(false);
-	}
-
-	protected show (): void {
-		super.show();
-		this.gameObject.setVisible(true);
 	}
 
 	protected size (

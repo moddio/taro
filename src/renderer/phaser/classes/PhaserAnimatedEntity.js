@@ -35,14 +35,6 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         this.gameObject.setPosition(data.x, data.y);
         this.sprite.rotation = data.rotation;
     };
-    PhaserAnimatedEntity.prototype.hide = function () {
-        _super.prototype.hide.call(this);
-        this.gameObject.setVisible(false);
-    };
-    PhaserAnimatedEntity.prototype.show = function () {
-        _super.prototype.show.call(this);
-        this.gameObject.setVisible(true);
-    };
     PhaserAnimatedEntity.prototype.size = function (data) {
         this.sprite.setDisplaySize(data.width, data.height);
     };

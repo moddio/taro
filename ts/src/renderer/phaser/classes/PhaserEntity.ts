@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars */
 class PhaserEntity {
 
-	protected gameObject: Phaser.GameObjects.GameObject;
+	protected gameObject:
+		Phaser.GameObjects.GameObject &
+		Phaser.GameObjects.Components.Transform &
+		Phaser.GameObjects.Components.Visible;
+
 	protected evtListeners: Record<string, EvtListener> = {};
 
 	protected constructor (
@@ -28,11 +32,13 @@ class PhaserEntity {
 	}): void { }
 
 	protected hide (): void {
-		this.gameObject.setActive(false);
+		this.gameObject.setActive(false)
+			.setVisible(false);
 	}
 
 	protected show (): void {
-		this.gameObject.setActive(true);
+		this.gameObject.setActive(true)
+			.setVisible(true);
 	}
 
 	protected destroy (): void {
