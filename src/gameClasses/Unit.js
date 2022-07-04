@@ -1219,6 +1219,11 @@ var Unit = IgeEntityPhysics.extend({
 						.colorOverlay(fadingTextConfig.color || DEFAULT_COLOR)
 						.mount(self._pixiContainer)
 						.fadeUp();
+
+					self.emit('fading-text', {
+						text: fadingTextConfig.text,
+						color: fadingTextConfig.color || DEFAULT_COLOR
+					});
 				}
 			}, 300);
 		}

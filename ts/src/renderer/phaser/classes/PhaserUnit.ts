@@ -14,6 +14,8 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 	private updateLabelListener: EvtListener;
 	private hideLabelListener: EvtListener;
 
+	private fadingTextListener: EvtListener;
+
 	private renderAttributesListener: EvtListener;
 	private updateAttributeListener: EvtListener;
 
@@ -58,7 +60,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			});
 
 		this.updateLabelListener =
-			unit.on('update-label', (config: {
+			unit.on('update-label', (data: {
 				text? : string;
 				bold?: boolean;
 				color?: string;
@@ -68,14 +70,14 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 				label.setFontFamily('Verdana');
 				label.setFontSize(16);
-				label.setFontStyle(config.bold ? 'bold' : 'normal');
-				label.setFill(config.color || '#fff');
+				label.setFontStyle(data.bold ? 'bold' : 'normal');
+				label.setFill(data.color || '#fff');
 
 				const strokeThickness = ige.game.data.settings
 					.addStrokeToNameAndAttributes !== false ? 4 : 0;
 				label.setStroke('#000', strokeThickness);
 
-				label.setText(config.text || '');
+				label.setText(data.text || '');
 
 				label.y = -25 -
 					Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
@@ -86,6 +88,20 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.on('hide-label', () => {
 				console.log('PhaserUnit hide-label', unit.id()); // TODO remove
 				label.visible = false;
+			});
+
+		this.fadingTextListener =
+			unit.on('fading-text', (data: {
+				text: string;
+				color?: string;
+			}) => {
+				console.log('PhaserUnit fading-text', unit.id()); // TODO remove
+				new PhaserFloatingText(this.scene, {
+					text: data.text || '',
+					x: 0,
+					y: 0,
+					color: data.color || '#fff'
+				}, this);
 			});
 
 		const attributes = this.attributes;
