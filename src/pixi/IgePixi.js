@@ -584,6 +584,49 @@ var IgeInitPixi = IgeEventingClass.extend({
 				entityTexture.scale.set(-x, -y);
 			}
 		}
+	},
+
+	loadMapJson: function (map, callback) {
+		var layersById = {};
+		var layersByKey = {};
+
+		map.tilewidth = parseFloat(map.tilewidth);
+		map.tileheight = parseFloat(map.tileheight);
+		map.width = parseFloat(map.width);
+		map.height = parseFloat(map.height);
+
+		ige.pixi.world.tileWidth = map.tilewidth;
+		ige.pixi.world.tileHeight = map.tileheight;
+
+		ige.pixi.world.worldWidth = map.width * map.tilewidth;
+		ige.pixi.world.worldHeight = map.height * map.tileheight;
+
+		// create viewport
+		ige.pixi.viewport();
+
+		if (ige.pixi.world.worldWidth % 2) {
+			ige.pixi.world.worldWidth--;
+		}
+		if (ige.pixi.world.worldHeight % 2) {
+			ige.pixi.world.worldheight--;
+		}
+
+		ige.pixi.world.worldScreenHeight = 600;
+		ige.pixi.world.worldScreenWidth = 400;
+
+		ige.pixi.world.widthInTiles = map.width;
+		ige.pixi.world.heightInTiles = map.height;
+
+		ige.pixi.world.objects = [];
+
+		map.layers.forEach(function (tiledLayer, i) {
+			layersById[tiledLayer.name] = tiledLayer;
+			layersByKey[i] = tiledLayer;
+		});
+
+		ige.pixi.viewport.moveCenter(ige.pixi.world.width / 2, ige.pixi.world.height / 2);
+
+		callback(layersByKey, layersById);
 	}
 
 });
