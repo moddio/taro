@@ -859,6 +859,7 @@ var Item = IgeEntityPhysics.extend({
 							if (owner == ige.client.selectedUnit) {
 								// don't repeat whip-out tween for my own unit as it has already been executed from unit.changeItem()
 							} else if (stateId == 'selected') {
+
 								self.applyAnimationForState(stateId);
 
 								// whip-out the new item using tween
@@ -871,6 +872,14 @@ var Item = IgeEntityPhysics.extend({
 							// unmount item when item is in backpack
 							if (owner && self._stats.slotIndex >= owner._stats.inventorySize) {
 								self.unMount();
+							}
+							
+							if (stateId !== 'unselected') {
+								
+								this.emit('size', {
+									width: this._stats.currentBody.width,
+									height: this._stats.currentBody.height
+								});
 							}
 						}
 						break;
