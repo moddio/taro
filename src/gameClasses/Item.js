@@ -68,6 +68,9 @@ var Item = IgeEntityPhysics.extend({
 			self.streamCreate();
 			ige.server.totalItemsCreated++;
 		} else if (ige.isClient) {
+			// must create Phaser item before emitting init events
+			ige.client.emit('create-item', this);
+
 			self._hidden = self._stats.isHidden;
 			if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._hidden) {
 				self.hide();
@@ -81,8 +84,6 @@ var Item = IgeEntityPhysics.extend({
 			}
 			self.addToRenderer();
 			self.drawBounds(false);
-
-			ige.client.emit('create-item', this);
 		}
 		self.playEffect('create');
 		// self.addComponent(AttributeBarsContainerComponent);
