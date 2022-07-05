@@ -1356,10 +1356,6 @@ var Unit = IgeEntityPhysics.extend({
 				ige.client.cameraTrackUnitId = undefined;
 			}
 
-			if (self.fadingTextContainer) {
-				self.fadingTextContainer.destroy();
-			}
-
 			if (self.minimapUnit) {
 				self.minimapUnit.destroy();
 				delete self.minimapUnit;
