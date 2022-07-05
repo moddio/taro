@@ -28,13 +28,6 @@ class EntitiesToRender {
 							bar.updatePosition();
 						});
 					}
-
-					// // global nonsense that we should address
-					// if (openChatBubble[entityId]) {
-					// 	var chatBubble = ige.$(openChatBubble[entityId]);
-					// 	chatBubble.updateScale();
-					// 	chatBubble.updatePosition();
-					// }
 				}
 
 				// handle entity behaviour and transformation offsets

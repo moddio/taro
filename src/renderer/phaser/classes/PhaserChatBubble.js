@@ -19,14 +19,9 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
         _this.unit = unit;
-        var words = chatText;
-        if (words.length > 40) {
-            words = words.substring(0, 40);
-            words += '...';
-        }
         _this.offset = 120;
         //draw text
-        var text = _this.text = scene.add.text(0, 0, words, {
+        var text = _this.textObject = scene.add.text(0, 0, _this.trimText(chatText), {
             fontFamily: 'Arial',
             color: '#ffffff',
             align: 'center'
@@ -35,15 +30,8 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         text.setOrigin(0.5);
         text.depth = 1;
         // draw bubble
-        var bubble = _this.bubble = scene.add.graphics();
-        var width = text.width + 10;
-        var height = 25;
-        var borderRadius = 3;
-        bubble.fillStyle(0x000000, 0.5);
-        bubble.fillRoundedRect(-width / 2, -height / 2, width, height, borderRadius);
-        bubble.lineStyle(2, 0x000000, 1);
-        //temporary for bubble scaling after changing text width
-        _this.basicWidth = width;
+        _this.bubble = scene.add.graphics();
+        _this.createBubble();
         // draw triangle
         var triangle = _this.triangle = scene.add.graphics();
         var geometry = Phaser.Geom.Triangle.BuildRight(0, 0, 10, 10);
@@ -56,41 +44,16 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         _this.x = unit.x;
         _this.y = unit.y - _this.offset;
         _this.add(triangle);
-        _this.add(bubble);
         _this.add(text);
         scene.add.existing(_this);
         _this.fadeOut();
         return _this;
     }
     PhaserChatBubble.prototype.showMessage = function (chatText) {
-        var words = chatText;
-        if (words.length > 40) {
-            words = words.substring(0, 40);
-            words += '...';
-        }
-        //need to change it later - draw new rectangle, instead of resizing, now problem with z-index
-        this.text.text = words;
-        var width = this.text.width + 10;
-        this.bubble.scaleX = width / this.basicWidth;
-        /*this.bubble.clear();
-        const bubble = this.bubble = this.scene.add.graphics();
-        const width = this.text.width * 2 + 20;
-        const height = 25;
-        const borderRadius = 5;
-
-        bubble.fillStyle(0x000000, 0.5);
-        bubble.fillRoundedRect(
-            -width / 2,
-            -height / 2,
-            width * 10 / 20,
-            height,
-            borderRadius
-        );
-        bubble.lineStyle(2, 0x000000, 1);
-        bubble.setDepth(0);
-        this.bubble.x = this.text.x + width / 4;
-        this.add(bubble);*/
-        this.setVisible(true);
+        this.textObject.text = this.trimText(chatText);
+        this.bubble.clear();
+        this.createBubble();
+        this.alpha = 1;
         this.resetFadeOut();
         this.fadeOut();
     };
@@ -120,7 +83,6 @@ var PhaserChatBubble = /** @class */ (function (_super) {
             this.fadeTween.remove();
             this.fadeTween = null;
         }
-        this.alpha = 1;
     };
     //need to add scaling
     PhaserChatBubble.prototype.updateScale = function () {
@@ -129,6 +91,27 @@ var PhaserChatBubble = /** @class */ (function (_super) {
             1 / ige.pixi.viewport.scale.y,
             1 / ige.pixi.viewport.scale.z
         );*/
+    };
+    PhaserChatBubble.prototype.trimText = function (chatText) {
+        var words = chatText;
+        if (words.length > 40) {
+            words = words.substring(0, 40);
+            words += '...';
+        }
+        return words;
+    };
+    PhaserChatBubble.prototype.createBubble = function () {
+        var bubble = this.bubble;
+        var width = this.textObject.width * 2 + 20;
+        var height = 25;
+        var borderRadius = 5;
+        bubble.fillStyle(0x000000, 0.5);
+        bubble.fillRoundedRect(-width / 2, -height / 2, width * 10 / 20, height, borderRadius);
+        bubble.lineStyle(2, 0x000000, 1);
+        this.bubble.x = this.textObject.x + width / 4;
+        bubble.setDepth(0);
+        this.add(bubble);
+        this.setVisible(true);
     };
     PhaserChatBubble.prototype.update = function (x, y) {
         this.x = x;

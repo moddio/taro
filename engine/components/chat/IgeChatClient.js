@@ -2,7 +2,6 @@
  * The client-side chat component. Handles all client-side
  * chat methods and events.
  */
-// var openChatBubble = {};
 var IgeChatClient = {
 	/**
 	 * Asks the serve to let us join the room specified.
