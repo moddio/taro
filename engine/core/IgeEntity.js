@@ -4276,10 +4276,10 @@ var IgeEntity = IgeObject.extend({
 								this.show();
 								break;
 							case 'hideNameLabel':
-								this.unitNameLabel && this.unitNameLabel.hide();
+								this.emit('hide-label');
 								break;
 							case 'showNameLabel':
-								this.unitNameLabel && this.unitNameLabel.show();
+								this.emit('show-label');
 								break;
 						}
 					}
