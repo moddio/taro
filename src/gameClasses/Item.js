@@ -819,9 +819,6 @@ var Item = IgeEntityPhysics.extend({
 		}
 
 		IgeEntityPhysics.prototype.remove.call(this);
-		// The above line calls all other destroy()
-		// Below makes sure we call playEffect('destroy')
-		this.destroy()
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -1049,6 +1046,7 @@ var Item = IgeEntityPhysics.extend({
 	},
 	destroy: function () {
 		this.playEffect('destroy');
+		IgeEntityPhysics.prototype.destroy.call(this);
 	}
 });
 
