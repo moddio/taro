@@ -26,15 +26,15 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.gameObject.add(label);
 
 		Object.assign(this.evtListeners, {
-			followListener: entity.on('follow', this.followListener, this),
-			stopFollowListener: entity.on('stop-follow', this.stopFollowListener, this),
-			updateLabelListener: entity.on('update-label', this.updateLabelListener, this),
-			showLabelListener: entity.on('show-label', this.showLabelListener, this),
-			hideLabelListener: entity.on('hide-label', this.hideLabelListener, this),
-			fadingTextListener: entity.on('fading-text', this.fadingTextListener, this),
-			renderAttributesListener: entity.on('render-attributes', this.renderAttributesListener, this),
-			updateAttributeListener: entity.on('update-attribute', this.updateAttributeListener, this),
-			renderChatListener: entity.on('render-chat-bubble', this.renderChatListener, this),
+			follow: entity.on('follow', this.followListener, this),
+			'stop-follow': entity.on('stop-follow', this.stopFollowListener, this),
+			'update-label': entity.on('update-label', this.updateLabelListener, this),
+			'show-label': entity.on('show-label', this.showLabelListener, this),
+			'hide-label': entity.on('hide-label', this.hideLabelListener, this),
+			'fading-text': entity.on('fading-text', this.fadingTextListener, this),
+			'render-attributes': entity.on('render-attributes', this.renderAttributesListener, this),
+			'update-attribute': entity.on('update-attribute', this.updateAttributeListener, this),
+			'render-chat-bubble': entity.on('render-chat-bubble', this.renderChatListener, this),
 		});
 	}
 

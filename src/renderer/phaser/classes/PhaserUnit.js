@@ -25,15 +25,15 @@ var PhaserUnit = /** @class */ (function (_super) {
         label.setOrigin(0.5);
         _this.gameObject.add(label);
         Object.assign(_this.evtListeners, {
-            followListener: entity.on('follow', _this.followListener, _this),
-            stopFollowListener: entity.on('stop-follow', _this.stopFollowListener, _this),
-            updateLabelListener: entity.on('update-label', _this.updateLabelListener, _this),
-            showLabelListener: entity.on('show-label', _this.showLabelListener, _this),
-            hideLabelListener: entity.on('hide-label', _this.hideLabelListener, _this),
-            fadingTextListener: entity.on('fading-text', _this.fadingTextListener, _this),
-            renderAttributesListener: entity.on('render-attributes', _this.renderAttributesListener, _this),
-            updateAttributeListener: entity.on('update-attribute', _this.updateAttributeListener, _this),
-            renderChatListener: entity.on('render-chat-bubble', _this.renderChatListener, _this),
+            follow: entity.on('follow', _this.followListener, _this),
+            'stop-follow': entity.on('stop-follow', _this.stopFollowListener, _this),
+            'update-label': entity.on('update-label', _this.updateLabelListener, _this),
+            'show-label': entity.on('show-label', _this.showLabelListener, _this),
+            'hide-label': entity.on('hide-label', _this.hideLabelListener, _this),
+            'fading-text': entity.on('fading-text', _this.fadingTextListener, _this),
+            'render-attributes': entity.on('render-attributes', _this.renderAttributesListener, _this),
+            'update-attribute': entity.on('update-attribute', _this.updateAttributeListener, _this),
+            'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChatListener, _this),
         });
         return _this;
     }
