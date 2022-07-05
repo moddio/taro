@@ -23,12 +23,20 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         sprite.setDisplaySize(bounds.x, bounds.y);
         sprite.rotation = entity._rotate.z;
         Object.assign(_this.evtListeners, {
-            'play-animation': entity.on('play-animation', _this.playAnimation, _this)
+            'play-animation': entity.on('play-animation', _this.playAnimation, _this),
+            size: entity.on('size', _this.size, _this),
         });
         return _this;
     }
     PhaserAnimatedEntity.prototype.playAnimation = function (animationId) {
         this.sprite.play("".concat(this.key, "/").concat(animationId));
+    };
+    PhaserAnimatedEntity.prototype.transform = function (data) {
+        this.gameObject.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
+    };
+    PhaserAnimatedEntity.prototype.size = function (data) {
+        this.sprite.setDisplaySize(data.width, data.height);
     };
     PhaserAnimatedEntity.prototype.destroy = function () {
         this.sprite = null;

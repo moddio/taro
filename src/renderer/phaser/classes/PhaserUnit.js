@@ -64,6 +64,11 @@ var PhaserUnit = /** @class */ (function (_super) {
                 console.log('PhaserUnit hide-label', unit.id()); // TODO remove
                 label.visible = false;
             });
+        _this.showLabelListener =
+            unit.on('show-label', function () {
+                console.log('PhaserUnit show-label', unit.id()); // TODO remove
+                label.visible = true;
+            });
         _this.fadingTextListener =
             unit.on('fading-text', function (data) {
                 console.log('PhaserUnit fading-text', unit.id()); // TODO remove
@@ -160,6 +165,10 @@ var PhaserUnit = /** @class */ (function (_super) {
             this.updateLabelListener = null;
             unit.off('hide-label', this.hideLabelListener);
             this.hideLabelListener = null;
+            unit.off('show-label', this.showLabelListener);
+            this.showLabelListener = null;
+            unit.off('fading-text', this.fadingTextListener);
+            this.fadingTextListener = null;
             unit.off('render-attributes', this.renderAttributesListener);
             this.renderAttributesListener = null;
             unit.off('update-attribute', this.updateAttributeListener);

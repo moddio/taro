@@ -13,10 +13,6 @@ var EntitiesToRender = /** @class */ (function () {
             if (entity) {
                 // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
                 if (ige.client.isZooming) {
-                    if (entity.unitNameLabel) {
-                        entity.unitNameLabel.updateScale();
-                        entity.unitNameLabel.updatePosition();
-                    }
                     if (entity.attributeBars) {
                         _.forEach(entity.attributeBars, function (attributeBar) {
                             var bar = ige.$(attributeBar.id);

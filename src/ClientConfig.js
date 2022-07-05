@@ -7,7 +7,6 @@ var igeClientConfig = {
 		'/gameClasses/Player.js',
 		'/gameClasses/Unit.js',
 		'/gameClasses/ClientScore.js',
-		'/gameClasses/MinimapUnit.js',
 		'/gameClasses/Region.js',
 
 		'/gameClasses/Item.js',
@@ -39,7 +38,6 @@ var igeClientConfig = {
 		'/gameClasses/components/ui/UnitUiComponent.js',
 		'/gameClasses/components/ui/VideoChatComponent.js',
 		'/gameClasses/components/ui/TradeUiComponent.js',
-		'/gameClasses/components/ui/MinimapComponent.js',
 
 		'/gameClasses/components/script/ScriptComponent.js',
 		'/gameClasses/components/script/VariableComponent.js',
@@ -58,12 +56,8 @@ var igeClientConfig = {
 		'pixi/pixi-viewport.js',
 		'pixi/pixi-cull.js',
 		'pixi/IgePixi.js',
-		'pixi/IgePixiMap.js',
 		'pixi/IgePixiTexture.js',
-
 		'pixi/IgePixiAnimation.js',
-		'pixi/IgePixiFloatingText.js',
-
 		'pixi/PixiAttributeBar.js',
 
 		/* Phaser */
