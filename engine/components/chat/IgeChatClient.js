@@ -2,7 +2,7 @@
  * The client-side chat component. Handles all client-side
  * chat methods and events.
  */
-var openChatBubble = {};
+// var openChatBubble = {};
 var IgeChatClient = {
 	/**
 	 * Asks the serve to let us join the room specified.
@@ -46,34 +46,7 @@ var IgeChatClient = {
 			if (!isChatHidden) {
 				var selectedUnit = player.getSelectedUnit();
 
-				if (selectedUnit && selectedUnit.gluedEntities) {
-					// destroy existing chat bubble if it exists
-					for (var i = 0; i < selectedUnit.gluedEntities.length; i++) {
-						var gluedEntity = selectedUnit.gluedEntities[i];
-						if (gluedEntity.type === 'chatBubble') {
-							var igeEntity = ige.$(gluedEntity.id);
-
-							if (igeEntity) {
-								igeEntity.destroy();
-							}
-						}
-					}
-
-					// create a new chat bubble
-					// var bubbleText = data.text.substring(0, 40);
-
-					// if (data.text.length > bubbleText.length) {
-					// 	bubbleText += '...';
-					// }
-					if (openChatBubble[selectedUnit.id()] && selectedUnit._category === 'unit') {
-						openChatBubble[selectedUnit.id()].destroy();
-						delete openChatBubble[selectedUnit.id()];
-					}
-					openChatBubble[selectedUnit.id()] = new IgePixiChatBubble(data.text, {
-						parentUnit: selectedUnit.id()
-					})
-						.fade(3000);
-
+				if (selectedUnit) {
 					//phaser chat bubble rendering - logic for destroying and fading moved to PhaserChatBubble.ts
 					selectedUnit.emit('render-chat-bubble', data.text);
 				}
