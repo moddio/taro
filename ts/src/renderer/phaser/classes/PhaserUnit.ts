@@ -29,7 +29,9 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			followListener: entity.on('follow', this.followListener, this),
 			stopFollowListener: entity.on('stop-follow', this.stopFollowListener, this),
 			updateLabelListener: entity.on('update-label', this.updateLabelListener, this),
+			showLabelListener: entity.on('show-label', this.showLabelListener, this),
 			hideLabelListener: entity.on('hide-label', this.hideLabelListener, this),
+			fadingTextListener: entity.on('fading-text', this.fadingTextListener, this),
 			renderAttributesListener: entity.on('render-attributes', this.renderAttributesListener, this),
 			updateAttributeListener: entity.on('update-attribute', this.updateAttributeListener, this),
 			renderChatListener: entity.on('render-chat-bubble', this.renderChatListener, this),
@@ -72,7 +74,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.scene.cameras.main.stopFollow();
 	}
 
-	private updateLabelListener (config: {
+	private updateLabelListener (data: {
 		text? : string;
 		bold?: boolean;
 		color?: string;
@@ -83,23 +85,41 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 		label.setFontFamily('Verdana');
 		label.setFontSize(16);
-		label.setFontStyle(config.bold ? 'bold' : 'normal');
-		label.setFill(config.color || '#fff');
+		label.setFontStyle(data.bold ? 'bold' : 'normal');
+		label.setFill(data.color || '#fff');
 
 		const strokeThickness = ige.game.data.settings
 			.addStrokeToNameAndAttributes !== false ? 4 : 0;
 		label.setStroke('#000', strokeThickness);
 
-		label.setText(config.text || '');
+		label.setText(data.text || '');
 
 		label.y = -25 -
 					Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
 		label.setScale(1.25);
 	}
 
+	private showLabelListener (): void {
+		console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
+		this.label.visible = true;
+	}
+
 	private hideLabelListener (): void {
 		console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
 		this.label.visible = false;
+	}
+
+	private fadingTextListener (data: {
+			text: string;
+			color?: string;
+		}): void {
+		console.log('PhaserUnit fading-text', this.entity.id()); // TODO remove
+		new PhaserFloatingText(this.scene, {
+			text: data.text || '',
+			x: 0,
+			y: 0,
+			color: data.color || '#fff'
+		}, this);
 	}
 
 	private renderAttributesListener (data: {

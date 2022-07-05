@@ -7,7 +7,6 @@ var igeClientConfig = {
 		'/gameClasses/Player.js',
 		'/gameClasses/Unit.js',
 		'/gameClasses/ClientScore.js',
-		'/gameClasses/MinimapUnit.js',
 		'/gameClasses/Region.js',
 
 		'/gameClasses/Item.js',
@@ -39,7 +38,6 @@ var igeClientConfig = {
 		'/gameClasses/components/ui/UnitUiComponent.js',
 		'/gameClasses/components/ui/VideoChatComponent.js',
 		'/gameClasses/components/ui/TradeUiComponent.js',
-		'/gameClasses/components/ui/MinimapComponent.js',
 
 		'/gameClasses/components/script/ScriptComponent.js',
 		'/gameClasses/components/script/VariableComponent.js',
@@ -58,11 +56,9 @@ var igeClientConfig = {
 		'pixi/pixi-viewport.js',
 		'pixi/pixi-cull.js',
 		'pixi/IgePixi.js',
-		'pixi/IgePixiMap.js',
 		'pixi/IgePixiTexture.js',
 		// 'pixi/IgePixiCollider.js',
 		'pixi/IgePixiAnimation.js',
-		'pixi/IgePixiFloatingText.js',
 		'pixi/IgePixiChatBubble.js',
 		'pixi/PixiAttributeBar.js',
 
@@ -76,6 +72,7 @@ var igeClientConfig = {
 		'renderer/phaser/classes/PhaserProjectile.js',
 		'renderer/phaser/classes/PhaserAttributeBar.js',
 		'renderer/phaser/classes/PhaserItem.js',
+		'renderer/phaser/classes/PhaserFloatingText.js',
 		'renderer/phaser/classes/PhaserChatBubble.js',
 		'renderer/phaser/classes/PhaserRegion.js',
 		'renderer/phaser/scenes/PhaserScene.js',

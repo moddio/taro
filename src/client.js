@@ -47,15 +47,11 @@ const Client = IgeEventingClass.extend({
 		this.mapLoaded = $.Deferred();
         this.phaserLoaded = $.Deferred();
 
-		// after rewrite then testing, this obviously stayed 'pending' so lets comment it out for now
-		// this.miniMapLoaded = $.Deferred(); // well are we using it
-
 		this.mapRenderEnabled = true; // check where we use this
 		this.unitRenderEnabled = true; // check where we use this
-		this.itemRenderEnabled = true; // check where we use this
+		this.itemRenderEnabled = true; // Item.prototype.tick()
 		this.uiEntityRenderEnabled = true; // check where we use this
 
-		this.miniMapEnabled = false;
 		this.clearEveryFrame = true;
 		this.cameraEnabled = true;
 		this.ctxAlphaEnabled = true;
@@ -292,7 +288,7 @@ const Client = IgeEventingClass.extend({
 		ige.menuUi.clipImageForShop();
 		ige.scaleMap(ige.game.data.map);
 
-		// IgePixiMap contains ige.client.mapLoaded.resolve();
+		// IgePixi contains ige.client.mapLoaded.resolve();
 		ige.map.load(ige.game.data.map);
 	},
 
@@ -445,11 +441,6 @@ const Client = IgeEventingClass.extend({
 				// old comment => 'game data is needed to populate shop
 				.addComponent(ShopComponent);
 
-			if (gameData.defaultData.enableMiniMap) {
-				//
-				ige.miniMap.createMiniMap();
-			}
-
 			ige.shop.enableShop();
 
 			//old comments => 'load sound and music when game starts'
@@ -475,20 +466,6 @@ const Client = IgeEventingClass.extend({
 				//
 				this.connectToServer();
 			}
-
-			// const params = ige.client.getUrlVars(); //PUT THIS SOMEWHERE
-			// unit image loading???
-			// we're not gonna do minimap for now but I will add it and comment out.
-			// if (mode == 'play' && gameData.defaultData.enableMiniMap) {
-			// 	//
-			// 	$('#leaderboard').css({
-			// 		//
-			// 		top: 190
-			// 	});
-
-			// 	this.miniMapEnabled = true;
-			// 	ige.miniMap.updateMiniMap();
-			// }
 		});
 
 	},
@@ -570,8 +547,7 @@ const Client = IgeEventingClass.extend({
 						//
 					} else if (mode == 'play') {
 						//
-						ige.addComponent(MiniMapComponent)
-							.addComponent(MiniMapUnit);
+
 						//
 					} else {
 						//
@@ -962,7 +938,6 @@ const Client = IgeEventingClass.extend({
 		ige.network.define('camera', this._onCamera);
 
 		ige.network.define('gameSuggestion', this._onGameSuggestion);
-		ige.network.define('minimap', this._onMinimapEvent);
 
 		ige.network.define('createFloatingText', this._onCreateFloatingText)
 
