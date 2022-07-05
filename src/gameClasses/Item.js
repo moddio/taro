@@ -859,6 +859,11 @@ var Item = IgeEntityPhysics.extend({
 							if (owner == ige.client.selectedUnit) {
 								// don't repeat whip-out tween for my own unit as it has already been executed from unit.changeItem()
 							} else if (stateId == 'selected') {
+								//emit size event
+								this.emit('size', {
+									width: this._stats.currentBody.width,
+									height: this._stats.currentBody.height
+								});
 
 								self.applyAnimationForState(stateId);
 
