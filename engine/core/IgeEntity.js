@@ -847,6 +847,13 @@ var IgeEntity = IgeObject.extend({
 
 			if (ige.isClient) {
 				ige.client.emit('width', {entity: this, px: px});
+				this.emit(
+					'size',
+					{
+						width: this._bounds2d.x,
+						height: this._bounds2d.y
+					}
+				);
 			}
 
 			return this;
@@ -876,6 +883,13 @@ var IgeEntity = IgeObject.extend({
 
 			if (ige.isClient) {
 				ige.client.emit('height', {entity: this, px: px});
+				this.emit(
+					'size',
+					{
+						width: this._bounds2d.x,
+						height: this._bounds2d.y
+					}
+				);
 			}
 
 			return this;

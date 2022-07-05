@@ -671,6 +671,11 @@ var Unit = IgeEntityPhysics.extend({
 
 			// whip-out the new item using tween
 			if (ige.isClient) {
+				//emit size event
+				newItem.emit('size', {
+					width: newItem._stats.currentBody.width,
+					height: newItem._stats.currentBody.height
+				});
 				newItem.applyAnimationForState('selected');
 				let customTween = {
 					type: 'swing',

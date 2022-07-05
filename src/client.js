@@ -49,7 +49,7 @@ const Client = IgeEventingClass.extend({
 
 		this.mapRenderEnabled = true; // check where we use this
 		this.unitRenderEnabled = true; // check where we use this
-		this.itemRenderEnabled = true; // check where we use this
+		this.itemRenderEnabled = true; // Item.prototype.tick()
 		this.uiEntityRenderEnabled = true; // check where we use this
 
 		this.clearEveryFrame = true;
