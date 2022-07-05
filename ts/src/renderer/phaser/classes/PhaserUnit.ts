@@ -13,6 +13,7 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 	private updateLabelListener: EvtListener;
 	private hideLabelListener: EvtListener;
+	private showLabelListener: EvtListener;
 
 	private fadingTextListener: EvtListener;
 
@@ -88,6 +89,12 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 			unit.on('hide-label', () => {
 				console.log('PhaserUnit hide-label', unit.id()); // TODO remove
 				label.visible = false;
+			});
+
+		this.showLabelListener =
+			unit.on('show-label', () => {
+				console.log('PhaserUnit show-label', unit.id()); // TODO remove
+				label.visible = true;
 			});
 
 		this.fadingTextListener =
@@ -222,6 +229,12 @@ class PhaserUnit extends Phaser.GameObjects.Container {
 
 			unit.off('hide-label', this.hideLabelListener);
 			this.hideLabelListener = null;
+
+			unit.off('show-label', this.showLabelListener);
+			this.showLabelListener = null;
+
+			unit.off('fading-text', this.fadingTextListener);
+			this.fadingTextListener = null;
 
 			unit.off('render-attributes', this.renderAttributesListener);
 			this.renderAttributesListener = null;

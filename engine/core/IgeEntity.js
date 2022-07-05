@@ -2529,7 +2529,7 @@ var IgeEntity = IgeObject.extend({
 
 	// remove all pointers referencing to this entity
 	clearAllPointers: function () {
-		var keysToDelete = ['ability', 'animation', 'attribute', 'attributeBarsContainer', 'fadingTextContainer', 'inventory', 'minimapUnit', 'unitNameLabel', 'unitUi', '_aabb', '_bounds2d', '_bounds3d', '_rotate', '_velocity'];
+		var keysToDelete = ['ability', 'animation', 'attribute', 'attributeBarsContainer', 'inventory', 'minimapUnit', 'unitUi', '_aabb', '_bounds2d', '_bounds3d', '_rotate', '_velocity'];
 		for (var i = 0; i < keysToDelete.length; i++) {
 			var key = keysToDelete[i];
 			if (this[key] && typeof this[key].destroy === 'function') {
@@ -4290,10 +4290,10 @@ var IgeEntity = IgeObject.extend({
 								this.show();
 								break;
 							case 'hideNameLabel':
-								this.unitNameLabel && this.unitNameLabel.hide();
+								this.emit('hide-label');
 								break;
 							case 'showNameLabel':
-								this.unitNameLabel && this.unitNameLabel.show();
+								this.emit('show-label');
 								break;
 						}
 					}

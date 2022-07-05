@@ -840,12 +840,6 @@ var Unit = IgeEntityPhysics.extend({
 
 			self.updateLayer();
 
-			if (self.unitNameLabel) {
-				self.unitNameLabel
-					.layer(zIndex.layer)
-					.depth(zIndex.depth + 1);
-			}
-
 			var ownerPlayer = self.getOwner();
 			if (ownerPlayer && ownerPlayer._stats.selectedUnitId == self.id() && this._stats.clientId == ige.network.id()) {
 				self.inventory.createInventorySlots();
@@ -1094,11 +1088,6 @@ var Unit = IgeEntityPhysics.extend({
 		var ownerPlayer = self.getOwner();
 		var playerTypeData = ownerPlayer && ige.game.getAsset('playerTypes', ownerPlayer._stats.playerTypeId);
 
-		if (self.unitNameLabel) {
-			self.unitNameLabel.destroy();
-			delete self.unitNameLabel;
-		}
-
 		// label should be hidden
 		var hideLabel = (
 			ownerPlayer &&
@@ -1136,16 +1125,6 @@ var Unit = IgeEntityPhysics.extend({
 		// if (isMyUnit) {
 		//     color = '#99FF00';
 		// }
-
-		self.unitNameLabel = new IgePixiFloatingText(self._stats.name, {
-			shouldBeBold: isMyUnit,
-			parentUnit: self.id(),
-			gluedIndex: 0,
-			color: color
-		});
-		self.unitNameLabel._pixiText._style._fontWeight = 599; //recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
-
-		this._pixiContainer.addChild(self.unitNameLabel._pixiText);
 
 		this.emit('update-label', {
 			text: self._stats.name,
@@ -1203,21 +1182,6 @@ var Unit = IgeEntityPhysics.extend({
 
 				for (var i = 0; i < self._stats.fadingTextQueue.length; i++) {
 					var fadingTextConfig = self._stats.fadingTextQueue.shift();
-
-					new IgePixiFloatingText(fadingTextConfig.text, {
-						shouldBeBold: shouldBeBold,
-						isFadeUp: true,
-						parentUnit: self.id(),
-						translate: {
-							x: self._pixiTexture.x,
-							y: self._pixiTexture.y - (self._pixiTexture.height / 2)
-						}
-					})
-						.layer(highestDepth)
-						.depth(self._stats.currentBody['z-index'].depth + 1)
-						.colorOverlay(fadingTextConfig.color || DEFAULT_COLOR)
-						.mount(self._pixiContainer)
-						.fadeUp();
 
 					self.emit('fading-text', {
 						text: fadingTextConfig.text,
@@ -1392,17 +1356,9 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.isClient) {
-			if (self.unitNameLabel) {
-				self.unitNameLabel.destroy();
-				delete self.unitNameLabel;
-			}
 
 			if (ige.client.cameraTrackUnitId == self.id()) {
 				ige.client.cameraTrackUnitId = undefined;
-			}
-
-			if (self.fadingTextContainer) {
-				self.fadingTextContainer.destroy();
 			}
 
 			if (self.minimapUnit) {
@@ -1483,11 +1439,6 @@ var Unit = IgeEntityPhysics.extend({
 					case 'scale':
 						if (ige.isClient) {
 							self._scaleTexture();
-
-							if (self.unitNameLabel) {
-								self.unitNameLabel.updateScale();
-								self.unitNameLabel.updatePosition();
-							}
 
 							if (self.attributeBars) {
 								_.forEach(self.attributeBars, function (attributeBar) {

@@ -129,21 +129,6 @@ var ClientNetworkEvents = {
 		}
 	},
 	_onCreateFloatingText: function (data) {
-		new IgePixiFloatingText(data.text, {
-			shouldBeBold: false,
-			isFadeUp: true,
-			parent: ige.pixi.world,
-			translate: {
-				x: data.position.x,
-				y: data.position.y
-			}
-		})
-			.layer(3)
-			.depth(3)
-			.colorOverlay(data.color || 'white')
-			.transformTexture(data.position.x, data.position.y)
-			.mount(ige.pixi.world)
-			.fadeUp();
 		ige.client.emit('floating-text', {
 			text: data.text,
 			x: data.position.x,
