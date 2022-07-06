@@ -16,7 +16,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		bar.setActive(true);
 
 		bar.unit = unit;
-		unit.add(bar);
+		unit.gameObject.add(bar);
 		bar.setVisible(true);
 
 		return bar;
@@ -27,7 +27,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		bar.resetFadeOut();
 
 		bar.setVisible(false);
-		bar.unit.remove(bar);
+		bar.unit.gameObject.remove(bar);
 		bar.unit = null;
 
 		bar.name = null;
@@ -60,7 +60,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		text.setOrigin(0.5);
 		this.add(text);
 
-		unit.add(this);
+		unit.gameObject.add(this);
 	}
 
 	render (data: AttributeData): void {

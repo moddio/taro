@@ -11,16 +11,6 @@ var EntitiesToRender = /** @class */ (function () {
         for (var entityId in this.trackEntityById) {
             var entity = ige.$(entityId);
             if (entity) {
-                // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
-                if (ige.client.isZooming) {
-                    if (entity.attributeBars) {
-                        _.forEach(entity.attributeBars, function (attributeBar) {
-                            var bar = ige.$(attributeBar.id);
-                            bar.updateScale();
-                            bar.updatePosition();
-                        });
-                    }
-                }
                 // handle entity behaviour and transformation offsets
                 if (ige.gameLoopTickHasExecuted) {
                     if (entity._deathTime !== undefined && entity._deathTime <= ige._tickStart) {

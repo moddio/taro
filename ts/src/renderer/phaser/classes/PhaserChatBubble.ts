@@ -48,8 +48,8 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		triangle.x = -2.5;
 		triangle.y = this.bubble.y + 14 + 5.85;
 
-		this.x = unit.x;
-		this.y = unit.y - this.offset;
+		this.x = unit.gameObject.x;
+		this.y = unit.gameObject.y - this.offset;
 
 		this.add(triangle);
 		this.add(bubble);

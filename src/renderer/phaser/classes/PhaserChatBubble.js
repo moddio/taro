@@ -41,8 +41,8 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         triangle.fillTriangleShape(rotatedTriangle);
         triangle.x = -2.5;
         triangle.y = _this.bubble.y + 14 + 5.85;
-        _this.x = unit.x;
-        _this.y = unit.y - _this.offset;
+        _this.x = unit.gameObject.x;
+        _this.y = unit.gameObject.y - _this.offset;
         _this.add(triangle);
         _this.add(bubble);
         _this.add(text);

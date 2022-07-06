@@ -25,7 +25,7 @@ var PhaserFloatingText = /** @class */ (function (_super) {
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         _this.setStroke('#000', strokeThickness);
         if (unit) {
-            unit.add(_this);
+            unit.gameObject.add(_this);
             _this.y = -25 -
                 Math.max(unit.sprite.displayHeight, unit.sprite.displayWidth) / 2;
         }

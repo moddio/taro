@@ -13,6 +13,8 @@ var igeClientConfig = {
 		'/gameClasses/Projectile.js',
 		'/gameClasses/Particle.js',
 
+		'/gameClasses/UnitAttributeBar.js',
+
 		'/gameClasses/ClientNetworkEvents.js',
 		'/gameClasses/components/GameComponent.js',
 		'/gameClasses/components/MapComponent.js',
@@ -58,7 +60,6 @@ var igeClientConfig = {
 		'pixi/IgePixi.js',
 		'pixi/IgePixiTexture.js',
 		'pixi/IgePixiAnimation.js',
-		'pixi/PixiAttributeBar.js',
 
 		/* Phaser */
 		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',

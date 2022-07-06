@@ -15,191 +15,146 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserUnit = /** @class */ (function (_super) {
     __extends(PhaserUnit, _super);
-    function PhaserUnit(scene, unit) {
-        var _this = _super.call(this, scene) || this;
-        _this.unit = unit;
+    function PhaserUnit(scene, entity) {
+        var _this = _super.call(this, scene, entity, "unit/".concat(entity._stats.type)) || this;
         _this.attributes = [];
-        var key = "unit/".concat(unit._stats.type);
-        var sprite = _this.sprite = scene.add.sprite(0, 0, key);
-        _this.add(sprite);
+        _this.scene = scene;
+        var translate = entity._translate;
+        _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
-        _this.add(label);
-        scene.add.existing(_this);
-        _this.followListener = unit.on('follow', function () {
-            console.log('PhaserUnit follow', unit.id()); // TODO remove
-            var camera = scene.cameras.main;
-            if (camera._follow === _this) {
-                return;
-            }
-            camera.startFollow(_this, true, 0.05, 0.05);
+        _this.gameObject.add(label);
+        Object.assign(_this.evtListeners, {
+            follow: entity.on('follow', _this.followListener, _this),
+            'stop-follow': entity.on('stop-follow', _this.stopFollowListener, _this),
+            'update-label': entity.on('update-label', _this.updateLabelListener, _this),
+            'show-label': entity.on('show-label', _this.showLabelListener, _this),
+            'hide-label': entity.on('hide-label', _this.hideLabelListener, _this),
+            'fading-text': entity.on('fading-text', _this.fadingTextListener, _this),
+            'render-attributes': entity.on('render-attributes', _this.renderAttributesListener, _this),
+            'update-attribute': entity.on('update-attribute', _this.updateAttributeListener, _this),
+            'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChatListener, _this),
         });
-        _this.stopFollowListener = unit.on('stop-follow', function () {
-            console.log('PhaserUnit stop-follow', unit.id()); // TODO remove
-            scene.cameras.main.stopFollow();
-        });
-        _this.playAnimationListener =
-            unit.on('play-animation', function (animationId) {
-                console.log('PhaserUnit play-animation', "".concat(key, "/").concat(animationId)); // TODO remove
-                sprite.play("".concat(key, "/").concat(animationId));
-            });
-        _this.updateLabelListener =
-            unit.on('update-label', function (data) {
-                console.log('PhaserUnit update-label', unit.id()); // TODO remove
-                label.visible = true;
-                label.setFontFamily('Verdana');
-                label.setFontSize(16);
-                label.setFontStyle(data.bold ? 'bold' : 'normal');
-                label.setFill(data.color || '#fff');
-                var strokeThickness = ige.game.data.settings
-                    .addStrokeToNameAndAttributes !== false ? 4 : 0;
-                label.setStroke('#000', strokeThickness);
-                label.setText(data.text || '');
-                label.y = -25 -
-                    Math.max(sprite.displayHeight, sprite.displayWidth) / 2;
-                label.setScale(1.25);
-            });
-        _this.hideLabelListener =
-            unit.on('hide-label', function () {
-                console.log('PhaserUnit hide-label', unit.id()); // TODO remove
-                label.visible = false;
-            });
-        _this.showLabelListener =
-            unit.on('show-label', function () {
-                console.log('PhaserUnit show-label', unit.id()); // TODO remove
-                label.visible = true;
-            });
-        _this.fadingTextListener =
-            unit.on('fading-text', function (data) {
-                console.log('PhaserUnit fading-text', unit.id()); // TODO remove
-                new PhaserFloatingText(_this.scene, {
-                    text: data.text || '',
-                    x: 0,
-                    y: 0,
-                    color: data.color || '#fff'
-                }, _this);
-            });
-        var attributes = _this.attributes;
-        _this.renderAttributesListener =
-            unit.on('render-attributes', function (data) {
-                console.log('PhaserUnit render-attributes', data); // TODO remove
-                // release all existing attribute bars
-                attributes.forEach(function (a) {
-                    PhaserAttributeBar.release(a);
-                });
-                attributes.length = 0;
-                // add attribute bars based on passed data
-                data.attrs.forEach(function (ad) {
-                    var a = PhaserAttributeBar.get(_this);
-                    a.render(ad);
-                    attributes.push(a);
-                });
-            });
-        _this.updateAttributeListener =
-            unit.on('update-attribute', function (data) {
-                console.log('PhaserUnit update-attribute', data); // TODO remove
-                var a;
-                var i = 0;
-                for (; i < attributes.length; i++) {
-                    if (attributes[i].name === data.attr.type) {
-                        a = attributes[i];
-                        break;
-                    }
-                }
-                if (!data.shouldRender) {
-                    if (a) {
-                        PhaserAttributeBar.release(a);
-                        attributes.splice(i, 1);
-                    }
-                    return;
-                }
-                if (!a) {
-                    a = PhaserAttributeBar.get(_this);
-                    attributes.push(a);
-                }
-                a.render(data.attr);
-            });
-        _this.renderChatListener = unit.on('render-chat-bubble', function (text) {
-            console.log('create-chat', text); // TODO remove
-            if (_this.chat) {
-                _this.chat.showMessage(text);
-            }
-            else {
-                _this.chat = new PhaserChatBubble(scene, text, _this);
-            }
-        });
-        /*this.renderChatBubble =
-            unit.on('render-chat-bubble', (data: {
-                attrs: AttributeData[]
-            }) => {
-                console.log('PhaserUnit render-attributes', data); // TODO remove
-
-                // release all existing attribute bars
-                attributes.forEach((a) => {
-                    PhaserAttributeBar.release(a);
-                });
-                attributes.length = 0;
-
-                // add attribute bars based on passed data
-                data.attrs.forEach((ad) => {
-                    const a = PhaserAttributeBar.get(this);
-                    a.render(ad);
-                    attributes.push(a);
-                });
-            });*/
-        scene.events.on('update', _this.update, _this);
         return _this;
     }
-    PhaserUnit.prototype.update = function ( /*time: number, delta: number*/) {
-        var unit = this.unit;
-        var container = unit._pixiContainer;
-        var texture = unit._pixiTexture;
-        if (unit._destroyed || container._destroyed) {
-            unit.off('follow', this.followListener);
-            this.followListener = null;
-            unit.off('stop-follow', this.stopFollowListener);
-            this.stopFollowListener = null;
-            unit.off('play-animation', this.playAnimationListener);
-            this.playAnimationListener = null;
-            unit.off('update-label', this.updateLabelListener);
-            this.updateLabelListener = null;
-            unit.off('hide-label', this.hideLabelListener);
-            this.hideLabelListener = null;
-            unit.off('show-label', this.showLabelListener);
-            this.showLabelListener = null;
-            unit.off('fading-text', this.fadingTextListener);
-            this.fadingTextListener = null;
-            unit.off('render-attributes', this.renderAttributesListener);
-            this.renderAttributesListener = null;
-            unit.off('update-attribute', this.updateAttributeListener);
-            this.updateAttributeListener = null;
-            unit.off('render-chat-bubble', this.renderChatListener);
-            this.renderChatListener = null;
-            if (this.chat)
-                this.chat.destroy();
-            // release all instantiated attribute bars
-            this.attributes.forEach(function (a) {
-                PhaserAttributeBar.release(a);
-            });
-            this.attributes.length = 0;
-            this.attributes = null;
-            this.scene.events.off('update', this.update, this);
-            this.label = null;
-            this.sprite = null;
-            this.destroy();
+    PhaserUnit.prototype.transform = function (data) {
+        this.gameObject.setPosition(data.x, data.y);
+        this.sprite.rotation = data.rotation;
+        if (this.chat)
+            this.chat.update(this.gameObject.x, this.gameObject.y);
+        var flip = this.entity._stats.flip;
+        this.sprite.setFlip(flip % 2 === 1, flip > 1);
+    };
+    PhaserUnit.prototype.scale = function (data) {
+        this.sprite.setScale(data.x, data.y);
+    };
+    PhaserUnit.prototype.followListener = function () {
+        console.log('PhaserUnit follow', this.entity.id()); // TODO remove
+        var camera = this.scene.cameras.main;
+        if (camera._follow === this.gameObject) {
             return;
         }
-        this.x = container.x;
-        this.y = container.y;
+        camera.startFollow(this.gameObject, true, 0.05, 0.05);
+    };
+    PhaserUnit.prototype.stopFollowListener = function () {
+        console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
+        this.scene.cameras.main.stopFollow();
+    };
+    PhaserUnit.prototype.updateLabelListener = function (data) {
+        console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
+        var label = this.label;
+        label.visible = true;
+        label.setFontFamily('Verdana');
+        label.setFontSize(16);
+        label.setFontStyle(data.bold ? 'bold' : 'normal');
+        label.setFill(data.color || '#fff');
+        var strokeThickness = ige.game.data.settings
+            .addStrokeToNameAndAttributes !== false ? 4 : 0;
+        label.setStroke('#000', strokeThickness);
+        label.setText(data.text || '');
+        label.y = -25 -
+            Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
+        label.setScale(1.25);
+    };
+    PhaserUnit.prototype.showLabelListener = function () {
+        console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
+        this.label.visible = true;
+    };
+    PhaserUnit.prototype.hideLabelListener = function () {
+        console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
+        this.label.visible = false;
+    };
+    PhaserUnit.prototype.fadingTextListener = function (data) {
+        console.log('PhaserUnit fading-text', this.entity.id()); // TODO remove
+        new PhaserFloatingText(this.scene, {
+            text: data.text || '',
+            x: 0,
+            y: 0,
+            color: data.color || '#fff'
+        }, this);
+    };
+    PhaserUnit.prototype.renderAttributesListener = function (data) {
+        var _this = this;
+        console.log('PhaserUnit render-attributes', data); // TODO remove
+        var attributes = this.attributes;
+        // release all existing attribute bars
+        attributes.forEach(function (a) {
+            PhaserAttributeBar.release(a);
+        });
+        attributes.length = 0;
+        // add attribute bars based on passed data
+        data.attrs.forEach(function (ad) {
+            var a = PhaserAttributeBar.get(_this);
+            a.render(ad);
+            attributes.push(a);
+        });
+    };
+    PhaserUnit.prototype.updateAttributeListener = function (data) {
+        console.log('PhaserUnit update-attribute', data); // TODO remove
+        var attributes = this.attributes;
+        var a;
+        var i = 0;
+        for (; i < attributes.length; i++) {
+            if (attributes[i].name === data.attr.type) {
+                a = attributes[i];
+                break;
+            }
+        }
+        if (!data.shouldRender) {
+            if (a) {
+                PhaserAttributeBar.release(a);
+                attributes.splice(i, 1);
+            }
+            return;
+        }
+        if (!a) {
+            a = PhaserAttributeBar.get(this);
+            attributes.push(a);
+        }
+        a.render(data.attr);
+    };
+    PhaserUnit.prototype.renderChatListener = function (text) {
+        console.log('create-chat', text); // TODO remove
+        if (this.chat) {
+            this.chat.showMessage(text);
+        }
+        else {
+            this.chat = new PhaserChatBubble(this.scene, text, this);
+        }
+    };
+    PhaserUnit.prototype.destroy = function () {
         if (this.chat)
-            this.chat.update(this.x, this.y);
-        var sprite = this.sprite;
-        sprite.rotation = texture.rotation;
-        var bounds = unit._bounds2d;
-        var flip = unit._stats.flip;
-        sprite.setDisplaySize(bounds.x, bounds.y);
-        sprite.setFlip(flip % 2 === 1, flip > 1);
+            this.chat.destroy();
+        // release all instantiated attribute bars
+        this.attributes.forEach(function (a) {
+            PhaserAttributeBar.release(a);
+        });
+        this.attributes.length = 0;
+        this.attributes = null;
+        this.label = null;
+        this.sprite = null;
+        _super.prototype.destroy.call(this);
     };
     return PhaserUnit;
-}(Phaser.GameObjects.Container));
+}(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserUnit.js.map
