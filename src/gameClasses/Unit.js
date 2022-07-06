@@ -187,6 +187,7 @@ var Unit = IgeEntityPhysics.extend({
 				pixiBar.destroy();
 			}
 		}
+		console.log('ATTRIBUTES', self.attributeBars);
 		self.attributeBars = [];
 
 		if (!ownerPlayer) {
@@ -269,11 +270,6 @@ var Unit = IgeEntityPhysics.extend({
 						index: self.attributeBars.length
 					});
 				}
-			}
-
-			var showOnlyWhenValueChanged = attr.showWhen === 'valueChanges';
-			if (pixiBar && shouldRender && showOnlyWhenValueChanged) {
-				pixiBar.showValueAndFadeOut();
 			}
 
 			this.emit('update-attribute', {
@@ -1434,14 +1430,6 @@ var Unit = IgeEntityPhysics.extend({
 					case 'scale':
 						if (ige.isClient) {
 							self._scaleTexture();
-
-							if (self.attributeBars) {
-								_.forEach(self.attributeBars, function (attributeBar) {
-									var bar = ige.$(attributeBar.id);
-									bar.updateScale();
-									bar.updatePosition();
-								});
-							}
 						}
 						break;
 
