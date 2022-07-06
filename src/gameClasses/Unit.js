@@ -187,7 +187,7 @@ var Unit = IgeEntityPhysics.extend({
 				unitBar.destroy();
 			}
 		}
-		console.log('ATTRIBUTES', self.attributeBars);
+
 		self.attributeBars = [];
 
 		if (!ownerPlayer) {
