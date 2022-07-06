@@ -19,32 +19,34 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
         _this.unit = unit;
-        _this.offset = 120;
+        _this.offset = 70;
         //draw text
         var text = _this.textObject = scene.add.text(0, 0, _this.trimText(chatText), {
-            fontFamily: 'Arial',
+            font: '600 24px Arial',
             color: '#ffffff',
             align: 'center'
         });
-        text.setFontSize(11);
+        // text.setFontSize(11);
         text.setOrigin(0.5);
         text.depth = 1;
+        _this.textObject.setScale(0.5);
         // draw bubble
-        _this.bubble = scene.add.graphics();
-        _this.createBubble();
+        var bubble = _this.bubble = scene.add.graphics();
+        _this.drawBubble();
         // draw triangle
         var triangle = _this.triangle = scene.add.graphics();
         var geometry = Phaser.Geom.Triangle.BuildRight(0, 0, 10, 10);
         var rotatedTriangle = Phaser.Geom.Triangle.Rotate(geometry, -Math.PI / 4);
         triangle.fillStyle(0x000000, 0.5);
         triangle.fillTriangleShape(rotatedTriangle);
-        triangle.lineStyle(2, 0x000000, 1);
         triangle.x = -2.5;
-        triangle.y = 18.5;
+        triangle.y = _this.bubble.y + 14 + 5.85;
         _this.x = unit.x;
         _this.y = unit.y - _this.offset;
         _this.add(triangle);
+        _this.add(bubble);
         _this.add(text);
+        _this.updateScale();
         scene.add.existing(_this);
         _this.fadeOut();
         return _this;
@@ -52,7 +54,8 @@ var PhaserChatBubble = /** @class */ (function (_super) {
     PhaserChatBubble.prototype.showMessage = function (chatText) {
         this.textObject.text = this.trimText(chatText);
         this.bubble.clear();
-        this.createBubble();
+        this.drawBubble();
+        this.updateScale();
         this.alpha = 1;
         this.resetFadeOut();
         this.fadeOut();
@@ -84,13 +87,8 @@ var PhaserChatBubble = /** @class */ (function (_super) {
             this.fadeTween = null;
         }
     };
-    //need to add scaling
     PhaserChatBubble.prototype.updateScale = function () {
-        /*this.scaleTo(
-            1 / ige.pixi.viewport.scale.x,
-            1 / ige.pixi.viewport.scale.y,
-            1 / ige.pixi.viewport.scale.z
-        );*/
+        this.setScale(1 / this.scene.cameras.main.zoom);
     };
     PhaserChatBubble.prototype.trimText = function (chatText) {
         var words = chatText;
@@ -100,17 +98,15 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         }
         return words;
     };
-    PhaserChatBubble.prototype.createBubble = function () {
+    PhaserChatBubble.prototype.drawBubble = function () {
         var bubble = this.bubble;
-        var width = this.textObject.width * 2 + 20;
-        var height = 25;
+        var width = this.textObject.width + 20;
+        var height = 28;
         var borderRadius = 5;
         bubble.fillStyle(0x000000, 0.5);
         bubble.fillRoundedRect(-width / 2, -height / 2, width * 10 / 20, height, borderRadius);
-        bubble.lineStyle(2, 0x000000, 1);
-        this.bubble.x = this.textObject.x + width / 4;
+        bubble.x = this.textObject.x + width / 4;
         bubble.setDepth(0);
-        this.add(bubble);
         this.setVisible(true);
     };
     PhaserChatBubble.prototype.update = function (x, y) {

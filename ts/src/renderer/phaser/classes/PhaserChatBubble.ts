@@ -14,7 +14,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		super(scene);
 
 		this.unit = unit;
-		this.offset = 120;
+		this.offset = 70;
 
 		//draw text
 		const text = this.textObject = scene.add.text(
@@ -22,35 +22,40 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			0,
 			this.trimText(chatText),
 			{
-				fontFamily: 'Arial',
+				font: '600 24px Arial',
 				color: '#ffffff',
 				align: 'center'
 			}
 		);
 
-		text.setFontSize(11);
+		// text.setFontSize(11);
 		text.setOrigin(0.5);
 		text.depth = 1;
+		this.textObject.setScale(0.5);
 
 		// draw bubble
-		this.bubble = scene.add.graphics();
-		this.createBubble();
+		const bubble = this.bubble = scene.add.graphics();
+		this.drawBubble();
 
 		// draw triangle
 		const triangle = this.triangle = scene.add.graphics();
 		const geometry = Phaser.Geom.Triangle.BuildRight(0, 0, 10, 10);
 		const rotatedTriangle = Phaser.Geom.Triangle.Rotate(geometry, -Math.PI/4);
+
 		triangle.fillStyle(0x000000, 0.5);
 		triangle.fillTriangleShape(rotatedTriangle);
-		triangle.lineStyle(2, 0x000000, 1);
+
 		triangle.x = -2.5;
-		triangle.y = 18.5;
+		triangle.y = this.bubble.y + 14 + 5.85;
 
 		this.x = unit.x;
 		this.y = unit.y - this.offset;
 
 		this.add(triangle);
+		this.add(bubble);
 		this.add(text);
+
+		this.updateScale();
 		scene.add.existing(this);
 
 		this.fadeOut();
@@ -60,11 +65,12 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.textObject.text = this.trimText(chatText);
 
 		this.bubble.clear();
-		this.createBubble();
-		
-		this.alpha = 1;
-		this.resetFadeOut ();
+		this.drawBubble();
 
+		this.updateScale();
+		this.alpha = 1;
+
+		this.resetFadeOut ();
 		this.fadeOut();
 	}
 
@@ -96,13 +102,8 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		}
 	}
 
-	//need to add scaling
 	updateScale(): void {
-		/*this.scaleTo(
-			1 / ige.pixi.viewport.scale.x,
-			1 / ige.pixi.viewport.scale.y,
-			1 / ige.pixi.viewport.scale.z
-		);*/
+		this.setScale(1 / this.scene.cameras.main.zoom);
 	}
 
 	trimText(chatText: string): string {
@@ -112,14 +113,14 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			words = words.substring(0, 40);
 			words += '...';
 		}
-		
+
 		return words;
 	}
 
-	createBubble(): void {
+	drawBubble(): void {
 		const bubble = this.bubble;
-		const width = this.textObject.width * 2 + 20;
-		const height = 25;
+		const width = this.textObject.width + 20;
+		const height = 28;
 		const borderRadius = 5;
 
 		bubble.fillStyle(0x000000, 0.5);
@@ -131,12 +132,9 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			borderRadius
 		);
 
-		bubble.lineStyle(2, 0x000000, 1);
-		this.bubble.x = this.textObject.x + width / 4;
+		bubble.x = this.textObject.x + width / 4;
 
 		bubble.setDepth(0);
-		this.add(bubble);
-
 
 		this.setVisible(true);
 	}
