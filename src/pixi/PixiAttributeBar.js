@@ -53,33 +53,6 @@ var PixiAttributeBar = IgeEntity.extend({
 		return this;
 	},
 
-	/**
-	 * @return {number} height of attribute bar
-	 *
-	 * returns valid height of attribute bar based on current zoom level
-	 */
-	barHeight: function () {
-		return 11;
-	},
-
-	barWidth: function () {
-		return 80;
-	},
-
-	borderRadius: function () {
-		var self = this;
-		return self.barHeight() / 2 - 1;
-	},
-
-	getTextStyle: function () {
-		return {
-			fontFamily: 'Arial',
-			fill: '#000000',
-			fontSize: 11,
-			fontWeight: 'bold'
-		};
-	},
-
 	getOwner: function () {
 		return ige.$(this._stats.parentId);
 	},
