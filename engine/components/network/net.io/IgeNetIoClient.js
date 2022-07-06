@@ -35,7 +35,7 @@ var IgeNetIoClient = {
 			this.lagVariance = 0;
 
 			var self = this;
-			var gameId = ige.client.servers[0].gameId;
+			var gameId = ige.client.server.gameId;
 
 			self._startCallback = callback;
 
