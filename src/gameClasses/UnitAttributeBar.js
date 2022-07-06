@@ -1,5 +1,5 @@
-var PixiAttributeBar = IgeEntity.extend({
-	classId: 'PixiAttributeBar',
+var UnitAttributeBar = IgeEntity.extend({
+	classId: 'UnitAttributeBar',
 
 	init: function (parentEntityId, attributeData, config) {
 		var self = this;
@@ -75,7 +75,6 @@ var PixiAttributeBar = IgeEntity.extend({
 
 		progressValueInPercent = Math.max(0, Math.min(100, progressValueInPercent));
 		progressValueInPercent = parseInt(progressValueInPercent);
-		var shouldUpdateBar = self.lastValue.progressValueInPercent !== progressValueInPercent;
 
 		self.lastValue = {
 			value: newValue,
@@ -92,5 +91,5 @@ var PixiAttributeBar = IgeEntity.extend({
 });
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
-	module.exports = PixiAttributeBar;
+	module.exports = UnitAttributeBar;
 }

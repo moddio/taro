@@ -181,10 +181,10 @@ var Unit = IgeEntityPhysics.extend({
 
 		if (self.attributeBars) {
 			for (var attributeBarInfo of self.attributeBars) {
-				var pixiBarId = attributeBarInfo.id;
-				var pixiBar = ige.$(pixiBarId);
+				var unitBarId = attributeBarInfo.id;
+				var unitBar = ige.$(unitBarId);
 
-				pixiBar.destroy();
+				unitBar.destroy();
 			}
 		}
 		console.log('ATTRIBUTES', self.attributeBars);
@@ -216,10 +216,10 @@ var Unit = IgeEntityPhysics.extend({
 			var attribute = attributesToRender[i];
 			attribute.index = i + 1;
 
-			var pixiBar = new PixiAttributeBar(self.id(), attribute);
+			var unitBar = new UnitAttributeBar(self.id(), attribute);
 
 			self.attributeBars.push({
-				id: pixiBar.id(),
+				id: unitBar.id(),
 				attribute: attribute.key,
 				index: i
 			});
@@ -234,38 +234,38 @@ var Unit = IgeEntityPhysics.extend({
 		var self = this;
 
 		if (attr && self.attributeBars) {
-			var pixiBarId = null;
+			var unitBarId = null;
 
 			for (var i = 0; i < self.attributeBars.length; i++) {
 				var attributeBarInfo = self.attributeBars[i];
 
 				if (attributeBarInfo.attribute === attr.type) {
 					attr.index = i;
-					pixiBarId = attributeBarInfo.id;
+					unitBarId = attributeBarInfo.id;
 				}
 			}
 
-			var pixiBar = ige.$(pixiBarId);
+			var unitBar = ige.$(unitBarId);
 			var shouldRender = self.shouldRenderAttribute(attr);
 
-			if (pixiBar) {
+			if (unitBar) {
 				if (shouldRender) {
-					pixiBar.updateBar(attr);
+					unitBar.updateBar(attr);
 				} else {
 					self.attributeBars = self.attributeBars.filter(function (bar) {
-						return bar.id !== pixiBar.id();
+						return bar.id !== unitBar.id();
 					});
 
-					pixiBar.destroy();
+					unitBar.destroy();
 				}
 			} else {
 				if (shouldRender) {
 					attr.index = self.attributeBars.length + 1;
 
-					pixiBar = new PixiAttributeBar(self.id(), attr);
+					unitBar = new UnitAttributeBar(self.id(), attr);
 
 					self.attributeBars.push({
-						id: pixiBar.id(),
+						id: unitBar.id(),
 						attribute: attr.type,
 						index: self.attributeBars.length
 					});
@@ -1449,13 +1449,6 @@ var Unit = IgeEntityPhysics.extend({
 							// changing body dimensions
 							self._scaleBox2dBody(newValue);
 
-							// attaching entities
-							/*for (var entityId in attachedEntities) {
-								var entity = ige.$(entityId);
-								if (entity && entity._category == 'item') {
-									entity.mount(self._pixiTexture);
-								}
-							}*/
 						} else if (ige.isClient) {
 							self._stats.scale = newValue;
 							self._scaleTexture();
