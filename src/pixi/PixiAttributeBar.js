@@ -50,7 +50,7 @@ var PixiAttributeBar = IgeEntity.extend({
 		container.addChild(self.pixiBarMask);
 		container.addChild(self.pixiBar);
 
-		entity._pixiContainer.addChild(container);
+		//entity._pixiContainer.addChild(container);
 		self._pixiContainer = container;
 		self.updatePosition();
 		self.updateScale();

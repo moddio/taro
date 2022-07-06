@@ -5,9 +5,6 @@ var Unit = IgeEntityPhysics.extend({
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 
 		this.id(entityIdFromServer);
-		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
-		}
 		var self = this;
 		self.dob = Date.now();
 		// used for 2 reasons
@@ -74,8 +71,6 @@ var Unit = IgeEntityPhysics.extend({
 
 		if (ige.isClient) {
 			this.addToRenderer(defaultAnimation && (defaultAnimation.frames[0] - 1));
-
-			self.mount(ige.pixi.world);
 			this.transformTexture(this._translate.x, this._translate.y);
 
 			ige.client.emit('create-unit', this);
@@ -1467,12 +1462,12 @@ var Unit = IgeEntityPhysics.extend({
 							self._scaleBox2dBody(newValue);
 
 							// attaching entities
-							for (var entityId in attachedEntities) {
+							/*for (var entityId in attachedEntities) {
 								var entity = ige.$(entityId);
 								if (entity && entity._category == 'item') {
 									entity.mount(self._pixiTexture);
 								}
-							}
+							}*/
 						} else if (ige.isClient) {
 							self._stats.scale = newValue;
 							self._scaleTexture();
