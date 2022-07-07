@@ -74,7 +74,7 @@ var IgePixiChatBubble = IgeEntity.extend({
 		container.y = offset;
 		this._pixiContainer = container;
 		this.scaleTo(1 / camera.scale.x, 1 / camera.scale.y, 1);
-		this.mount(owner._pixiContainer);
+		//this.mount(owner._pixiContainer);
 
 		return this;
 	},
@@ -98,12 +98,12 @@ var IgePixiChatBubble = IgeEntity.extend({
 		var bottomMargin = 20;
 		var nameLabel = null;
 
-		for (var child of owner._pixiContainer.children) {
+		/*for (var child of owner._pixiContainer.children) {
 			if (child._category === 'floating_text') {
 				nameLabel = child;
 				break;
 			}
-		}
+		}*/
 
 		if (nameLabel) {
 			return nameLabel.y - nameLabel.height - bottomMargin;

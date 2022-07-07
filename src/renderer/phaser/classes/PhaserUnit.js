@@ -17,38 +17,38 @@ var PhaserUnit = /** @class */ (function (_super) {
     __extends(PhaserUnit, _super);
     function PhaserUnit(scene, entity) {
         var _this = _super.call(this, scene, entity, "unit/".concat(entity._stats.type)) || this;
-        _this.attributes = [];
         _this.scene = scene;
+        _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
         Object.assign(_this.evtListeners, {
-            follow: entity.on('follow', _this.followListener, _this),
-            'stop-follow': entity.on('stop-follow', _this.stopFollowListener, _this),
-            'update-label': entity.on('update-label', _this.updateLabelListener, _this),
-            'show-label': entity.on('show-label', _this.showLabelListener, _this),
-            'hide-label': entity.on('hide-label', _this.hideLabelListener, _this),
-            'fading-text': entity.on('fading-text', _this.fadingTextListener, _this),
-            'render-attributes': entity.on('render-attributes', _this.renderAttributesListener, _this),
-            'update-attribute': entity.on('update-attribute', _this.updateAttributeListener, _this),
-            'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChatListener, _this),
+            follow: entity.on('follow', _this.follow, _this),
+            'stop-follow': entity.on('stop-follow', _this.stopFollow, _this),
+            'update-label': entity.on('update-label', _this.updateLabel, _this),
+            'show-label': entity.on('show-label', _this.showLabel, _this),
+            'hide-label': entity.on('hide-label', _this.hideLabel, _this),
+            'fading-text': entity.on('fading-text', _this.fadingText, _this),
+            'render-attributes': entity.on('render-attributes', _this.renderAttributes, _this),
+            'update-attribute': entity.on('update-attribute', _this.updateAttribute, _this),
+            'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChat, _this),
         });
         return _this;
     }
     PhaserUnit.prototype.transform = function (data) {
-        this.gameObject.setPosition(data.x, data.y);
-        this.sprite.rotation = data.rotation;
-        if (this.chat)
+        _super.prototype.transform.call(this, data);
+        if (this.chat) {
             this.chat.update(this.gameObject.x, this.gameObject.y);
+        }
         var flip = this.entity._stats.flip;
         this.sprite.setFlip(flip % 2 === 1, flip > 1);
     };
     PhaserUnit.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);
     };
-    PhaserUnit.prototype.followListener = function () {
+    PhaserUnit.prototype.follow = function () {
         console.log('PhaserUnit follow', this.entity.id()); // TODO remove
         var camera = this.scene.cameras.main;
         if (camera._follow === this.gameObject) {
@@ -56,11 +56,11 @@ var PhaserUnit = /** @class */ (function (_super) {
         }
         camera.startFollow(this.gameObject, true, 0.05, 0.05);
     };
-    PhaserUnit.prototype.stopFollowListener = function () {
+    PhaserUnit.prototype.stopFollow = function () {
         console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
         this.scene.cameras.main.stopFollow();
     };
-    PhaserUnit.prototype.updateLabelListener = function (data) {
+    PhaserUnit.prototype.updateLabel = function (data) {
         console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
         var label = this.label;
         label.visible = true;
@@ -76,15 +76,15 @@ var PhaserUnit = /** @class */ (function (_super) {
             Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
         label.setScale(1.25);
     };
-    PhaserUnit.prototype.showLabelListener = function () {
+    PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
         this.label.visible = true;
     };
-    PhaserUnit.prototype.hideLabelListener = function () {
+    PhaserUnit.prototype.hideLabel = function () {
         console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
         this.label.visible = false;
     };
-    PhaserUnit.prototype.fadingTextListener = function (data) {
+    PhaserUnit.prototype.fadingText = function (data) {
         console.log('PhaserUnit fading-text', this.entity.id()); // TODO remove
         new PhaserFloatingText(this.scene, {
             text: data.text || '',
@@ -93,7 +93,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             color: data.color || '#fff'
         }, this);
     };
-    PhaserUnit.prototype.renderAttributesListener = function (data) {
+    PhaserUnit.prototype.renderAttributes = function (data) {
         var _this = this;
         console.log('PhaserUnit render-attributes', data); // TODO remove
         var attributes = this.attributes;
@@ -109,7 +109,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             attributes.push(a);
         });
     };
-    PhaserUnit.prototype.updateAttributeListener = function (data) {
+    PhaserUnit.prototype.updateAttribute = function (data) {
         console.log('PhaserUnit update-attribute', data); // TODO remove
         var attributes = this.attributes;
         var a;
@@ -133,7 +133,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         }
         a.render(data.attr);
     };
-    PhaserUnit.prototype.renderChatListener = function (text) {
+    PhaserUnit.prototype.renderChat = function (text) {
         console.log('create-chat', text); // TODO remove
         if (this.chat) {
             this.chat.showMessage(text);
@@ -143,8 +143,10 @@ var PhaserUnit = /** @class */ (function (_super) {
         }
     };
     PhaserUnit.prototype.destroy = function () {
-        if (this.chat)
+        if (this.chat) {
             this.chat.destroy();
+            this.chat = null;
+        }
         // release all instantiated attribute bars
         this.attributes.forEach(function (a) {
             PhaserAttributeBar.release(a);
@@ -152,7 +154,6 @@ var PhaserUnit = /** @class */ (function (_super) {
         this.attributes.length = 0;
         this.attributes = null;
         this.label = null;
-        this.sprite = null;
         _super.prototype.destroy.call(this);
     };
     return PhaserUnit;
