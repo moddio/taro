@@ -28,7 +28,6 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 			}
 		);
 
-		// text.setFontSize(11);
 		text.setOrigin(0.5);
 		text.depth = 1;
 		this.textObject.setScale(0.5);

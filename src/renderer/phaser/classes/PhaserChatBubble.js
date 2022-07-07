@@ -26,7 +26,6 @@ var PhaserChatBubble = /** @class */ (function (_super) {
             color: '#ffffff',
             align: 'center'
         });
-        // text.setFontSize(11);
         text.setOrigin(0.5);
         text.depth = 1;
         _this.textObject.setScale(0.5);
