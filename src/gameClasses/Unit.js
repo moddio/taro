@@ -66,19 +66,18 @@ var Unit = IgeEntityPhysics.extend({
 
 		// initialize body & texture of the unit
 		self.changeUnitType(data.type, data.defaultData);
-		// console.log(data.type, data.defaultData);
+
 		if (this._stats.states) {
 			var currentState = this._stats.states[this._stats.stateId];
 			var defaultAnimation = this._stats.animations[currentState.animation];
 		}
 
 		if (ige.isClient) {
-			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
-			// new
-			// this.drawCrashCollider(data.defaultData);
+			this.createTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
+
 			self.mount(ige.pixi.world);
-			this.transformPixiEntity(this._translate.x, this._translate.y);
-			// console.log(this._id, this._translate);
+			this.transformTexture(this._translate.x, this._translate.y);
+
 		}
 
 		// if unit's scale as already been changed by some script then use that scale
@@ -1234,8 +1233,6 @@ var Unit = IgeEntityPhysics.extend({
 					/*item._hasMoved = true;
 					item._translateTo(defaultData.translate.x, defaultData.translate.y)*/
 				}
-
-				console.log('default data', defaultData)
 
 				item.setState('dropped', defaultData);
 				item.setOwnerUnit(undefined);

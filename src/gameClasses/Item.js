@@ -78,7 +78,7 @@ var Item = IgeEntityPhysics.extend({
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
-			self.createPixiTexture();
+			self.createTexture();
 			self.drawBounds(false);
 		}
 		self.playEffect('create');
@@ -630,8 +630,8 @@ var Item = IgeEntityPhysics.extend({
 			}
 			return canAffordCost;
 		} else {
-			return false;
 			ItemComponent.prototype.log('can\'t afford cost');
+			return false;
 		}
 	},
 
@@ -983,12 +983,15 @@ var Item = IgeEntityPhysics.extend({
 			var y = ownerUnit._translate.y + self.anchoredOffset.y;
 
 			self.translateTo(x, y);
-			if (self._stats.controls && self._stats.controls.mouseBehaviour) {
-				if (self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
-					if (rotate > 0 && rotate < Math.PI) {
-						self.flip(0);
-					} else {
-						self.flip(1);
+			
+			if (ige.isClient && ige.client.selectedUnit == ownerUnit) {
+				if (self._stats.controls && self._stats.controls.mouseBehaviour) {
+					if (self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
+						if (rotate > 0 && rotate < Math.PI) {
+							self.flip(0);
+						} else {
+							self.flip(1);
+						}
 					}
 				}
 			}

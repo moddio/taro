@@ -27,12 +27,15 @@ var IgePixiTexture = IgeClass.extend({
 
 				// if image is not from discord
 				options = { crossOrigin: true };
-
-				resource.add(source, `${source}?version=${version}`, options)
-					.load(function () {
-						data.entity.pixianimation._anims = {};
-						data.entity[data.cb](data.animationId);
-					});
+				
+				// check if the cell sheet url (source) is a valid url
+				if (source && source.indexOf('http') === 0) {
+					resource.add(source, `${source}?version=${version}`, options)
+						.load(function () {
+							data.entity.pixianimation._anims = {};
+							data.entity[data.cb](data.animationId);
+						});
+				}
 
 				data.entity.lastLoadedImage = source;
 			}
@@ -74,7 +77,7 @@ var IgePixiTexture = IgeClass.extend({
 		var spacing = 0;
 		var resource = this.get(this._stats.url, {
 			entity: this._entity,
-			cb: 'createPixiTexture',
+			cb: 'createTexture',
 			animationId: gid
 		});
 

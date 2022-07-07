@@ -39,7 +39,6 @@ var IgePixiAnimation = IgeClass.extend({
 						try {
 							resource.frame = new PIXI.Rectangle(tileX, tileY, spriteWidth, spriteHeight);
 						} catch (e) {
-							console.log(e);
 							alert(`animation for ${source} cannot be loaded`);
 						}
 						texturesWithSprites.push(self.setSpriteProperty(resource));
@@ -87,22 +86,20 @@ var IgePixiAnimation = IgeClass.extend({
 		return texturesWithSprites;
 	},
 	select: function (frames, fps = 15, loopCount, cellSheetAnimId, animName) {
-		var self = this;
-		var entity = ige.pixi.trackEntityById[self._entity.entityId];
-		if (!entity) return;
+
+		if (!this._entity.isRendering()) return;
 
 		var startFrame = frames[0] - 1;
 		var lastFrame = frames[frames.length - 1] - 1;
-		var totalNumberOfFrames = frames.length;
 
-		self.i = 0;
-		self.fpsSecond = 1000 / fps;
-		self.frames = frames;
-		self.loopCount = loopCount;
-		self.lastFrame = lastFrame;
-		self.startFrame = startFrame;
-		self.totalNumberOfFrames = frames.length;
-		self._entity.currentAnimId = cellSheetAnimId;
+		this.i = 0;
+		this.fpsSecond = 1000 / fps;
+		this.frames = frames;
+		this.loopCount = loopCount;
+		this.lastFrame = lastFrame;
+		this.startFrame = startFrame;
+		this.totalNumberOfFrames = frames.length;
+		this._entity.currentAnimId = cellSheetAnimId;
 
 		this.resetAnimation();
 
@@ -145,6 +142,9 @@ var IgePixiAnimation = IgeClass.extend({
 			this.stopAtFrame(this.lastFrame);
 		} else {
 			this.stopAtFrame(this.lastFrame);
+			if (this.animating) {
+				this._entity.applyAnimationById('default'); // play default animation if effect isn't set
+			}
 			this.resetAnimation();
 		}
 		this.i = i;
