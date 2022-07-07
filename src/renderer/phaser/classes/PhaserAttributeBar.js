@@ -68,7 +68,9 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         bar.fillStyle(Phaser.Display.Color
             .HexStringToColor(data.color)
             .color);
-        bar.fillRoundedRect(-w / 2, -h / 2, w * data.value / data.max, h, borderRadius);
+        if (data.value !== 0) {
+            bar.fillRoundedRect(-w / 2, -h / 2, Math.max(w * data.value / data.max, 10), h, borderRadius);
+        }
         bar.lineStyle(2, 0x000000, 1);
         bar.strokeRoundedRect(-w / 2, -h / 2, w, h, borderRadius);
         text.setText(data.displayValue ?
@@ -77,7 +79,7 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         var sprite = this.unit.sprite;
         this.y = 25 +
             Math.max(sprite.displayHeight, sprite.displayWidth) / 2
-            + data.index * h * 1.1;
+            + (data.index - 1) * h * 1.1;
         this.resetFadeOut();
         if ((data.showWhen instanceof Array &&
             data.showWhen.indexOf('valueChanges') > -1) ||

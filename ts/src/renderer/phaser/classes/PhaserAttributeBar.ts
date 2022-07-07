@@ -59,7 +59,6 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		text.setFontSize(14);
 		text.setOrigin(0.5);
 		this.add(text);
-
 		unit.gameObject.add(this);
 	}
 
@@ -79,13 +78,15 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		bar.fillStyle(Phaser.Display.Color
 			.HexStringToColor(data.color)
 			.color);
-		bar.fillRoundedRect(
-			-w / 2,
-			-h / 2,
-			w * data.value / data.max,
-			h,
-			borderRadius
-		);
+		if (data.value !== 0) {
+			bar.fillRoundedRect(
+				-w / 2,
+				-h / 2,
+				Math.max(w * data.value / data.max, 10),
+				h,
+				borderRadius
+			);
+		}
 
 		bar.lineStyle(2, 0x000000, 1);
 		bar.strokeRoundedRect(
@@ -103,7 +104,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		const sprite = this.unit.sprite;
 		this.y = 25 +
 			Math.max(sprite.displayHeight, sprite.displayWidth) / 2
-			+ data.index * h*1.1;
+			+ (data.index - 1) * h*1.1;
 
 		this.resetFadeOut();
 
