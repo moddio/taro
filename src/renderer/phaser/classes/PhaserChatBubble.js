@@ -18,8 +18,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
     function PhaserChatBubble(scene, chatText, unit) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
-        _this.unit = unit;
-        _this.offset = _this.unit.sprite.displayHeight + _this.unit.label.displayHeight + 4;
+        _this.offset = unit.sprite.displayHeight + unit.label.displayHeight + 4;
         //draw text
         var text = _this.textObject = scene.add.text(0, 0, _this.trimText(chatText), {
             font: '600 24px Arial',
@@ -90,12 +89,11 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         this.setScale(1 / this.scene.cameras.main.zoom);
     };
     PhaserChatBubble.prototype.trimText = function (chatText) {
-        var words = chatText;
-        if (words.length > 40) {
-            words = words.substring(0, 40);
-            words += '...';
+        if (chatText.length > 40) {
+            chatText = chatText.substring(0, 40);
+            chatText += '...';
         }
-        return words;
+        return chatText;
     };
     PhaserChatBubble.prototype.drawBubble = function () {
         var bubble = this.bubble;

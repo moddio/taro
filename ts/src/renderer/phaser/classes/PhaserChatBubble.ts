@@ -1,10 +1,10 @@
 class PhaserChatBubble extends Phaser.GameObjects.Container {
 
 	private readonly triangle: Phaser.GameObjects.Graphics;
-	protected bubble: Phaser.GameObjects.Graphics;
-	protected textObject: Phaser.GameObjects.Text;
+	private readonly bubble: Phaser.GameObjects.Graphics;
+	private readonly textObject: Phaser.GameObjects.Text;
 
-	protected offset: number;
+	private readonly offset: number;
 
 	private fadeTimerEvent: Phaser.Time.TimerEvent;
 	private fadeTween: Phaser.Tweens.Tween;
@@ -12,9 +12,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 	constructor(scene: Phaser.Scene, chatText: string, private unit: PhaserUnit) {
 
 		super(scene);
-
-		this.unit = unit;
-		this.offset = this.unit.sprite.displayHeight + this.unit.label.displayHeight + 4;
+		this.offset = unit.sprite.displayHeight + unit.label.displayHeight + 4;
 
 		//draw text
 		const text = this.textObject = scene.add.text(
@@ -101,22 +99,20 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		}
 	}
 
-	updateScale(): void {
+	private updateScale(): void {
 		this.setScale(1 / this.scene.cameras.main.zoom);
 	}
 
-	trimText(chatText: string): string {
-		let words = chatText;
-
-		if (words.length > 40) {
-			words = words.substring(0, 40);
-			words += '...';
+	private trimText(chatText: string): string {
+		if (chatText.length > 40) {
+			chatText = chatText.substring(0, 40);
+			chatText += '...';
 		}
 
-		return words;
+		return chatText;
 	}
 
-	drawBubble(): void {
+	private drawBubble(): void {
 		const bubble = this.bubble;
 		const width = this.textObject.width + 20;
 		const height = 28;
@@ -138,7 +134,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.setVisible(true);
 	}
 
-	update (x, y) {
+	update (x: number, y: number) {
 		this.x = x;
 		this.y = y - this.offset;
 	}
