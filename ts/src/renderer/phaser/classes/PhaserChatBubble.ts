@@ -4,7 +4,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 	protected bubble: Phaser.GameObjects.Graphics;
 	protected textObject: Phaser.GameObjects.Text;
 
-	private offset: number;
+	protected offset: number;
 
 	private fadeTimerEvent: Phaser.Time.TimerEvent;
 	private fadeTween: Phaser.Tweens.Tween;
@@ -14,7 +14,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		super(scene);
 
 		this.unit = unit;
-		this.offset = 70;
+		this.offset = this.unit.sprite.displayHeight + this.unit.label.displayHeight + 4;
 
 		//draw text
 		const text = this.textObject = scene.add.text(
@@ -46,8 +46,8 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		triangle.fillTriangleShape(rotatedTriangle);
 
 		triangle.x = -2.5;
-		triangle.y = this.bubble.y + 14 + 5.85;
 
+		triangle.y = this.bubble.y + 14 + 5.85;
 		this.x = unit.gameObject.x;
 		this.y = unit.gameObject.y - this.offset;
 
@@ -74,7 +74,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.fadeOut();
 	}
 
-	fadeOut(): void {
+	private fadeOut(): void {
 		const scene = this.scene;
 		this.fadeTimerEvent = scene.time.delayedCall(3000, () => {
 			this.fadeTimerEvent = null;
@@ -90,7 +90,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		});
 	}
 
-	resetFadeOut (): void {
+	private resetFadeOut (): void {
 		// reset fade timer and tween
 		if (this.fadeTimerEvent) {
 			this.scene.time.removeEvent(this.fadeTimerEvent);

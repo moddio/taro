@@ -19,7 +19,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
         _this.unit = unit;
-        _this.offset = 70;
+        _this.offset = _this.unit.sprite.displayHeight + _this.unit.label.displayHeight + 4;
         //draw text
         var text = _this.textObject = scene.add.text(0, 0, _this.trimText(chatText), {
             font: '600 24px Arial',
