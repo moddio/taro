@@ -69,7 +69,7 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
             .HexStringToColor(data.color)
             .color);
         if (data.value !== 0) {
-            bar.fillRoundedRect(-w / 2, -h / 2, Math.max(w * data.value / data.max, 10), h, borderRadius);
+            bar.fillRoundedRect(-w / 2, -h / 2, Math.max(w * data.value / data.max, borderRadius * 1.5), h, borderRadius);
         }
         bar.lineStyle(2, 0x000000, 1);
         bar.strokeRoundedRect(-w / 2, -h / 2, w, h, borderRadius);

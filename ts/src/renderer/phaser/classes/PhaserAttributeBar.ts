@@ -82,7 +82,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 			bar.fillRoundedRect(
 				-w / 2,
 				-h / 2,
-				Math.max(w * data.value / data.max, 10),
+				Math.max(w * data.value / data.max, borderRadius * 1.5),
 				h,
 				borderRadius
 			);
