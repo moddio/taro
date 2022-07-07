@@ -82,12 +82,6 @@ var UnitAttributeBar = IgeEntity.extend({
 			progressValueInPercent: progressValueInPercent
 		};
 	},
-
-	destroy: function () {
-		var self = this;
-
-		IgeEntity.prototype.destroy.call(self);
-	}
 });
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
