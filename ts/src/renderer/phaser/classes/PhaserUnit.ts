@@ -187,6 +187,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.attributes.length = 0;
 		this.attributes = null;
 		this.label = null;
+		this.scene = null;
 
 		super.destroy();
 	}
