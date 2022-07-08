@@ -106,7 +106,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         bubble.setDepth(0);
         this.setVisible(true);
     };
-    PhaserChatBubble.prototype.update = function (x, y) {
+    PhaserChatBubble.prototype.updatePosition = function (x, y) {
         this.x = x;
         this.y = y - this.offset;
     };

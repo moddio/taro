@@ -134,7 +134,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.setVisible(true);
 	}
 
-	update (x: number, y: number) {
+	updatePosition (x: number, y: number): void {
 		this.x = x;
 		this.y = y - this.offset;
 	}
