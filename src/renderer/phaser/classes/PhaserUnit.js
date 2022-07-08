@@ -40,7 +40,7 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.transform = function (data) {
         _super.prototype.transform.call(this, data);
         if (this.chat) {
-            this.chat.update(this.gameObject.x, this.gameObject.y);
+            this.chat.updatePosition(this.gameObject.x, this.gameObject.y);
         }
         var flip = this.entity._stats.flip;
         this.sprite.setFlip(flip % 2 === 1, flip > 1);

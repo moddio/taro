@@ -43,7 +43,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}): void {
 		super.transform(data);
 		if (this.chat) {
-			this.chat.update(this.gameObject.x, this.gameObject.y);
+			this.chat.updatePosition(this.gameObject.x, this.gameObject.y);
 		}
 		const flip = this.entity._stats.flip;
 		this.sprite.setFlip(flip % 2 === 1, flip > 1);
