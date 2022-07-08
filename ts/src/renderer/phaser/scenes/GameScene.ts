@@ -9,7 +9,7 @@ class GameScene extends PhaserScene {
 		// phaser canvas adjustments
 		const canvas = this.game.canvas;
 		canvas.style.position = 'fixed';
-		canvas.style.opacity = '0.5';
+		canvas.style.opacity = '1';
 		canvas.style.backgroundColor = 'transparent';
 		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
 
@@ -29,12 +29,10 @@ class GameScene extends PhaserScene {
 			console.log(Phaser.Scale.Events.RESIZE, // TODO remove
 				gameSize, baseSize, displaySize, previousWidth, previousHeight);
 
-			camera.zoom *= gameSize.height / previousHeight;
-
-			/*camera.centerOn(
-				camera.scrollX + (gameSize.width - previousWidth) / 2,
-				camera.scrollY + (gameSize.height - previousHeight) / 2
-			);*/
+			camera.setSize(
+				gameSize.width,
+				window.innerHeight
+			);
 		});
 
 		ige.client.on('zoom', (height: number) => {
@@ -45,6 +43,9 @@ class GameScene extends PhaserScene {
 				1000,
 				Phaser.Math.Easing.Quadratic.Out
 			);
+
+			this.scale.gameSize.setMin(0, height);
+			this.scale.gameSize.setMax(Number.MAX_VALUE, height);
 		});
 
 		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {

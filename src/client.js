@@ -693,10 +693,6 @@ const Client = IgeEventingClass.extend({
 			zoom *= 0.75;
 		}
 
-		ige.pixi.zoom(zoom);
-		// there was a bunch of stuff involving viewports and view areas in the old method,
-		// it appeared to be out of use.
-
 		this.emit('zoom', zoom);
 	},
 
@@ -715,7 +711,7 @@ const Client = IgeEventingClass.extend({
 			}
 
 			if (ige.client.server) {
-				// i feel like this is a goofy conditional
+				//
 				const serverIP = ige.client.server.url.split('://')[1];
 
 				if (serverIP) {

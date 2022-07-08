@@ -24,7 +24,7 @@ var GameScene = /** @class */ (function (_super) {
         // phaser canvas adjustments
         var canvas = this.game.canvas;
         canvas.style.position = 'fixed';
-        canvas.style.opacity = '0.5';
+        canvas.style.opacity = '1';
         canvas.style.backgroundColor = 'transparent';
         //canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
         if (ige.isMobile) {
@@ -34,15 +34,13 @@ var GameScene = /** @class */ (function (_super) {
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
-            camera.zoom *= gameSize.height / previousHeight;
-            /*camera.centerOn(
-                camera.scrollX + (gameSize.width - previousWidth) / 2,
-                camera.scrollY + (gameSize.height - previousHeight) / 2
-            );*/
+            camera.setSize(gameSize.width, window.innerHeight);
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
             camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
+            _this.scale.gameSize.setMin(0, height);
+            _this.scale.gameSize.setMax(Number.MAX_VALUE, height);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
