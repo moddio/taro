@@ -41,15 +41,12 @@ var IgeChatClient = {
 		// Emit the event and if it wasn't cancelled (by returning true) then
 		// process this ourselves
 		if (!self.emit('messageFromServer', [data])) {
-			// commented out by Jaeyun
 			if (!isChatHidden) {
 				var selectedUnit = player.getSelectedUnit();
 
 				if (selectedUnit) {
-					//phaser chat bubble rendering - logic for destroying and fading moved to PhaserChatBubble.ts
 					selectedUnit.emit('render-chat-bubble', data.text);
 				}
-				// console.log("chatMsg from " + player._stats.name + ': ', data.text);
 			}
 		}
 	},
@@ -119,4 +116,6 @@ var IgeChatClient = {
 	}
 };
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeChatClient; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeChatClient;
+}
