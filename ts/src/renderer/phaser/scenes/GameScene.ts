@@ -41,7 +41,8 @@ class GameScene extends PhaserScene {
 			camera.zoomTo(
 				this.scale.height / height,
 				1000,
-				Phaser.Math.Easing.Quadratic.Out
+				Phaser.Math.Easing.Quadratic.Out,
+				true
 			);
 
 			this.scale.gameSize.setMin(0, height);
