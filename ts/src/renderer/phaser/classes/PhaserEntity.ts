@@ -42,7 +42,6 @@ class PhaserEntity {
 	}
 
 	protected destroy (): void {
-
 		Object.keys(this.evtListeners).forEach((key) => {
 			this.entity.off(key, this.evtListeners[key]);
 			delete this.evtListeners[key];

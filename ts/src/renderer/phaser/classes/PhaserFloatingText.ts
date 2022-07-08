@@ -22,7 +22,7 @@ class PhaserFloatingText extends Phaser.GameObjects.Text {
 		this.setStroke('#000', strokeThickness);
 
 		if (unit) {
-			unit.add(this);
+			unit.gameObject.add(this);
 			this.y = -25 -
 					Math.max(unit.sprite.displayHeight, unit.sprite.displayWidth) / 2;
 		} else {
