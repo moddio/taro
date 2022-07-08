@@ -9,7 +9,7 @@ class GameScene extends PhaserScene {
 		// phaser canvas adjustments
 		const canvas = this.game.canvas;
 		canvas.style.position = 'fixed';
-		canvas.style.opacity = '0.5';
+		canvas.style.opacity = '1';
 		canvas.style.backgroundColor = 'transparent';
 		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
 
