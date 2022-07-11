@@ -183,8 +183,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		const targetScale = height / defaultZoom;
 		this.scene.tweens.add({
 			targets: [this.label, ...this.attributes],
-			duration: 700,
-			ease: 'Linear',
+			duration: 1000,
+			ease: Phaser.Math.Easing.Quadratic.Out,
 			scale: targetScale,
 		});
 	}

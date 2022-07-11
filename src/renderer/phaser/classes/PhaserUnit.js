@@ -159,8 +159,8 @@ var PhaserUnit = /** @class */ (function (_super) {
         var targetScale = height / defaultZoom;
         this.scene.tweens.add({
             targets: __spreadArray([this.label], this.attributes, true),
-            duration: 700,
-            ease: 'Linear',
+            duration: 1000,
+            ease: Phaser.Math.Easing.Quadratic.Out,
             scale: targetScale,
         });
     };
