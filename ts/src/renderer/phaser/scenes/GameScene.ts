@@ -102,10 +102,18 @@ class GameScene extends PhaserScene {
 		}
 
 		data.map.tilesets.forEach((tileset) => {
-			this.load.image(
-				`tiles/${tileset.name}`,
-				this.patchAssetUrl(tileset.image)
-			);
+			const key = `tiles/${tileset.name}`;
+			this.load.once(`filecomplete-image-${key}`, () => {
+				const texture = this.textures.get(key);
+				const canvas = this.extrude(tileset,
+					texture.getSourceImage() as HTMLImageElement
+				);
+				if (canvas) {
+					this.textures.remove(texture);
+					this.textures.addCanvas(`extruded-${key}`, canvas);
+				}
+			});
+			this.load.image(key, this.patchAssetUrl(tileset.image));
 		});
 
 		this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
