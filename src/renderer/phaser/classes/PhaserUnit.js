@@ -13,6 +13,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var PhaserUnit = /** @class */ (function (_super) {
     __extends(PhaserUnit, _super);
     function PhaserUnit(scene, entity) {
@@ -34,6 +43,18 @@ var PhaserUnit = /** @class */ (function (_super) {
             'render-attributes': entity.on('render-attributes', _this.renderAttributes, _this),
             'update-attribute': entity.on('update-attribute', _this.updateAttribute, _this),
             'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChat, _this),
+        });
+        ige.client.on('zoom', function (height) {
+            var targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
+            _this.scene.tweens.add({
+                targets: __spreadArray([_this.label], _this.attributes, true),
+                duration: 700,
+                ease: 'Linear',
+                scale: targetScale,
+                onComplete: function () {
+                    console.log('current scale', _this.scale);
+                }
+            });
         });
         return _this;
     }
@@ -74,7 +95,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         label.setText(data.text || '');
         label.y = -25 -
             Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
-        label.setScale(1.25);
+        //label.setScale(1.25);
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove

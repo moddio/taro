@@ -60,20 +60,6 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		text.setOrigin(0.5);
 		this.add(text);
 		unit.gameObject.add(this);
-
-		ige.client.on('zoom', (height: number) => {
-			const targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
-			this.scene.tweens.add({
-				targets: this,
-				duration: 800,
-				ease: 'Linear',
-				scale: targetScale,
-				onComplete: () => {
-					console.log('current scale', this.scale);
-				}
-			});
-			//this.updateScale(target.zoom);
-		});
 	}
 
 	render (data: AttributeData): void {

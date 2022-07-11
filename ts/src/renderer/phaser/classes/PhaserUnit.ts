@@ -34,6 +34,19 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			'update-attribute': entity.on('update-attribute', this.updateAttribute, this),
 			'render-chat-bubble': entity.on('render-chat-bubble', this.renderChat, this),
 		});
+
+		ige.client.on('zoom', (height: number) => {
+			const targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
+			this.scene.tweens.add({
+				targets: [this.label, ...this.attributes],
+				duration: 700,
+				ease: 'Linear',
+				scale: targetScale,
+				onComplete: () => {
+					console.log('current scale', this.scale);
+				}
+			});
+		});
 	}
 
 	protected transform (data: {
@@ -94,7 +107,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 		label.y = -25 -
 					Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
-		label.setScale(1.25);
+		//label.setScale(1.25);
 	}
 
 	private showLabel (): void {
