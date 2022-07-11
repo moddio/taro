@@ -177,7 +177,17 @@ class GameScene extends PhaserScene {
 		const scaleFactor = ige.scaleMapDetails.scaleFactor;
 
 		data.map.tilesets.forEach((tileset) => {
-			map.addTilesetImage(tileset.name, `tiles/${tileset.name}`);
+			const key = `tiles/${tileset.name}`;
+			const extrudedKey = `extruded-${key}`;
+			if (this.textures.exists(extrudedKey)) {
+				map.addTilesetImage(tileset.name, extrudedKey,
+					tileset.tilewidth, tileset.tileheight,
+					(tileset.margin || 0) + 1,
+					(tileset.spacing || 0) + 2
+				);
+			} else {
+				map.addTilesetImage(tileset.name, key);
+			}
 		});
 		data.map.layers.forEach((layer) => {
 			if (layer.type !== 'tilelayer') {
