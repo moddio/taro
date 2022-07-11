@@ -32,6 +32,7 @@ declare class GameComponent extends IgeEntity {
 		itemTypes: Record<string, EntityData>;
 		settings: {
 			addStrokeToNameAndAttributes: boolean;
+			camera: any;
 		}
 	};
 

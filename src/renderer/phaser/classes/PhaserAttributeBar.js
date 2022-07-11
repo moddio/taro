@@ -32,6 +32,20 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         text.setOrigin(0.5);
         _this.add(text);
         unit.gameObject.add(_this);
+        ige.client.on('zoom', function (height) {
+            var targetZoom = ige.game.data.settings.camera.zoom.default / height;
+            console.log('target zoom', _this.scene.scale.height, height, targetZoom);
+            _this.scene.tweens.add({
+                targets: _this,
+                duration: 800,
+                ease: 'Linear',
+                scale: 1 / targetZoom,
+                onComplete: function () {
+                    console.log('current scale', _this.scale);
+                }
+            });
+            //this.updateScale(target.zoom);
+        });
         return _this;
     }
     PhaserAttributeBar.get = function (unit) {
