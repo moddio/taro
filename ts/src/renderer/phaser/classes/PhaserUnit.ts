@@ -36,16 +36,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		});
 
 		ige.client.on('zoom', (height: number) => {
-			const targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
-			this.scene.tweens.add({
-				targets: [this.label, ...this.attributes],
-				duration: 700,
-				ease: 'Linear',
-				scale: targetScale,
-				onComplete: () => {
-					console.log('current scale', this.scale);
-				}
-			});
+			this.scaleElements(height);
 		});
 	}
 
@@ -107,7 +98,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 		label.y = -25 -
 					Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
-		//label.setScale(1.25);
 	}
 
 	private showLabel (): void {
@@ -186,6 +176,16 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		} else {
 			this.chat = new PhaserChatBubble(this.scene, text, this);
 		}
+	}
+
+	private scaleElements (height): void {
+		const targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
+			this.scene.tweens.add({
+				targets: [this.label, ...this.attributes],
+				duration: 700,
+				ease: 'Linear',
+				scale: targetScale,
+			});
 	}
 
 	protected destroy (): void {

@@ -160,10 +160,4 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 		}
 		this.alpha = 1;
 	}
-
-	/*private updateScale(zoom): void {
-		this.scene.tweens.add({
-			scale: 1 / zoom,
-		});
-	}*/
 }

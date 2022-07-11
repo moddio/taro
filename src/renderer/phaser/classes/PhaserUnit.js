@@ -45,16 +45,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChat, _this),
         });
         ige.client.on('zoom', function (height) {
-            var targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
-            _this.scene.tweens.add({
-                targets: __spreadArray([_this.label], _this.attributes, true),
-                duration: 700,
-                ease: 'Linear',
-                scale: targetScale,
-                onComplete: function () {
-                    console.log('current scale', _this.scale);
-                }
-            });
+            _this.scaleElements(height);
         });
         return _this;
     }
@@ -95,7 +86,6 @@ var PhaserUnit = /** @class */ (function (_super) {
         label.setText(data.text || '');
         label.y = -25 -
             Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
-        //label.setScale(1.25);
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
@@ -162,6 +152,15 @@ var PhaserUnit = /** @class */ (function (_super) {
         else {
             this.chat = new PhaserChatBubble(this.scene, text, this);
         }
+    };
+    PhaserUnit.prototype.scaleElements = function (height) {
+        var targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
+        this.scene.tweens.add({
+            targets: __spreadArray([this.label], this.attributes, true),
+            duration: 700,
+            ease: 'Linear',
+            scale: targetScale,
+        });
     };
     PhaserUnit.prototype.destroy = function () {
         if (this.chat) {
