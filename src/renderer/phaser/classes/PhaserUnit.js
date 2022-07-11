@@ -155,7 +155,8 @@ var PhaserUnit = /** @class */ (function (_super) {
     };
     PhaserUnit.prototype.scaleElements = function (height) {
         var _a, _b;
-        var targetScale = 1 / (((_b = (_a = ige.game.data.settings.camera) === null || _a === void 0 ? void 0 : _a.zoom) === null || _b === void 0 ? void 0 : _b.default) / height);
+        var defaultZoom = ((_b = (_a = ige.game.data.settings.camera) === null || _a === void 0 ? void 0 : _a.zoom) === null || _b === void 0 ? void 0 : _b.default) || 1000;
+        var targetScale = height / defaultZoom;
         this.scene.tweens.add({
             targets: __spreadArray([this.label], this.attributes, true),
             duration: 700,
