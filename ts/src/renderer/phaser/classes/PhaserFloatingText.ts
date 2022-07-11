@@ -29,6 +29,7 @@ class PhaserFloatingText extends Phaser.GameObjects.Text {
 			scene.add.existing(this);
 		}
 
+
 		scene.tweens.add({
 			targets: this,
 			alpha: 0.5,
