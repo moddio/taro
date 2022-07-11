@@ -179,7 +179,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}
 
 	private scaleElements (height): void {
-		const targetScale = 1 / (ige.game.data.settings.camera.zoom.default / height);
+		const targetScale = 1 / (ige.game.data.settings.camera?.zoom?.default / height);
 		this.scene.tweens.add({
 			targets: [this.label, ...this.attributes],
 			duration: 700,
