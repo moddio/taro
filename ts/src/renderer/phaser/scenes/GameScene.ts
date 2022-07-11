@@ -188,7 +188,7 @@ class GameScene extends PhaserScene {
 		camera.zoom = this.scale.width / 800;
 	}
 
-	private patchMapData (map: typeof ige.game.data.map): typeof map {
+	private patchMapData (map: GameComponent['data']['map']): typeof map {
 
 		/**
 		 * map data gets patched in place
@@ -223,5 +223,133 @@ class GameScene extends PhaserScene {
 		});
 
 		return map;
+	}
+
+	private extrude (
+		tileset: ArrayElement<GameComponent['data']['map']['tilesets']>,
+		sourceImage: HTMLImageElement,
+		extrusion = 1,
+		color = '#ffffff00'
+	): HTMLCanvasElement {
+
+		const { tilewidth, tileheight, margin = 0, spacing = 0 } = tileset;
+		const { width, height } = sourceImage;
+
+		const cols = (width - 2 * margin + spacing) / (tilewidth + spacing);
+		const rows = (height - 2 * margin + spacing) / (tileheight + spacing);
+
+		if (!Number.isInteger(cols) || !Number.isInteger(rows)) {
+			console.warn(
+				'Non-integer number of rows or cols found while extruding. ' +
+				`Tileset "${tileset.name}" image doesn't match the specified parameters. ` +
+				'Double check your margin, spacing, tilewidth and tileheight.'
+			);
+			return null;
+		}
+
+		const newWidth = 2 * margin + (cols - 1) * spacing + cols * (tilewidth + 2 * extrusion);
+		const newHeight = 2 * margin + (rows - 1) * spacing + rows * (tileheight + 2 * extrusion);
+
+		const extrudedCanvas = document.createElement('canvas');
+		extrudedCanvas.width = newWidth;
+		extrudedCanvas.height = newHeight;
+
+		const ctx = extrudedCanvas.getContext('2d');
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, newWidth, newHeight);
+
+		for (let row = 0; row < rows; row++) {
+			for (let col = 0; col < cols; col++) {
+				let srcX = margin + col * (tilewidth + spacing);
+				let srcY = margin + row * (tileheight + spacing);
+				let destX = margin + col * (tilewidth + spacing + 2 * extrusion);
+				let destY = margin + row * (tileheight + spacing + 2 * extrusion);
+				const tw = tilewidth;
+				const th = tileheight;
+
+				// Copy the tile.
+				ctx.drawImage(sourceImage,
+					srcX, srcY,
+					tw, th,
+					destX + extrusion,
+					destY + extrusion,
+					tw, th
+				);
+
+				// Extrude the top row.
+				ctx.drawImage(sourceImage,
+					srcX, srcY,
+					tw, 1,
+					destX + extrusion, destY,
+					tw, extrusion
+				);
+
+				// Extrude the bottom row.
+				ctx.drawImage(sourceImage,
+					srcX, srcY + th - 1,
+					tw, 1,
+					destX + extrusion,
+					destY + extrusion + th,
+					tw, extrusion
+				);
+
+				// Extrude left column.
+				ctx.drawImage(sourceImage,
+					srcX, srcY,
+					1, th,
+					destX,
+					destY + extrusion,
+					extrusion, th
+				);
+
+				// Extrude the right column.
+				ctx.drawImage(sourceImage,
+					srcX + tw - 1,
+					srcY,
+					1, th,
+					destX + extrusion + tw,
+					destY + extrusion,
+					extrusion, th
+				);
+
+				// Extrude the top left corner.
+				ctx.drawImage(sourceImage,
+					srcX, srcY, 1, 1,
+					destX, destY, extrusion, extrusion
+				);
+
+				// Extrude the top right corner.
+				ctx.drawImage(sourceImage,
+					srcX + tw - 1,
+					srcY,
+					1, 1,
+					destX + extrusion + tw,
+					destY,
+					extrusion, extrusion
+				);
+
+				// Extrude the bottom left corner.
+				ctx.drawImage(sourceImage,
+					srcX,
+					srcY + th - 1,
+					1, 1,
+					destX,
+					destY + extrusion + th,
+					extrusion, extrusion
+				);
+
+				// Extrude the bottom right corner.
+				ctx.drawImage(sourceImage,
+					srcX + tw - 1,
+					srcY + th - 1,
+					1, 1,
+					destX + extrusion + tw,
+					destY + extrusion + th,
+					extrusion, extrusion
+				);
+			}
+		}
+
+		return extrudedCanvas;
 	}
 }
