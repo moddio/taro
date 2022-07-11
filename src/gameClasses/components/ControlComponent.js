@@ -289,29 +289,6 @@ var ControlComponent = IgeEntity.extend({
 			this.input[device][key] = false;
 	},
 
-	mouseMove: function () {
-		var player = ige.client.myPlayer;
-		if (player) {
-			//we can remove it. If we need to enable PIXI mouse input we should uncomment this
-			/*if (ige.pixi && ige.pixi.viewport) {
-				var vpTransform = [
-					-ige.pixi.viewport.x / ige.pixi.viewport.scale.x,
-					-ige.pixi.viewport.y / ige.pixi.viewport.scale.y
-				];
-				var mouseX = ige.client.mouseMove && ige.client.mouseMove.clientX || 0;
-				var mouseY = ige.client.mouseMove && ige.client.mouseMove.clientY || 0;
-
-				var currentMouseTransform = [
-					vpTransform[0] + mouseX / ige.pixi.viewport.scale.x,
-					vpTransform[1] + mouseY / ige.pixi.viewport.scale.y
-				];
-				this.newMousePosition = currentMouseTransform;
-			} else {
-				this.newMousePosition = [0, 0];
-			}*/
-			ige.client.emit('fetch-mouse-position', this);
-		}
-	},
 	/**
 	 * Called every frame by the engine when this entity is mounted to the
 	 * scenegraph.
@@ -342,9 +319,6 @@ var ControlComponent = IgeEntity.extend({
 					}
 				}
 			}
-
-			// mouse move
-			self.mouseMove();
 
 			// check if sending player input is due (every 100ms)
 			if (ige._currentTime - self.lastInputSent > 100) {

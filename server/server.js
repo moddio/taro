@@ -105,7 +105,6 @@ var Server = IgeClass.extend({
 
 		self.bandwidthUsage = {
 			unit: 0,
-			debris: 0,
 			item: 0,
 			player: 0,
 			projectile: 0,
@@ -749,7 +748,6 @@ var Server = IgeClass.extend({
 					}).length,
 					unit: ige.$$('unit').length,
 					item: ige.$$('item').length,
-					debris: ige.$$('debris').length,
 					projectile: ige.$$('projectile').length,
 					sensor: ige.$$('sensor').length,
 					region: ige.$$('region').length
@@ -779,7 +777,6 @@ var Server = IgeClass.extend({
 
 			self.bandwidthUsage = {
 				unit: 0,
-				debris: 0,
 				item: 0,
 				player: 0,
 				projectile: 0,
@@ -800,7 +797,6 @@ var Server = IgeClass.extend({
 		// 			}).length,
 		// 			unit: ige.$$('unit').length,
 		// 			item: ige.$$('item').length,
-		// 			debris: ige.$$('debris').length,
 		// 			projectile: ige.$$('projectile').length,
 		// 			sensor: ige.$$('sensor').length,
 		// 			region: ige.$$('region').length
@@ -830,7 +826,6 @@ var Server = IgeClass.extend({
 
 		// 	self.bandwidthUsage = {
 		// 		unit: 0,
-		// 		debris: 0,
 		// 		item: 0,
 		// 		player: 0,
 		// 		projectile: 0,

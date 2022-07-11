@@ -4,6 +4,9 @@ declare class IgeEngine extends IgeClass {
 	_tickStart: number;
 	_renderLatency: number;
 
+	_currentTime: number;
+	_cullCounter: number;
+
 	isClient: boolean;
 	isServer: boolean;
 
@@ -36,6 +39,10 @@ declare class IgeEngine extends IgeClass {
 		originalTileHeight: number;
 		originalTileWidth: number;
 	};
+
+	lastTickTime: number;
+
+	entitiesToRender: EntitiesToRender;
 
 	constructor(options: object);
 

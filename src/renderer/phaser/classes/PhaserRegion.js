@@ -15,40 +15,20 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PhaserRegion = /** @class */ (function (_super) {
     __extends(PhaserRegion, _super);
-    function PhaserRegion(scene, region) {
-        var _this = _super.call(this, scene) || this;
-        _this.region = region;
-        var stats = _this.region._stats.default;
-        // draw rectangle
-        var width = _this.width = stats.width;
-        var height = _this.height = stats.height;
-        _this.fillStyle(0xFF0000, 0.4);
-        _this.fillRect(0, 0, width, height);
-        _this.x = stats.x;
-        _this.y = stats.y;
-        scene.add.existing(_this);
-        scene.events.on('update', _this.update, _this);
+    function PhaserRegion(scene, entity) {
+        var _this = _super.call(this, entity) || this;
+        _this.gameObject = scene.add.graphics();
+        _this.transform();
         return _this;
     }
-    PhaserRegion.prototype.update = function ( /*time: number, delta: number*/) {
-        var region = this.region;
-        var container = region.regionUi._pixiContainer;
-        if (region._destroyed || container._destroyed) {
-            this.scene.events.off('update', this.update, this);
-            this.destroy();
-            return;
-        }
-        var stats = this.region._stats.default;
-        this.x = stats.x;
-        this.y = stats.y;
-        if (this.width !== stats.width || this.height !== stats.height) {
-            this.width = stats.width;
-            this.height = stats.height;
-            this.clear();
-            this.fillStyle(0xFF0000, 0.4);
-            this.fillRect(0, 0, stats.width, stats.height);
-        }
+    PhaserRegion.prototype.transform = function () {
+        var graphics = this.gameObject;
+        var stats = this.entity._stats.default;
+        graphics.setPosition(stats.x, stats.y);
+        graphics.clear();
+        graphics.fillStyle(Number("0x".concat(stats.inside.substring(1))), (stats.alpha || 40) / 100);
+        graphics.fillRect(0, 0, stats.width, stats.height);
     };
     return PhaserRegion;
-}(Phaser.GameObjects.Graphics));
+}(PhaserEntity));
 //# sourceMappingURL=PhaserRegion.js.map

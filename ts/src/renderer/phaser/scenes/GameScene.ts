@@ -9,7 +9,7 @@ class GameScene extends PhaserScene {
 		// phaser canvas adjustments
 		const canvas = this.game.canvas;
 		canvas.style.position = 'fixed';
-		canvas.style.opacity = '0.5';
+		canvas.style.opacity = '1';
 		canvas.style.backgroundColor = 'transparent';
 		//canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
 
@@ -47,11 +47,11 @@ class GameScene extends PhaserScene {
 			);
 		});
 
-		ige.client.on('fetch-mouse-position', (controlComponent: ControlComponent) => {
-			controlComponent.newMousePosition = [
-				this.input.activePointer.worldX,
-				this.input.activePointer.worldY
-			];
+		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+			ige.input.emit('pointermove', [{
+				x: pointer.worldX,
+				y: pointer.worldY
+			}]);
 		});
 
 		ige.client.on('create-unit', (unit: Unit) => {
@@ -72,6 +72,16 @@ class GameScene extends PhaserScene {
 		ige.client.on('create-region', (region: Region) => {
 			console.log('create-region', region); // TODO remove
 			new PhaserRegion(this, region);
+		});
+
+		ige.client.on('floating-text', (data: {
+			text: string,
+			x: number,
+			y: number,
+			color: string
+		}) => {
+			console.log('create-floating-text', data); // TODO remove
+			new PhaserFloatingText(this, data);
 		});
 	}
 

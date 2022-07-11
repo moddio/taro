@@ -5,9 +5,6 @@ var Unit = IgeEntityPhysics.extend({
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 
 		this.id(entityIdFromServer);
-		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
-		}
 		var self = this;
 		self.dob = Date.now();
 		// used for 2 reasons
@@ -66,18 +63,15 @@ var Unit = IgeEntityPhysics.extend({
 
 		// initialize body & texture of the unit
 		self.changeUnitType(data.type, data.defaultData);
-		// console.log(data.type, data.defaultData);
+
 		if (this._stats.states) {
 			var currentState = this._stats.states[this._stats.stateId];
 			var defaultAnimation = this._stats.animations[currentState.animation];
 		}
 
 		if (ige.isClient) {
-			this.createPixiTexture(defaultAnimation && (defaultAnimation.frames[0] - 1));
-			// new
-			// this.drawCrashCollider(data.defaultData);
-			self.mount(ige.pixi.world);
-			this.transformPixiEntity(this._translate.x, this._translate.y);
+			this.addToRenderer(defaultAnimation && (defaultAnimation.frames[0] - 1));
+			this.transformTexture(this._translate.x, this._translate.y);
 
 			ige.client.emit('create-unit', this);
 		}
@@ -123,15 +117,9 @@ var Unit = IgeEntityPhysics.extend({
 					ige.playerUi.updateAttrBar(i, self.attr[i], self.max[i]);
 				}
 
-				self.showMinimapUnit();
-
 				if (window.adBlockEnabled) {
 					// self.unEquipSkin(null, true);
 				}
-			}
-
-			if (self._stats.minimapUnitVisibleToClients && self._stats.minimapUnitVisibleToClients[networkId]) {
-				self.showMinimapUnit(self._stats.minimapUnitVisibleToClients[networkId]);
 			}
 
 			self._scaleTexture();
@@ -193,12 +181,13 @@ var Unit = IgeEntityPhysics.extend({
 
 		if (self.attributeBars) {
 			for (var attributeBarInfo of self.attributeBars) {
-				var pixiBarId = attributeBarInfo.id;
-				var pixiBar = ige.$(pixiBarId);
+				var unitBarId = attributeBarInfo.id;
+				var unitBar = ige.$(unitBarId);
 
-				pixiBar.destroy();
+				unitBar.destroy();
 			}
 		}
+
 		self.attributeBars = [];
 
 		if (!ownerPlayer) {
@@ -227,10 +216,10 @@ var Unit = IgeEntityPhysics.extend({
 			var attribute = attributesToRender[i];
 			attribute.index = i + 1;
 
-			var pixiBar = new PixiAttributeBar(self.id(), attribute);
+			var unitBar = new UnitAttributeBar(self.id(), attribute);
 
 			self.attributeBars.push({
-				id: pixiBar.id(),
+				id: unitBar.id(),
 				attribute: attribute.key,
 				index: i
 			});
@@ -245,47 +234,44 @@ var Unit = IgeEntityPhysics.extend({
 		var self = this;
 
 		if (attr && self.attributeBars) {
-			var pixiBarId = null;
+			var unitBarId = null;
 
 			for (var i = 0; i < self.attributeBars.length; i++) {
 				var attributeBarInfo = self.attributeBars[i];
 
 				if (attributeBarInfo.attribute === attr.type) {
-					attr.index = i;
-					pixiBarId = attributeBarInfo.id;
+					attr.index = i + 1;
+					unitBarId = attributeBarInfo.id;
 				}
 			}
 
-			var pixiBar = ige.$(pixiBarId);
+			var unitBar = ige.$(unitBarId);
 			var shouldRender = self.shouldRenderAttribute(attr);
 
-			if (pixiBar) {
+			if (unitBar) {
+				// canvas
 				if (shouldRender) {
-					pixiBar.updateBar(attr);
+					unitBar.updateBar(attr);
 				} else {
 					self.attributeBars = self.attributeBars.filter(function (bar) {
-						return bar.id !== pixiBar.id();
+						return bar.id !== unitBar.id();
 					});
 
-					pixiBar.destroy();
+					unitBar.destroy();
 				}
 			} else {
+				// html
 				if (shouldRender) {
 					attr.index = self.attributeBars.length + 1;
 
-					pixiBar = new PixiAttributeBar(self.id(), attr);
+					unitBar = new UnitAttributeBar(self.id(), attr);
 
 					self.attributeBars.push({
-						id: pixiBar.id(),
+						id: unitBar.id(),
 						attribute: attr.type,
 						index: self.attributeBars.length
 					});
 				}
-			}
-
-			var showOnlyWhenValueChanged = attr.showWhen === 'valueChanges';
-			if (pixiBar && shouldRender && showOnlyWhenValueChanged) {
-				pixiBar.showValueAndFadeOut();
 			}
 
 			this.emit('update-attribute', {
@@ -678,6 +664,11 @@ var Unit = IgeEntityPhysics.extend({
 
 			// whip-out the new item using tween
 			if (ige.isClient) {
+				//emit size event
+				newItem.emit('size', {
+					width: newItem._stats.currentBody.width,
+					height: newItem._stats.currentBody.height
+				});
 				newItem.applyAnimationForState('selected');
 				let customTween = {
 					type: 'swing',
@@ -842,12 +833,6 @@ var Unit = IgeEntityPhysics.extend({
 
 			self.updateLayer();
 
-			if (self.unitNameLabel) {
-				self.unitNameLabel
-					.layer(zIndex.layer)
-					.depth(zIndex.depth + 1);
-			}
-
 			var ownerPlayer = self.getOwner();
 			if (ownerPlayer && ownerPlayer._stats.selectedUnitId == self.id() && this._stats.clientId == ige.network.id()) {
 				self.inventory.createInventorySlots();
@@ -949,7 +934,12 @@ var Unit = IgeEntityPhysics.extend({
 	renderMobileControl: function () {
 		var self = this;
 
-		if (ige.mobileControls && self._stats && ige.network.id() == self._stats.clientId && ige.client.myPlayer && ige.client.myPlayer._stats.selectedUnitId == this.id() && this._stats.controls) {
+		if (ige.mobileControls &&
+			self._stats &&
+			ige.network.id() == self._stats.clientId &&
+			ige.client.myPlayer &&
+			ige.client.myPlayer._stats.selectedUnitId == this.id() &&
+			this._stats.controls) {
 			ige.mobileControls.configure(this._stats.controls.abilities);
 		}
 	},
@@ -1091,11 +1081,6 @@ var Unit = IgeEntityPhysics.extend({
 		var ownerPlayer = self.getOwner();
 		var playerTypeData = ownerPlayer && ige.game.getAsset('playerTypes', ownerPlayer._stats.playerTypeId);
 
-		if (self.unitNameLabel) {
-			self.unitNameLabel.destroy();
-			delete self.unitNameLabel;
-		}
-
 		// label should be hidden
 		var hideLabel = (
 			ownerPlayer &&
@@ -1133,16 +1118,6 @@ var Unit = IgeEntityPhysics.extend({
 		// if (isMyUnit) {
 		//     color = '#99FF00';
 		// }
-
-		self.unitNameLabel = new IgePixiFloatingText(self._stats.name, {
-			shouldBeBold: isMyUnit,
-			parentUnit: self.id(),
-			gluedIndex: 0,
-			color: color
-		});
-		self.unitNameLabel._pixiText._style._fontWeight = 599; //recent chrome update simplifies emojis if fontWeight is over 600, reducing game quality.
-
-		this._pixiContainer.addChild(self.unitNameLabel._pixiText);
 
 		this.emit('update-label', {
 			text: self._stats.name,
@@ -1201,20 +1176,10 @@ var Unit = IgeEntityPhysics.extend({
 				for (var i = 0; i < self._stats.fadingTextQueue.length; i++) {
 					var fadingTextConfig = self._stats.fadingTextQueue.shift();
 
-					new IgePixiFloatingText(fadingTextConfig.text, {
-						shouldBeBold: shouldBeBold,
-						isFadeUp: true,
-						parentUnit: self.id(),
-						translate: {
-							x: self._pixiTexture.x,
-							y: self._pixiTexture.y - (self._pixiTexture.height / 2)
-						}
-					})
-						.layer(highestDepth)
-						.depth(self._stats.currentBody['z-index'].depth + 1)
-						.colorOverlay(fadingTextConfig.color || DEFAULT_COLOR)
-						.mount(self._pixiContainer)
-						.fadeUp();
+					self.emit('fading-text', {
+						text: fadingTextConfig.text,
+						color: fadingTextConfig.color || DEFAULT_COLOR
+					});
 				}
 			}, 300);
 		}
@@ -1384,17 +1349,9 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.isClient) {
-			if (self.unitNameLabel) {
-				self.unitNameLabel.destroy();
-				delete self.unitNameLabel;
-			}
 
 			if (ige.client.cameraTrackUnitId == self.id()) {
 				ige.client.cameraTrackUnitId = undefined;
-			}
-
-			if (self.fadingTextContainer) {
-				self.fadingTextContainer.destroy();
 			}
 
 			if (self.minimapUnit) {
@@ -1475,19 +1432,6 @@ var Unit = IgeEntityPhysics.extend({
 					case 'scale':
 						if (ige.isClient) {
 							self._scaleTexture();
-
-							if (self.unitNameLabel) {
-								self.unitNameLabel.updateScale();
-								self.unitNameLabel.updatePosition();
-							}
-
-							if (self.attributeBars) {
-								_.forEach(self.attributeBars, function (attributeBar) {
-									var bar = ige.$(attributeBar.id);
-									bar.updateScale();
-									bar.updatePosition();
-								});
-							}
 						}
 						break;
 
@@ -1507,13 +1451,6 @@ var Unit = IgeEntityPhysics.extend({
 							// changing body dimensions
 							self._scaleBox2dBody(newValue);
 
-							// attaching entities
-							for (var entityId in attachedEntities) {
-								var entity = ige.$(entityId);
-								if (entity && entity._category == 'item') {
-									entity.mount(self._pixiTexture);
-								}
-							}
 						} else if (ige.isClient) {
 							self._stats.scale = newValue;
 							self._scaleTexture();
@@ -1563,13 +1500,6 @@ var Unit = IgeEntityPhysics.extend({
 	tick: function (ctx) {
 		if (ige.isClient && !ige.client.unitRenderEnabled) return;
 		IgeEntity.prototype.tick.call(this, ctx);
-	},
-
-	showMinimapUnit: function (color) {
-		var self = this;
-
-		self.hideMinimapUnit();
-		self.minimapUnit = new MiniMapUnit(color);
 	},
 
 	// apply texture based on state
@@ -1657,14 +1587,6 @@ var Unit = IgeEntityPhysics.extend({
 				self._stats.cellSheet.url = defaultUnit.cellSheet.url;
 			}
 			self.updateTexture();
-		}
-	},
-
-	hideMinimapUnit: function () {
-		var self = this;
-
-		if (self.minimapUnit) {
-			self.minimapUnit.destroy();
 		}
 	},
 
@@ -1908,8 +1830,8 @@ var Unit = IgeEntityPhysics.extend({
 		}
 
 		if (ige.physics && ige.physics.engine != 'CRASH') {
-				this.processBox2dQueue();
-			}
+			this.processBox2dQueue();
+		}
 	},
 
 	destroy: function () {

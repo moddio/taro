@@ -1,62 +1,35 @@
-class PhaserRegion extends Phaser.GameObjects.Graphics {
+class PhaserRegion extends PhaserEntity {
 
-	private width: number;
-	private height: number;
+	protected gameObject: Phaser.GameObjects.Graphics;
+	protected entity: Region;
 
 	constructor (
 		scene: Phaser.Scene,
-		private region: Region
+		entity: Region
 	) {
-		super(scene);
+		super(entity);
 
-		const stats = this.region._stats.default
+		this.gameObject = scene.add.graphics();
 
-		// draw rectangle
-		const width = this.width = stats.width;
-		const height = this.height = stats.height;
-		this.fillStyle(0xFF0000, 0.4);
-		this.fillRect(
-			0,
-			0,
-			width,
-			height
-		);
-
-		this.x = stats.x;
-		this.y = stats.y;
-
-		scene.add.existing(this);
-		scene.events.on('update', this.update, this);
+		this.transform();
 	}
 
-	update (/*time: number, delta: number*/): void {
+	protected transform (): void {
+		const graphics = this.gameObject;
+		const stats = this.entity._stats.default;
 
-		const region = this.region;
-		const container = region.regionUi._pixiContainer;
+		graphics.setPosition(stats.x, stats.y);
 
-		if (region._destroyed || container._destroyed) {
-			this.scene.events.off('update', this.update, this);
-			this.destroy();
-			return;
-		}
-
-		const stats = this.region._stats.default
-
-		this.x = stats.x;
-		this.y = stats.y;
-
-		if (this.width !== stats.width || this.height !== stats.height) {
-			this.width = stats.width;
-			this.height = stats.height;
-
-			this.clear();
-			this.fillStyle(0xFF0000, 0.4);
-			this.fillRect(
-				0,
-				0,
-				stats.width,
-				stats.height
-			);
-		}
+		graphics.clear();
+		graphics.fillStyle(
+			Number(`0x${stats.inside.substring(1)}`),
+			(stats.alpha || 40 ) / 100
+		);
+		graphics.fillRect(
+			0,
+			0,
+			stats.width,
+			stats.height
+		);
 	}
 }

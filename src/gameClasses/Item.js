@@ -4,9 +4,7 @@ var Item = IgeEntityPhysics.extend({
 	init: function (data, entityIdFromServer) {
 		IgeEntityPhysics.prototype.init.call(this, data.defaultData);
 		this.id(entityIdFromServer); // ensure that entityId is consistent between server & client
-		if (ige.isClient) {
-			this._pixiContainer = new PIXI.Container();
-		}
+
 		var self = this;
 		self._stats = {};
 		self.anchorOffset = { x: 0, y: 0, rotate: 0 };
@@ -70,6 +68,9 @@ var Item = IgeEntityPhysics.extend({
 			self.streamCreate();
 			ige.server.totalItemsCreated++;
 		} else if (ige.isClient) {
+			// must create Phaser item before emitting init events
+			ige.client.emit('create-item', this);
+
 			self._hidden = self._stats.isHidden;
 			if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._hidden) {
 				self.hide();
@@ -81,10 +82,8 @@ var Item = IgeEntityPhysics.extend({
 				self.width(self._stats.currentBody.width)
 					.height(self._stats.currentBody.height);
 			}
-			self.createPixiTexture();
+			self.addToRenderer();
 			self.drawBounds(false);
-
-			ige.client.emit('create-item', this);
 		}
 		self.playEffect('create');
 		// self.addComponent(AttributeBarsContainerComponent);
@@ -101,7 +100,6 @@ var Item = IgeEntityPhysics.extend({
 
 		if (ige.isServer) {
 			if (this._stats.stateId == 'dropped') {
-				// console.log('item is dropping', this)	// fix this
 				this.lifeSpan(this._stats.lifeSpan);
 				self.mount(ige.$('baseScene'));
 				this.streamMode(1);
@@ -111,7 +109,6 @@ var Item = IgeEntityPhysics.extend({
 					if (body.jointType != 'weldJoint') {
 						this.streamMode(1); // item that revolutes around unit
 					} else {
-						// if (body.jointType === 'weldJoint' ) {
 						this.streamMode(2);
 					}
 				}
@@ -125,7 +122,6 @@ var Item = IgeEntityPhysics.extend({
 			if (ige.isClient) {
 				this.emit('show');
 				self.updateTexture();
-				self.mount(ige.pixi.world);
 			}
 		} else {
 			ige.devLog('hide & destroyBody.');
@@ -156,7 +152,10 @@ var Item = IgeEntityPhysics.extend({
 				// mount texture on the unit in a correct position
 				if (ige.isClient) {
 					// avoid transforming box2d body by calling prototype
-					IgeEntity.prototype.mount.call(this, obj);
+
+					// Leaving this commented line until pixi is fully removed
+					// IgeEntity.prototype.mount.call(this, obj);
+
 					var unitAnchorX = body.unitAnchor.x;
 					var unitAnchorY = body.unitAnchor.y;
 					IgeEntity.prototype.translateTo.call(this, unitAnchorX, (-1 * unitAnchorY), 0);
@@ -170,7 +169,9 @@ var Item = IgeEntityPhysics.extend({
 				this.width(body.width);
 				this.height(body.height);
 			}
-			IgeEntity.prototype.mount.call(this, obj);
+			if (ige.isServer) {
+				IgeEntity.prototype.mount.call(this, obj);
+			}
 		}
 	},
 
@@ -195,8 +196,9 @@ var Item = IgeEntityPhysics.extend({
 
 		self.show();
 		this.emit('show');
-
+		// leave because it is taro not renderer
 		self.updateLayer();
+		// leave because it updates state for animation
 		IgeEntity.prototype.updateTexture.call(this);
 	},
 
@@ -642,8 +644,8 @@ var Item = IgeEntityPhysics.extend({
 			}
 			return canAffordCost;
 		} else {
-			return false;
 			ItemComponent.prototype.log('can\'t afford cost');
+			return false;
 		}
 	},
 
@@ -732,7 +734,7 @@ var Item = IgeEntityPhysics.extend({
 
 	/**
 	 * get item's position based on its itemAnchor, unitAnchor, and current rotation value.
-	 * @param {int} froceRedraw offsets item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
+	 * @param rotate item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
 	 */
 	getAnchoredOffset: function (rotate) {
 		var self = this;
@@ -818,7 +820,6 @@ var Item = IgeEntityPhysics.extend({
 		}
 
 		IgeEntityPhysics.prototype.remove.call(this);
-		// this.destroy()
 	},
 
 	streamUpdateData: function (queuedData) {
@@ -856,6 +857,12 @@ var Item = IgeEntityPhysics.extend({
 							if (owner == ige.client.selectedUnit) {
 								// don't repeat whip-out tween for my own unit as it has already been executed from unit.changeItem()
 							} else if (stateId == 'selected') {
+								//emit size event
+								this.emit('size', {
+									width: this._stats.currentBody.width,
+									height: this._stats.currentBody.height
+								});
+
 								self.applyAnimationForState(stateId);
 
 								// whip-out the new item using tween
@@ -869,6 +876,14 @@ var Item = IgeEntityPhysics.extend({
 							if (owner && self._stats.slotIndex >= owner._stats.inventorySize) {
 								self.unMount();
 							}
+							
+							if (stateId !== 'unselected') {
+								
+								this.emit('size', {
+									width: this._stats.currentBody.width,
+									height: this._stats.currentBody.height
+								});
+							}
 						}
 						break;
 					case 'scale':
@@ -876,6 +891,19 @@ var Item = IgeEntityPhysics.extend({
 						if (ige.isClient) {
 							self._stats.scale = newValue;
 							self._scaleTexture();
+
+						} else {
+							// finding all attach entities before changing body dimensions
+							if (self.jointsAttached) {
+								var attachedEntities = {};
+								for (var entityId in self.jointsAttached) {
+									if (entityId != self.id()) {
+										attachedEntities[entityId] = true;
+									}
+								}
+							}
+							// attaching entities
+							self._scaleBox2dBody(newValue);
 						}
 						break;
 					// case 'use':
@@ -893,35 +921,6 @@ var Item = IgeEntityPhysics.extend({
 								self.show();
 								this.emit('show');
 							}
-						}
-						break;
-
-					case 'scaleBody':
-						if (ige.isServer) {
-							// finding all attach entities before changing body dimensions
-							if (self.jointsAttached) {
-								var attachedEntities = {};
-								for (var entityId in self.jointsAttached) {
-									var entity = self.jointsAttached[entityId];
-									if (entityId != self.id()) {
-										attachedEntities[entityId] = true;
-									}
-								}
-							}
-
-							// attaching entities
-							self._scaleBox2dBody(newValue);
-
-							// for (var entityId in attachedEntities) {
-							// 	var entity = ige.$(entityId);
-							// 	// attaching item to owner
-							// 	if (entity && entity._category == 'unit') {
-							// 		var owner = self.getOwnerUnit();
-							// 		if (owner.id() == entity.id()) {
-							// 			self.mount(owner._pixiTexture);
-							// 		}
-							// 	}
-							// }
 						}
 						break;
 
@@ -961,14 +960,16 @@ var Item = IgeEntityPhysics.extend({
 						break;
 					case 'slotIndex':
 						var owner = self.getOwnerUnit();
-						if (ige.isClient && owner) {
-							// unmount item when item is in backpack
-							if (newValue >= owner._stats.inventorySize) {
-								self.unMount();
-							} else {
-								self.mount(ige.pixi.world);
-							}
-						}
+						// Leaving this until pixi is full removed
+
+						// if (ige.isClient && owner) {
+						// 	// unmount item when item is in backpack
+						// 	if (newValue >= owner._stats.inventorySize) {
+						// 		self.unMount();
+						// 	} else {
+						// 		self.mount(ige.pixi.world);
+						// 	}
+						// }
 						break;
 				}
 			}
@@ -997,7 +998,7 @@ var Item = IgeEntityPhysics.extend({
 			var y = ownerUnit._translate.y + self.anchoredOffset.y;
 
 			self.translateTo(x, y);
-			
+
 			if (ige.isClient && ige.client.selectedUnit == ownerUnit) {
 				if (self._stats.controls && self._stats.controls.mouseBehaviour) {
 					if (self._stats.controls.mouseBehaviour.flipSpriteHorizontallyWRTMouse) {
@@ -1029,7 +1030,6 @@ var Item = IgeEntityPhysics.extend({
 		}
 	},
 
-	// what does this do? - Jaeyun
 	loadPersistentData: function (persistData) {
 		var self = this;
 		if (persistData) {

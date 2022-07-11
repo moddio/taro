@@ -1,48 +1,35 @@
-class PhaserProjectile extends Phaser.GameObjects.Container {
+class PhaserProjectile extends PhaserAnimatedEntity {
 
-	sprite: Phaser.GameObjects.Sprite;
+	protected gameObject: Phaser.GameObjects.Container;
+	protected entity: Projectile;
 
-	private playAnimationListener: EvtListener;
+	constructor (
+		scene: Phaser.Scene,
+		entity: Projectile
+	) {
+		super(scene, entity, `projectile/${entity._stats.type}`);
 
-	constructor (scene: Phaser.Scene,
-				 private projectile: Projectile) {
-
-		super(scene);
-
-		const key = `projectile/${projectile._stats.type}`;
-
-		const sprite = this.sprite = scene.add.sprite(0, 0, key);
-		this.add(sprite);
-
-		scene.add.existing(this);
-		scene.events.on('update', this.update, this);
-
-		this.playAnimationListener =
-			projectile.on('play-animation', (animationId: string) => {
-				console.log('PhaserProjectile play-animation', `${key}/${animationId}`);  // TODO remove
-				sprite.play(`${key}/${animationId}`);
-			});
+		const translate = entity._translate;
+		this.gameObject = scene.add.container(
+			translate.x,
+			translate.y,
+			[ this.sprite ]
+		);
 	}
 
-	update (/*time: number, delta: number*/): void {
+	protected transform (data: {
+		x: number;
+		y: number;
+		rotation: number
+	}): void {
+		this.gameObject.setPosition(data.x, data.y);
+		this.sprite.rotation = data.rotation;
+	}
 
-		const projectile = this.projectile;
-		const container = projectile._pixiContainer;
-		const texture = projectile._pixiTexture;
-
-		if (projectile._destroyed || container._destroyed) {
-			projectile.off('play-animation', this.playAnimationListener);
-			this.playAnimationListener = null;
-
-			this.destroy();
-			return;
-		}
-
-		this.x = container.x;
-		this.y = container.y;
-
-		const sprite = this.sprite;
-		sprite.rotation = texture.rotation;
-		sprite.setScale(texture.scale.x, texture.scale.y);
+	protected scale (data: {
+		x: number;
+		y: number
+	}): void {
+		this.sprite.setScale(data.x, data.y);
 	}
 }

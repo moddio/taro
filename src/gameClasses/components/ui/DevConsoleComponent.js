@@ -208,11 +208,6 @@ var DevConsoleComponent = IgeEntity.extend({
 
 			var controllerUiEntityRenderEnabled = f1.add(ige.client, 'uiEntityRenderEnabled');
 
-			var controllerMiniMapEnabled = f1.add(ige.client, 'miniMapEnabled');
-			controllerMiniMapEnabled.onChange(function (value) {
-				// console.log('miniMapEnabled:',value);
-			});
-
 			var controllerClearEveryFrame = f1.add(ige.client, 'clearEveryFrame');
 
 			var controllerViewportClippingEnabled = f1.add(ige.client, 'viewportClippingEnabled');
@@ -245,4 +240,6 @@ var DevConsoleComponent = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = DevConsoleComponent; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = DevConsoleComponent;
+}

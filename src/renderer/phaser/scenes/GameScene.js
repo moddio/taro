@@ -24,7 +24,7 @@ var GameScene = /** @class */ (function (_super) {
         // phaser canvas adjustments
         var canvas = this.game.canvas;
         canvas.style.position = 'fixed';
-        canvas.style.opacity = '0.5';
+        canvas.style.opacity = '1';
         canvas.style.backgroundColor = 'transparent';
         //canvas.style.pointerEvents = 'none'; // TODO remove after pixi is gone
         if (ige.isMobile) {
@@ -44,11 +44,11 @@ var GameScene = /** @class */ (function (_super) {
             console.log('GameScene zoom event', height); // TODO remove
             camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
         });
-        ige.client.on('fetch-mouse-position', function (controlComponent) {
-            controlComponent.newMousePosition = [
-                _this.input.activePointer.worldX,
-                _this.input.activePointer.worldY
-            ];
+        this.input.on('pointermove', function (pointer) {
+            ige.input.emit('pointermove', [{
+                    x: pointer.worldX,
+                    y: pointer.worldY
+                }]);
         });
         ige.client.on('create-unit', function (unit) {
             console.log('create-unit', unit); // TODO remove
@@ -65,6 +65,10 @@ var GameScene = /** @class */ (function (_super) {
         ige.client.on('create-region', function (region) {
             console.log('create-region', region); // TODO remove
             new PhaserRegion(_this, region);
+        });
+        ige.client.on('floating-text', function (data) {
+            console.log('create-floating-text', data); // TODO remove
+            new PhaserFloatingText(_this, data);
         });
     };
     GameScene.prototype.preload = function () {
