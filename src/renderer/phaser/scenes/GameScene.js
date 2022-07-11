@@ -87,7 +87,8 @@ var GameScene = /** @class */ (function (_super) {
             var key = "tiles/".concat(tileset.name);
             _this.load.once("filecomplete-image-".concat(key), function () {
                 var texture = _this.textures.get(key);
-                var canvas = _this.extrude(tileset, texture.getSourceImage());
+                var canvas = _this.extrude(tileset, texture.getSourceImage(), Math.max(1, Math.ceil(64 /
+                    Math.min(tileset.tilewidth, tileset.tileheight))));
                 if (canvas) {
                     _this.textures.remove(texture);
                     _this.textures.addCanvas("extruded-".concat(key), canvas);

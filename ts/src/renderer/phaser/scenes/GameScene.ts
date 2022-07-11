@@ -106,7 +106,10 @@ class GameScene extends PhaserScene {
 			this.load.once(`filecomplete-image-${key}`, () => {
 				const texture = this.textures.get(key);
 				const canvas = this.extrude(tileset,
-					texture.getSourceImage() as HTMLImageElement
+					texture.getSourceImage() as HTMLImageElement,
+					Math.max(1, Math.ceil(64 /
+						Math.min(tileset.tilewidth, tileset.tileheight)
+					))
 				);
 				if (canvas) {
 					this.textures.remove(texture);
