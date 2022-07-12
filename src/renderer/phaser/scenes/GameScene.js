@@ -87,8 +87,7 @@ var GameScene = /** @class */ (function (_super) {
             var key = "tiles/".concat(tileset.name);
             _this.load.once("filecomplete-image-".concat(key), function () {
                 var texture = _this.textures.get(key);
-                var canvas = _this.extrude(tileset, texture.getSourceImage(), Math.max(1, Math.ceil(64 /
-                    Math.min(tileset.tilewidth, tileset.tileheight))));
+                var canvas = _this.extrude(tileset, texture.getSourceImage());
                 if (canvas) {
                     _this.textures.remove(texture);
                     _this.textures.addCanvas("extruded-".concat(key), canvas);
@@ -198,10 +197,11 @@ var GameScene = /** @class */ (function (_super) {
         }
         var newWidth = 2 * margin + (cols - 1) * spacing + cols * (tilewidth + 2 * extrusion);
         var newHeight = 2 * margin + (rows - 1) * spacing + rows * (tileheight + 2 * extrusion);
-        var extrudedCanvas = document.createElement('canvas');
-        extrudedCanvas.width = newWidth;
-        extrudedCanvas.height = newHeight;
-        var ctx = extrudedCanvas.getContext('2d');
+        var canvas = document.createElement('canvas');
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
         ctx.fillStyle = color;
         ctx.fillRect(0, 0, newWidth, newHeight);
         for (var row = 0; row < rows; row++) {
@@ -232,7 +232,7 @@ var GameScene = /** @class */ (function (_super) {
                 ctx.drawImage(sourceImage, srcX + tw - 1, srcY + th - 1, 1, 1, destX + extrusion + tw, destY + extrusion + th, extrusion, extrusion);
             }
         }
-        return extrudedCanvas;
+        return canvas;
     };
     return GameScene;
 }(PhaserScene));

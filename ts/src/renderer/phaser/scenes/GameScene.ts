@@ -106,10 +106,7 @@ class GameScene extends PhaserScene {
 			this.load.once(`filecomplete-image-${key}`, () => {
 				const texture = this.textures.get(key);
 				const canvas = this.extrude(tileset,
-					texture.getSourceImage() as HTMLImageElement,
-					Math.max(1, Math.ceil(64 /
-						Math.min(tileset.tilewidth, tileset.tileheight)
-					))
+					texture.getSourceImage() as HTMLImageElement
 				);
 				if (canvas) {
 					this.textures.remove(texture);
@@ -271,11 +268,12 @@ class GameScene extends PhaserScene {
 		const newWidth = 2 * margin + (cols - 1) * spacing + cols * (tilewidth + 2 * extrusion);
 		const newHeight = 2 * margin + (rows - 1) * spacing + rows * (tileheight + 2 * extrusion);
 
-		const extrudedCanvas = document.createElement('canvas');
-		extrudedCanvas.width = newWidth;
-		extrudedCanvas.height = newHeight;
+		const canvas = document.createElement('canvas');
+		canvas.width = newWidth;
+		canvas.height = newHeight;
 
-		const ctx = extrudedCanvas.getContext('2d');
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
 		ctx.fillStyle = color;
 		ctx.fillRect(0, 0, newWidth, newHeight);
 
@@ -371,6 +369,6 @@ class GameScene extends PhaserScene {
 			}
 		}
 
-		return extrudedCanvas;
+		return canvas;
 	}
 }

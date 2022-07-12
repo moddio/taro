@@ -54,7 +54,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         if (camera._follow === this.gameObject) {
             return;
         }
-        camera.startFollow(this.gameObject, true, 0.05, 0.05);
+        camera.startFollow(this.gameObject, false, 0.05, 0.05);
     };
     PhaserUnit.prototype.stopFollow = function () {
         console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
