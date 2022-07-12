@@ -6,6 +6,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 	gameObject: Phaser.GameObjects.Container;
 	attributes: PhaserAttributeBar[] = [];
+	attributesContainer: Phaser.GameObjects.Container;
 
 	constructor (public scene: Phaser.Scene,
 				 entity: Unit) {
@@ -18,6 +19,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			translate.y,
 			[ this.sprite ]
 		);
+		const attributesContainer = this.attributesContainer = scene.add.container();
+		this.gameObject.add(attributesContainer);
 
 		const label = this.label = scene.add.text(0, 0, 'cccccc');
 		label.setOrigin(0.5);
@@ -182,10 +185,16 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		const defaultZoom = ige.game.data.settings.camera?.zoom?.default || 1000;
 		const targetScale = height / defaultZoom;
 		this.scene.tweens.add({
-			targets: [this.label, ...this.attributes],
+			targets: [this.label, this.attributesContainer],
 			duration: 1000,
 			ease: Phaser.Math.Easing.Quadratic.Out,
 			scale: targetScale,
+		});
+		this.scene.tweens.add({
+			targets: this.attributesContainer,
+			duration: 1000,
+			ease: Phaser.Math.Easing.Quadratic.Out,
+			y: (-targetScale * 25 + 25) * 2
 		});
 	}
 
@@ -199,6 +208,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			PhaserAttributeBar.release(a);
 		});
 		this.attributes.length = 0;
+		this.attributesContainer = null;
 		this.attributes = null;
 		this.label = null;
 		this.scene = null;

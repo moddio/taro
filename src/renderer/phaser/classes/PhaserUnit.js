@@ -13,15 +13,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var PhaserUnit = /** @class */ (function (_super) {
     __extends(PhaserUnit, _super);
     function PhaserUnit(scene, entity) {
@@ -30,6 +21,8 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        var attributesContainer = _this.attributesContainer = scene.add.container();
+        _this.gameObject.add(attributesContainer);
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
@@ -158,10 +151,16 @@ var PhaserUnit = /** @class */ (function (_super) {
         var defaultZoom = ((_b = (_a = ige.game.data.settings.camera) === null || _a === void 0 ? void 0 : _a.zoom) === null || _b === void 0 ? void 0 : _b.default) || 1000;
         var targetScale = height / defaultZoom;
         this.scene.tweens.add({
-            targets: __spreadArray([this.label], this.attributes, true),
+            targets: [this.label, this.attributesContainer],
             duration: 1000,
             ease: Phaser.Math.Easing.Quadratic.Out,
             scale: targetScale,
+        });
+        this.scene.tweens.add({
+            targets: this.attributesContainer,
+            duration: 1000,
+            ease: Phaser.Math.Easing.Quadratic.Out,
+            y: (-targetScale * 25 + 25) * 2
         });
     };
     PhaserUnit.prototype.destroy = function () {
@@ -174,6 +173,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             PhaserAttributeBar.release(a);
         });
         this.attributes.length = 0;
+        this.attributesContainer = null;
         this.attributes = null;
         this.label = null;
         this.scene = null;

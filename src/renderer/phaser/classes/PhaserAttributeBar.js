@@ -31,7 +31,7 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         text.setFontSize(14);
         text.setOrigin(0.5);
         _this.add(text);
-        unit.gameObject.add(_this);
+        unit.attributesContainer.add(_this);
         return _this;
     }
     PhaserAttributeBar.get = function (unit) {
@@ -45,14 +45,14 @@ var PhaserAttributeBar = /** @class */ (function (_super) {
         }
         bar.setActive(true);
         bar.unit = unit;
-        unit.gameObject.add(bar);
+        unit.attributesContainer.add(bar);
         bar.setVisible(true);
         return bar;
     };
     PhaserAttributeBar.release = function (bar) {
         bar.resetFadeOut();
         bar.setVisible(false);
-        bar.unit.gameObject.remove(bar);
+        bar.unit.attributesContainer.remove(bar);
         bar.unit = null;
         bar.name = null;
         bar.setActive(false);
