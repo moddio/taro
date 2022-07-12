@@ -21,8 +21,8 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
-        var attributesContainer = _this.attributesContainer = scene.add.container();
-        _this.gameObject.add(attributesContainer);
+        /*const attributesContainer = this.attributesContainer = scene.add.container();
+        this.gameObject.add(attributesContainer);*/
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
@@ -100,6 +100,8 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.renderAttributes = function (data) {
         var _this = this;
         console.log('PhaserUnit render-attributes', data); // TODO remove
+        var attributesContainer = this.attributesContainer = this.scene.add.container();
+        this.gameObject.add(attributesContainer);
         var attributes = this.attributes;
         // release all existing attribute bars
         attributes.forEach(function (a) {

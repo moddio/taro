@@ -19,8 +19,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			translate.y,
 			[ this.sprite ]
 		);
-		const attributesContainer = this.attributesContainer = scene.add.container();
-		this.gameObject.add(attributesContainer);
+		/*const attributesContainer = this.attributesContainer = scene.add.container();
+		this.gameObject.add(attributesContainer);*/
 
 		const label = this.label = scene.add.text(0, 0, 'cccccc');
 		label.setOrigin(0.5);
@@ -130,6 +130,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		attrs: AttributeData[]
 	}): void {
 		console.log('PhaserUnit render-attributes', data); // TODO remove
+		const attributesContainer = this.attributesContainer = this.scene.add.container();
+		this.gameObject.add(attributesContainer);
 		const attributes = this.attributes;
 		// release all existing attribute bars
 		attributes.forEach((a) => {
