@@ -15,6 +15,8 @@ class PhaserProjectile extends PhaserAnimatedEntity {
 			translate.y,
 			[ this.sprite ]
 		);
+
+		this.gameObject.setName('projectile');
 	}
 
 	protected transform (data: {

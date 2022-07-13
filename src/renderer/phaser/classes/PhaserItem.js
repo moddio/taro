@@ -19,6 +19,7 @@ var PhaserItem = /** @class */ (function (_super) {
         var _this = _super.call(this, scene, entity, "item/".concat(entity._stats.itemTypeId)) || this;
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        _this.gameObject.setName('item');
         return _this;
     }
     return PhaserItem;

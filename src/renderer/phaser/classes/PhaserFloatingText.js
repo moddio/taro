@@ -24,6 +24,7 @@ var PhaserFloatingText = /** @class */ (function (_super) {
         var strokeThickness = ige.game.data.settings
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         _this.setStroke('#000', strokeThickness);
+        _this.setName('floating text');
         if (unit) {
             unit.gameObject.add(_this);
             _this.y = -25 -

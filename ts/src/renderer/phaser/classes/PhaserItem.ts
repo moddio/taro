@@ -15,5 +15,7 @@ class PhaserItem extends PhaserAnimatedEntity {
 			translate.y,
 			[ this.sprite ]
 		);
+
+		this.gameObject.setName('item');
 	}
 }

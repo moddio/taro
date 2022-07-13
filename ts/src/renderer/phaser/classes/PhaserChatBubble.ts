@@ -53,6 +53,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.add(text);
 
 		this.updateScale();
+		this.setName('chat bubble');
 		scene.add.existing(this);
 
 		this.fadeOut();

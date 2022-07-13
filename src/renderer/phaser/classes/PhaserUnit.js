@@ -24,6 +24,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
+        _this.gameObject.setName('unit');
         Object.assign(_this.evtListeners, {
             follow: entity.on('follow', _this.follow, _this),
             'stop-follow': entity.on('stop-follow', _this.stopFollow, _this),

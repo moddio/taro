@@ -21,6 +21,8 @@ class PhaserFloatingText extends Phaser.GameObjects.Text {
 			.addStrokeToNameAndAttributes !== false ? 4 : 0;
 		this.setStroke('#000', strokeThickness);
 
+		this.setName('floating text');
+
 		if (unit) {
 			unit.gameObject.add(this);
 			this.y = -25 -

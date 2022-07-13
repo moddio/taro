@@ -70,6 +70,13 @@ var GameScene = /** @class */ (function (_super) {
             console.log('create-floating-text', data); // TODO remove
             new PhaserFloatingText(_this, data);
         });
+        // Press L to log a table of the scene's DisplayList
+        this.input.keyboard.on('keydown-L', function () {
+            console.info('Display List:');
+            console.table(_this.sys.displayList.list, ['name', 'type', 'x', 'y', 'visible']);
+            // console.info('Update List:');
+            // console.table(this.sys.updateList.getActive(), [ 'name', 'type', 'active' ]);
+        }, this);
     };
     GameScene.prototype.preload = function () {
         var _this = this;
@@ -139,7 +146,8 @@ var GameScene = /** @class */ (function (_super) {
             }
             console.log(layer.name);
             var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
+            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
+                .setName(layer.name);
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);

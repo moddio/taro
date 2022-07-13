@@ -19,6 +19,7 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var _this = _super.call(this, scene, entity, "projectile/".concat(entity._stats.type)) || this;
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        _this.gameObject.setName('projectile');
         return _this;
     }
     PhaserProjectile.prototype.transform = function (data) {

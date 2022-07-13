@@ -45,6 +45,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         _this.add(bubble);
         _this.add(text);
         _this.updateScale();
+        _this.setName('chat bubble');
         scene.add.existing(_this);
         _this.fadeOut();
         return _this;

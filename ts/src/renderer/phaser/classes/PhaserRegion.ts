@@ -10,6 +10,7 @@ class PhaserRegion extends PhaserEntity {
 		super(entity);
 
 		this.gameObject = scene.add.graphics();
+		this.gameObject.setName('region');
 
 		this.transform();
 	}

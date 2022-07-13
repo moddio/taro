@@ -83,6 +83,14 @@ class GameScene extends PhaserScene {
 			console.log('create-floating-text', data); // TODO remove
 			new PhaserFloatingText(this, data);
 		});
+
+		// Press L to log a table of the scene's DisplayList
+		this.input.keyboard.on('keydown-L', () => {
+			console.info('Display List:');
+			console.table(this.sys.displayList.list, [ 'name', 'type', 'x', 'y', 'visible']);
+			// console.info('Update List:');
+			// console.table(this.sys.updateList.getActive(), [ 'name', 'type', 'active' ]);
+		}, this);
 	}
 
 	preload (): void {
@@ -177,7 +185,8 @@ class GameScene extends PhaserScene {
 			}
 			console.log(layer.name);
 			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
+			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
+				.setName(layer.name);
 		});
 
 		const camera = this.cameras.main;
