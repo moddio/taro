@@ -1,6 +1,6 @@
 class GameScene extends PhaserScene {
 
-	protected readonly layers: Record<number, Phaser.GameObjects.Layer> = {};
+	layers: Record<number, Phaser.GameObjects.Layer> = {};
 
 	constructor() {
 		super({ key: 'Game' });
@@ -182,7 +182,14 @@ class GameScene extends PhaserScene {
 			map.addTilesetImage(tileset.name, `tiles/${tileset.name}`);
 		});
 		data.map.layers.forEach((layer, i) => {
-			
+
+			// assign Layer to our object Scene.layers
+			// no need to skip debris. it is filtered out above
+
+			let temp = this.layers[i + 1] = this.add.layer()
+				.setName(layer.name)
+				.setDepth(i + 1);
+
 			if (layer.type !== 'tilelayer') {
 				return;
 			}
@@ -191,13 +198,21 @@ class GameScene extends PhaserScene {
 			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
 				.setName(`map: ` + layer.name);
 
-			// assign Layer to our object Scene.layers
-			// no need to skip debris. it is filtered out above
-
-			this.layers[i + 1] = this.add.layer(tilemapLayer)
-				.setName(layer.name)
-				.setDepth(i + 1);
+			temp.add(tilemapLayer);
 		});
+
+		// swap walls and debris because their map layer indexes are swapped from actual
+
+		// TODO: Fix on BE
+
+		let newtemp = this.layers[3];
+		this.layers[3] = this.layers[4];
+		this.layers[4] = newtemp;
+
+		this.layers[3].setDepth(3);
+		this.layers[4].setDepth(4);
+
+		///
 
 		const camera = this.cameras.main;
 		camera.centerOn(
