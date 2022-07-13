@@ -71,7 +71,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		if (camera._follow === this.gameObject) {
 			return;
 		}
-		camera.startFollow(this.gameObject, true, 0.05, 0.05);
+		camera.startFollow(this.gameObject, false, 0.05, 0.05);
 	}
 
 	private stopFollow (): void {

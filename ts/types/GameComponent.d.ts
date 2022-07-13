@@ -18,8 +18,12 @@ declare class GameComponent extends IgeEntity {
 		map: {
 			tilesets: {
 				image: string;
+				margin: number;
 				name: string;
+				spacing: number;
 				tilecount: number;
+				tileheight: number;
+				tilewidth: number;
 			}[];
 			layers: {
 				data: number[];
