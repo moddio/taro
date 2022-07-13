@@ -21,8 +21,6 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
-        /*const attributesContainer = this.attributesContainer = scene.add.container();
-        this.gameObject.add(attributesContainer);*/
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
@@ -77,8 +75,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         label.setStroke('#000', strokeThickness);
         label.setText(data.text || '');
-        label.y = -25 -
-            Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
+        label.y = -25 - Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2);
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
@@ -100,8 +97,12 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.renderAttributes = function (data) {
         var _this = this;
         console.log('PhaserUnit render-attributes', data); // TODO remove
-        var attributesContainer = this.attributesContainer = this.scene.add.container(0, 25 + Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2);
-        this.gameObject.add(attributesContainer);
+        // adding container here instead of constructor() to avoid creating attributeContainer
+        // for units havent attribute bars, so not every unit will create container
+        if (!this.attributesContainer) {
+            this.attributesContainer = this.scene.add.container(0, 25 + Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2));
+            this.gameObject.add(this.attributesContainer);
+        }
         var attributes = this.attributes;
         // release all existing attribute bars
         attributes.forEach(function (a) {

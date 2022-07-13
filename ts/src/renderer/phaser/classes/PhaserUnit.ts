@@ -19,8 +19,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			translate.y,
 			[ this.sprite ]
 		);
-		/*const attributesContainer = this.attributesContainer = scene.add.container();
-		this.gameObject.add(attributesContainer);*/
 
 		const label = this.label = scene.add.text(0, 0, 'cccccc');
 		label.setOrigin(0.5);
@@ -99,8 +97,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 		label.setText(data.text || '');
 
-		label.y = -25 -
-					Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
+		label.y = -25 -	Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2);
 	}
 
 	private showLabel (): void {
@@ -130,9 +127,13 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		attrs: AttributeData[]
 	}): void {
 		console.log('PhaserUnit render-attributes', data); // TODO remove
-		const attributesContainer = this.attributesContainer = this.scene.add.container(0,
-			25 + Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2);
-		this.gameObject.add(attributesContainer);
+		// adding container here instead of constructor() to avoid creating attributeContainer
+		// for units havent attribute bars, so not every unit will create container
+		if (!this.attributesContainer) {
+			this.attributesContainer = this.scene.add.container(0,
+				25 + Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2));
+			this.gameObject.add(this.attributesContainer);
+		}
 		const attributes = this.attributes;
 		// release all existing attribute bars
 		attributes.forEach((a) => {
