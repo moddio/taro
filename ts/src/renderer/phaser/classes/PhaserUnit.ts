@@ -64,8 +64,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	private follow (): void {
 		console.log('PhaserUnit follow', this.entity.id()); // TODO remove
 		const camera = this.scene.cameras.main as Phaser.Cameras.Scene2D.Camera & {
-				_follow: Phaser.GameObjects.GameObject
-			};
+			_follow: Phaser.GameObjects.GameObject
+		};
 		if (camera._follow === this.gameObject) {
 			return;
 		}
@@ -97,7 +97,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 		label.setText(data.text || '');
 
-		label.y = -25 -	Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2);
+		const sprite = this.sprite;
+		label.y = -25 -	(sprite.displayHeight + sprite.displayWidth) / 4;
 	}
 
 	private showLabel (): void {
@@ -111,9 +112,9 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	}
 
 	private fadingText (data: {
-			text: string;
-			color?: string;
-		}): void {
+		text: string;
+		color?: string;
+	}): void {
 		console.log('PhaserUnit fading-text', this.entity.id()); // TODO remove
 		new PhaserFloatingText(this.scene, {
 			text: data.text || '',
@@ -127,11 +128,14 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		attrs: AttributeData[]
 	}): void {
 		console.log('PhaserUnit render-attributes', data); // TODO remove
-		// adding container here instead of constructor() to avoid creating attributeContainer
-		// for units havent attribute bars, so not every unit will create container
 		if (!this.attributesContainer) {
-			this.attributesContainer = this.scene.add.container(0,
-				25 + Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2));
+			// creating attributeContainer on the fly,
+			// only for units that have attribute bars
+			const sprite = this.sprite;
+			this.attributesContainer = this.scene.add.container(
+				0,
+				25 + (sprite.displayHeight + sprite.displayWidth) / 4
+			);
 			this.gameObject.add(this.attributesContainer);
 		}
 		const attributes = this.attributes;
