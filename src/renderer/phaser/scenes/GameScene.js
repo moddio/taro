@@ -13,10 +13,21 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var GameScene = /** @class */ (function (_super) {
     __extends(GameScene, _super);
     function GameScene() {
-        return _super.call(this, { key: 'Game' }) || this;
+        var _this = _super.call(this, { key: 'Game' }) || this;
+        _this.layers = {};
+        return _this;
     }
     GameScene.prototype.init = function () {
         var _this = this;
@@ -73,10 +84,9 @@ var GameScene = /** @class */ (function (_super) {
         // Press L to log a table of the scene's DisplayList
         this.input.keyboard.on('keydown-L', function () {
             console.info('Display List:');
-            console.table(_this.sys.displayList.list, ['name', 'type', 'x', 'y', 'visible']);
-            // console.info('Update List:');
-            // console.table(this.sys.updateList.getActive(), [ 'name', 'type', 'active' ]);
-        }, this);
+            // list doesn't want to tell us about the last element.
+            console.table(__spreadArray(__spreadArray([], _this.children.list, true), [_this.children.last], false), ['name', 'type', '_depth', 'x', 'y']);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;
@@ -133,6 +143,7 @@ var GameScene = /** @class */ (function (_super) {
         this.load.image(key, this.patchAssetUrl(cellSheet.url));
     };
     GameScene.prototype.create = function () {
+        var _this = this;
         ige.client.phaserLoaded.resolve();
         var map = this.make.tilemap({ key: 'map' });
         var data = ige.game.data;
@@ -140,14 +151,18 @@ var GameScene = /** @class */ (function (_super) {
         data.map.tilesets.forEach(function (tileset) {
             map.addTilesetImage(tileset.name, "tiles/".concat(tileset.name));
         });
-        data.map.layers.forEach(function (layer) {
+        data.map.layers.forEach(function (layer, i) {
             if (layer.type !== 'tilelayer') {
                 return;
             }
-            console.log(layer.name);
             var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
             tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-                .setName(layer.name);
+                .setName("map: " + layer.name);
+            // assign Layer to our object Scene.layers
+            // no need to skip debris. it is filtered out above
+            _this.layers[i + 1] = _this.add.layer(tilemapLayer)
+                .setName(layer.name)
+                .setDepth(i + 1);
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
