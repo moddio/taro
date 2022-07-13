@@ -98,7 +98,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		label.setText(data.text || '');
 
 		const sprite = this.sprite;
-		label.y = -25 -	(sprite.displayHeight + sprite.displayWidth) / 4;
+		label.y = -25 - (sprite.displayHeight + sprite.displayWidth) / 4;
 	}
 
 	private showLabel (): void {
