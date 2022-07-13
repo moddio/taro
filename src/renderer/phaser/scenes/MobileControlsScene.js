@@ -94,13 +94,11 @@ var MobileControlsScene = /** @class */ (function (_super) {
         if (scale.fullscreen.available) {
             scale.fullscreenTarget =
                 document.getElementById('game-div');
-            // TODO also touchend for devices that don't work with touchstart
             document.body.addEventListener('touchstart', function () {
-                if (!scale.isFullscreen) {
-                    scale.startFullscreen({
-                    // TODO check options in code
-                    });
-                }
+                _this.enterFullscreen();
+            }, true);
+            document.body.addEventListener('touchend', function () {
+                _this.enterFullscreen();
             }, true);
         }
     };
@@ -108,6 +106,11 @@ var MobileControlsScene = /** @class */ (function (_super) {
         this.load.image('mobile-button-up', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png'));
         this.load.image('mobile-button-down', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1549614658007_button2.png'));
         this.load.image('mobile-button-icon', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png'));
+    };
+    MobileControlsScene.prototype.enterFullscreen = function () {
+        if (!this.scale.isFullscreen) {
+            this.scale.startFullscreen();
+        }
     };
     MobileControlsScene.prototype.resize = function () {
         // make the mobileControls container

@@ -122,13 +122,11 @@ class MobileControlsScene extends PhaserScene {
 		if (scale.fullscreen.available) {
 			scale.fullscreenTarget =
 				document.getElementById('game-div');
-			// TODO also touchend for devices that don't work with touchstart
 			document.body.addEventListener('touchstart', () => {
-				if (!scale.isFullscreen) {
-					scale.startFullscreen({
-						// TODO check options in code
-					});
-				}
+				this.enterFullscreen();
+			}, true);
+			document.body.addEventListener('touchend', () => {
+				this.enterFullscreen();
 			}, true);
 		}
 	}
@@ -145,6 +143,12 @@ class MobileControlsScene extends PhaserScene {
 		this.load.image('mobile-button-icon', this.patchAssetUrl(
 			'https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png'
 		));
+	}
+
+	private enterFullscreen() {
+		if (!this.scale.isFullscreen) {
+			this.scale.startFullscreen();
+		}
 	}
 
 	private resize() {
