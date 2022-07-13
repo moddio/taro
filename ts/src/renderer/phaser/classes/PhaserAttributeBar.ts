@@ -101,10 +101,7 @@ class PhaserAttributeBar extends Phaser.GameObjects.Container {
 			(typeof data.value === 'number' ?
 				data.value.toFixed(0) : '0') : '');
 
-		const sprite = this.unit.sprite;
-		this.y = 25 +
-			Math.max(sprite.displayHeight, sprite.displayWidth) / 2
-			+ (data.index - 1) * h*1.1;
+		this.y = (data.index - 1) * h*1.1;
 
 		this.resetFadeOut();
 

@@ -130,7 +130,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		attrs: AttributeData[]
 	}): void {
 		console.log('PhaserUnit render-attributes', data); // TODO remove
-		const attributesContainer = this.attributesContainer = this.scene.add.container();
+		const attributesContainer = this.attributesContainer = this.scene.add.container(0,
+			25 + Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2);
 		this.gameObject.add(attributesContainer);
 		const attributes = this.attributes;
 		// release all existing attribute bars
@@ -191,12 +192,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			duration: 1000,
 			ease: Phaser.Math.Easing.Quadratic.Out,
 			scale: targetScale,
-		});
-		this.scene.tweens.add({
-			targets: this.attributesContainer,
-			duration: 1000,
-			ease: Phaser.Math.Easing.Quadratic.Out,
-			y: (-targetScale * 25 + 25) * 2
 		});
 	}
 

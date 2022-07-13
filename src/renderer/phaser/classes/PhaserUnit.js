@@ -100,7 +100,7 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.renderAttributes = function (data) {
         var _this = this;
         console.log('PhaserUnit render-attributes', data); // TODO remove
-        var attributesContainer = this.attributesContainer = this.scene.add.container();
+        var attributesContainer = this.attributesContainer = this.scene.add.container(0, 25 + Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2);
         this.gameObject.add(attributesContainer);
         var attributes = this.attributes;
         // release all existing attribute bars
@@ -157,12 +157,6 @@ var PhaserUnit = /** @class */ (function (_super) {
             duration: 1000,
             ease: Phaser.Math.Easing.Quadratic.Out,
             scale: targetScale,
-        });
-        this.scene.tweens.add({
-            targets: this.attributesContainer,
-            duration: 1000,
-            ease: Phaser.Math.Easing.Quadratic.Out,
-            y: (-targetScale * 25 + 25) * 2
         });
     };
     PhaserUnit.prototype.destroy = function () {
