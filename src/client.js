@@ -184,7 +184,11 @@ const Client = IgeEventingClass.extend({
 			ige.addComponent(IgeInitPixi);
 			ige.entitiesToRender = new EntitiesToRender();
             ige.phaser = new PhaserRenderer();
-			// let's try here
+
+			if(!window.isStandalone){
+				this.servers = this.getServersArray();
+			}
+
 			// add components to ige instance
 			// old comment => 'components required for client-side game logic'
 			ige.addComponent(IgeNetIoComponent);
