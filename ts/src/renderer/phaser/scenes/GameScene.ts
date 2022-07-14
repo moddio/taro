@@ -1,5 +1,7 @@
 class GameScene extends PhaserScene {
 
+	layers: Record<number, Phaser.GameObjects.Layer> = {};
+
 	constructor() {
 		super({ key: 'Game' });
 	}
@@ -86,11 +88,11 @@ class GameScene extends PhaserScene {
 
 		// Press L to log a table of the scene's DisplayList
 		this.input.keyboard.on('keydown-L', () => {
+
 			console.info('Display List:');
-			console.table(this.sys.displayList.list, [ 'name', 'type', 'x', 'y', 'visible']);
-			// console.info('Update List:');
-			// console.table(this.sys.updateList.getActive(), [ 'name', 'type', 'active' ]);
-		}, this);
+			// list doesn't want to tell us about the last element.
+			console.table([...this.children.list, this.children.last], [ 'name', 'type', '_depth', 'x', 'y']);
+		});
 	}
 
 	preload (): void {
@@ -197,15 +199,38 @@ class GameScene extends PhaserScene {
 				map.addTilesetImage(tileset.name, key);
 			}
 		});
-		data.map.layers.forEach((layer) => {
+		data.map.layers.forEach((layer, i) => {
+
+			// assign Layer to our object Scene.layers
+			// no need to skip debris. it is filtered out above
+
+			let temp = this.layers[i + 1] = this.add.layer()
+				.setName(layer.name)
+				.setDepth(i + 1);
+
 			if (layer.type !== 'tilelayer') {
 				return;
 			}
-			console.log(layer.name);
+
 			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
 			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-				.setName(layer.name);
+				.setName(`map: ` + layer.name);
+
+			temp.add(tilemapLayer);
 		});
+
+		// swap walls and debris because their map layer indexes are swapped from actual
+
+		// TODO: Fix on BE
+
+		let newtemp = this.layers[3];
+		this.layers[3] = this.layers[4];
+		this.layers[4] = newtemp;
+
+		this.layers[3].setDepth(3);
+		this.layers[4].setDepth(4);
+
+		///
 
 		const camera = this.cameras.main;
 		camera.centerOn(
@@ -213,6 +238,8 @@ class GameScene extends PhaserScene {
 			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
 		camera.zoom = this.scale.width / 800;
+
+
 	}
 
 	private patchMapData (map: GameComponent['data']['map']): typeof map {

@@ -13,10 +13,21 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var GameScene = /** @class */ (function (_super) {
     __extends(GameScene, _super);
     function GameScene() {
-        return _super.call(this, { key: 'Game' }) || this;
+        var _this = _super.call(this, { key: 'Game' }) || this;
+        _this.layers = {};
+        return _this;
     }
     GameScene.prototype.init = function () {
         var _this = this;
@@ -73,10 +84,9 @@ var GameScene = /** @class */ (function (_super) {
         // Press L to log a table of the scene's DisplayList
         this.input.keyboard.on('keydown-L', function () {
             console.info('Display List:');
-            console.table(_this.sys.displayList.list, ['name', 'type', 'x', 'y', 'visible']);
-            // console.info('Update List:');
-            // console.table(this.sys.updateList.getActive(), [ 'name', 'type', 'active' ]);
-        }, this);
+            // list doesn't want to tell us about the last element.
+            console.table(__spreadArray(__spreadArray([], _this.children.list, true), [_this.children.last], false), ['name', 'type', '_depth', 'x', 'y']);
+        });
     };
     GameScene.prototype.preload = function () {
         var _this = this;
@@ -157,15 +167,28 @@ var GameScene = /** @class */ (function (_super) {
                 map.addTilesetImage(tileset.name, key);
             }
         });
-        data.map.layers.forEach(function (layer) {
+        data.map.layers.forEach(function (layer, i) {
+            // assign Layer to our object Scene.layers
+            // no need to skip debris. it is filtered out above
+            var temp = _this.layers[i + 1] = _this.add.layer()
+                .setName(layer.name)
+                .setDepth(i + 1);
             if (layer.type !== 'tilelayer') {
                 return;
             }
-            console.log(layer.name);
             var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
             tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-                .setName(layer.name);
+                .setName("map: " + layer.name);
+            temp.add(tilemapLayer);
         });
+        // swap walls and debris because their map layer indexes are swapped from actual
+        // TODO: Fix on BE
+        var newtemp = this.layers[3];
+        this.layers[3] = this.layers[4];
+        this.layers[4] = newtemp;
+        this.layers[3].setDepth(3);
+        this.layers[4].setDepth(4);
+        ///
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
         camera.zoom = this.scale.width / 800;

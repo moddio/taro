@@ -7,7 +7,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	gameObject: Phaser.GameObjects.Container;
 	attributes: PhaserAttributeBar[] = [];
 
-	constructor (public scene: Phaser.Scene,
+	constructor (public scene: GameScene,
 				 entity: Unit) {
 
 		super(scene, entity, `unit/${entity._stats.type}`);
@@ -35,6 +35,10 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			'update-attribute': entity.on('update-attribute', this.updateAttribute, this),
 			'render-chat-bubble': entity.on('render-chat-bubble', this.renderChat, this),
 		});
+
+		console.log(`layer: ${entity._layer}, depth: ${entity._depth}`);
+		this.scene.layers[entity._layer].add(this.gameObject)
+		this.gameObject.setDepth(entity._depth);
 	}
 
 	protected transform (data: {
