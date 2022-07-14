@@ -168,27 +168,28 @@ var GameScene = /** @class */ (function (_super) {
             }
         });
         data.map.layers.forEach(function (layer, i) {
-            // assign Layer to our object Scene.layers
-            // no need to skip debris. it is filtered out above
-            var temp = _this.layers[i + 1] = _this.add.layer()
-                .setName(layer.name)
-                .setDepth(i + 1);
+            // floor, 0
+            // floor2, 1
+            // walls, 2
+            // debris, 3 (returns early)
+            // trees, 4
             if (layer.type !== 'tilelayer') {
                 return;
             }
-            var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-                .setName("map: " + layer.name);
-            temp.add(tilemapLayer);
+            map.createLayer(layer.name, map.tilesets, 0, 0)
+                .setScale(scaleFactor.x, scaleFactor.y)
+                .setName("map: ".concat(layer.name));
+            // hard-coded solution for backwards compatibility
+            // letter choice 'c' is insignificant
+            var c = i !== 3 ? i + 1 : i;
+            _this.layers[c] = _this.add.layer()
+                .setName(layer.name);
+            // plug in debris because its map layer index is swapped with walls (3,4)
+            if (c === i) {
+                _this.layers[c + 1] = _this.add.layer()
+                    .setName('debris');
+            }
         });
-        // swap walls and debris because their map layer indexes are swapped from actual
-        // TODO: Fix on BE
-        var newtemp = this.layers[3];
-        this.layers[3] = this.layers[4];
-        this.layers[4] = newtemp;
-        this.layers[3].setDepth(3);
-        this.layers[4].setDepth(4);
-        ///
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
         camera.zoom = this.scale.width / 800;
