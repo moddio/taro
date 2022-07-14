@@ -193,7 +193,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		const defaultZoom = ige.game.data.settings.camera?.zoom?.default || 1000;
 		const targetScale = height / defaultZoom;
 		this.scene.tweens.add({
-			targets: [this.label, this.attributesContainer],
+			targets: [this.label, this.attributesContainer, this.chat],
 			duration: 1000,
 			ease: Phaser.Math.Easing.Quadratic.Out,
 			scale: targetScale,

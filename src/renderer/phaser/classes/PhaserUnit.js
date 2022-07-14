@@ -75,7 +75,8 @@ var PhaserUnit = /** @class */ (function (_super) {
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         label.setStroke('#000', strokeThickness);
         label.setText(data.text || '');
-        label.y = -25 - Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2);
+        var sprite = this.sprite;
+        label.y = -25 - (sprite.displayHeight + sprite.displayWidth) / 4;
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
@@ -97,10 +98,11 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.renderAttributes = function (data) {
         var _this = this;
         console.log('PhaserUnit render-attributes', data); // TODO remove
-        // adding container here instead of constructor() to avoid creating attributeContainer
-        // for units havent attribute bars, so not every unit will create container
         if (!this.attributesContainer) {
-            this.attributesContainer = this.scene.add.container(0, 25 + Math.max(this.sprite.displayHeight / 2, this.sprite.displayWidth / 2));
+            // creating attributeContainer on the fly,
+            // only for units that have attribute bars
+            var sprite = this.sprite;
+            this.attributesContainer = this.scene.add.container(0, 25 + (sprite.displayHeight + sprite.displayWidth) / 4);
             this.gameObject.add(this.attributesContainer);
         }
         var attributes = this.attributes;
@@ -154,7 +156,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         var defaultZoom = ((_b = (_a = ige.game.data.settings.camera) === null || _a === void 0 ? void 0 : _a.zoom) === null || _b === void 0 ? void 0 : _b.default) || 1000;
         var targetScale = height / defaultZoom;
         this.scene.tweens.add({
-            targets: [this.label, this.attributesContainer],
+            targets: [this.label, this.attributesContainer, this.chat],
             duration: 1000,
             ease: Phaser.Math.Easing.Quadratic.Out,
             scale: targetScale,
