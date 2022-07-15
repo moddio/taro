@@ -42,7 +42,7 @@ var GameScene = /** @class */ (function (_super) {
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
+            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out, true);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{

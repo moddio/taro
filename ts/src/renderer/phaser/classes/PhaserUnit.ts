@@ -6,6 +6,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 	gameObject: Phaser.GameObjects.Container;
 	attributes: PhaserAttributeBar[] = [];
+	attributesContainer: Phaser.GameObjects.Container;
 
 	constructor (public scene: Phaser.Scene,
 				 entity: Unit) {
@@ -19,10 +20,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			[ this.sprite ]
 		);
 
-		const label = this.label = scene.add.text(0, 0, 'cccccc');
-		label.setOrigin(0.5);
-		this.gameObject.add(label);
-
 		Object.assign(this.evtListeners, {
 			follow: entity.on('follow', this.follow, this),
 			'stop-follow': entity.on('stop-follow', this.stopFollow, this),
@@ -33,6 +30,10 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			'render-attributes': entity.on('render-attributes', this.renderAttributes, this),
 			'update-attribute': entity.on('update-attribute', this.updateAttribute, this),
 			'render-chat-bubble': entity.on('render-chat-bubble', this.renderChat, this),
+		});
+
+		ige.client.on('zoom', (height: number) => {
+			this.scaleElements(height);
 		});
 	}
 
@@ -49,6 +50,29 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.sprite.setFlip(flip % 2 === 1, flip > 1);
 	}
 
+	protected size (
+		data: {
+			width: number,
+			height: number
+		}
+	): void {
+		super.size(data);
+		if (this.label) {
+			this.updateLabelOffset();
+		}
+		if (this.attributesContainer) {
+			this.updateAttributesOffset();
+		}
+	}
+
+	private updateLabelOffset (): void {
+		this.label.y = -25 - (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
+	}
+
+	private updateAttributesOffset (): void {
+		this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
+	}
+
 	protected scale (data: {
 		x: number;
 		y: number
@@ -59,8 +83,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	private follow (): void {
 		console.log('PhaserUnit follow', this.entity.id()); // TODO remove
 		const camera = this.scene.cameras.main as Phaser.Cameras.Scene2D.Camera & {
-				_follow: Phaser.GameObjects.GameObject
-			};
+			_follow: Phaser.GameObjects.GameObject
+		};
 		if (camera._follow === this.gameObject) {
 			return;
 		}
@@ -72,13 +96,22 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.scene.cameras.main.stopFollow();
 	}
 
+	private getLabel (): Phaser.GameObjects.Text {
+		if (!this.label) {
+			const label = this.label = this.scene.add.text(0, 0, 'cccccc');
+			label.setOrigin(0.5);
+			this.gameObject.add(label);
+		}
+		return this.label;
+	}
+
 	private updateLabel (data: {
 		text? : string;
 		bold?: boolean;
 		color?: string;
 	}): void {
 		console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
-		const label = this.label;
+		const label = this.getLabel();
 		label.visible = true;
 
 		label.setFontFamily('Verdana');
@@ -89,28 +122,24 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		const strokeThickness = ige.game.data.settings
 			.addStrokeToNameAndAttributes !== false ? 4 : 0;
 		label.setStroke('#000', strokeThickness);
-
 		label.setText(data.text || '');
-
-		label.y = -25 -
-					Math.max(this.sprite.displayHeight, this.sprite.displayWidth) / 2;
-		label.setScale(1.25);
+		this.updateLabelOffset();
 	}
 
 	private showLabel (): void {
 		console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
-		this.label.visible = true;
+		this.getLabel().visible = true;
 	}
 
 	private hideLabel (): void {
 		console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
-		this.label.visible = false;
+		this.getLabel().visible = false;
 	}
 
 	private fadingText (data: {
-			text: string;
-			color?: string;
-		}): void {
+		text: string;
+		color?: string;
+	}): void {
 		console.log('PhaserUnit fading-text', this.entity.id()); // TODO remove
 		new PhaserFloatingText(this.scene, {
 			text: data.text || '',
@@ -120,10 +149,22 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}, this);
 	}
 
+	private getAttributesContainer (): Phaser.GameObjects.Container {
+		if (!this.attributesContainer) {
+			this.attributesContainer = this.scene.add.container(0,	0);
+			this.updateAttributesOffset();
+			this.gameObject.add(this.attributesContainer);
+		}
+		return this.attributesContainer;
+	}
+
 	private renderAttributes (data: {
 		attrs: AttributeData[]
 	}): void {
 		console.log('PhaserUnit render-attributes', data); // TODO remove
+		// creating attributeContainer on the fly,
+		// only for units that have attribute bars
+		this.getAttributesContainer();
 		const attributes = this.attributes;
 		// release all existing attribute bars
 		attributes.forEach((a) => {
@@ -175,6 +216,17 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}
 	}
 
+	private scaleElements (height): void {
+		const defaultZoom = ige.game.data.settings.camera?.zoom?.default || 1000;
+		const targetScale = height / defaultZoom;
+		this.scene.tweens.add({
+			targets: [this.label, this.attributesContainer, this.chat],
+			duration: 1000,
+			ease: Phaser.Math.Easing.Quadratic.Out,
+			scale: targetScale,
+		});
+	}
+
 	protected destroy (): void {
 		if (this.chat) {
 			this.chat.destroy();
@@ -185,6 +237,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			PhaserAttributeBar.release(a);
 		});
 		this.attributes.length = 0;
+		this.attributesContainer = null;
 		this.attributes = null;
 		this.label = null;
 		this.scene = null;
