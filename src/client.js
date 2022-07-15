@@ -142,7 +142,10 @@ const Client = IgeEventingClass.extend({
 		ige.addComponent(GameComponent);
 		// we're going to try and insert the fetch here
 		let promise = new Promise((resolve, reject) => {
-			if (gameId) {
+			// if the gameJson is available as a global object, use it instead of sending another ajax request
+			if (window.gameJson) {
+				resolve(window.gameJson);
+			} else if (gameId) {
 				$.ajax({
 					url: `${this.host}/api/game-client/${gameId}`,
 					dataType: 'json',
