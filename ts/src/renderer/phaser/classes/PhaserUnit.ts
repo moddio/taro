@@ -145,7 +145,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}, this);
 	}
 
-	getAttributesContainer(): Phaser.GameObjects.Container {
+	private getAttributesContainer(): Phaser.GameObjects.Container {
 		if (!this.attributesContainer) {
 			const sprite = this.sprite;
 			this.attributesContainer = this.scene.add.container(
