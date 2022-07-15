@@ -58,18 +58,18 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	): void {
 		super.size(data);
 		if (this.label) {
-			this.updateLabelPosition();
+			this.updateLabelOffset();
 		}
 		if (this.attributesContainer) {
-			this.updateAttributesPosition();
+			this.updateAttributesOffset();
 		}
 	}
 
-	private updateLabelPosition (): void {
+	private updateLabelOffset (): void {
 		this.label.y = -25 - (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
 	}
 
-	private updateAttributesPosition (): void {
+	private updateAttributesOffset (): void {
 		this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
 	}
 
@@ -123,7 +123,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			.addStrokeToNameAndAttributes !== false ? 4 : 0;
 		label.setStroke('#000', strokeThickness);
 		label.setText(data.text || '');
-		this.updateLabelPosition();
+		this.updateLabelOffset();
 	}
 
 	private showLabel (): void {
@@ -152,7 +152,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	private getAttributesContainer (): Phaser.GameObjects.Container {
 		if (!this.attributesContainer) {
 			this.attributesContainer = this.scene.add.container(0,	0);
-			this.updateAttributesPosition();
+			this.updateAttributesOffset();
 			this.gameObject.add(this.attributesContainer);
 		}
 		return this.attributesContainer;

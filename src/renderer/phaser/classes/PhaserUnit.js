@@ -48,16 +48,16 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.size = function (data) {
         _super.prototype.size.call(this, data);
         if (this.label) {
-            this.updateLabelPosition();
+            this.updateLabelOffset();
         }
         if (this.attributesContainer) {
-            this.updateAttributesPosition();
+            this.updateAttributesOffset();
         }
     };
-    PhaserUnit.prototype.updateLabelPosition = function () {
+    PhaserUnit.prototype.updateLabelOffset = function () {
         this.label.y = -25 - (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
     };
-    PhaserUnit.prototype.updateAttributesPosition = function () {
+    PhaserUnit.prototype.updateAttributesOffset = function () {
         this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
     };
     PhaserUnit.prototype.scale = function (data) {
@@ -95,7 +95,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         label.setStroke('#000', strokeThickness);
         label.setText(data.text || '');
-        this.updateLabelPosition();
+        this.updateLabelOffset();
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
@@ -117,7 +117,7 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.getAttributesContainer = function () {
         if (!this.attributesContainer) {
             this.attributesContainer = this.scene.add.container(0, 0);
-            this.updateAttributesPosition();
+            this.updateAttributesOffset();
             this.gameObject.add(this.attributesContainer);
         }
         return this.attributesContainer;
