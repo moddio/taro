@@ -62,7 +62,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	): void {
 		super.size(data);
 		const sprite = this.sprite;
-		if (this.label) this.label.y = (-25 - (sprite.displayHeight + sprite.displayWidth) / 4);
+		this.label.y = (-25 - (sprite.displayHeight + sprite.displayWidth) / 4);
 		if (this.attributesContainer) this.attributesContainer.y = 25 + (sprite.displayHeight + sprite.displayWidth) / 4;
 	}
 
