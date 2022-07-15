@@ -20,6 +20,9 @@ var PhaserProjectile = /** @class */ (function (_super) {
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         _this.gameObject.setName('projectile');
+        console.log("layer: ".concat(entity._layer, ", depth: ").concat(entity._depth));
+        scene.layers[entity._layer].add(_this.gameObject);
+        _this.gameObject.setDepth(entity._depth);
         return _this;
     }
     PhaserProjectile.prototype.transform = function (data) {

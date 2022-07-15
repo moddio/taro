@@ -1,13 +1,16 @@
 class PhaserAnimatedEntity extends PhaserEntity {
 
 	protected sprite: Phaser.GameObjects.Sprite;
+	protected scene: GameScene;
 
 	protected constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: IgeEntity,
 		protected key: string
 	) {
 		super(entity);
+
+		this.scene = scene;
 
 		const bounds = entity._bounds2d;
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);

@@ -138,6 +138,7 @@ var IgeEntity = IgeObject.extend({
 			self.streamUpdateData([{ stateId: stateId }]);
 		} else if (ige.isClient) {
 			self._stats.stateId = stateId;
+
 			if (newState.sound) {
 				for (var soundId in newState.sound) {
 					var sound = newState.sound[soundId];
@@ -235,6 +236,9 @@ var IgeEntity = IgeObject.extend({
 		}
 		self.layer(body['z-index'].layer) // above "floor 2 layer", but under "trees layer"
 			.depth(body['z-index'].depth);
+
+		// tell the renderer to update layer
+		this.emit('layer');
 	},
 
 	applyAnimationById: function (animationId) {

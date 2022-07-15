@@ -86,6 +86,34 @@ var GameScene = /** @class */ (function (_super) {
             console.info('Display List:');
             // list doesn't want to tell us about the last element.
             console.table(__spreadArray(__spreadArray([], _this.children.list, true), [_this.children.last], false), ['name', 'type', '_depth', 'x', 'y']);
+            var scenegraph = '';
+            var TOP = "\n\u250C".concat('\u2500'.repeat(57), "\u2510");
+            var BOTTOM = "\n\u2514".concat('\u2500'.repeat(57), "\u2518\n");
+            function SPACE4(depth) {
+                return '\u2502    '.repeat(depth);
+            }
+            var depth = 0;
+            function checkForChildren(child, depth) {
+                var line = "\n".concat(depth === 0 ? ("\u251C\u2500\u2500".concat(SPACE4(depth))) : ("".concat(SPACE4(depth), "\u251C\u2500\u2500")), " ").concat(child.type, "  ").concat(child.name || '');
+                scenegraph += "".concat(line).concat(' '.repeat(TOP.length - line.length - 1), "\u2502");
+                if (!child.list || child.list.length < 1) {
+                    depth = 0;
+                    return;
+                }
+                else {
+                    depth++;
+                    child.list.forEach(function (current) {
+                        return checkForChildren(current, depth);
+                    });
+                }
+            }
+            scenegraph += TOP;
+            __spreadArray([], _this.children.list, true).forEach(function (current) {
+                (checkForChildren(current, depth));
+            });
+            scenegraph += BOTTOM;
+            console.log(scenegraph);
+            console.log(TOP.length, BOTTOM.length);
         });
     };
     GameScene.prototype.preload = function () {

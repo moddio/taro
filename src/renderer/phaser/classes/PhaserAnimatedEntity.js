@@ -18,6 +18,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     function PhaserAnimatedEntity(scene, entity, key) {
         var _this = _super.call(this, entity) || this;
         _this.key = key;
+        _this.scene = scene;
         var bounds = entity._bounds2d;
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
         sprite.setDisplaySize(bounds.x, bounds.y);

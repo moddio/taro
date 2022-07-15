@@ -69,6 +69,7 @@ var Item = IgeEntityPhysics.extend({
 			ige.server.totalItemsCreated++;
 		} else if (ige.isClient) {
 			// must create Phaser item before emitting init events
+			this.updateLayer();
 			ige.client.emit('create-item', this);
 
 			self._hidden = self._stats.isHidden;
@@ -197,7 +198,10 @@ var Item = IgeEntityPhysics.extend({
 		self.show();
 		this.emit('show');
 		// leave because it is taro not renderer
-		self.updateLayer();
+		if (this.getOwnerUnit !== ige.client.myPlayer.selectedUnit) {
+
+			self.updateLayer();
+		}
 		// leave because it updates state for animation
 		IgeEntity.prototype.updateTexture.call(this);
 	},
@@ -884,6 +888,7 @@ var Item = IgeEntityPhysics.extend({
 									height: this._stats.currentBody.height
 								});
 							}
+
 						}
 						break;
 					case 'scale':

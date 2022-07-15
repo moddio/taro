@@ -83,6 +83,9 @@ var Projectile = IgeEntityPhysics.extend({
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
 
+			// self.addComponent(AttributeBarsContainerComponent);
+			self.updateLayer();
+
 			ige.client.emit('create-projectile', this);
 
 			if (currentState) {
@@ -91,13 +94,12 @@ var Projectile = IgeEntityPhysics.extend({
 			}
 			self.drawBounds(false);
 
-			// self.addComponent(AttributeBarsContainerComponent);
-			self.updateLayer();
 			self.updateTexture();
+
 			//mouseEvents for sandbox mode only, but sandbox not use pixi
 			self.mouseEvents();
-
 		}
+
 		this.playEffect('create');
 
 		// add behaviour also have isClient block so we will have to execute this in both client and server

@@ -4,7 +4,7 @@ class PhaserProjectile extends PhaserAnimatedEntity {
 	protected entity: Projectile;
 
 	constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: Projectile
 	) {
 		super(scene, entity, `projectile/${entity._stats.type}`);
@@ -17,6 +17,10 @@ class PhaserProjectile extends PhaserAnimatedEntity {
 		);
 
 		this.gameObject.setName('projectile');
+
+		console.log(`layer: ${entity._layer}, depth: ${entity._depth}`);
+		scene.layers[entity._layer].add(this.gameObject)
+		this.gameObject.setDepth(entity._depth);
 	}
 
 	protected transform (data: {
