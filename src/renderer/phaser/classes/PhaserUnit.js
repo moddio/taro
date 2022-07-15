@@ -21,9 +21,6 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
-        var label = _this.label = scene.add.text(0, 0, 'cccccc');
-        label.setOrigin(0.5);
-        _this.gameObject.add(label);
         Object.assign(_this.evtListeners, {
             follow: entity.on('follow', _this.follow, _this),
             'stop-follow': entity.on('stop-follow', _this.stopFollow, _this),
@@ -51,9 +48,12 @@ var PhaserUnit = /** @class */ (function (_super) {
     PhaserUnit.prototype.size = function (data) {
         _super.prototype.size.call(this, data);
         var sprite = this.sprite;
-        this.label.y = (-25 - (sprite.displayHeight + sprite.displayWidth) / 4);
-        if (this.attributesContainer)
+        if (this.label) {
+            this.label.y = (-25 - (sprite.displayHeight + sprite.displayWidth) / 4);
+        }
+        if (this.attributesContainer) {
             this.attributesContainer.y = 25 + (sprite.displayHeight + sprite.displayWidth) / 4;
+        }
     };
     PhaserUnit.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);
@@ -70,9 +70,17 @@ var PhaserUnit = /** @class */ (function (_super) {
         console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
         this.scene.cameras.main.stopFollow();
     };
+    PhaserUnit.prototype.getLabel = function () {
+        if (!this.label) {
+            var label = this.label = this.scene.add.text(0, 0, 'cccccc');
+            label.setOrigin(0.5);
+            this.gameObject.add(label);
+        }
+        return this.label;
+    };
     PhaserUnit.prototype.updateLabel = function (data) {
         console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
-        var label = this.label;
+        var label = this.getLabel();
         label.visible = true;
         label.setFontFamily('Verdana');
         label.setFontSize(16);
@@ -87,11 +95,11 @@ var PhaserUnit = /** @class */ (function (_super) {
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
-        this.label.visible = true;
+        this.getLabel().visible = true;
     };
     PhaserUnit.prototype.hideLabel = function () {
         console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
-        this.label.visible = false;
+        this.getLabel().visible = false;
     };
     PhaserUnit.prototype.fadingText = function (data) {
         console.log('PhaserUnit fading-text', this.entity.id()); // TODO remove
@@ -102,16 +110,20 @@ var PhaserUnit = /** @class */ (function (_super) {
             color: data.color || '#fff'
         }, this);
     };
-    PhaserUnit.prototype.renderAttributes = function (data) {
-        var _this = this;
-        console.log('PhaserUnit render-attributes', data); // TODO remove
+    PhaserUnit.prototype.getAttributesContainer = function () {
         if (!this.attributesContainer) {
-            // creating attributeContainer on the fly,
-            // only for units that have attribute bars
             var sprite = this.sprite;
             this.attributesContainer = this.scene.add.container(0, 25 + (sprite.displayHeight + sprite.displayWidth) / 4);
             this.gameObject.add(this.attributesContainer);
         }
+        return this.attributesContainer;
+    };
+    PhaserUnit.prototype.renderAttributes = function (data) {
+        var _this = this;
+        console.log('PhaserUnit render-attributes', data); // TODO remove
+        // creating attributeContainer on the fly,
+        // only for units that have attribute bars
+        this.getAttributesContainer();
         var attributes = this.attributes;
         // release all existing attribute bars
         attributes.forEach(function (a) {

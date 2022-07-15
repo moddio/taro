@@ -20,10 +20,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			[ this.sprite ]
 		);
 
-		const label = this.label = scene.add.text(0, 0, 'cccccc');
-		label.setOrigin(0.5);
-		this.gameObject.add(label);
-
 		Object.assign(this.evtListeners, {
 			follow: entity.on('follow', this.follow, this),
 			'stop-follow': entity.on('stop-follow', this.stopFollow, this),
@@ -62,8 +58,12 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	): void {
 		super.size(data);
 		const sprite = this.sprite;
-		this.label.y = (-25 - (sprite.displayHeight + sprite.displayWidth) / 4);
-		if (this.attributesContainer) this.attributesContainer.y = 25 + (sprite.displayHeight + sprite.displayWidth) / 4;
+		if (this.label) {
+			this.label.y = (-25 - (sprite.displayHeight + sprite.displayWidth) / 4);
+		}
+		if (this.attributesContainer) {
+			this.attributesContainer.y = 25 + (sprite.displayHeight + sprite.displayWidth) / 4;
+		}
 	}
 
 	protected scale (data: {
@@ -89,13 +89,22 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.scene.cameras.main.stopFollow();
 	}
 
+	private getLabel (): Phaser.GameObjects.Text {
+		if (!this.label) {
+			const label = this.label = this.scene.add.text(0, 0, 'cccccc');
+			label.setOrigin(0.5);
+			this.gameObject.add(label);
+		}
+		return this.label;
+	}
+
 	private updateLabel (data: {
 		text? : string;
 		bold?: boolean;
 		color?: string;
 	}): void {
 		console.log('PhaserUnit update-label', this.entity.id()); // TODO remove
-		const label = this.label;
+		const label = this.getLabel();
 		label.visible = true;
 
 		label.setFontFamily('Verdana');
@@ -115,12 +124,12 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 	private showLabel (): void {
 		console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
-		this.label.visible = true;
+		this.getLabel().visible = true;
 	}
 
 	private hideLabel (): void {
 		console.log('PhaserUnit hide-label', this.entity.id()); // TODO remove
-		this.label.visible = false;
+		this.getLabel().visible = false;
 	}
 
 	private fadingText (data: {
@@ -136,13 +145,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}, this);
 	}
 
-	private renderAttributes (data: {
-		attrs: AttributeData[]
-	}): void {
-		console.log('PhaserUnit render-attributes', data); // TODO remove
+	getAttributesContainer(): Phaser.GameObjects.Container {
 		if (!this.attributesContainer) {
-			// creating attributeContainer on the fly,
-			// only for units that have attribute bars
 			const sprite = this.sprite;
 			this.attributesContainer = this.scene.add.container(
 				0,
@@ -150,6 +154,16 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			);
 			this.gameObject.add(this.attributesContainer);
 		}
+		return this.attributesContainer;
+	}
+
+	private renderAttributes (data: {
+		attrs: AttributeData[]
+	}): void {
+		console.log('PhaserUnit render-attributes', data); // TODO remove
+		// creating attributeContainer on the fly,
+		// only for units that have attribute bars
+		this.getAttributesContainer();
 		const attributes = this.attributes;
 		// release all existing attribute bars
 		attributes.forEach((a) => {
