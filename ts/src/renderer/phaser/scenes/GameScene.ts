@@ -1,4 +1,6 @@
 class GameScene extends PhaserScene {
+	defaultZoom: number;
+	maxWidth: number;
 
 	constructor() {
 		super({ key: 'Game' });
@@ -29,24 +31,31 @@ class GameScene extends PhaserScene {
 			console.log(Phaser.Scale.Events.RESIZE, // TODO remove
 				gameSize, baseSize, displaySize, previousWidth, previousHeight);
 
-			camera.setSize(
-				gameSize.width,
-				window.innerHeight
-			);
+			if (gameSize.height > gameSize.width) {
+				console.log('height>width');
+				camera.zoom = gameSize.height / (ige.game.data.settings.camera.zoom.default *2);
+			}
+			else {
+				console.log('width>height');
+				camera.zoom = gameSize.width / (ige.game.data.settings.camera.zoom.default *2);
+			}
+
+			console.log('camera zoom', camera.zoom);
 		});
 
 		ige.client.on('zoom', (height: number) => {
 			console.log('GameScene zoom event', height); // TODO remove
 
-			camera.zoomTo(
+			/*camera.zoomTo(
+				//this.defaultZoom * (ige.game.data.settings.camera.zoom.default / height),
 				this.scale.height / height,
 				1000,
 				Phaser.Math.Easing.Quadratic.Out,
 				true
-			);
+			);*/
 
-			this.scale.gameSize.setMin(0, height);
-			this.scale.gameSize.setMax(Number.MAX_VALUE, height);
+			/*this.scale.gameSize.setMin(0, height);
+			this.scale.gameSize.setMax(Number.MAX_VALUE, height);*/
 		});
 
 		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
@@ -187,7 +196,17 @@ class GameScene extends PhaserScene {
 			map.width * map.tileWidth / 2 * scaleFactor.x,
 			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
-		camera.zoom = this.scale.width / 800;
+		//console.log('this.scale.width', this.scale.width);
+		//camera.zoom = this.scale.width / data.settings.camera.zoom.default;
+		if (this.scale.height > this.scale.width) {
+			console.log('height>width');
+			camera.zoom = this.scale.height / (ige.game.data.settings.camera.zoom.default *2);
+		}
+		else {
+			console.log('width>height');
+			camera.zoom = this.scale.width / (ige.game.data.settings.camera.zoom.default *2);
+		}
+		console.log('camera zoom create', camera.zoom);
 	}
 
 	private patchMapData (map: typeof ige.game.data.map): typeof map {

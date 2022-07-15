@@ -34,13 +34,27 @@ var GameScene = /** @class */ (function (_super) {
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
-            camera.setSize(gameSize.width, window.innerHeight);
+            if (gameSize.height > gameSize.width) {
+                console.log('height>width');
+                camera.zoom = gameSize.height / (ige.game.data.settings.camera.zoom.default * 2);
+            }
+            else {
+                console.log('width>height');
+                camera.zoom = gameSize.width / (ige.game.data.settings.camera.zoom.default * 2);
+            }
+            console.log('camera zoom', camera.zoom);
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out, true);
-            _this.scale.gameSize.setMin(0, height);
-            _this.scale.gameSize.setMax(Number.MAX_VALUE, height);
+            /*camera.zoomTo(
+                //this.defaultZoom * (ige.game.data.settings.camera.zoom.default / height),
+                this.scale.height / height,
+                1000,
+                Phaser.Math.Easing.Quadratic.Out,
+                true
+            );*/
+            /*this.scale.gameSize.setMin(0, height);
+            this.scale.gameSize.setMax(Number.MAX_VALUE, height);*/
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
@@ -141,7 +155,17 @@ var GameScene = /** @class */ (function (_super) {
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
-        camera.zoom = this.scale.width / 800;
+        //console.log('this.scale.width', this.scale.width);
+        //camera.zoom = this.scale.width / data.settings.camera.zoom.default;
+        if (this.scale.height > this.scale.width) {
+            console.log('height>width');
+            camera.zoom = this.scale.height / (ige.game.data.settings.camera.zoom.default * 2);
+        }
+        else {
+            console.log('width>height');
+            camera.zoom = this.scale.width / (ige.game.data.settings.camera.zoom.default * 2);
+        }
+        console.log('camera zoom create', camera.zoom);
     };
     GameScene.prototype.patchMapData = function (map) {
         /**
