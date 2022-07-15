@@ -4,7 +4,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 	private readonly bubble: Phaser.GameObjects.Graphics;
 	private readonly textObject: Phaser.GameObjects.Text;
 
-	private readonly offset: number;
+	private offset: number;
 
 	private fadeTimerEvent: Phaser.Time.TimerEvent;
 	private fadeTween: Phaser.Tweens.Tween;
@@ -12,7 +12,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 	constructor(scene: Phaser.Scene, chatText: string, private unit: PhaserUnit) {
 
 		super(scene);
-		this.offset = unit.sprite.displayHeight + unit.label.displayHeight + 4;
+		this.offset =  25 + (this.unit.sprite.displayHeight + this.unit.sprite.displayWidth) / 4 + this.unit.label.displayHeight * 2;
 
 		//draw text
 		const text = this.textObject = scene.add.text(
@@ -65,6 +65,8 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.drawBubble();
 
 		this.updateScale();
+		this.offset =  25 + (this.unit.sprite.displayHeight + this.unit.sprite.displayWidth) / 4 + this.unit.label.displayHeight * 2;
+		this.y = this.unit.gameObject.y - this.offset;
 		this.alpha = 1;
 
 		this.resetFadeOut ();

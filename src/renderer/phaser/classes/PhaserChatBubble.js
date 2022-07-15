@@ -18,7 +18,7 @@ var PhaserChatBubble = /** @class */ (function (_super) {
     function PhaserChatBubble(scene, chatText, unit) {
         var _this = _super.call(this, scene) || this;
         _this.unit = unit;
-        _this.offset = unit.sprite.displayHeight + unit.label.displayHeight + 4;
+        _this.offset = 25 + (_this.unit.sprite.displayHeight + _this.unit.sprite.displayWidth) / 4 + _this.unit.label.displayHeight * 2;
         //draw text
         var text = _this.textObject = scene.add.text(0, 0, _this.trimText(chatText), {
             font: '600 24px Arial',
@@ -54,6 +54,8 @@ var PhaserChatBubble = /** @class */ (function (_super) {
         this.bubble.clear();
         this.drawBubble();
         this.updateScale();
+        this.offset = 25 + (this.unit.sprite.displayHeight + this.unit.sprite.displayWidth) / 4 + this.unit.label.displayHeight * 2;
+        this.y = this.unit.gameObject.y - this.offset;
         this.alpha = 1;
         this.resetFadeOut();
         this.fadeOut();
