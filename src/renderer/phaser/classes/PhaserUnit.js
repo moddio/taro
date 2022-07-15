@@ -47,13 +47,18 @@ var PhaserUnit = /** @class */ (function (_super) {
     };
     PhaserUnit.prototype.size = function (data) {
         _super.prototype.size.call(this, data);
-        var sprite = this.sprite;
         if (this.label) {
-            this.label.y = -25 - (sprite.displayHeight + sprite.displayWidth) / 4;
+            this.updateLabelPosition();
         }
         if (this.attributesContainer) {
-            this.attributesContainer.y = 25 + (sprite.displayHeight + sprite.displayWidth) / 4;
+            this.updateAttributesPosition();
         }
+    };
+    PhaserUnit.prototype.updateLabelPosition = function () {
+        this.label.y = -25 - (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
+    };
+    PhaserUnit.prototype.updateAttributesPosition = function () {
+        this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
     };
     PhaserUnit.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);
@@ -90,8 +95,7 @@ var PhaserUnit = /** @class */ (function (_super) {
             .addStrokeToNameAndAttributes !== false ? 4 : 0;
         label.setStroke('#000', strokeThickness);
         label.setText(data.text || '');
-        var sprite = this.sprite;
-        label.y = -25 - (sprite.displayHeight + sprite.displayWidth) / 4;
+        this.updateLabelPosition();
     };
     PhaserUnit.prototype.showLabel = function () {
         console.log('PhaserUnit show-label', this.entity.id()); // TODO remove
@@ -112,8 +116,8 @@ var PhaserUnit = /** @class */ (function (_super) {
     };
     PhaserUnit.prototype.getAttributesContainer = function () {
         if (!this.attributesContainer) {
-            var sprite = this.sprite;
-            this.attributesContainer = this.scene.add.container(0, 25 + (sprite.displayHeight + sprite.displayWidth) / 4);
+            this.attributesContainer = this.scene.add.container(0, 0);
+            this.updateAttributesPosition();
             this.gameObject.add(this.attributesContainer);
         }
         return this.attributesContainer;

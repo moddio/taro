@@ -12,7 +12,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 	constructor(scene: Phaser.Scene, chatText: string, private unit: PhaserUnit) {
 
 		super(scene);
-		this.offset =  25 + (this.unit.sprite.displayHeight + this.unit.sprite.displayWidth) / 4 + this.unit.label.displayHeight * 2;
+		this.updateOffset();
 
 		//draw text
 		const text = this.textObject = scene.add.text(
@@ -65,7 +65,7 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		this.drawBubble();
 
 		this.updateScale();
-		this.offset =  25 + (this.unit.sprite.displayHeight + this.unit.sprite.displayWidth) / 4 + this.unit.label.displayHeight * 2;
+		this.updateOffset();
 		this.y = this.unit.gameObject.y - this.offset;
 		this.alpha = 1;
 
@@ -134,6 +134,10 @@ class PhaserChatBubble extends Phaser.GameObjects.Container {
 		bubble.setDepth(0);
 
 		this.setVisible(true);
+	}
+
+	private updateOffset (): void {
+		this.offset =  25 + (this.unit.sprite.displayHeight + this.unit.sprite.displayWidth) / 4 + this.unit.label.displayHeight * 2;
 	}
 
 	updatePosition (x: number, y: number): void {

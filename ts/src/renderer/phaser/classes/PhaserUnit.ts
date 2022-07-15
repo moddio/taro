@@ -57,13 +57,20 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}
 	): void {
 		super.size(data);
-		const sprite = this.sprite;
 		if (this.label) {
-			this.label.y = -25 - (sprite.displayHeight + sprite.displayWidth) / 4;
+			this.updateLabelPosition();
 		}
 		if (this.attributesContainer) {
-			this.attributesContainer.y = 25 + (sprite.displayHeight + sprite.displayWidth) / 4;
+			this.updateAttributesPosition();
 		}
+	}
+
+	private updateLabelPosition (): void {
+		this.label.y = -25 - (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
+	}
+
+	private updateAttributesPosition (): void {
+		this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
 	}
 
 	protected scale (data: {
@@ -115,11 +122,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		const strokeThickness = ige.game.data.settings
 			.addStrokeToNameAndAttributes !== false ? 4 : 0;
 		label.setStroke('#000', strokeThickness);
-
 		label.setText(data.text || '');
-
-		const sprite = this.sprite;
-		label.y = -25 - (sprite.displayHeight + sprite.displayWidth) / 4;
+		this.updateLabelPosition();
 	}
 
 	private showLabel (): void {
@@ -145,13 +149,10 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}, this);
 	}
 
-	private getAttributesContainer(): Phaser.GameObjects.Container {
+	private getAttributesContainer (): Phaser.GameObjects.Container {
 		if (!this.attributesContainer) {
-			const sprite = this.sprite;
-			this.attributesContainer = this.scene.add.container(
-				0,
-				25 + (sprite.displayHeight + sprite.displayWidth) / 4
-			);
+			this.attributesContainer = this.scene.add.container(0,	0);
+			this.updateAttributesPosition();
 			this.gameObject.add(this.attributesContainer);
 		}
 		return this.attributesContainer;
