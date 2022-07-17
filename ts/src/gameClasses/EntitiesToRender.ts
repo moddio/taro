@@ -106,9 +106,6 @@ class EntitiesToRender {
 					}
 
 					entity.transformTexture(x, y, rotate);
-
-					// handle animation
-					ige.client.emit('playAnimation', {entity: entity, tickDelta: tickDelta});
 				}
 			}
 		}

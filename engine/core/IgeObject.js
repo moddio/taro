@@ -1040,12 +1040,20 @@ var IgeObject = IgeEventingClass.extend({
 	 */
 	clone: function (options) {
 		// Make sure we have an options object
-		if (options === undefined) { options = {}; }
+		if (options === undefined) {
+			options = {};
+		}
 
 		// Set some default option values
-		if (options.id === undefined) { options.id = false; }
-		if (options.mount === undefined) { options.mount = false; }
-		if (options.transform === undefined) { options.transform = true; }
+		if (options.id === undefined) {
+			options.id = false;
+		}
+		if (options.mount === undefined) {
+			options.mount = false;
+		}
+		if (options.transform === undefined) {
+			options.transform = true;
+		}
 
 		// Loop all children and clone them, then return cloned version of ourselves
 		var newObject = eval(this.stringify(options));
@@ -1545,25 +1553,9 @@ var IgeObject = IgeEventingClass.extend({
 		if (this._alive) {
 			if (ige.isClient && !this._inView) return;
 
-			// ige.client.tickAndUpdateData[this.id()] = this;
-			// if(ige.isClient){
-			// 	if (!ige.client.countingEntities) {
-			// 		ige.client.countingEntities = {};
-			// 	}
-			// 	if (this._category === undefined) {
-			// 		this._category = 0;
-			// 	}
-			// 	if(ige.client.countingEntities[this._category] ==undefined){
-			// 		ige.client.countingEntities[this._category] = {};
-			// 	}
-			// 	if (ige.client.countingEntities[this._category][this.id()] === undefined) {
-			// 		ige.client.countingEntities[this._category][this.id()] = 0;
-			// 	}
-			// 	else {
-			// 		ige.client.countingEntities[this._category][this.id()] += 1;
-			// 	}
-			// }
-			if (this._newBorn) { this._newBorn = false; }
+			if (this._newBorn) {
+				this._newBorn = false;
+			}
 			var arr = this._children;
 			var arrCount;
 			var ts; var td;
@@ -2073,7 +2065,9 @@ var IgeObject = IgeEventingClass.extend({
 	 */
 	stringify: function (options) {
 		// Make sure we have an options object
-		if (options === undefined) { options = {}; }
+		if (options === undefined) {
+			options = {};
+		}
 
 		var str = `new ${this.classId()}()`;
 
@@ -2103,7 +2097,9 @@ var IgeObject = IgeEventingClass.extend({
 	 */
 	_stringify: function (options) {
 		// Make sure we have an options object
-		if (options === undefined) { options = {}; }
+		if (options === undefined) {
+			options = {};
+		}
 
 		var str = ''; var i;
 
@@ -2146,4 +2142,6 @@ var IgeObject = IgeEventingClass.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeObject; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeObject;
+}

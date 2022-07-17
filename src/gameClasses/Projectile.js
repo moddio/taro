@@ -91,7 +91,6 @@ var Projectile = IgeEntityPhysics.extend({
 			}
 			self.drawBounds(false);
 
-			// self.addComponent(AttributeBarsContainerComponent);
 			self.updateLayer();
 			self.updateTexture();
 			//mouseEvents for sandbox mode only, but sandbox not use pixi
@@ -116,12 +115,6 @@ var Projectile = IgeEntityPhysics.extend({
 		if (ige.physics && ige.physics.engine != 'CRASH') {
 			this.processBox2dQueue();
 		}
-	},
-
-	// apply texture based on state
-	updateTexture: function () {
-		var self = this;
-		IgeEntity.prototype.updateTexture.call(this);
 	},
 
 	streamUpdateData: function (queuedData) {

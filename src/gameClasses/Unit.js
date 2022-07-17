@@ -71,7 +71,7 @@ var Unit = IgeEntityPhysics.extend({
 
 		if (ige.isClient) {
 			this.addToRenderer(defaultAnimation && (defaultAnimation.frames[0] - 1));
-			this.transformTexture(this._translate.x, this._translate.y);
+			this.transformTexture(this._translate.x, this._translate.y, 0);
 
 			ige.client.emit('create-unit', this);
 		}
@@ -153,8 +153,8 @@ var Unit = IgeEntityPhysics.extend({
 		// for now render it if at least one of unit bar is selected
 		var shouldRender = Array.isArray(attribute.isVisible) && (
 			(ownerPlayer.isHostileTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarHostile') > -1) ||
-            (ownerPlayer.isFriendlyTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarFriendly') > -1) ||
-            (ownerPlayer.isNeutralTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarNeutral') > -1)
+			(ownerPlayer.isFriendlyTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarFriendly') > -1) ||
+			(ownerPlayer.isNeutralTo(ige.client.myPlayer) && attribute.isVisible.indexOf('unitBarNeutral') > -1)
 		);
 
 		if (shouldRender) {
@@ -949,7 +949,7 @@ var Unit = IgeEntityPhysics.extend({
         @param item can be both item instance or itemData json. This is to handle both new items being created from itemData, or when unit picks up an existing item instance.
         @param slotIndex force-assign item into this inventory slot. usually assigned from when buying a shop item with replaceItemInTargetSlot (optional)
         @return {boolean} return true if unit was able to pickup/use item. return false otherwise.
-    */
+	 */
 	pickUpItem: function (item) {
 		var self = this;
 
@@ -1063,14 +1063,14 @@ var Unit = IgeEntityPhysics.extend({
 	canCarryItem: function (itemData) {
 		return itemData && (
 			(!itemData.carriedBy || itemData.carriedBy.length == 0) ||// carried by everyone
-            (itemData.carriedBy && itemData.carriedBy.indexOf(this._stats.type) > -1) // carried by specific unit
+			(itemData.carriedBy && itemData.carriedBy.indexOf(this._stats.type) > -1) // carried by specific unit
 		);
 	},
 
 	canUseItem: function (itemData) {
 		return itemData && (
 			(!itemData.canBeUsedBy || itemData.canBeUsedBy.length == 0) || // used by everyone
-            (itemData.canBeUsedBy && itemData.canBeUsedBy.indexOf(this._stats.type) > -1) // used by specific unit
+			(itemData.canBeUsedBy && itemData.canBeUsedBy.indexOf(this._stats.type) > -1) // used by specific unit
 		);
 	},
 
@@ -1084,24 +1084,24 @@ var Unit = IgeEntityPhysics.extend({
 		// label should be hidden
 		var hideLabel = (
 			ownerPlayer &&
-            ownerPlayer.isHostileTo(ige.client.myPlayer) &&
-            self._stats.isNameLabelHidden
+			ownerPlayer.isHostileTo(ige.client.myPlayer) &&
+			self._stats.isNameLabelHidden
 		) || (
 			ownerPlayer &&
-                ownerPlayer.isFriendlyTo(ige.client.myPlayer) &&
-                self._stats.isNameLabelHiddenToFriendly
+			ownerPlayer.isFriendlyTo(ige.client.myPlayer) &&
+			self._stats.isNameLabelHiddenToFriendly
 		) || (
 			ownerPlayer &&
-                ownerPlayer.isNeutralTo(ige.client.myPlayer) &&
-                self._stats.isNameLabelHiddenToNeutral
+			ownerPlayer.isNeutralTo(ige.client.myPlayer) &&
+			self._stats.isNameLabelHiddenToNeutral
 		) || (
-		// for AI x players we ont have playerTypeData as they dont have playerTypeId fields
+			// for AI x players we ont have playerTypeData as they dont have playerTypeId fields
 			playerTypeData
 				? playerTypeData.showNameLabel === false
 				: true
 		) || (
 			!ige.client.myPlayer ||
-                ige.client.myPlayer._stats.playerJoined === false
+			ige.client.myPlayer._stats.playerJoined === false
 		);
 
 		if (hideLabel) {
@@ -1136,19 +1136,19 @@ var Unit = IgeEntityPhysics.extend({
 		// label should be hidden
 		var hideLabel = (
 			ownerPlayer &&
-            ownerPlayer.isHostileTo(ige.client.myPlayer) &&
-            self._stats.isNameLabelHidden
+			ownerPlayer.isHostileTo(ige.client.myPlayer) &&
+			self._stats.isNameLabelHidden
 		) || (
 			ownerPlayer &&
-                ownerPlayer.isFriendlyTo(ige.client.myPlayer) &&
-                self._stats.isNameLabelHiddenToFriendly
+			ownerPlayer.isFriendlyTo(ige.client.myPlayer) &&
+			self._stats.isNameLabelHiddenToFriendly
 		) || (
 			ownerPlayer &&
-                ownerPlayer.isNeutralTo(ige.client.myPlayer) &&
-                self._stats.isNameLabelHiddenToNeutral
+			ownerPlayer.isNeutralTo(ige.client.myPlayer) &&
+			self._stats.isNameLabelHiddenToNeutral
 		) || (
 			!ige.client.myPlayer ||
-                ige.client.myPlayer._stats.playerJoined === false
+			ige.client.myPlayer._stats.playerJoined === false
 		);
 
 		if (hideLabel) {
@@ -1268,14 +1268,14 @@ var Unit = IgeEntityPhysics.extend({
 			var targetsAffected = damageData.targetsAffected;
 			if (
 				sourcePlayer && targetPlayer && sourcePlayer != targetPlayer &&
-                (
-                	targetsAffected == undefined || // attacks everything
-                    (targetsAffected.constructor === Array && targetsAffected.length == 0) || // attacks everything
-                    targetsAffected.includes('everything') || // attacks everything - obsolete, but included for backward compatibility
-                    (targetsAffected.includes('hostile') && sourcePlayer.isHostileTo(targetPlayer)) ||
-                    (targetsAffected.includes('friendly') && sourcePlayer.isFriendlyTo(targetPlayer)) ||
-                    (targetsAffected.includes('neutral') && sourcePlayer.isNeutralTo(targetPlayer))
-                )
+				(
+					targetsAffected == undefined || // attacks everything
+					(targetsAffected.constructor === Array && targetsAffected.length == 0) || // attacks everything
+					targetsAffected.includes('everything') || // attacks everything - obsolete, but included for backward compatibility
+					(targetsAffected.includes('hostile') && sourcePlayer.isHostileTo(targetPlayer)) ||
+					(targetsAffected.includes('friendly') && sourcePlayer.isFriendlyTo(targetPlayer)) ||
+					(targetsAffected.includes('neutral') && sourcePlayer.isNeutralTo(targetPlayer))
+				)
 			) {
 				isVulnerable = true;
 			}
@@ -1515,11 +1515,6 @@ var Unit = IgeEntityPhysics.extend({
 			return;
 		}
 
-		// var attributeBarContainer = self.getAttributeBarContainer();
-		// if (attributeBarContainer) {
-		//     attributeBarContainer.setContainerWidth(self.width());
-		// }
-
 		IgeEntity.prototype.updateTexture.call(this);
 	},
 
@@ -1667,10 +1662,10 @@ var Unit = IgeEntityPhysics.extend({
 	},
 
 	/**
-     * Called every frame by the engine when this entity is mounted to the
-     * scenegraph.
-     * @param ctx The canvas context to render to.
-     */
+	 * Called every frame by the engine when this entity is mounted to the
+	 * scenegraph.
+	 * @param ctx The canvas context to render to.
+	 */
 	_behaviour: function (ctx) {
 		var self = this;
 
@@ -1697,9 +1692,9 @@ var Unit = IgeEntityPhysics.extend({
 				if (ige.isServer) {
 					// rotate unit
 					if (self.angleToTarget != undefined && !isNaN(self.angleToTarget) &&
-                        this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor &&
-                        this._stats.currentBody && !this._stats.currentBody.fixedRotation &&
-                        (this._stats.isStunned == undefined || this._stats.isStunned != true)
+						this._stats.controls && this._stats.controls.mouseBehaviour.rotateToFaceMouseCursor &&
+						this._stats.currentBody && !this._stats.currentBody.fixedRotation &&
+						(this._stats.isStunned == undefined || this._stats.isStunned != true)
 					) {
 						if (this._stats.controls.absoluteRotation) {
 							self.rotateTo(0, 0, ownerPlayer.absoluteAngle);
@@ -1717,10 +1712,10 @@ var Unit = IgeEntityPhysics.extend({
 						( // either unit is AI unit that is currently moving
 							ownerPlayer._stats.controlledBy != 'human' && self.isMoving
 						) ||
-                        ( // or human player's unit that's "following cursor"
-                        	ownerPlayer._stats.controlledBy == 'human' && self._stats.controls &&
-                            self._stats.controls.movementControlScheme == 'followCursor' && self.distanceToTarget > this.width()
-                        )
+						( // or human player's unit that's "following cursor"
+							ownerPlayer._stats.controlledBy == 'human' && self._stats.controls &&
+							self._stats.controls.movementControlScheme == 'followCursor' && self.distanceToTarget > this.width()
+						)
 					) {
 						if (self.angleToTarget != undefined && !isNaN(self.angleToTarget)) {
 							vector = {
@@ -1835,6 +1830,15 @@ var Unit = IgeEntityPhysics.extend({
 	},
 
 	destroy: function () {
+		if (this.attributeBars) {
+			for (var attributeBarInfo of this.attributeBars) {
+				var unitBarId = attributeBarInfo.id;
+				var unitBar = ige.$(unitBarId);
+				unitBar.destroy();
+			}
+			this.attributeBars.length = 0;
+			this.attributeBars = null;
+		}
 		this.playEffect('destroy');
 		IgeEntityPhysics.prototype.destroy.call(this);
 	}

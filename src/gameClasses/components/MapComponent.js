@@ -2,36 +2,20 @@ var MapComponent = IgeEntity.extend({
 	classId: 'MapComponent',
 	componentId: 'map',
 
-	init: function (entity, options) {
-		var self = this;
-		self.minimapLayers = [];
-		self.layersZIndex = {
-			floor: 0,
-			floor2: 1,
-			walls: 3,
-			trees: 4
-		};
+	init: function () {
+		//
 	},
 
 	load: function (data) {
 		var self = this;
-
-		if (data.layers) {
-			for (var i = 0; i < data.layers.length; i++) {
-				var layer = data.layers[i];
-			}
-		}
 
 		self.data = data;
 
 		if (ige.isServer) {
 			ige.addComponent(IgeTiledComponent)
 				.tiled.loadJson(self.data, function (layerArray, layersById) {
-					self.minimapLayers = _.cloneDeep(layerArray);
 
 					ige.physics.staticsFromMap(layersById.walls);
-
-					var mapArray = layersById.floor.map._gameData;
 
 					self.createRegions();
 				});
@@ -40,8 +24,7 @@ var MapComponent = IgeEntity.extend({
 			$.when(ige.client.igeEngineStarted).done(function () {
 				ige.addComponent(IgeTiledComponent)
 					.tiled.loadJson(self.data, function (IgeLayerArray, IgeLayersById) {
-						ige.pixi.loadMapJson(self.data, function (layerArray, layersById) {
-							self.minimapLayers = _.cloneDeep(layerArray);
+						ige.pixi.loadMapJson(self.data, function () {
 
 							if (ige.physics) {
 								ige.physics.staticsFromMap(IgeLayersById.walls);
