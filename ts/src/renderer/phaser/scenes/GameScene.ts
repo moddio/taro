@@ -95,8 +95,12 @@ class GameScene extends PhaserScene {
 			let scenegraph = '';
 			const TOP = `\n\u250c${'\u2500'.repeat(57)}\u2510`;
 			const BOTTOM = `\n\u2514${'\u2500'.repeat(57)}\u2518\n`;
+			
 			function SPACE4(depth: number): string {
 				return '\u2502    '.repeat(depth);
+			}
+			function RETURN(depth: number): string {
+				return '\n' + SPACE4(depth) + ' '.repeat(58 - SPACE4(depth).length) + '\u2502';
 			}
 			let depth = 0;
 
@@ -110,12 +114,15 @@ class GameScene extends PhaserScene {
 				) | (
 					Phaser.GameObjects.Layer |
 					Phaser.GameObjects.Container
-					// Phaser.GameObjects.DisplayList
 				),
 				depth: number
 			) {
-				let line: string = `\n${depth === 0 ? (`\u251c\u2500\u2500${SPACE4(depth)}`) : (`${SPACE4(depth)}\u251c\u2500\u2500`)} ${child.type}  ${child.name || ''}`;
-				scenegraph += `${line}${' '.repeat(TOP.length - line.length - 1)}\u2502`;
+				let line: string = `\n${depth === 0 ? 
+					(`\u251c\u2500\u2500${SPACE4(depth)}`) :
+					(`${SPACE4(depth)}\u251c\u2500\u2500`)} ${child.type}  ${child.name || ''}`;
+				
+				// add two padding line (return) then content line
+				scenegraph += `${RETURN(depth + 1)}${line}${' '.repeat(TOP.length - line.length - 1)}\u2502`;
 
 				if (!child.list || child.list.length < 1) {
 					depth = 0;
@@ -127,6 +134,7 @@ class GameScene extends PhaserScene {
 					});
 				}
 			}
+			//build string
 			scenegraph += TOP;
 			[...this.children.list].forEach(current => {
 
@@ -135,7 +143,6 @@ class GameScene extends PhaserScene {
 			scenegraph += BOTTOM;
 
 			console.log(scenegraph);
-			console.log(TOP.length, BOTTOM.length);
 		});
 	}
 
