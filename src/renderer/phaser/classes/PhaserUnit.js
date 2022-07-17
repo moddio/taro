@@ -25,6 +25,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         label.setOrigin(0.5);
         _this.gameObject.add(label);
         _this.gameObject.setName('unit');
+        _this.layer();
         Object.assign(_this.evtListeners, {
             follow: entity.on('follow', _this.follow, _this),
             'stop-follow': entity.on('stop-follow', _this.stopFollow, _this),
@@ -36,9 +37,9 @@ var PhaserUnit = /** @class */ (function (_super) {
             'update-attribute': entity.on('update-attribute', _this.updateAttribute, _this),
             'render-chat-bubble': entity.on('render-chat-bubble', _this.renderChat, _this),
         });
-        console.log("layer: ".concat(entity._layer, ", depth: ").concat(entity._depth));
-        _this.scene.layers[entity._layer].add(_this.gameObject);
-        _this.gameObject.setDepth(entity._depth);
+        ige.client.on('zoom', function (height) {
+            _this.scaleElements(height);
+        });
         return _this;
     }
     PhaserUnit.prototype.transform = function (data) {

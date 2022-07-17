@@ -20,14 +20,13 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			[ this.sprite ]
 		);
 
-<<<<<<< HEAD
 		const label = this.label = scene.add.text(0, 0, 'cccccc');
 		label.setOrigin(0.5);
 		this.gameObject.add(label);
-		this.gameObject.setName('unit');
 
-=======
->>>>>>> phaser-renderer
+		this.gameObject.setName('unit');
+		this.layer();
+
 		Object.assign(this.evtListeners, {
 			follow: entity.on('follow', this.follow, this),
 			'stop-follow': entity.on('stop-follow', this.stopFollow, this),
@@ -40,15 +39,9 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			'render-chat-bubble': entity.on('render-chat-bubble', this.renderChat, this),
 		});
 
-<<<<<<< HEAD
-		console.log(`layer: ${entity._layer}, depth: ${entity._depth}`);
-		this.scene.layers[entity._layer].add(this.gameObject)
-		this.gameObject.setDepth(entity._depth);
-=======
 		ige.client.on('zoom', (height: number) => {
 			this.scaleElements(height);
 		});
->>>>>>> phaser-renderer
 	}
 
 	protected transform (data: {

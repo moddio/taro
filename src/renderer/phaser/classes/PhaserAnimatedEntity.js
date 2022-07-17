@@ -26,6 +26,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         Object.assign(_this.evtListeners, {
             'play-animation': entity.on('play-animation', _this.playAnimation, _this),
             size: entity.on('size', _this.size, _this),
+            layer: entity.on('layer', _this.layer, _this)
         });
         return _this;
     }
@@ -38,6 +39,11 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     };
     PhaserAnimatedEntity.prototype.size = function (data) {
         this.sprite.setDisplaySize(data.width, data.height);
+    };
+    PhaserAnimatedEntity.prototype.layer = function () {
+        console.log("layer: ".concat(this.entity._layer, ", depth: ").concat(this.entity._depth));
+        this.scene.layers[this.entity._layer].add(this.gameObject);
+        this.gameObject.setDepth(this.entity._depth);
     };
     PhaserAnimatedEntity.prototype.destroy = function () {
         this.sprite = null;

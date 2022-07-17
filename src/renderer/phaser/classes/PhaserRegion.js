@@ -19,6 +19,7 @@ var PhaserRegion = /** @class */ (function (_super) {
         var _this = _super.call(this, entity) || this;
         _this.gameObject = scene.add.graphics();
         _this.gameObject.setName('region');
+        scene.layers[4].add(_this.gameObject);
         _this.transform();
         return _this;
     }
