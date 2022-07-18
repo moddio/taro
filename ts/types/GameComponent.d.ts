@@ -18,8 +18,12 @@ declare class GameComponent extends IgeEntity {
 		map: {
 			tilesets: {
 				image: string;
+				margin: number;
 				name: string;
+				spacing: number;
 				tilecount: number;
+				tileheight: number;
+				tilewidth: number;
 			}[];
 			layers: {
 				data: number[];
@@ -32,7 +36,11 @@ declare class GameComponent extends IgeEntity {
 		itemTypes: Record<string, EntityData>;
 		settings: {
 			addStrokeToNameAndAttributes: boolean;
-			camera: any;
+			camera: {
+				zoom : {
+					default:number;
+				}
+			}
 		}
 	};
 

@@ -46,15 +46,7 @@ var GameScene = /** @class */ (function (_super) {
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            /*camera.zoomTo(
-                //this.defaultZoom * (ige.game.data.settings.camera.zoom.default / height),
-                this.scale.height / height,
-                1000,
-                Phaser.Math.Easing.Quadratic.Out,
-                true
-            );*/
-            /*this.scale.gameSize.setMin(0, height);
-            this.scale.gameSize.setMax(Number.MAX_VALUE, height);*/
+            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out, true);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
@@ -96,7 +88,16 @@ var GameScene = /** @class */ (function (_super) {
             this.loadEntity("item/".concat(type), data.itemTypes[type]);
         }
         data.map.tilesets.forEach(function (tileset) {
-            _this.load.image("tiles/".concat(tileset.name), _this.patchAssetUrl(tileset.image));
+            var key = "tiles/".concat(tileset.name);
+            _this.load.once("filecomplete-image-".concat(key), function () {
+                var texture = _this.textures.get(key);
+                var canvas = _this.extrude(tileset, texture.getSourceImage());
+                if (canvas) {
+                    _this.textures.remove(texture);
+                    _this.textures.addCanvas("extruded-".concat(key), canvas);
+                }
+            });
+            _this.load.image(key, _this.patchAssetUrl(tileset.image));
         });
         this.load.tilemapTiledJSON('map', this.patchMapData(data.map));
     };
@@ -138,12 +139,20 @@ var GameScene = /** @class */ (function (_super) {
         this.load.image(key, this.patchAssetUrl(cellSheet.url));
     };
     GameScene.prototype.create = function () {
+        var _this = this;
         ige.client.phaserLoaded.resolve();
         var map = this.make.tilemap({ key: 'map' });
         var data = ige.game.data;
         var scaleFactor = ige.scaleMapDetails.scaleFactor;
         data.map.tilesets.forEach(function (tileset) {
-            map.addTilesetImage(tileset.name, "tiles/".concat(tileset.name));
+            var key = "tiles/".concat(tileset.name);
+            var extrudedKey = "extruded-".concat(key);
+            if (_this.textures.exists(extrudedKey)) {
+                map.addTilesetImage(tileset.name, extrudedKey, tileset.tilewidth, tileset.tileheight, (tileset.margin || 0) + 1, (tileset.spacing || 0) + 2);
+            }
+            else {
+                map.addTilesetImage(tileset.name, key);
+            }
         });
         data.map.layers.forEach(function (layer) {
             if (layer.type !== 'tilelayer') {
@@ -186,6 +195,58 @@ var GameScene = /** @class */ (function (_super) {
             }
         });
         return map;
+    };
+    GameScene.prototype.extrude = function (tileset, sourceImage, extrusion, color) {
+        if (extrusion === void 0) { extrusion = 1; }
+        if (color === void 0) { color = '#ffffff00'; }
+        var tilewidth = tileset.tilewidth, tileheight = tileset.tileheight, _a = tileset.margin, margin = _a === void 0 ? 0 : _a, _b = tileset.spacing, spacing = _b === void 0 ? 0 : _b;
+        var width = sourceImage.width, height = sourceImage.height;
+        var cols = (width - 2 * margin + spacing) / (tilewidth + spacing);
+        var rows = (height - 2 * margin + spacing) / (tileheight + spacing);
+        if (!Number.isInteger(cols) || !Number.isInteger(rows)) {
+            console.warn('Non-integer number of rows or cols found while extruding. ' +
+                "Tileset \"".concat(tileset.name, "\" image doesn't match the specified parameters. ") +
+                'Double check your margin, spacing, tilewidth and tileheight.');
+            return null;
+        }
+        var newWidth = 2 * margin + (cols - 1) * spacing + cols * (tilewidth + 2 * extrusion);
+        var newHeight = 2 * margin + (rows - 1) * spacing + rows * (tileheight + 2 * extrusion);
+        var canvas = document.createElement('canvas');
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, newWidth, newHeight);
+        for (var row = 0; row < rows; row++) {
+            for (var col = 0; col < cols; col++) {
+                var srcX = margin + col * (tilewidth + spacing);
+                var srcY = margin + row * (tileheight + spacing);
+                var destX = margin + col * (tilewidth + spacing + 2 * extrusion);
+                var destY = margin + row * (tileheight + spacing + 2 * extrusion);
+                var tw = tilewidth;
+                var th = tileheight;
+                // Copy the tile.
+                ctx.drawImage(sourceImage, srcX, srcY, tw, th, destX + extrusion, destY + extrusion, tw, th);
+                // Extrude the top row.
+                ctx.drawImage(sourceImage, srcX, srcY, tw, 1, destX + extrusion, destY, tw, extrusion);
+                // Extrude the bottom row.
+                ctx.drawImage(sourceImage, srcX, srcY + th - 1, tw, 1, destX + extrusion, destY + extrusion + th, tw, extrusion);
+                // Extrude left column.
+                ctx.drawImage(sourceImage, srcX, srcY, 1, th, destX, destY + extrusion, extrusion, th);
+                // Extrude the right column.
+                ctx.drawImage(sourceImage, srcX + tw - 1, srcY, 1, th, destX + extrusion + tw, destY + extrusion, extrusion, th);
+                // Extrude the top left corner.
+                ctx.drawImage(sourceImage, srcX, srcY, 1, 1, destX, destY, extrusion, extrusion);
+                // Extrude the top right corner.
+                ctx.drawImage(sourceImage, srcX + tw - 1, srcY, 1, 1, destX + extrusion + tw, destY, extrusion, extrusion);
+                // Extrude the bottom left corner.
+                ctx.drawImage(sourceImage, srcX, srcY + th - 1, 1, 1, destX, destY + extrusion + th, extrusion, extrusion);
+                // Extrude the bottom right corner.
+                ctx.drawImage(sourceImage, srcX + tw - 1, srcY + th - 1, 1, 1, destX + extrusion + tw, destY + extrusion + th, extrusion, extrusion);
+            }
+        }
+        return canvas;
     };
     return GameScene;
 }(PhaserScene));
