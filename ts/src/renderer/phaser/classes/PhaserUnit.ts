@@ -8,6 +8,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	attributes: PhaserAttributeBar[] = [];
 	attributesContainer: Phaser.GameObjects.Container;
 
+	debug: Phaser.GameObjects.Graphics; //TODO remove
+
 	constructor (public scene: Phaser.Scene,
 				 entity: Unit) {
 
@@ -90,8 +92,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		}
 		camera.startFollow(this.gameObject, false, 0.05, 0.05);
 
-		/*DEBUG*/
-		let debug = this.scene.add.graphics();
+		/*DEBUG - will be removed before merging*/
+		let debug = this.debug = this.scene.add.graphics();
 		let width = ige.game.data.settings.camera.zoom.default *1.90;
 		let height = ige.game.data.settings.camera.zoom.default *1.90;
 
@@ -103,6 +105,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			height
 		);
 		this.gameObject.add(debug);
+		/*****************************************/
 	}
 
 	private stopFollow (): void {
@@ -239,6 +242,24 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			ease: Phaser.Math.Easing.Quadratic.Out,
 			scale: targetScale,
 		});
+
+		/*DEBUG - will be removed before merging*/
+		if (this.debug) {
+			this.debug.clear();
+			let debug = this.debug = this.scene.add.graphics();
+			let widthD = height *1.90;
+			let heightD = height *1.90;
+
+			debug.lineStyle(3, 0xffee00, 1);
+			debug.strokeRect(
+				-widthD / 2,
+				-heightD / 2,
+				widthD,
+				heightD
+			);
+			this.gameObject.add(debug);
+		}
+		/*****************************************/
 	}
 
 	protected destroy (): void {

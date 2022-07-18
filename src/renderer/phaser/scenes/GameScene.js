@@ -34,24 +34,33 @@ var GameScene = /** @class */ (function (_super) {
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
-            if (gameSize.height > gameSize.width) {
+            if (!_this.igeZoom) {
+                console.log('NO IGE ZOOM');
+                _this.igeZoom = ige.game.data.settings.camera.zoom.default;
+            }
+            _this.updateZoom();
+            /*if (this.scale.height > this.scale.width) {
                 console.log('height>width');
-                camera.zoom = gameSize.height / (ige.game.data.settings.camera.zoom.default * 2);
+                camera.zoom = this.scale.height / (this.igeZoom *2);
             }
             else {
                 console.log('width>height');
-                camera.zoom = gameSize.width / (ige.game.data.settings.camera.zoom.default * 2);
-            }
-            console.log('camera zoom', camera.zoom);
+                camera.zoom = this.scale.width / (this.igeZoom *2);
+            }*/
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            /*camera.zoomTo(
-                this.scale.height / height,
-                1000,
-                Phaser.Math.Easing.Quadratic.Out,
-                true
-            );*/
+            _this.igeZoom = height;
+            var targetZoom;
+            if (_this.scale.height > _this.scale.width) {
+                console.log('height>width');
+                targetZoom = _this.scale.height / (_this.igeZoom * 2);
+            }
+            else {
+                console.log('width>height');
+                targetZoom = _this.scale.width / (_this.igeZoom * 2);
+            }
+            camera.zoomTo(targetZoom, 1000, Phaser.Math.Easing.Quadratic.Out, true);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
@@ -169,17 +178,18 @@ var GameScene = /** @class */ (function (_super) {
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
-        //console.log('this.scale.width', this.scale.width);
-        //camera.zoom = this.scale.width / data.settings.camera.zoom.default;
+        this.updateZoom();
+    };
+    GameScene.prototype.updateZoom = function () {
+        var camera = this.cameras.main;
         if (this.scale.height > this.scale.width) {
             console.log('height>width');
-            camera.zoom = this.scale.height / (ige.game.data.settings.camera.zoom.default * 2);
+            camera.zoom = this.scale.height / (this.igeZoom * 2);
         }
         else {
             console.log('width>height');
-            camera.zoom = this.scale.width / (ige.game.data.settings.camera.zoom.default * 2);
+            camera.zoom = this.scale.width / (this.igeZoom * 2);
         }
-        console.log('camera zoom create', camera.zoom);
     };
     GameScene.prototype.patchMapData = function (map) {
         /**
