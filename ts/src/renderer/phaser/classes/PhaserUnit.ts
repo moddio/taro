@@ -8,7 +8,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 	attributes: PhaserAttributeBar[] = [];
 	attributesContainer: Phaser.GameObjects.Container;
 
-	constructor (public scene: Phaser.Scene,
+	constructor (scene: GameScene,
 				 entity: Unit) {
 
 		super(scene, entity, `unit/${entity._stats.type}`);

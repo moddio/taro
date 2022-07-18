@@ -91,7 +91,6 @@ var Projectile = IgeEntityPhysics.extend({
 			}
 			self.drawBounds(false);
 
-			// self.addComponent(AttributeBarsContainerComponent);
 			self.updateLayer();
 			self.updateTexture();
 			//mouseEvents for sandbox mode only, but sandbox not use pixi

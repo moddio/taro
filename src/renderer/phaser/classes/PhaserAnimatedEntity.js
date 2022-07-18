@@ -17,6 +17,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     __extends(PhaserAnimatedEntity, _super);
     function PhaserAnimatedEntity(scene, entity, key) {
         var _this = _super.call(this, entity) || this;
+        _this.scene = scene;
         _this.key = key;
         var bounds = entity._bounds2d;
         var sprite = _this.sprite = scene.add.sprite(0, 0, key);
@@ -25,6 +26,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         Object.assign(_this.evtListeners, {
             'play-animation': entity.on('play-animation', _this.playAnimation, _this),
             size: entity.on('size', _this.size, _this),
+            layer: entity.on('layer', _this.layer, _this),
         });
         return _this;
     }
@@ -37,6 +39,11 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     };
     PhaserAnimatedEntity.prototype.size = function (data) {
         this.sprite.setDisplaySize(data.width, data.height);
+    };
+    PhaserAnimatedEntity.prototype.layer = function () {
+        console.log("key: ".concat(this.key, " layer: ").concat(this.entity._layer, ", depth: ").concat(this.entity._depth)); // TODO: Remove
+        this.scene.layers[this.entity._layer].add(this.gameObject);
+        this.gameObject.setDepth(this.entity._depth);
     };
     PhaserAnimatedEntity.prototype.destroy = function () {
         this.sprite = null;

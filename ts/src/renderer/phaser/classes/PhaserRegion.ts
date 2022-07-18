@@ -4,13 +4,14 @@ class PhaserRegion extends PhaserEntity {
 	protected entity: Region;
 
 	constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: Region
 	) {
 		super(entity);
 
 		this.gameObject = scene.add.graphics();
 
+		scene.layers[4].add(this.gameObject);
 		this.transform();
 	}
 

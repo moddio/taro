@@ -16,7 +16,9 @@ var __extends = (this && this.__extends) || (function () {
 var GameScene = /** @class */ (function (_super) {
     __extends(GameScene, _super);
     function GameScene() {
-        return _super.call(this, { key: 'Game' }) || this;
+        var _this = _super.call(this, { key: 'Game' }) || this;
+        _this.layers = {};
+        return _this;
     }
     GameScene.prototype.init = function () {
         var _this = this;
@@ -150,13 +152,28 @@ var GameScene = /** @class */ (function (_super) {
                 map.addTilesetImage(tileset.name, key);
             }
         });
-        data.map.layers.forEach(function (layer) {
+        data.map.layers.forEach(function (layer, i) {
+            // floor, 0
+            // floor2, 1
+            // debris, 2 (returns early)
+            // walls, 3
+            // trees, 4
             if (layer.type !== 'tilelayer') {
                 return;
             }
-            console.log(layer.name);
-            var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
+            map.createLayer(layer.name, map.tilesets, 0, 0)
+                .setScale(scaleFactor.x, scaleFactor.y)
+                .setName("map: ".concat(layer.name));
+            // hard-coded solution for backwards compatibility
+            // letter choice 'c' is insignificant
+            var c = i !== 3 ? i + 1 : i;
+            _this.layers[c] = _this.add.layer()
+                .setName(layer.name);
+            // plug in debris because its map layer index is swapped with walls (3,4)
+            if (c === i) {
+                _this.layers[c + 1] = _this.add.layer()
+                    .setName('debris');
+            }
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);

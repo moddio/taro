@@ -21,13 +21,6 @@ var PhaserProjectile = /** @class */ (function (_super) {
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         return _this;
     }
-    PhaserProjectile.prototype.transform = function (data) {
-        this.gameObject.setPosition(data.x, data.y);
-        this.sprite.rotation = data.rotation;
-    };
-    PhaserProjectile.prototype.scale = function (data) {
-        this.sprite.setScale(data.x, data.y);
-    };
     return PhaserProjectile;
 }(PhaserAnimatedEntity));
 //# sourceMappingURL=PhaserProjectile.js.map

@@ -1,5 +1,7 @@
 class GameScene extends PhaserScene {
 
+	layers: Record<number, Phaser.GameObjects.Layer> = {};
+
 	constructor() {
 		super({ key: 'Game' });
 	}
@@ -189,13 +191,35 @@ class GameScene extends PhaserScene {
 				map.addTilesetImage(tileset.name, key);
 			}
 		});
-		data.map.layers.forEach((layer) => {
+
+		data.map.layers.forEach((layer, i) => {
+
+			// floor, 0
+			// floor2, 1
+			// debris, 2 (returns early)
+			// walls, 3
+			// trees, 4
+
 			if (layer.type !== 'tilelayer') {
 				return;
 			}
-			console.log(layer.name);
-			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
+
+			map.createLayer(layer.name, map.tilesets, 0, 0)
+				.setScale(scaleFactor.x, scaleFactor.y)
+				.setName(`map: ${layer.name}`);
+
+			// hard-coded solution for backwards compatibility
+			// letter choice 'c' is insignificant
+			const c = i !== 3 ? i + 1 : i;
+
+			this.layers[c] = this.add.layer()
+				.setName(layer.name);
+
+			// plug in debris because its map layer index is swapped with walls (3,4)
+			if (c === i) {
+				this.layers[c + 1] = this.add.layer()
+					.setName('debris');
+			}
 		});
 
 		const camera = this.cameras.main;

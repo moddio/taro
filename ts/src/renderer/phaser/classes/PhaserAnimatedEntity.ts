@@ -3,7 +3,7 @@ class PhaserAnimatedEntity extends PhaserEntity {
 	protected sprite: Phaser.GameObjects.Sprite;
 
 	protected constructor (
-		scene: Phaser.Scene,
+		public scene: GameScene,
 		entity: IgeEntity,
 		protected key: string
 	) {
@@ -18,6 +18,7 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		Object.assign(this.evtListeners, {
 			'play-animation': entity.on('play-animation', this.playAnimation, this),
 			size: entity.on('size', this.size, this),
+			layer: entity.on('layer', this.layer, this),
 		});
 	}
 
@@ -41,6 +42,12 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		}
 	): void {
 		this.sprite.setDisplaySize(data.width, data.height);
+	}
+
+	protected layer (): void {
+		console.log(`key: ${this.key} layer: ${this.entity._layer}, depth: ${this.entity._depth}`); // TODO: Remove
+		this.scene.layers[this.entity._layer].add(this.gameObject);
+		this.gameObject.setDepth(this.entity._depth);
 	}
 
 	protected destroy (): void {

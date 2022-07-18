@@ -17,7 +17,6 @@ var PhaserUnit = /** @class */ (function (_super) {
     __extends(PhaserUnit, _super);
     function PhaserUnit(scene, entity) {
         var _this = _super.call(this, scene, entity, "unit/".concat(entity._stats.type)) || this;
-        _this.scene = scene;
         _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
