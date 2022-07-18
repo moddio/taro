@@ -70,6 +70,13 @@ var PhaserUnit = /** @class */ (function (_super) {
             return;
         }
         camera.startFollow(this.gameObject, false, 0.05, 0.05);
+        /*DEBUG*/
+        var debug = this.scene.add.graphics();
+        var width = ige.game.data.settings.camera.zoom.default * 1.90;
+        var height = ige.game.data.settings.camera.zoom.default * 1.90;
+        debug.lineStyle(3, 0xffee00, 1);
+        debug.strokeRect(-width / 2, -height / 2, width, height);
+        this.gameObject.add(debug);
     };
     PhaserUnit.prototype.stopFollow = function () {
         console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove

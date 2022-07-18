@@ -89,6 +89,20 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			return;
 		}
 		camera.startFollow(this.gameObject, false, 0.05, 0.05);
+
+		/*DEBUG*/
+		let debug = this.scene.add.graphics();
+		let width = ige.game.data.settings.camera.zoom.default *1.90;
+		let height = ige.game.data.settings.camera.zoom.default *1.90;
+
+		debug.lineStyle(3, 0xffee00, 1);
+		debug.strokeRect(
+			-width / 2,
+			-height / 2,
+			width,
+			height
+		);
+		this.gameObject.add(debug);
 	}
 
 	private stopFollow (): void {
