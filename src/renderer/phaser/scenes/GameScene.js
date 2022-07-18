@@ -93,14 +93,14 @@ var GameScene = /** @class */ (function (_super) {
                 return '\u2502    '.repeat(depth);
             }
             function RETURN(depth) {
-                return '\n' + SPACE4(depth) + ' '.repeat(58 - SPACE4(depth).length) + '\u2502';
+                return "\n".concat(SPACE4(depth)).concat(' '.repeat(58 - SPACE4(depth).length), "\u2502");
             }
             var depth = 0;
             function checkForChildren(child, depth) {
                 var line = "\n".concat(depth === 0 ?
                     ("\u251C\u2500\u2500".concat(SPACE4(depth))) :
                     ("".concat(SPACE4(depth), "\u251C\u2500\u2500")), " ").concat(child.type, "  ").concat(child.name || '');
-                // add two padding line (return) then content line
+                // add two lines:  padding line (return) then content line
                 scenegraph += "".concat(RETURN(depth + 1)).concat(line).concat(' '.repeat(TOP.length - line.length - 1), "\u2502");
                 if (!child.list || child.list.length < 1) {
                     depth = 0;
@@ -204,8 +204,8 @@ var GameScene = /** @class */ (function (_super) {
         data.map.layers.forEach(function (layer, i) {
             // floor, 0
             // floor2, 1
-            // walls, 2
-            // debris, 3 (returns early)
+            // debris, 2 (returns early)
+            // walls, 3
             // trees, 4
             if (layer.type !== 'tilelayer') {
                 return;

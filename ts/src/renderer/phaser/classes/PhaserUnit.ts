@@ -20,12 +20,12 @@ class PhaserUnit extends PhaserAnimatedEntity {
 			[ this.sprite ]
 		);
 
+		this.gameObject.setName('unit');
+		this.layer();
+
 		const label = this.label = scene.add.text(0, 0, 'cccccc');
 		label.setOrigin(0.5);
 		this.gameObject.add(label);
-
-		this.gameObject.setName('unit');
-		this.layer();
 
 		Object.assign(this.evtListeners, {
 			follow: entity.on('follow', this.follow, this),

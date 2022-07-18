@@ -21,11 +21,11 @@ var PhaserUnit = /** @class */ (function (_super) {
         _this.attributes = [];
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        _this.gameObject.setName('unit');
+        _this.layer();
         var label = _this.label = scene.add.text(0, 0, 'cccccc');
         label.setOrigin(0.5);
         _this.gameObject.add(label);
-        _this.gameObject.setName('unit');
-        _this.layer();
         Object.assign(_this.evtListeners, {
             follow: entity.on('follow', _this.follow, _this),
             'stop-follow': entity.on('stop-follow', _this.stopFollow, _this),

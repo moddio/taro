@@ -95,17 +95,17 @@ class GameScene extends PhaserScene {
 			let scenegraph = '';
 			const TOP = `\n\u250c${'\u2500'.repeat(57)}\u2510`;
 			const BOTTOM = `\n\u2514${'\u2500'.repeat(57)}\u2518\n`;
-			
+
 			function SPACE4(depth: number): string {
 				return '\u2502    '.repeat(depth);
 			}
 			function RETURN(depth: number): string {
-				return '\n' + SPACE4(depth) + ' '.repeat(58 - SPACE4(depth).length) + '\u2502';
+				return `\n${SPACE4(depth)}${' '.repeat(58 - SPACE4(depth).length)}\u2502`;
 			}
 			let depth = 0;
 
 			function checkForChildren(
-				child: 
+				child:
 				(
 					Phaser.GameObjects.GameObject &
 					{
@@ -117,11 +117,11 @@ class GameScene extends PhaserScene {
 				),
 				depth: number
 			) {
-				let line: string = `\n${depth === 0 ? 
+				let line = `\n${depth === 0 ?
 					(`\u251c\u2500\u2500${SPACE4(depth)}`) :
 					(`${SPACE4(depth)}\u251c\u2500\u2500`)} ${child.type}  ${child.name || ''}`;
-				
-				// add two padding line (return) then content line
+
+				// add two lines:  padding line (return) then content line
 				scenegraph += `${RETURN(depth + 1)}${line}${' '.repeat(TOP.length - line.length - 1)}\u2502`;
 
 				if (!child.list || child.list.length < 1) {
@@ -254,8 +254,8 @@ class GameScene extends PhaserScene {
 
 			// floor, 0
 			// floor2, 1
-			// walls, 2
-			// debris, 3 (returns early)
+			// debris, 2 (returns early)
+			// walls, 3
 			// trees, 4
 
 			if (layer.type !== 'tilelayer') {

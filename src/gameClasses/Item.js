@@ -880,9 +880,9 @@ var Item = IgeEntityPhysics.extend({
 							if (owner && self._stats.slotIndex >= owner._stats.inventorySize) {
 								self.unMount();
 							}
-							
+
 							if (stateId !== 'unselected') {
-								
+
 								this.emit('size', {
 									width: this._stats.currentBody.width,
 									height: this._stats.currentBody.height

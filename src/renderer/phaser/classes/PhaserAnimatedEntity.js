@@ -41,7 +41,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
         this.sprite.setDisplaySize(data.width, data.height);
     };
     PhaserAnimatedEntity.prototype.layer = function () {
-        console.log("layer: ".concat(this.entity._layer, ", depth: ").concat(this.entity._depth));
+        console.log("key: ".concat(this.key, " layer: ").concat(this.entity._layer, ", depth: ").concat(this.entity._depth)); // TODO: Remove
         this.scene.layers[this.entity._layer].add(this.gameObject);
         this.gameObject.setDepth(this.entity._depth);
     };

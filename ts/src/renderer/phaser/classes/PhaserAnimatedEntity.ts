@@ -48,9 +48,9 @@ class PhaserAnimatedEntity extends PhaserEntity {
 	}
 
 	protected layer(): void {
-		console.log(`layer: ${this.entity._layer}, depth: ${this.entity._depth}`);
+		console.log(`key: ${this.key} layer: ${this.entity._layer}, depth: ${this.entity._depth}`); // TODO: Remove
 
-		this.scene.layers[this.entity._layer].add(this.gameObject)
+		this.scene.layers[this.entity._layer].add(this.gameObject);
 		this.gameObject.setDepth(this.entity._depth);
 	}
 
