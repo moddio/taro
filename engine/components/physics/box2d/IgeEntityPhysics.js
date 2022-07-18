@@ -49,11 +49,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 		}
 
 		this._actionQueue = [];
-
-		if (ige.isClient) {
-			self.addComponent(IgePixiTexture);
-			self.addComponent(IgePixiAnimation);
-		}
 	},
 
 	updateBody: function (defaultData, isLossTolerant) {
@@ -832,4 +827,6 @@ var IgeEntityPhysics = IgeEntity.extend({
 	}
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgeEntityPhysics; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+	module.exports = IgeEntityPhysics;
+}
