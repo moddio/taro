@@ -1,21 +1,24 @@
 class PhaserItem extends PhaserAnimatedEntity {
-	// can probably just be a sprite
-	protected gameObject: Phaser.GameObjects.Container;
+
+	protected gameObject: Phaser.GameObjects.Sprite;
 	protected entity: Item;
 
 	constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: Item
 	) {
 		super(scene, entity, `item/${entity._stats.itemTypeId}`);
 
+		this.gameObject = this.sprite;
+
 		const translate = entity._translate;
-		this.gameObject = scene.add.container(
-			translate.x,
-			translate.y,
-			[ this.sprite ]
-		);
+		this.transform({
+			x: translate.x,
+			y: translate.y,
+			rotation: translate.z
+		})
 
 		this.gameObject.setName('item');
+		this.layer();
 	}
 }

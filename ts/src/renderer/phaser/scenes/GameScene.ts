@@ -41,11 +41,11 @@ class GameScene extends PhaserScene {
 
 		ige.client.on('zoom', (height: number) => {
 			console.log('GameScene zoom event', height); // TODO remove
-
 			camera.zoomTo(
 				this.scale.height / height,
 				1000,
-				Phaser.Math.Easing.Quadratic.Out
+				Phaser.Math.Easing.Quadratic.Out,
+				true
 			);
 		});
 
@@ -92,6 +92,57 @@ class GameScene extends PhaserScene {
 			console.info('Display List:');
 			// list doesn't want to tell us about the last element.
 			console.table([...this.children.list, this.children.last], [ 'name', 'type', '_depth', 'x', 'y']);
+			let scenegraph = '';
+			const TOP = `\n\u250c${'\u2500'.repeat(57)}\u2510`;
+			const BOTTOM = `\n\u2514${'\u2500'.repeat(57)}\u2518\n`;
+			
+			function SPACE4(depth: number): string {
+				return '\u2502    '.repeat(depth);
+			}
+			function RETURN(depth: number): string {
+				return '\n' + SPACE4(depth) + ' '.repeat(58 - SPACE4(depth).length) + '\u2502';
+			}
+			let depth = 0;
+
+			function checkForChildren(
+				child: 
+				(
+					Phaser.GameObjects.GameObject &
+					{
+						list?: Phaser.GameObjects.GameObject[]
+					}
+				) | (
+					Phaser.GameObjects.Layer |
+					Phaser.GameObjects.Container
+				),
+				depth: number
+			) {
+				let line: string = `\n${depth === 0 ? 
+					(`\u251c\u2500\u2500${SPACE4(depth)}`) :
+					(`${SPACE4(depth)}\u251c\u2500\u2500`)} ${child.type}  ${child.name || ''}`;
+				
+				// add two padding line (return) then content line
+				scenegraph += `${RETURN(depth + 1)}${line}${' '.repeat(TOP.length - line.length - 1)}\u2502`;
+
+				if (!child.list || child.list.length < 1) {
+					depth = 0;
+					return;
+				} else {
+					depth++;
+					child.list.forEach((current) => {
+						return checkForChildren(current, depth);
+					});
+				}
+			}
+			//build string
+			scenegraph += TOP;
+			[...this.children.list].forEach(current => {
+
+				(checkForChildren(current, depth));
+			});
+			scenegraph += BOTTOM;
+
+			console.log(scenegraph);
 		});
 	}
 
@@ -201,36 +252,33 @@ class GameScene extends PhaserScene {
 		});
 		data.map.layers.forEach((layer, i) => {
 
-			// assign Layer to our object Scene.layers
-			// no need to skip debris. it is filtered out above
-
-			let temp = this.layers[i + 1] = this.add.layer()
-				.setName(layer.name)
-				.setDepth(i + 1);
+			// floor, 0
+			// floor2, 1
+			// walls, 2
+			// debris, 3 (returns early)
+			// trees, 4
 
 			if (layer.type !== 'tilelayer') {
 				return;
 			}
 
-			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-				.setName(`map: ` + layer.name);
+			map.createLayer(layer.name, map.tilesets, 0, 0)
+				.setScale(scaleFactor.x, scaleFactor.y)
+				.setName(`map: ${layer.name}`);
 
-			temp.add(tilemapLayer);
+			// hard-coded solution for backwards compatibility
+			// letter choice 'c' is insignificant
+			const c = i !== 3 ? i + 1 : i;
+
+			this.layers[c] = this.add.layer()
+				.setName(layer.name);
+
+			// plug in debris because its map layer index is swapped with walls (3,4)
+			if (c === i) {
+				this.layers[c + 1] = this.add.layer()
+					.setName('debris');
+			}
 		});
-
-		// swap walls and debris because their map layer indexes are swapped from actual
-
-		// TODO: Fix on BE
-
-		let newtemp = this.layers[3];
-		this.layers[3] = this.layers[4];
-		this.layers[4] = newtemp;
-
-		this.layers[3].setDepth(3);
-		this.layers[4].setDepth(4);
-
-		///
 
 		const camera = this.cameras.main;
 		camera.centerOn(

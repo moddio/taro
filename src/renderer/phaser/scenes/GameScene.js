@@ -53,7 +53,7 @@ var GameScene = /** @class */ (function (_super) {
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out);
+            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out, true);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
@@ -86,6 +86,40 @@ var GameScene = /** @class */ (function (_super) {
             console.info('Display List:');
             // list doesn't want to tell us about the last element.
             console.table(__spreadArray(__spreadArray([], _this.children.list, true), [_this.children.last], false), ['name', 'type', '_depth', 'x', 'y']);
+            var scenegraph = '';
+            var TOP = "\n\u250C".concat('\u2500'.repeat(57), "\u2510");
+            var BOTTOM = "\n\u2514".concat('\u2500'.repeat(57), "\u2518\n");
+            function SPACE4(depth) {
+                return '\u2502    '.repeat(depth);
+            }
+            function RETURN(depth) {
+                return '\n' + SPACE4(depth) + ' '.repeat(58 - SPACE4(depth).length) + '\u2502';
+            }
+            var depth = 0;
+            function checkForChildren(child, depth) {
+                var line = "\n".concat(depth === 0 ?
+                    ("\u251C\u2500\u2500".concat(SPACE4(depth))) :
+                    ("".concat(SPACE4(depth), "\u251C\u2500\u2500")), " ").concat(child.type, "  ").concat(child.name || '');
+                // add two padding line (return) then content line
+                scenegraph += "".concat(RETURN(depth + 1)).concat(line).concat(' '.repeat(TOP.length - line.length - 1), "\u2502");
+                if (!child.list || child.list.length < 1) {
+                    depth = 0;
+                    return;
+                }
+                else {
+                    depth++;
+                    child.list.forEach(function (current) {
+                        return checkForChildren(current, depth);
+                    });
+                }
+            }
+            //build string
+            scenegraph += TOP;
+            __spreadArray([], _this.children.list, true).forEach(function (current) {
+                (checkForChildren(current, depth));
+            });
+            scenegraph += BOTTOM;
+            console.log(scenegraph);
         });
     };
     GameScene.prototype.preload = function () {
@@ -168,27 +202,28 @@ var GameScene = /** @class */ (function (_super) {
             }
         });
         data.map.layers.forEach(function (layer, i) {
-            // assign Layer to our object Scene.layers
-            // no need to skip debris. it is filtered out above
-            var temp = _this.layers[i + 1] = _this.add.layer()
-                .setName(layer.name)
-                .setDepth(i + 1);
+            // floor, 0
+            // floor2, 1
+            // walls, 2
+            // debris, 3 (returns early)
+            // trees, 4
             if (layer.type !== 'tilelayer') {
                 return;
             }
-            var tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-            tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-                .setName("map: " + layer.name);
-            temp.add(tilemapLayer);
+            map.createLayer(layer.name, map.tilesets, 0, 0)
+                .setScale(scaleFactor.x, scaleFactor.y)
+                .setName("map: ".concat(layer.name));
+            // hard-coded solution for backwards compatibility
+            // letter choice 'c' is insignificant
+            var c = i !== 3 ? i + 1 : i;
+            _this.layers[c] = _this.add.layer()
+                .setName(layer.name);
+            // plug in debris because its map layer index is swapped with walls (3,4)
+            if (c === i) {
+                _this.layers[c + 1] = _this.add.layer()
+                    .setName('debris');
+            }
         });
-        // swap walls and debris because their map layer indexes are swapped from actual
-        // TODO: Fix on BE
-        var newtemp = this.layers[3];
-        this.layers[3] = this.layers[4];
-        this.layers[4] = newtemp;
-        this.layers[3].setDepth(3);
-        this.layers[4].setDepth(4);
-        ///
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
         camera.zoom = this.scale.width / 800;

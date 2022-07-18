@@ -17,9 +17,15 @@ var PhaserItem = /** @class */ (function (_super) {
     __extends(PhaserItem, _super);
     function PhaserItem(scene, entity) {
         var _this = _super.call(this, scene, entity, "item/".concat(entity._stats.itemTypeId)) || this;
+        _this.gameObject = _this.sprite;
         var translate = entity._translate;
-        _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        _this.transform({
+            x: translate.x,
+            y: translate.y,
+            rotation: translate.z
+        });
         _this.gameObject.setName('item');
+        _this.layer();
         return _this;
     }
     return PhaserItem;

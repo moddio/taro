@@ -17,17 +17,19 @@ var PhaserProjectile = /** @class */ (function (_super) {
     __extends(PhaserProjectile, _super);
     function PhaserProjectile(scene, entity) {
         var _this = _super.call(this, scene, entity, "projectile/".concat(entity._stats.type)) || this;
+        _this.gameObject = _this.sprite;
         var translate = entity._translate;
-        _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        _this.transform({
+            x: translate.x,
+            y: translate.y,
+            rotation: translate.z
+        });
         _this.gameObject.setName('projectile');
+        _this.layer();
         return _this;
     }
-    PhaserProjectile.prototype.transform = function (data) {
-        this.gameObject.setPosition(data.x, data.y);
-        this.sprite.rotation = data.rotation;
-    };
     PhaserProjectile.prototype.scale = function (data) {
-        this.sprite.setScale(data.x, data.y);
+        this.gameObject.setScale(data.x, data.y);
     };
     return PhaserProjectile;
 }(PhaserAnimatedEntity));

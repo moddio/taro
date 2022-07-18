@@ -1,13 +1,16 @@
 class PhaserAnimatedEntity extends PhaserEntity {
 
 	protected sprite: Phaser.GameObjects.Sprite;
+	protected scene: GameScene;
 
 	protected constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: IgeEntity,
 		protected key: string
 	) {
 		super(entity);
+
+		this.scene = scene;
 
 		const bounds = entity._bounds2d;
 		const sprite = this.sprite = scene.add.sprite(0, 0, key);
@@ -18,6 +21,7 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		Object.assign(this.evtListeners, {
 			'play-animation': entity.on('play-animation', this.playAnimation, this),
 			size: entity.on('size', this.size, this),
+			layer: entity.on('layer', this.layer, this)
 		});
 	}
 
@@ -41,6 +45,13 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		}
 	): void {
 		this.sprite.setDisplaySize(data.width, data.height);
+	}
+
+	protected layer(): void {
+		console.log(`layer: ${this.entity._layer}, depth: ${this.entity._depth}`);
+
+		this.scene.layers[this.entity._layer].add(this.gameObject)
+		this.gameObject.setDepth(this.entity._depth);
 	}
 
 	protected destroy (): void {

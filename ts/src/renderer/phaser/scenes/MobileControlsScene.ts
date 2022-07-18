@@ -18,9 +18,10 @@ class MobileControlsScene extends PhaserScene {
 		// enabling four mobile pointers
 		this.input.addPointer(3);
 
+		const scale = this.scale;
 		const controls = this.controls = this.add.container();
 		this.resize();
-		this.scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
+		scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
 
 		const joysticks = this.joysticks;
 
@@ -117,6 +118,17 @@ class MobileControlsScene extends PhaserScene {
 		ige.mobileControls.on('visible', (value: boolean) => {
 			this.scene.setVisible(value);
 		});
+
+		if (scale.fullscreen.available) {
+			scale.fullscreenTarget =
+				document.getElementById('game-div');
+			document.body.addEventListener('touchstart', () => {
+				this.enterFullscreen();
+			}, true);
+			document.body.addEventListener('touchend', () => {
+				this.enterFullscreen();
+			}, true);
+		}
 	}
 
 	preload (): void {
@@ -131,6 +143,12 @@ class MobileControlsScene extends PhaserScene {
 		this.load.image('mobile-button-icon', this.patchAssetUrl(
 			'https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png'
 		));
+	}
+
+	private enterFullscreen() {
+		if (!this.scale.isFullscreen) {
+			this.scale.startFullscreen();
+		}
 	}
 
 	private resize() {

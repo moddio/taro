@@ -24,9 +24,10 @@ var MobileControlsScene = /** @class */ (function (_super) {
         var _this = this;
         // enabling four mobile pointers
         this.input.addPointer(3);
+        var scale = this.scale;
         var controls = this.controls = this.add.container();
         this.resize();
-        this.scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
+        scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
         var joysticks = this.joysticks;
         ige.mobileControls.on('add-control', function (key, x, y, w, h, settings) {
             switch (key) {
@@ -90,11 +91,26 @@ var MobileControlsScene = /** @class */ (function (_super) {
         ige.mobileControls.on('visible', function (value) {
             _this.scene.setVisible(value);
         });
+        if (scale.fullscreen.available) {
+            scale.fullscreenTarget =
+                document.getElementById('game-div');
+            document.body.addEventListener('touchstart', function () {
+                _this.enterFullscreen();
+            }, true);
+            document.body.addEventListener('touchend', function () {
+                _this.enterFullscreen();
+            }, true);
+        }
     };
     MobileControlsScene.prototype.preload = function () {
         this.load.image('mobile-button-up', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1549614640644_button1.png'));
         this.load.image('mobile-button-down', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1549614658007_button2.png'));
         this.load.image('mobile-button-icon', this.patchAssetUrl('https://cache.modd.io/asset/spriteImage/1610494864771_fightFist_circle.png'));
+    };
+    MobileControlsScene.prototype.enterFullscreen = function () {
+        if (!this.scale.isFullscreen) {
+            this.scale.startFullscreen();
+        }
     };
     MobileControlsScene.prototype.resize = function () {
         // make the mobileControls container
