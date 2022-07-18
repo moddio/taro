@@ -13,15 +13,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var GameScene = /** @class */ (function (_super) {
     __extends(GameScene, _super);
     function GameScene() {
@@ -80,43 +71,6 @@ var GameScene = /** @class */ (function (_super) {
         ige.client.on('floating-text', function (data) {
             console.log('create-floating-text', data); // TODO remove
             new PhaserFloatingText(_this, data);
-        });
-        // Press L to log a table of the scene's DisplayList
-        this.input.keyboard.on('keydown-L', function () {
-            var scenegraph = '';
-            var TOP = "\n\u250C".concat('\u2500'.repeat(57), "\u2510");
-            var BOTTOM = "\n\u2514".concat('\u2500'.repeat(57), "\u2518\n");
-            function SPACE4(depth) {
-                return '\u2502    '.repeat(depth);
-            }
-            function RETURN(depth) {
-                return "\n".concat(SPACE4(depth)).concat(' '.repeat(58 - SPACE4(depth).length), "\u2502");
-            }
-            var depth = 0;
-            function checkForChildren(child, depth) {
-                var line = "\n".concat(depth === 0 ?
-                    ("\u251C\u2500\u2500".concat(SPACE4(depth))) :
-                    ("".concat(SPACE4(depth), "\u251C\u2500\u2500")), " ").concat(child.type, "  ").concat(child.name || '');
-                // add two lines:  padding line (return) then content line
-                scenegraph += "".concat(RETURN(depth + 1)).concat(line).concat(' '.repeat(TOP.length - line.length - 1), "\u2502");
-                if (!child.list || child.list.length < 1) {
-                    depth = 0;
-                    return;
-                }
-                else {
-                    depth++;
-                    child.list.forEach(function (current) {
-                        return checkForChildren(current, depth);
-                    });
-                }
-            }
-            //build string
-            scenegraph += TOP;
-            __spreadArray([], _this.children.list, true).forEach(function (current) {
-                (checkForChildren(current, depth));
-            });
-            scenegraph += BOTTOM;
-            console.log(scenegraph);
         });
     };
     GameScene.prototype.preload = function () {
