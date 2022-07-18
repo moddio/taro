@@ -89,9 +89,6 @@ class GameScene extends PhaserScene {
 		// Press L to log a table of the scene's DisplayList
 		this.input.keyboard.on('keydown-L', () => {
 
-			console.info('Display List:');
-			// list doesn't want to tell us about the last element.
-			console.table([...this.children.list, this.children.last], [ 'name', 'type', '_depth', 'x', 'y']);
 			let scenegraph = '';
 			const TOP = `\n\u250c${'\u2500'.repeat(57)}\u2510`;
 			const BOTTOM = `\n\u2514${'\u2500'.repeat(57)}\u2518\n`;

@@ -19,6 +19,6 @@ class PhaserItem extends PhaserAnimatedEntity {
 		});
 
 		this.gameObject.setName('item');
-		this.layer();
+		// this.layer();
 	}
 }

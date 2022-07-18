@@ -33,13 +33,11 @@ class PhaserEntity {
 	}): void { }
 
 	protected hide (): void {
-		console.log('hide');
 		this.gameObject.setActive(false)
 			.setVisible(false);
 	}
 
 	protected show (): void {
-		console.log('show');
 		this.gameObject.setActive(true)
 			.setVisible(true);
 	}

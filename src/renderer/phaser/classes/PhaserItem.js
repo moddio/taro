@@ -25,8 +25,8 @@ var PhaserItem = /** @class */ (function (_super) {
             rotation: translate.z
         });
         _this.gameObject.setName('item');
-        _this.layer();
         return _this;
+        // this.layer();
     }
     return PhaserItem;
 }(PhaserAnimatedEntity));

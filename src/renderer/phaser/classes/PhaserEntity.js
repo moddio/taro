@@ -14,12 +14,10 @@ var PhaserEntity = /** @class */ (function () {
     PhaserEntity.prototype.transform = function (data) { };
     PhaserEntity.prototype.scale = function (data) { };
     PhaserEntity.prototype.hide = function () {
-        console.log('hide');
         this.gameObject.setActive(false)
             .setVisible(false);
     };
     PhaserEntity.prototype.show = function () {
-        console.log('show');
         this.gameObject.setActive(true)
             .setVisible(true);
     };

@@ -83,9 +83,6 @@ var GameScene = /** @class */ (function (_super) {
         });
         // Press L to log a table of the scene's DisplayList
         this.input.keyboard.on('keydown-L', function () {
-            console.info('Display List:');
-            // list doesn't want to tell us about the last element.
-            console.table(__spreadArray(__spreadArray([], _this.children.list, true), [_this.children.last], false), ['name', 'type', '_depth', 'x', 'y']);
             var scenegraph = '';
             var TOP = "\n\u250C".concat('\u2500'.repeat(57), "\u2510");
             var BOTTOM = "\n\u2514".concat('\u2500'.repeat(57), "\u2518\n");

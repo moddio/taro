@@ -69,11 +69,12 @@ var Item = IgeEntityPhysics.extend({
 			ige.server.totalItemsCreated++;
 		} else if (ige.isClient) {
 			// must create Phaser item before emitting init events
-			this.updateLayer();
+			// this.updateLayer();
 			ige.client.emit('create-item', this);
 
 			self._hidden = self._stats.isHidden;
 			if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._hidden) {
+
 				self.hide();
 				this.emit('hide');
 			} else {
@@ -121,14 +122,13 @@ var Item = IgeEntityPhysics.extend({
 
 			self.show();
 			if (ige.isClient) {
-				this.emit('show');
 				self.updateTexture();
 			}
 		} else {
 			ige.devLog('hide & destroyBody.');
 			self.hide();
 			if (ige.isClient) {
-				this.emit('hide');
+				self.updateTexture();
 			}
 			self.destroyBody();
 			if (ige.isServer) {
@@ -198,10 +198,8 @@ var Item = IgeEntityPhysics.extend({
 		self.show();
 		this.emit('show');
 		// leave because it is taro not renderer
-		if (this.getOwnerUnit !== ige.client.myPlayer.selectedUnit) {
+		self.updateLayer();
 
-			self.updateLayer();
-		}
 		// leave because it updates state for animation
 		IgeEntity.prototype.updateTexture.call(this);
 	},
