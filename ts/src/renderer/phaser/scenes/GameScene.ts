@@ -31,19 +31,10 @@ class GameScene extends PhaserScene {
 				gameSize, baseSize, displaySize, previousWidth, previousHeight);
 
 			if (!this.igeZoom) {
-				console.log('NO IGE ZOOM');
 				this.igeZoom = ige.game.data.settings.camera.zoom.default;
 			}
 
 			this.updateZoom();
-			/*if (this.scale.height > this.scale.width) {
-				console.log('height>width');
-				camera.zoom = this.scale.height / (this.igeZoom *2);
-			}
-			else {
-				console.log('width>height');
-				camera.zoom = this.scale.width / (this.igeZoom *2);
-			}*/
 		});
 
 		ige.client.on('zoom', (height: number) => {
@@ -52,10 +43,8 @@ class GameScene extends PhaserScene {
 
 			let targetZoom;
 			if (this.scale.height > this.scale.width) {
-				console.log('height>width');
 				targetZoom = this.scale.height / (this.igeZoom * 2);
 			} else {
-				console.log('width>height');
 				targetZoom = this.scale.width / (this.igeZoom * 2);
 			}
 
@@ -223,17 +212,14 @@ class GameScene extends PhaserScene {
 			map.width * map.tileWidth / 2 * scaleFactor.x,
 			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
-
 		this.updateZoom();
 	}
 
 	private updateZoom(): void {
 		const camera = this.cameras.main;
 		if (this.scale.height > this.scale.width) {
-			console.log('height>width');
 			camera.zoom = this.scale.height / (this.igeZoom * 2);
 		} else {
-			console.log('width>height');
 			camera.zoom = this.scale.width / (this.igeZoom * 2);
 		}
 	}
