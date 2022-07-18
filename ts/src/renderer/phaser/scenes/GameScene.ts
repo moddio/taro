@@ -45,12 +45,12 @@ class GameScene extends PhaserScene {
 
 		ige.client.on('zoom', (height: number) => {
 			console.log('GameScene zoom event', height); // TODO remove
-			camera.zoomTo(
+			/*camera.zoomTo(
 				this.scale.height / height,
 				1000,
 				Phaser.Math.Easing.Quadratic.Out,
 				true
-			);
+			);*/
 		});
 
 		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
