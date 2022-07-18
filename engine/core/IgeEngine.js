@@ -169,12 +169,8 @@ var IgeEngine = IgeEntity.extend({
 		this._headless = true;
 		this.dependencyTimeout(30000); // Wait 30 seconds to load all dependencies then timeout
 
-		// Add the textures loaded dependency
-		this._dependencyQueue.push(this.texturesLoaded);
-		// this._dependencyQueue.push(this.canvasReady);
-
 		// Start a timer to record every second of execution
-		this._secondTimer = setInterval(this._secondTick, 1000);
+		setInterval(this._secondTick, 1000);
 
 		this.snapshots = [];
 		this.entityCreateSnapshot = {};
@@ -2038,7 +2034,7 @@ var IgeEngine = IgeEntity.extend({
 						if (!self.serverEmptySince) {
 							self.serverEmptySince = self.now;
 						}
-						
+
 						const serverTier = ige.server.tier;
 						const gameTier = ige.game && ige.game.data && ige.game.data.defaultData && ige.game.data.defaultData.tier;
 						// gameTier and serverTier could be different in some cases since Tier 4 games are now being hosted on Tier 2 servers.

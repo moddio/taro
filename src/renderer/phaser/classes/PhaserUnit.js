@@ -22,6 +22,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         var translate = entity._translate;
         _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
         Object.assign(_this.evtListeners, {
+            flip: entity.on('flip', _this.flip, _this),
             follow: entity.on('follow', _this.follow, _this),
             'stop-follow': entity.on('stop-follow', _this.stopFollow, _this),
             'update-label': entity.on('update-label', _this.updateLabel, _this),
@@ -42,8 +43,7 @@ var PhaserUnit = /** @class */ (function (_super) {
         if (this.chat) {
             this.chat.updatePosition(this.gameObject.x, this.gameObject.y);
         }
-        var flip = this.entity._stats.flip;
-        this.sprite.setFlip(flip % 2 === 1, flip > 1);
+        this.flip(this.entity._stats.flip);
     };
     PhaserUnit.prototype.size = function (data) {
         _super.prototype.size.call(this, data);
@@ -62,6 +62,9 @@ var PhaserUnit = /** @class */ (function (_super) {
     };
     PhaserUnit.prototype.scale = function (data) {
         this.sprite.setScale(data.x, data.y);
+    };
+    PhaserUnit.prototype.flip = function (flip) {
+        this.sprite.setFlip(flip % 2 === 1, flip > 1);
     };
     PhaserUnit.prototype.follow = function () {
         console.log('PhaserUnit follow', this.entity.id()); // TODO remove
