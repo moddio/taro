@@ -283,8 +283,6 @@ class GameScene extends PhaserScene {
 			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
 		camera.zoom = this.scale.width / 800;
-
-
 	}
 
 	private patchMapData (map: GameComponent['data']['map']): typeof map {
