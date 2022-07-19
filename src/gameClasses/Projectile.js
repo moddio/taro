@@ -117,12 +117,6 @@ var Projectile = IgeEntityPhysics.extend({
 		}
 	},
 
-	// apply texture based on state
-	updateTexture: function () {
-		var self = this;
-		IgeEntity.prototype.updateTexture.call(this);
-	},
-
 	streamUpdateData: function (queuedData) {
 		IgeEntity.prototype.streamUpdateData.call(this, data);
 		for (var i = 0; i < queuedData.length; i++) {

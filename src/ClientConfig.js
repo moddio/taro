@@ -58,8 +58,6 @@ var igeClientConfig = {
 		'pixi/pixi-viewport.js',
 		'pixi/pixi-cull.js',
 		'pixi/IgePixi.js',
-		'pixi/IgePixiTexture.js',
-		'pixi/IgePixiAnimation.js',
 
 		/* Phaser */
 		'../node_modules/phaser/dist/phaser-arcade-physics.min.js',

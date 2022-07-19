@@ -1,6 +1,6 @@
 class PhaserItem extends PhaserAnimatedEntity {
-	// can probably just be a sprite
-	protected gameObject: Phaser.GameObjects.Container;
+
+	protected gameObject: Phaser.GameObjects.Sprite;
 	protected entity: Item;
 
 	constructor (
@@ -9,11 +9,9 @@ class PhaserItem extends PhaserAnimatedEntity {
 	) {
 		super(scene, entity, `item/${entity._stats.itemTypeId}`);
 
-		const translate = entity._translate;
-		this.gameObject = scene.add.container(
-			translate.x,
-			translate.y,
-			[ this.sprite ]
-		);
+		this.gameObject = this.sprite;
+
+		const { x, y } = entity._translate;
+		this.gameObject.setPosition(x, y);
 	}
 }

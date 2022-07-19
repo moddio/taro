@@ -16,7 +16,6 @@ declare class IgeEntity extends IgeObject {
 
 	angleToTarget: number;
 	tween: TweenComponent;
-	pixianimation: IgePixiAnimation;
 
 	_deathCallBack?: () => void;
 	_behaviour?: () => void;

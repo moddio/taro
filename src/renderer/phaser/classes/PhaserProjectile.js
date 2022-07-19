@@ -17,8 +17,9 @@ var PhaserProjectile = /** @class */ (function (_super) {
     __extends(PhaserProjectile, _super);
     function PhaserProjectile(scene, entity) {
         var _this = _super.call(this, scene, entity, "projectile/".concat(entity._stats.type)) || this;
-        var translate = entity._translate;
-        _this.gameObject = scene.add.container(translate.x, translate.y, [_this.sprite]);
+        _this.gameObject = _this.sprite;
+        var _a = entity._translate, x = _a.x, y = _a.y;
+        _this.gameObject.setPosition(x, y);
         return _this;
     }
     return PhaserProjectile;

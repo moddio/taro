@@ -19,6 +19,7 @@ class PhaserAnimatedEntity extends PhaserEntity {
 			'play-animation': entity.on('play-animation', this.playAnimation, this),
 			size: entity.on('size', this.size, this),
 			layer: entity.on('layer', this.layer, this),
+			scale: entity.on('scale', this.scale, this)
 		});
 	}
 
@@ -48,6 +49,13 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		console.log(`key: ${this.key} layer: ${this.entity._layer}, depth: ${this.entity._depth}`); // TODO: Remove
 		this.scene.layers[this.entity._layer].add(this.gameObject);
 		this.gameObject.setDepth(this.entity._depth);
+	}
+
+	protected scale (data: {
+		x: number;
+		y: number
+	}): void {
+		this.sprite.setScale(data.x, data.y);
 	}
 
 	protected destroy (): void {

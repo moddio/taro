@@ -22,6 +22,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		);
 
 		Object.assign(this.evtListeners, {
+			flip: entity.on('flip', this.flip, this),
 			follow: entity.on('follow', this.follow, this),
 			'stop-follow': entity.on('stop-follow', this.stopFollow, this),
 			'update-label': entity.on('update-label', this.updateLabel, this),
@@ -47,8 +48,7 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		if (this.chat) {
 			this.chat.updatePosition(this.gameObject.x, this.gameObject.y);
 		}
-		const flip = this.entity._stats.flip;
-		this.sprite.setFlip(flip % 2 === 1, flip > 1);
+		this.flip(this.entity._stats.flip);
 	}
 
 	protected size (
@@ -74,11 +74,8 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
 	}
 
-	protected scale (data: {
-		x: number;
-		y: number
-	}): void {
-		this.sprite.setScale(data.x, data.y);
+	protected flip (flip: FlipMode): void {
+		this.sprite.setFlip(flip % 2 === 1, flip > 1);
 	}
 
 	private follow (): void {
