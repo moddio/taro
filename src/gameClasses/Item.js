@@ -72,8 +72,6 @@ var Item = IgeEntityPhysics.extend({
 			self.streamCreate();
 			ige.server.totalItemsCreated++;
 		} else if (ige.isClient) {
-
-
 			self._hidden = self._stats.isHidden;
 			if (self._stats.currentBody == undefined || self._stats.currentBody.type == 'none' || self._hidden) {
 				self.hide();
