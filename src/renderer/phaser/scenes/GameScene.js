@@ -36,8 +36,11 @@ var GameScene = /** @class */ (function (_super) {
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
             if (!_this.igeZoom) {
                 _this.igeZoom = ige.game.data.settings.camera.zoom.default;
+                camera.zoom = 0.5;
             }
-            _this.updateZoom();
+            else {
+                _this.updateZoom();
+            }
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
@@ -167,7 +170,6 @@ var GameScene = /** @class */ (function (_super) {
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
-        this.updateZoom();
     };
     GameScene.prototype.updateZoom = function () {
         var camera = this.cameras.main;

@@ -32,9 +32,11 @@ class GameScene extends PhaserScene {
 
 			if (!this.igeZoom) {
 				this.igeZoom = ige.game.data.settings.camera.zoom.default;
+				camera.zoom = 0.5;
+			} else {
+				this.updateZoom();
 			}
 
-			this.updateZoom();
 		});
 
 		ige.client.on('zoom', (height: number) => {
@@ -212,7 +214,6 @@ class GameScene extends PhaserScene {
 			map.width * map.tileWidth / 2 * scaleFactor.x,
 			map.height * map.tileHeight / 2 * scaleFactor.y
 		);
-		this.updateZoom();
 	}
 
 	private updateZoom(): void {
