@@ -196,10 +196,8 @@ var ServerNetworkEvents = {
 							purchasables: {}
 						};
 						var player = ige.game.createPlayer()
-						for (key in userData) {
-							var obj = {}
-							obj[key] = userData[key];
-							data.push(obj)
+						for (const key in userData) {
+							data.push({ [key]: userData[key] });
 						}
 						player.joinGame();
 						player.streamUpdateData(data);
