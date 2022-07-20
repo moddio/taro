@@ -39,7 +39,9 @@ var Projectile = IgeEntityPhysics.extend({
 
 		if (ige.isServer) {
 			self.mount(ige.$('baseScene'));
-		} else {
+		}
+
+		if (ige.isClient) {
 			ige.client.emit('create-projectile', this);
 		}
 
