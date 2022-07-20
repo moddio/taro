@@ -75,13 +75,6 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		this.attributesContainer.y = 25 + (this.sprite.displayHeight + this.sprite.displayWidth) / 4;
 	}
 
-	protected scale (data: {
-		x: number;
-		y: number
-	}): void {
-		this.sprite.setScale(data.x, data.y);
-	}
-
 	protected flip (flip: FlipMode): void {
 		this.sprite.setFlip(flip % 2 === 1, flip > 1);
 	}

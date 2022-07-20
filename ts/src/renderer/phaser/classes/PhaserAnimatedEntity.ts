@@ -18,6 +18,7 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		Object.assign(this.evtListeners, {
 			'play-animation': entity.on('play-animation', this.playAnimation, this),
 			size: entity.on('size', this.size, this),
+			scale: entity.on('scale', this.scale, this)
 		});
 	}
 
@@ -41,6 +42,13 @@ class PhaserAnimatedEntity extends PhaserEntity {
 		}
 	): void {
 		this.sprite.setDisplaySize(data.width, data.height);
+	}
+
+	protected scale (data: {
+		x: number;
+		y: number
+	}): void {
+		this.sprite.setScale(data.x, data.y);
 	}
 
 	protected destroy (): void {
