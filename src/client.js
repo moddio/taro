@@ -575,11 +575,6 @@ const Client = IgeEventingClass.extend({
 
 	//
 	setZoom: function(zoom) {
-		// old comment => 'on mobile increase default zoom by 25%'
-		/*if (ige.isMobile) {
-			zoom *= 0.75;
-		}*/
-
 		this.emit('zoom', zoom);
 	},
 
