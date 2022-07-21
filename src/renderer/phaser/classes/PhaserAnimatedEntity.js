@@ -44,7 +44,7 @@ var PhaserAnimatedEntity = /** @class */ (function (_super) {
     PhaserAnimatedEntity.prototype.layer = function () {
         console.log("key: ".concat(this.key, " layer: ").concat(this.entity._layer, ", depth: ").concat(this.entity._depth)); // TODO: Remove
         // use index - 1 because taro layers are indexed at 1
-        this.scene.layers[this.entity._layer - 1].add(this.gameObject);
+        this.scene.entityLayers[this.entity._layer - 1].add(this.gameObject);
         this.gameObject.setDepth(this.entity._depth);
     };
     PhaserAnimatedEntity.prototype.scale = function (data) {

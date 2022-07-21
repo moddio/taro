@@ -1,6 +1,6 @@
 class GameScene extends PhaserScene {
 
-	layers: Phaser.GameObjects.Layer[];
+	entityLayers: Phaser.GameObjects.Layer[] = [];
 
 	constructor() {
 		super({ key: 'Game' });
@@ -192,9 +192,6 @@ class GameScene extends PhaserScene {
 			}
 		});
 
-		// instantiate the array that will hold the Layer references
-		this.layers = [];
-
 		data.map.layers.forEach((layer) => {
 
 			// floor, 0
@@ -207,37 +204,31 @@ class GameScene extends PhaserScene {
 				return;
 			}
 
-			map.createLayer(layer.name, map.tilesets, 0, 0)
-				.setScale(scaleFactor.x, scaleFactor.y)
-				.setName(`map: ${layer.name}`);
+			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0)
+			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
+			tilemapLayer.setName(`map: ${layer.name}`);
 
-			// add to array this.layers
-			this.layers.push(
-				// create Layer and add to scene
-				this.add.layer()
-					// give it a name so we can track it
-					.setName(layer.name)
-			);
+			const entityLayer = this.add.layer();
+			entityLayer.setName(layer.name);
+			this.entityLayers.push(entityLayer);
 		});
 
 		// since we returned early for 'debris', it needs a Layer still.
 		// it goes at the index after 'walls'
-		this.layers.splice(
-			3,
-			0,
-			this.add.layer().setName('debris')
-		);
+		const debrisLayer = this.add.layer();
+
+		debrisLayer.setName('debris');
+
+		this.entityLayers.splice(3, 0, debrisLayer);
 
 		// 'debris' Layer needs to be inserted at the correct index in the Scene's displayList
 		// it goes right above the Layer for 'walls'.
 		// this logic is for backwards compatibility with taro
-		const walls = this.children.getByName('walls');
-		const debris = this.children.getByName('debris');
+		const wallsLayer = this.children.getByName('walls');
 
 		this.children.moveTo(
-			debris,
-			// index of walls layer + 1
-			this.children.getIndex(walls) + 1
+			debrisLayer as unknown as Phaser.GameObjects.GameObject,
+			this.children.getIndex(wallsLayer) + 1
 		);
 
 		const camera = this.cameras.main;
