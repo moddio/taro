@@ -72,10 +72,9 @@ var PhaserUnit = /** @class */ (function (_super) {
         camera.startFollow(this.gameObject, false, 0.05, 0.05);
         /*DEBUG - will be removed before merging*/
         var debug = this.debug = this.scene.add.graphics();
-        var width = ige.game.data.settings.camera.zoom.default * 1.90;
-        var height = ige.game.data.settings.camera.zoom.default * 1.90;
-        debug.lineStyle(3, 0xffee00, 1);
-        debug.strokeRect(-width / 2, -height / 2, width, height);
+        var size = ige.game.data.settings.camera.zoom.default / 9 * 16 * 0.99;
+        debug.lineStyle(3, 0x00ff00, 1);
+        debug.strokeRect(-size / 2, -size / 2, size, size);
         this.gameObject.add(debug);
         /*****************************************/
     };
@@ -196,10 +195,9 @@ var PhaserUnit = /** @class */ (function (_super) {
         if (this.debug) {
             this.debug.clear();
             var debug = this.debug = this.scene.add.graphics();
-            var widthD = height * 1.90;
-            var heightD = height * 1.90;
-            debug.lineStyle(3, 0xffee00, 1);
-            debug.strokeRect(-widthD / 2, -heightD / 2, widthD, heightD);
+            var size = height / 9 * 16 * 0.99;
+            debug.lineStyle(3, 0x00ff00, 1);
+            debug.strokeRect(-size / 2, -size / 2, size, size);
             this.gameObject.add(debug);
         }
         /*****************************************/
