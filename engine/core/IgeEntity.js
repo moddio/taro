@@ -3843,11 +3843,11 @@ var IgeEntity = IgeObject.extend({
 		}
 
 		if (isUnitExists) {
-			// remove all passive attributes applyed to this unit
+			// remove all passive attributes applied to this unit
 			unit._stats.itemIds.forEach(function (itemId) {
 				if (itemId) {
 					var item = ige.$(itemId);
-					if (item._stats.bonus && item._stats.bonus.passive) {
+					if (item._stats && item._stats.bonus && item._stats.bonus.passive) {
 						if (item._stats.slotIndex < unit._stats.inventorySize || item._stats.bonus.passive.isDisabledInBackpack != true) {
 							unit.updateStats(itemId, true);
 						}
