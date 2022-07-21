@@ -34,24 +34,14 @@ var GameScene = /** @class */ (function (_super) {
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
-            if (!_this.igeZoom) {
-                _this.igeZoom = ige.game.data.settings.camera.zoom.default;
-            }
-            else {
-                _this.updateZoom();
+            if (_this.zoomSize) {
+                camera.zoom = _this.calculateZoom();
             }
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            _this.igeZoom = height;
-            var targetZoom;
-            if (_this.scale.height > _this.scale.width) {
-                targetZoom = _this.scale.height / (_this.igeZoom * 2);
-            }
-            else {
-                targetZoom = _this.scale.width / (_this.igeZoom * 2);
-            }
-            camera.zoomTo(targetZoom, 1000, Phaser.Math.Easing.Quadratic.Out, true);
+            _this.setZoomSize(height);
+            camera.zoomTo(_this.calculateZoom(), 1000, Phaser.Math.Easing.Quadratic.Out, true);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
@@ -170,14 +160,13 @@ var GameScene = /** @class */ (function (_super) {
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
     };
-    GameScene.prototype.updateZoom = function () {
-        var camera = this.cameras.main;
-        if (this.scale.height > this.scale.width) {
-            camera.zoom = this.scale.height / (this.igeZoom * 2);
-        }
-        else {
-            camera.zoom = this.scale.width / (this.igeZoom * 2);
-        }
+    GameScene.prototype.setZoomSize = function (height) {
+        // backward compatible game scaling on average 16:9 screen
+        this.zoomSize = height / 9 * 16;
+    };
+    GameScene.prototype.calculateZoom = function () {
+        var scale = this.scale;
+        return Math.max(scale.height, scale.width) / this.zoomSize;
     };
     GameScene.prototype.patchMapData = function (map) {
         /**

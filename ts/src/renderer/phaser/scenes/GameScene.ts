@@ -1,5 +1,6 @@
 class GameScene extends PhaserScene {
-	igeZoom: number;
+
+	private zoomSize: number;
 
 	constructor() {
 		super({ key: 'Game' });
@@ -30,27 +31,18 @@ class GameScene extends PhaserScene {
 			console.log(Phaser.Scale.Events.RESIZE, // TODO remove
 				gameSize, baseSize, displaySize, previousWidth, previousHeight);
 
-			if (!this.igeZoom) {
-				this.igeZoom = ige.game.data.settings.camera.zoom.default;
-			} else {
-				this.updateZoom();
+			if (this.zoomSize) {
+				camera.zoom = this.calculateZoom();
 			}
-
 		});
 
 		ige.client.on('zoom', (height: number) => {
 			console.log('GameScene zoom event', height); // TODO remove
-			this.igeZoom = height;
 
-			let targetZoom;
-			if (this.scale.height > this.scale.width) {
-				targetZoom = this.scale.height / (this.igeZoom * 2);
-			} else {
-				targetZoom = this.scale.width / (this.igeZoom * 2);
-			}
+			this.setZoomSize(height);
 
 			camera.zoomTo(
-				targetZoom,
+				this.calculateZoom(),
 				1000,
 				Phaser.Math.Easing.Quadratic.Out,
 				true
@@ -215,13 +207,14 @@ class GameScene extends PhaserScene {
 		);
 	}
 
-	private updateZoom(): void {
-		const camera = this.cameras.main;
-		if (this.scale.height > this.scale.width) {
-			camera.zoom = this.scale.height / (this.igeZoom * 2);
-		} else {
-			camera.zoom = this.scale.width / (this.igeZoom * 2);
-		}
+	private setZoomSize (height: number): void {
+		// backward compatible game scaling on average 16:9 screen
+		this.zoomSize = height / 9 * 16;
+	}
+
+	private calculateZoom(): number {
+		const scale = this.scale;
+		return Math.max(scale.height, scale.width) / this.zoomSize;
 	}
 
 	private patchMapData (map: GameComponent['data']['map']): typeof map {

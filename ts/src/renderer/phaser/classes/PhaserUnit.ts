@@ -91,15 +91,14 @@ class PhaserUnit extends PhaserAnimatedEntity {
 
 		/*DEBUG - will be removed before merging*/
 		let debug = this.debug = this.scene.add.graphics();
-		let width = ige.game.data.settings.camera.zoom.default *1.90;
-		let height = ige.game.data.settings.camera.zoom.default *1.90;
+		let size = ige.game.data.settings.camera.zoom.default / 9 * 16 * 0.99;
 
-		debug.lineStyle(3, 0xffee00, 1);
+		debug.lineStyle(3, 0x00ff00, 1);
 		debug.strokeRect(
-			-width / 2,
-			-height / 2,
-			width,
-			height
+			-size / 2,
+			-size / 2,
+			size,
+			size
 		);
 		this.gameObject.add(debug);
 		/*****************************************/
@@ -243,16 +242,15 @@ class PhaserUnit extends PhaserAnimatedEntity {
 		/*DEBUG - will be removed before merging*/
 		if (this.debug) {
 			this.debug.clear();
-			let debug = this.debug = this.scene.add.graphics();
-			let widthD = height *1.90;
-			let heightD = height *1.90;
+			const debug = this.debug = this.scene.add.graphics();
+			const size = height / 9 * 16 * 0.99;
 
-			debug.lineStyle(3, 0xffee00, 1);
+			debug.lineStyle(3, 0x00ff00, 1);
 			debug.strokeRect(
-				-widthD / 2,
-				-heightD / 2,
-				widthD,
-				heightD
+				-size / 2,
+				-size / 2,
+				size,
+				size
 			);
 			this.gameObject.add(debug);
 		}
