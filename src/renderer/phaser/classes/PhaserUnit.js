@@ -70,13 +70,6 @@ var PhaserUnit = /** @class */ (function (_super) {
             return;
         }
         camera.startFollow(this.gameObject, false, 0.05, 0.05);
-        /*DEBUG - will be removed before merging*/
-        var debug = this.debug = this.scene.add.graphics();
-        var size = ige.game.data.settings.camera.zoom.default / 9 * 16 * 0.99;
-        debug.lineStyle(3, 0x00ff00, 1);
-        debug.strokeRect(-size / 2, -size / 2, size, size);
-        this.gameObject.add(debug);
-        /*****************************************/
     };
     PhaserUnit.prototype.stopFollow = function () {
         console.log('PhaserUnit stop-follow', this.entity.id()); // TODO remove
@@ -191,16 +184,6 @@ var PhaserUnit = /** @class */ (function (_super) {
             ease: Phaser.Math.Easing.Quadratic.Out,
             scale: targetScale,
         });
-        /*DEBUG - will be removed before merging*/
-        if (this.debug) {
-            this.debug.clear();
-            var debug = this.debug = this.scene.add.graphics();
-            var size = height / 9 * 16 * 0.99;
-            debug.lineStyle(3, 0x00ff00, 1);
-            debug.strokeRect(-size / 2, -size / 2, size, size);
-            this.gameObject.add(debug);
-        }
-        /*****************************************/
     };
     PhaserUnit.prototype.destroy = function () {
         if (this.chat) {

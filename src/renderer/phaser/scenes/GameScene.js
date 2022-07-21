@@ -162,7 +162,7 @@ var GameScene = /** @class */ (function (_super) {
     };
     GameScene.prototype.setZoomSize = function (height) {
         // backward compatible game scaling on average 16:9 screen
-        this.zoomSize = height / 9 * 16;
+        this.zoomSize = height * 2.15;
     };
     GameScene.prototype.calculateZoom = function () {
         var scale = this.scale;
