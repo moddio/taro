@@ -16,9 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 var GameScene = /** @class */ (function (_super) {
     __extends(GameScene, _super);
     function GameScene() {
-        var _this = _super.call(this, { key: 'Game' }) || this;
-        _this.layers = {};
-        return _this;
+        return _super.call(this, { key: 'Game' }) || this;
     }
     GameScene.prototype.init = function () {
         var _this = this;
@@ -152,7 +150,9 @@ var GameScene = /** @class */ (function (_super) {
                 map.addTilesetImage(tileset.name, key);
             }
         });
-        data.map.layers.forEach(function (layer, i) {
+        // instantiate the array that will hold the Layer references
+        this.layers = [];
+        data.map.layers.forEach(function (layer) {
             // floor, 0
             // floor2, 1
             // debris, 2 (returns early)
@@ -164,17 +164,24 @@ var GameScene = /** @class */ (function (_super) {
             map.createLayer(layer.name, map.tilesets, 0, 0)
                 .setScale(scaleFactor.x, scaleFactor.y)
                 .setName("map: ".concat(layer.name));
-            // hard-coded solution for backwards compatibility
-            // letter choice 'c' is insignificant
-            var c = i !== 3 ? i + 1 : i;
-            _this.layers[c] = _this.add.layer()
-                .setName(layer.name);
-            // plug in debris because its map layer index is swapped with walls (3,4)
-            if (c === i) {
-                _this.layers[c + 1] = _this.add.layer()
-                    .setName('debris');
-            }
+            // add to array this.layers
+            _this.layers.push(
+            // create Layer and add to scene
+            _this.add.layer()
+                // give it a name so we can track it
+                .setName(layer.name));
         });
+        // since we returned early for 'debris', it needs a Layer still.
+        // it goes at the index after 'walls'
+        this.layers.splice(3, 0, this.add.layer().setName('debris'));
+        // 'debris' Layer needs to be inserted at the correct index in the Scene's displayList
+        // it goes right above the Layer for 'walls'.
+        // this logic is for backwards compatibility with taro
+        var walls = this.children.getByName('walls');
+        var debris = this.children.getByName('debris');
+        this.children.moveTo(debris, 
+        // index of walls layer + 1
+        this.children.getIndex(walls) + 1);
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
         camera.zoom = this.scale.width / 800;

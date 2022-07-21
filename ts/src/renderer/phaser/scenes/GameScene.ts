@@ -1,6 +1,6 @@
 class GameScene extends PhaserScene {
 
-	layers: Record<number, Phaser.GameObjects.Layer> = {};
+	layers: Phaser.GameObjects.Layer[];
 
 	constructor() {
 		super({ key: 'Game' });
@@ -192,7 +192,10 @@ class GameScene extends PhaserScene {
 			}
 		});
 
-		data.map.layers.forEach((layer, i) => {
+		// instantiate the array that will hold the Layer references
+		this.layers = [];
+
+		data.map.layers.forEach((layer) => {
 
 			// floor, 0
 			// floor2, 1
@@ -208,19 +211,34 @@ class GameScene extends PhaserScene {
 				.setScale(scaleFactor.x, scaleFactor.y)
 				.setName(`map: ${layer.name}`);
 
-			// hard-coded solution for backwards compatibility
-			// letter choice 'c' is insignificant
-			const c = i !== 3 ? i + 1 : i;
-
-			this.layers[c] = this.add.layer()
-				.setName(layer.name);
-
-			// plug in debris because its map layer index is swapped with walls (3,4)
-			if (c === i) {
-				this.layers[c + 1] = this.add.layer()
-					.setName('debris');
-			}
+			// add to array this.layers
+			this.layers.push(
+				// create Layer and add to scene
+				this.add.layer()
+					// give it a name so we can track it
+					.setName(layer.name)
+			);
 		});
+
+		// since we returned early for 'debris', it needs a Layer still.
+		// it goes at the index after 'walls'
+		this.layers.splice(
+			3,
+			0,
+			this.add.layer().setName('debris')
+		);
+
+		// 'debris' Layer needs to be inserted at the correct index in the Scene's displayList
+		// it goes right above the Layer for 'walls'.
+		// this logic is for backwards compatibility with taro
+		const walls = this.children.getByName('walls');
+		const debris = this.children.getByName('debris');
+
+		this.children.moveTo(
+			debris,
+			// index of walls layer + 1
+			this.children.getIndex(walls) + 1
+		);
 
 		const camera = this.cameras.main;
 		camera.centerOn(
