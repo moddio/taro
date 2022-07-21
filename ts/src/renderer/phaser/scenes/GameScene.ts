@@ -208,7 +208,6 @@ class GameScene extends PhaserScene {
 	}
 
 	private setZoomSize (height: number): void {
-		// backward compatible game scaling on average 16:9 screen
 		this.zoomSize = height * 2.15;
 	}
 
