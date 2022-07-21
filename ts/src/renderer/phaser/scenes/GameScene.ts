@@ -32,7 +32,6 @@ class GameScene extends PhaserScene {
 
 			if (!this.igeZoom) {
 				this.igeZoom = ige.game.data.settings.camera.zoom.default;
-				camera.zoom = 0.5;
 			} else {
 				this.updateZoom();
 			}

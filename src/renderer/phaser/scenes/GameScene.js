@@ -36,7 +36,6 @@ var GameScene = /** @class */ (function (_super) {
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
             if (!_this.igeZoom) {
                 _this.igeZoom = ige.game.data.settings.camera.zoom.default;
-                camera.zoom = 0.5;
             }
             else {
                 _this.updateZoom();
