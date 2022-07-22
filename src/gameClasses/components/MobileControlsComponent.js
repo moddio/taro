@@ -396,17 +396,15 @@ var MobileControlsComponent = IgeEntity.extend({
 				Object.assign(settings, {
 					onStart: () => {
 						if (key) {
-							// console.log("Key down:"+newButton._key);
 							ige.network.send('playerKeyDown', {
-								device: 'key', key: newButton._key
+								device: 'key', key: key.toLowerCase()
 							});
 						}
 					},
 					onEnd: () => {
 						if (key) {
-							// console.log("Key up:"+newButton._key);
 							ige.network.send('playerKeyUp', {
-								device: 'key', key: newButton._key
+								device: 'key', key: key.toLowerCase()
 							});
 						}
 					}
