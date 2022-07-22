@@ -5,7 +5,7 @@ class PhaserEntity {
 		Phaser.GameObjects.GameObject &
 		Phaser.GameObjects.Components.Transform &
 		Phaser.GameObjects.Components.Visible &
-		Phaser.GameObjects.Components.Depth
+		Phaser.GameObjects.Components.Depth;
 
 	protected evtListeners: Record<string, EvtListener> = {};
 

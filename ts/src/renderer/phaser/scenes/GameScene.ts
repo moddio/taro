@@ -194,42 +194,25 @@ class GameScene extends PhaserScene {
 
 		data.map.layers.forEach((layer) => {
 
-			// floor, 0
-			// floor2, 1
-			// debris, 2 (returns early)
-			// walls, 3
-			// trees, 4
+			// floor = 0
+			// floor2 = 1
+			// debris = 2
+			// walls = 3
+			// trees = 4
 
-			if (layer.type !== 'tilelayer') {
-				return;
+			if (layer.type === 'tilelayer') {
+				const tileLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
+				tileLayer.setScale(scaleFactor.x, scaleFactor.y);
 			}
 
-			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0)
-			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y)
-			tilemapLayer.setName(`map: ${layer.name}`);
-
-			const entityLayer = this.add.layer();
-			entityLayer.setName(layer.name);
-			this.entityLayers.push(entityLayer);
+			this.entityLayers.push(this.add.layer());
 		});
 
-		// since we returned early for 'debris', it needs a Layer still.
-		// it goes at the index after 'walls'
-		const debrisLayer = this.add.layer();
-
-		debrisLayer.setName('debris');
-
-		this.entityLayers.splice(3, 0, debrisLayer);
-
-		// 'debris' Layer needs to be inserted at the correct index in the Scene's displayList
-		// it goes right above the Layer for 'walls'.
-		// this logic is for backwards compatibility with taro
-		const wallsLayer = this.children.getByName('walls');
-
-		this.children.moveTo(
-			debrisLayer as unknown as Phaser.GameObjects.GameObject,
-			this.children.getIndex(wallsLayer) + 1
-		);
+		// taro expects 'debris' entity layer to be in front of 'walls'
+		// entity layer, so we need to swap them for backwards compatibility
+		const debrisLayer = this.entityLayers[2];
+		const wallsLayer = this.entityLayers[3];
+		this.children.moveAbove(<any>debrisLayer, <any>wallsLayer);
 
 		const camera = this.cameras.main;
 		camera.centerOn(
