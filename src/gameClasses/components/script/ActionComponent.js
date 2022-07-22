@@ -1319,7 +1319,8 @@ var ActionComponent = IgeEntity.extend({
 								type: action.dialogue,
 								extraData: {
 									playerName: player._stats && player._stats.name,
-									variables: primitiveVariables
+									variables: primitiveVariables,
+									dialogueTemplate: _.get(ige, "game.data.ui.dialogueview.htmlData", "")
 								}
 							}, player._stats.clientId);
 						}
