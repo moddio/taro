@@ -13,7 +13,7 @@ class PhaserRegion extends PhaserEntity {
 
 		// we don't get depth/layer info from taro,
 		// so it can go in 'debris' layer for now
-		scene.entityLayers[3].add(this.gameObject);
+		scene.entityLayers[EntityLayer.DEBRIS].add(this.gameObject);
 
 		this.transform();
 	}

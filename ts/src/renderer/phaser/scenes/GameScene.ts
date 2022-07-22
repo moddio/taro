@@ -197,16 +197,6 @@ class GameScene extends PhaserScene {
 		const entityLayers = this.entityLayers;
 		data.map.layers.forEach((layer) => {
 
-			/**
-			 * Tile Layers
-			 *
-			 * [0] floor
-			 * [1] floor2
-			 * [2] debris
-			 * [3] walls
-			 * [4] trees
-			 */
-
 			if (layer.type === 'tilelayer') {
 				const tileLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
 				tileLayer.setScale(scaleFactor.x, scaleFactor.y);
@@ -215,22 +205,12 @@ class GameScene extends PhaserScene {
 			entityLayers.push(this.add.layer());
 		});
 
-		/**
-		 * Entity Layers
-		 *
-		 * [0] floor
-		 * [1] floor2
-		 * [2] walls (swapped)
-		 * [3] debris (swapped)
-		 * [4] trees
-		 */
-
 		// taro expects 'debris' entity layer to be in front of 'walls'
 		// entity layer, so we need to swap them for backwards compatibility
-		const debrisLayer = entityLayers[2];
-		const wallsLayer = entityLayers[3];
-		entityLayers[2] = wallsLayer;
-		entityLayers[3] = debrisLayer;
+		const debrisLayer = entityLayers[TileLayer.DEBRIS];
+		const wallsLayer = entityLayers[TileLayer.WALLS];
+		entityLayers[EntityLayer.DEBRIS] = debrisLayer;
+		entityLayers[EntityLayer.WALLS] = wallsLayer;
 		this.children.moveAbove(<any>debrisLayer, <any>wallsLayer);
 
 		const camera = this.cameras.main;
