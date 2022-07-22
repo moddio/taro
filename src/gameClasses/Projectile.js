@@ -41,6 +41,10 @@ var Projectile = IgeEntityPhysics.extend({
 			self.mount(ige.$('baseScene'));
 		}
 
+		if (ige.isClient) {
+			ige.client.emit('create-projectile', this);
+		}
+
 		if (self._stats.states) {
 			var currentState = self._stats.states[self._stats.stateId];
 			if (currentState) {
@@ -82,8 +86,6 @@ var Projectile = IgeEntityPhysics.extend({
 		if (ige.isServer) {
 			ige.server.totalProjectilesCreated++;
 		} else if (ige.isClient) {
-
-			ige.client.emit('create-projectile', this);
 
 			if (currentState) {
 				var defaultAnimation = this._stats.animations[currentState.animation];

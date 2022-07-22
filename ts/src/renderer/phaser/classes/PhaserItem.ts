@@ -4,7 +4,7 @@ class PhaserItem extends PhaserAnimatedEntity {
 	protected entity: Item;
 
 	constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: Item
 	) {
 		super(scene, entity, `item/${entity._stats.itemTypeId}`);

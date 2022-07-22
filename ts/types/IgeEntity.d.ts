@@ -9,6 +9,8 @@ declare class IgeEntity extends IgeObject {
 	_scale: IgePoint3d;
 	_stats: EntityStats;
 	_bounds2d: IgePoint2d;
+	_depth: number;
+	_layer: number;
 
 	_pixiText: any; // PIXI.Text
 

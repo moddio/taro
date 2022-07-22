@@ -2,6 +2,8 @@ class GameScene extends PhaserScene {
 
 	private zoomSize: number;
 
+	entityLayers: Phaser.GameObjects.Layer[] = [];
+
 	constructor() {
 		super({ key: 'Game' });
 	}
@@ -191,14 +193,25 @@ class GameScene extends PhaserScene {
 				map.addTilesetImage(tileset.name, key);
 			}
 		});
+
+		const entityLayers = this.entityLayers;
 		data.map.layers.forEach((layer) => {
-			if (layer.type !== 'tilelayer') {
-				return;
+
+			if (layer.type === 'tilelayer') {
+				const tileLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
+				tileLayer.setScale(scaleFactor.x, scaleFactor.y);
 			}
-			console.log(layer.name);
-			const tilemapLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
-			tilemapLayer.setScale(scaleFactor.x, scaleFactor.y);
+
+			entityLayers.push(this.add.layer());
 		});
+
+		// taro expects 'debris' entity layer to be in front of 'walls'
+		// entity layer, so we need to swap them for backwards compatibility
+		const debrisLayer = entityLayers[TileLayer.DEBRIS];
+		const wallsLayer = entityLayers[TileLayer.WALLS];
+		entityLayers[EntityLayer.DEBRIS] = debrisLayer;
+		entityLayers[EntityLayer.WALLS] = wallsLayer;
+		this.children.moveAbove(<any>debrisLayer, <any>wallsLayer);
 
 		const camera = this.cameras.main;
 		camera.centerOn(

@@ -4,7 +4,7 @@ class PhaserProjectile extends PhaserAnimatedEntity {
 	protected entity: Projectile;
 
 	constructor (
-		scene: Phaser.Scene,
+		scene: GameScene,
 		entity: Projectile
 	) {
 		super(scene, entity, `projectile/${entity._stats.type}`);
