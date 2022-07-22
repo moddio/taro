@@ -208,12 +208,13 @@ class GameScene extends PhaserScene {
 	}
 
 	private setZoomSize (height: number): void {
+		// backward compatible game scaling on average 16:9 screen
 		this.zoomSize = height * 2.15;
 	}
 
 	private calculateZoom(): number {
-		const scale = this.scale;
-		return Math.max(scale.height, scale.width) / this.zoomSize;
+		const { width, height } = this.scale;
+		return Math.max(width, height) / this.zoomSize;
 	}
 
 	private patchMapData (map: GameComponent['data']['map']): typeof map {

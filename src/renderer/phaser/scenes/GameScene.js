@@ -161,11 +161,12 @@ var GameScene = /** @class */ (function (_super) {
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
     };
     GameScene.prototype.setZoomSize = function (height) {
+        // backward compatible game scaling on average 16:9 screen
         this.zoomSize = height * 2.15;
     };
     GameScene.prototype.calculateZoom = function () {
-        var scale = this.scale;
-        return Math.max(scale.height, scale.width) / this.zoomSize;
+        var _a = this.scale, width = _a.width, height = _a.height;
+        return Math.max(width, height) / this.zoomSize;
     };
     GameScene.prototype.patchMapData = function (map) {
         /**
