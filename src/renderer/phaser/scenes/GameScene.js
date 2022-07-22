@@ -34,15 +34,14 @@ var GameScene = /** @class */ (function (_super) {
         this.scale.on(Phaser.Scale.Events.RESIZE, function (gameSize, baseSize, displaySize, previousWidth, previousHeight) {
             console.log(Phaser.Scale.Events.RESIZE, // TODO remove
             gameSize, baseSize, displaySize, previousWidth, previousHeight);
-            camera.zoom *= gameSize.height / previousHeight;
-            /*camera.centerOn(
-                camera.scrollX + (gameSize.width - previousWidth) / 2,
-                camera.scrollY + (gameSize.height - previousHeight) / 2
-            );*/
+            if (_this.zoomSize) {
+                camera.zoom = _this.calculateZoom();
+            }
         });
         ige.client.on('zoom', function (height) {
             console.log('GameScene zoom event', height); // TODO remove
-            camera.zoomTo(_this.scale.height / height, 1000, Phaser.Math.Easing.Quadratic.Out, true);
+            _this.setZoomSize(height);
+            camera.zoomTo(_this.calculateZoom(), 1000, Phaser.Math.Easing.Quadratic.Out, true);
         });
         this.input.on('pointermove', function (pointer) {
             ige.input.emit('pointermove', [{
@@ -160,7 +159,14 @@ var GameScene = /** @class */ (function (_super) {
         });
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
-        camera.zoom = this.scale.width / 800;
+    };
+    GameScene.prototype.setZoomSize = function (height) {
+        // backward compatible game scaling on average 16:9 screen
+        this.zoomSize = height * 2.15;
+    };
+    GameScene.prototype.calculateZoom = function () {
+        var _a = this.scale, width = _a.width, height = _a.height;
+        return Math.max(width, height) / this.zoomSize;
     };
     GameScene.prototype.patchMapData = function (map) {
         /**
