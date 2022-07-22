@@ -152,22 +152,38 @@ var GameScene = /** @class */ (function (_super) {
                 map.addTilesetImage(tileset.name, key);
             }
         });
+        var entityLayers = this.entityLayers;
         data.map.layers.forEach(function (layer) {
-            // floor = 0
-            // floor2 = 1
-            // debris = 2
-            // walls = 3
-            // trees = 4
+            /**
+             * Tile Layers
+             *
+             * [0] floor
+             * [1] floor2
+             * [2] debris
+             * [3] walls
+             * [4] trees
+             */
             if (layer.type === 'tilelayer') {
                 var tileLayer = map.createLayer(layer.name, map.tilesets, 0, 0);
                 tileLayer.setScale(scaleFactor.x, scaleFactor.y);
             }
-            _this.entityLayers.push(_this.add.layer());
+            entityLayers.push(_this.add.layer());
         });
+        /**
+         * Entity Layers
+         *
+         * [0] floor
+         * [1] floor2
+         * [2] walls (swapped)
+         * [3] debris (swapped)
+         * [4] trees
+         */
         // taro expects 'debris' entity layer to be in front of 'walls'
         // entity layer, so we need to swap them for backwards compatibility
-        var debrisLayer = this.entityLayers[2];
-        var wallsLayer = this.entityLayers[3];
+        var debrisLayer = entityLayers[2];
+        var wallsLayer = entityLayers[3];
+        entityLayers[2] = wallsLayer;
+        entityLayers[3] = debrisLayer;
         this.children.moveAbove(debrisLayer, wallsLayer);
         var camera = this.cameras.main;
         camera.centerOn(map.width * map.tileWidth / 2 * scaleFactor.x, map.height * map.tileHeight / 2 * scaleFactor.y);
