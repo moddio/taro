@@ -33,7 +33,10 @@ global.rollbar = {
 	},
 	error: function () {
 
-	}
+	},
+	configure: function () {
+		
+	},
 };
 
 if (process.env.ENV == 'production') {
