@@ -62,7 +62,7 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-promise": "^6.0.1",
     "node-arguments": "^0.0.1",
     "rollbar": "^2.25.0",
     "typescript": "^4.7.4"
