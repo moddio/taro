@@ -64,7 +64,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "node-arguments": "^0.0.1",
-    "rollbar": "^2.25.0",
+    "rollbar": "^2.25.2",
     "typescript": "^4.7.4"
   }
 }
