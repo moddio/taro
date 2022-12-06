@@ -58,7 +58,7 @@
     "@typescript-eslint/parser": "^5.30.7",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "cross-env": "^7.0.3",
-    "eslint": "^8.20.0",
+    "eslint": "^8.29.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
