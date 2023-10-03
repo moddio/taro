@@ -1,3 +1,18 @@
+# Taro (Archived)
+
+**⚠️ Important Notice: This Taro repository is now archived and no longer actively maintained.**
+
+We are excited to announce that we have upgraded Taro to its new and improved version, Moddio2! 🚀
+
+You can find the latest and actively maintained version of our project at the following repository:
+
+👉 [Moddio2 Repository](https://github.com/moddio/moddio2)
+
+Thank you for your support and continued interest in our project!
+
+
+  <h2></h2>
+
 <div align="center">
   <a href="https://modd.io">
     <img src="./assets/images/logo.png" width="400" alt="Taro Engine logo">
