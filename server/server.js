@@ -80,6 +80,7 @@ var Server = IgeClass.extend({
 		self.postReqTimestamps = []
 		self.started_at = new Date();
 		self.lastSnapshot = [];
+		self.developerClientIds = [];
 
 		self.logTriggers = {
 
@@ -524,14 +525,14 @@ var Server = IgeClass.extend({
 						// send dev logs to developer every second
 						var logInterval = setInterval(function () {
 							// send only if developer client is connect
-							if (ige.isServer && ((self.developerClientId && ige.server.clients[self.developerClientId]) || process.env.ENV == 'standalone')) {
+							if (ige.isServer && self.developerClientIds.length) {
 								ige.variable.devLogs.status = ige.server.getStatus();
-								ige.network.send('devLogs', ige.variable.devLogs, self.developerClientId);
-
-								if (ige.script.errorLogs != {}) {
-									ige.network.send('errorLogs', ige.script.errorLogs, self.developerClientId);
-									ige.script.errorLogs = {};
-								}
+								const sendErrors = Object.keys(ige.script.errorLogs).length;
+								self.developerClientIds.forEach(id => {
+									ige.network.send('devLogs', ige.variable.devLogs, id);
+									if (sendErrors) ige.network.send('errorLogs', ige.script.errorLogs, id);
+								});
+								if (sendErrors) ige.script.errorLogs = {};
 							}
 							ige.physicsTickCount = 0;
 							ige.unitBehaviourCount = 0;
