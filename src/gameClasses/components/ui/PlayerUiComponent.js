@@ -246,6 +246,18 @@ var PlayerUiComponent = IgeEntity.extend({
 	},
 
 	openDialogueModal: function (dialogueId, extraData) {
+		let dialogueTemplate = extraData.dialogueTemplate || window.defaultUI.defaultDialogueTemplate
+		
+		window.handleOptionClick = function (e, index){
+			e.preventDefault();
+			e.stopPropagation();
+			const optionId = index.toString()
+			$('.dialogue-option').addClass('disabled');
+			$(this).find('.option-check').removeClass('d-none');
+			ige.playerUi.submitDialogueModal(dialogueId, optionId);
+		}
+
+		const renderDialogueTemplate = window.renderDialogueTemplate;
 		var self = this;
 
 		function getDialogueInstance (dialogue) {
@@ -283,123 +295,74 @@ var PlayerUiComponent = IgeEntity.extend({
 			dialogue.hasOptions = function () {
 				return Object.keys(dialogue.options).length > 0;
 			};
+			
 			dialogue.areOptionsRendered = false;
 
 			return dialogue;
 		}
 
 		function initModal () {
-			$('#modd-dialogue-message').html('');
-			$('#modd-dialogue-image').attr('src', '');
-			$('#modd-dialogue-options-container').addClass('d-none');
-			$('#modd-dialogue-skip-hint').addClass('d-none');
+			renderDialogueTemplate({
+				dialogue: {
+					...dialogue,
+					message: '',
+					options: []		
+				}
+			}, dialogueTemplate);
 
 			if (self.dialogue.messagePrinter) {
 				clearInterval(self.dialogue.messagePrinter);
-			}
-
-			if (dialogue.image) {
-				$('#modd-dialogue-image-container').removeClass('d-none');
-				$('#modd-dialogue-message-container').addClass('col-8');
-				$('#modd-dialogue-message-container').addClass('pl-md-0');
-				$('#modd-dialogue-message-container').removeClass('col-12');
-				$('#modd-dialogue-image').attr('src', dialogue.image);
-			} else {
-				$('#modd-dialogue-image-container').addClass('d-none');
-				$('#modd-dialogue-message-container').removeClass('col-8');
-				$('#modd-dialogue-message-container').addClass('col-12');
-				$('#modd-dialogue-image').attr('src', '');
 			}
 
 			$(document).on('keydown.modd-dialogue', keyboardListener);
 			$(document).on('click.modd-dialogue', skipText);
 		}
 
-		function printingCompleted () {
-			window.isPrintingDialogue = false;
-
-			if (dialogue.areAllMessagesPrinted()) {
-				if (dialogue.hasOptions()) {
-					if (!dialogue.areOptionsRendered) {
-						showOptions();
-					}
-				} else {
-					$('#modd-dialogue-skip-hint').removeClass('d-none');
-				}
-			} else {
-				$('#modd-dialogue-skip-hint').removeClass('d-none');
-			}
-		}
-
 		function showOptions () {
-			$('#modd-dialogue-options').html('');
-
-			for (var key in dialogue.options) {
-				var optionObject = dialogue.options[key];
-				var button = $('<button/>', {
-					id: key,
-					class: 'btn btn-light border btn-block text-left dialogue-option-button',
-					click: function () {
-						var optionId = this.id;
-						$('.dialogue-option-button').addClass('disabled');
-						$(this).find('.fa-check').removeClass('d-none');
-						ige.playerUi.submitDialogueModal(dialogueId, optionId);
-					}
-				});
-
-				button.append($('<i/>', { class: 'd-none fa fa-check mr-2' }));
-				button.append($('<span/>', { text: optionObject.name }));
-
-				$('#modd-dialogue-options').append(button);
-			}
-
-			$('#modd-dialogue-skip-hint').addClass('d-none');
-			$('#modd-dialogue-options-container').removeClass('d-none');
 
 			dialogue.areOptionsRendered = true;
+
+			renderDialogueTemplate({
+				dialogue: {
+					...dialogue,
+					message: self.dialogue.message
+				},
+			}, dialogueTemplate)
 		}
 
 		function showNextMessage () {
 			if (dialogue.areAllMessagesPrinted()) {
-				if (dialogue.hasOptions()) {
-					if (!dialogue.areOptionsRendered) {
-						showOptions();
-					}
+				if (dialogue.hasOptions() && !dialogue.areOptionsRendered) {
+					showOptions();
 				} else {
 					self.closeDialogueModal();
 				}
 			} else {
 				self.dialogue.message = dialogue.getNextMessage();
 				self.dialogue.message = self.dialogue.message.replace(/%nl%/g, '<br/>');
-				window.isPrintingDialogue = true;
-				$('#modd-dialogue-message').html('');
-				$('#modd-dialogue-skip-hint').addClass('d-none');
-				self.dialogue.messagePrinter = $('#modd-dialogue-message').length && $('#modd-dialogue-message')
-					.writeText(self.dialogue.message, dialogue.letterPrintSpeed, printingCompleted);
+				
+				let options = []
+				if (dialogue.areAllMessagesPrinted() && dialogue.hasOptions() && !dialogue.areOptionsRendered) {
+					dialogue.areOptionsRendered = true;
+					options = dialogue.options
+				}
+
+				renderDialogueTemplate({
+					dialogue: {
+						...dialogue,
+						message: self.dialogue.message,
+						options: options
+					}
+				}, dialogueTemplate)
 			}
 		}
 
 		function skipText () {
-			if (window.isPrintingDialogue) {
-				clearInterval(self.dialogue.messagePrinter);
-				$('#modd-dialogue-message').html(self.dialogue.message);
-				$('#modd-dialogue-skip-hint').removeClass('d-none');
-				window.isPrintingDialogue = false;
-
-				// if
-				// 1. user skips text in last fragment and
-				// 2. dialogue has options and
-				// 3. those options are still hidden
-				// then direct render the options dont ask user for one more action
-
-				if (dialogue.areAllMessagesPrinted() && dialogue.hasOptions() && !dialogue.areOptionsRendered) {
-					showOptions();
-				}
-			} else {
+			if(! (dialogue.hasOptions() && dialogue.areOptionsRendered)){
 				showNextMessage();
 			}
 		}
-
+		
 		function keyboardListener (e) {
 			if (e.keyCode === 13 || e.keyCode === 32) {
 				e.stopPropagation();
@@ -413,19 +376,13 @@ var PlayerUiComponent = IgeEntity.extend({
 			dialogue = getDialogueInstance(dialogue);
 			initModal();
 			showNextMessage();
-
-			$('#modd-dialogue-modal').modal('show');
 		} else {
 			console.error('dialogue', dialogueId, 'not found');
 		}
 	},
-
 	closeDialogueModal: function () {
-		$('#modd-dialogue-message').html('');
-		$('#modd-dialogue-options-container').addClass('d-none');
-		$('#modd-dialogue-image').attr('src', '');
-		$('#modd-dialogue-modal').modal('hide');
-
+		window.closeDialogue && window.closeDialogue();
+		$("#modd-dialogue-container").html('');
 		this.clearListeners();
 	},
 
@@ -445,7 +402,6 @@ var PlayerUiComponent = IgeEntity.extend({
 				break;
 			}
 		}
-
 		if (willOpenNewDialogue) {
 			this.clearListeners();
 		} else {

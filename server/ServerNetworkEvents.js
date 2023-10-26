@@ -744,7 +744,8 @@ var ServerNetworkEvents = {
 					ige.network.send("openDialogue", {
 						type: selectedOption.followUpDialogue,
 						extraData: {
-							playerName: player._stats.name
+							playerName: player._stats.name,
+							dialogueTemplate: _.get(ige, "game.data.ui.dialogueview.htmlData", "")
 						}
 					}, player._stats.clientId);
 				}
