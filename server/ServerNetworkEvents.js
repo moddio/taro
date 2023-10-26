@@ -196,10 +196,8 @@ var ServerNetworkEvents = {
 							purchasables: {}
 						};
 						var player = ige.game.createPlayer()
-						for (key in userData) {
-							var obj = {}
-							obj[key] = userData[key];
-							data.push(obj)
+						for (const key in userData) {
+							data.push({ [key]: userData[key] });
 						}
 						player.joinGame();
 						player.streamUpdateData(data);
@@ -219,19 +217,15 @@ var ServerNetworkEvents = {
 				var player = ige.game.getPlayerByClientId(socket.id)
 
 				if (player) {
-					player._stats.isAdBlockEnabled = data.isAdBlockEnabled;
+					player._stats.isAdBlockEnabled = false;
 				} else {
-					if (typeof data.number != 'number') {
-						data.number = " lol"
-					}
-
 					var player = ige.game.createPlayer({
 						controlledBy: "human",
-						name: "user" + data.number,
+						name: "user" + (Math.floor(Math.random() * 999) + 100),
 						coins: 0,
 						points: 0,
 						clientId: clientId,
-						isAdBlockEnabled: data.isAdBlockEnabled
+						isAdBlockEnabled: false
 					});
 				}
 
