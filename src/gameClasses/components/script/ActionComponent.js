@@ -37,6 +37,9 @@ var ActionComponent = IgeEntity.extend({
 			ige.script.recordLast50Action(action.type);
 			try {
 				switch (action.type) {
+					case 'comment':
+						break;
+						
 					/* Global */
 
 					case 'setVariable': // store variables with formula processed
@@ -65,15 +68,16 @@ var ActionComponent = IgeEntity.extend({
 
 						break;
 
-					case 'setTimeOut': // execute actions after timeout
+					case 'setTimeOut': { // execute actions after timeout
 
 						// const use for creating new instance of variable every time.
 						const setTimeOutActions = JSON.parse(JSON.stringify(action.actions));
 						// const setTimeoutVars = _.cloneDeep(vars);
 						setTimeout(function (actions) {
 							self.run(actions, vars);
-						}, action.duration, setTimeOutActions);
+						}, ige.variable.getValue(action.duration, vars), setTimeOutActions);
 						break;
+					}
 
 					case 'repeat':
 					{
@@ -236,6 +240,36 @@ var ActionComponent = IgeEntity.extend({
 								var decimalPlace = parseInt(attribute.decimalPlaces) || 0;
 								var value = parseFloat(ige.variable.getValue(action.value, vars)).toFixed(decimalPlace);
 								player.attribute.update(attrId, value, true); // update attribute, and check for attribute becoming 0
+							}
+						}
+
+						break;
+
+					case 'increasePlayerAttribute':
+
+						var attrId = ige.variable.getValue(action.attribute, vars);
+						var player = entity;
+						if (player && player._category == 'player' && player._stats.attributes) {
+							var attribute = player._stats.attributes[attrId];
+							if (attribute != undefined) {
+								var decimalPlace = parseInt(attribute.decimalPlaces) || 0;
+								var value = parseFloat(ige.variable.getValue(action.value, vars));
+								player.attribute.update(attrId, attribute.value + value, true);
+							}
+						}
+
+						break;
+
+					case 'decreasePlayerAttribute':
+
+						var attrId = ige.variable.getValue(action.attribute, vars);
+						var player = entity;
+						if (player && player._category == 'player' && player._stats.attributes) {
+							var attribute = player._stats.attributes[attrId];
+							if (attribute != undefined) {
+								var decimalPlace = parseInt(attribute.decimalPlaces) || 0;
+								var value = parseFloat(ige.variable.getValue(action.value, vars));
+								player.attribute.update(attrId, attribute.value - value, true);
 							}
 						}
 
@@ -2160,6 +2194,30 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 
+					case 'increaseEntityAttribute':
+						var attrId = ige.variable.getValue(action.attribute, vars);
+						var value = ige.variable.getValue(action.value, vars);
+						var entity = ige.variable.getValue(action.entity, vars);
+						if (entity && value != null && self.entityCategories.indexOf(entity._category) != -1 && entity._stats?.attributes?.[attrId]) {
+							var attribute = entity._stats.attributes[attrId];
+							var isAttributeVisible = attribute.isVisible instanceof Array && attribute.isVisible.length;
+
+							entity.attribute.update(attrId, attribute.value + value, isAttributeVisible);
+						}
+						break;
+
+					case 'decreaseEntityAttribute':
+						var attrId = ige.variable.getValue(action.attribute, vars);
+						var value = ige.variable.getValue(action.value, vars);
+						var entity = ige.variable.getValue(action.entity, vars);
+						if (entity && value != null && self.entityCategories.indexOf(entity._category) != -1 && entity._stats?.attributes?.[attrId]) {
+							var attribute = entity._stats.attributes[attrId];
+							var isAttributeVisible = attribute.isVisible instanceof Array && attribute.isVisible.length;
+
+							entity.attribute.update(attrId, attribute.value - value, isAttributeVisible);
+						}
+						break;
+
 					case 'setEntityAttributeMin':
 
 						var attrId = ige.variable.getValue(action.attribute, vars);
@@ -2524,9 +2582,18 @@ var ActionComponent = IgeEntity.extend({
 						if (ige.game.data.variables.hasOwnProperty(action.variable) && !_.isNaN(newValue) && !_.isNil(newValue)) {
 							var variable = ige.game.data.variables[action.variable];
 							if (variable.value === undefined || isNaN(variable.value)) {
-								variable = variable.default || 0;
+								variable.value = variable.default || 0;
 							}
 							variable.value += newValue;
+							if (ige.isServer) {
+								ige.variable.updateDevConsole({
+									type: 'setVariable',
+									params: {
+										variableName: action.variable,
+										newValue: variable.value
+									}
+								});
+							}
 						}
 						break;
 
@@ -2535,9 +2602,18 @@ var ActionComponent = IgeEntity.extend({
 						if (ige.game.data.variables.hasOwnProperty(action.variable) && !_.isNaN(newValue) && !_.isNil(newValue)) {
 							var variable = ige.game.data.variables[action.variable];
 							if (variable.value === undefined || isNaN(variable.value)) {
-								variable = variable.default || 0;
+								variable.value = variable.default || 0;
 							}
 							variable.value -= newValue;
+							if (ige.isServer) {
+								ige.variable.updateDevConsole({
+									type: 'setVariable',
+									params: {
+										variableName: action.variable,
+										newValue: variable.value
+									}
+								});
+							}
 						}
 						break;
 
@@ -2600,8 +2676,6 @@ var ActionComponent = IgeEntity.extend({
 						}
 						break;
 
-					case 'comment':
-						break;
 					default:
 						// console.log('trying to run', action);
 						break;

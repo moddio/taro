@@ -22,8 +22,8 @@ var VariableComponent = IgeEntity.extend({
 			region = region._stats.default;
 		}
 
-		var randomX = Math.floor(Math.random() * ((region.x + region.width) - region.x) + region.x);
-		var randomY = Math.floor(Math.random() * ((region.y + region.height) - region.y) + region.y);
+		var randomX = Math.floor(Math.random() * region.width) + region.x;
+		var randomY = Math.floor(Math.random() * region.height) + region.y;
 		var position = { x: 0, y: 0 };
 
 		if (!isNaN(randomX) || !isNaN(randomY)) {
@@ -621,6 +621,11 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getPlayerCurrentlySelectedUnit':
+					if (entity && entity._category == 'player') {
+						returnValue = entity.getSelectedUnit();
+					}
+					break;
 				case 'selectedPlayer':
 				case 'getSelectedPlayer':
 					if (vars && vars.selectedPlayer) {
@@ -763,6 +768,15 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getLastTouchingProjectile':
+					var id = ige.game.lastTouchingProjectileId;
+
+					projectile = ige.$(id);
+					if (projectile && projectile._category == 'projectile') {
+						returnValue = projectile;
+					}
+					break;
+
 				case 'getSourceItemOfProjectile':
 					if (entity && entity._category == 'projectile') {
 						var item = entity.getSourceItem();
@@ -791,6 +805,14 @@ var VariableComponent = IgeEntity.extend({
 					}
 					break;
 
+				case 'getSlotOfItem':
+					var unit = self.getValue(text.unit, vars);
+					var item = self.getValue(text.item, vars);
+					if (unit && unit._stats && item && item._stats && item._stats.ownerUnitId == unit.id()) {
+						var index = unit._stats.itemIds.indexOf(item._id);
+						if (index != -1) returnValue = index + 1;
+					}
+					break;
 				case 'getItemAtSlot':
 					var unit = self.getValue(text.unit, vars);
 					var slotIndex = self.getValue(text.slot, vars);
@@ -956,6 +978,13 @@ var VariableComponent = IgeEntity.extend({
 
 					returnValue = units.length;
 					break;
+					
+				case 'allUnitsOfUnitType':
+					var unitType = self.getValue(text.unitType, vars);
+					var units = ige.$$('unit').filter(unit => unit._stats.type === unitType);
+
+					returnValue = units;
+					break;
 
 				case 'getNumberOfPlayersOfPlayerType':
 					var playerType = self.getValue(text.playerType, vars);
@@ -964,6 +993,13 @@ var VariableComponent = IgeEntity.extend({
 					});
 
 					returnValue = players.length;
+					break;
+					
+				case 'allPlayersOfPlayerType':
+					var playerType = self.getValue(text.playerType, vars);
+					var players = ige.$$('player').filter(player => player._stats.playerTypeId === playerType);
+
+					returnValue = players;
 					break;
 
 				case 'getRandomNumberBetween':
@@ -1113,12 +1149,18 @@ var VariableComponent = IgeEntity.extend({
 						return Math.floor(value);
 					break;
 
+				case 'roundToNearest':
+					var value = self.getValue(text.value, vars);
+					var nearest = self.getValue(text.nearest, vars);
+					returnValue = Math.floor(value / nearest + 0.5) * nearest;
+					break;
+
 				case 'getEntireMapRegion':
 					var region = {
-						x: ige.map.data.tilewidth * 2,
-						y: ige.map.data.tileheight * 2,
-						width: (ige.map.data.width * ige.map.data.tilewidth) - (ige.map.data.tilewidth * 2),
-						height: (ige.map.data.height * ige.map.data.tileheight) - (ige.map.data.tileheight * 2)
+						x: 0,
+						y: 0,
+						width: ige.map.data.width * ige.map.data.tilewidth,
+						height: ige.map.data.height * ige.map.data.tileheight
 					};
 
 					returnValue = { _stats: { default: region } };
@@ -1134,7 +1176,7 @@ var VariableComponent = IgeEntity.extend({
 					break;
 
 				case 'getEntityPosition':
-					entity = self.getValue(text.entity, vars);
+					var entity = self.getValue(text.entity, vars);
 					if (entity) {
 						if (entity._category === 'item' && entity._stats && entity._stats.currentBody && entity._stats.currentBody.type === 'spriteOnly') {
 							var ownerUnit = entity.getOwnerUnit();
@@ -1154,6 +1196,20 @@ var VariableComponent = IgeEntity.extend({
 					}
 
 					break;
+					
+				case 'getPositionInFrontOfPosition':
+					var position = self.getValue(text.position, vars);
+					var distance = self.getValue(text.distance, vars);
+					var angle = self.getValue(text.angle, vars);
+					if (position && !isNaN(distance) && !isNaN(angle)) {
+						angle -= Math.PI / 2;
+						returnValue = {
+							x: distance * Math.cos(angle) + position.x,
+							y: distance * Math.sin(angle) + position.y
+						};
+					}
+					break;
+					
 				case 'getPositionX':
 					var position = self.getValue(text.position, vars);
 					if (position) {
@@ -1538,14 +1594,15 @@ var VariableComponent = IgeEntity.extend({
 						} catch (err) {
 							console.error(err);
 						}
-						returnValue = array[index];
+						var element = array[index];
+						returnValue = (typeof element == 'object') ? JSON.stringify(element) : element;
 					}
 					break;
 
 				case 'insertStringArrayElement':
 					var string = self.getValue(text.string, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value) {
+					if (string && value != null) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
@@ -1560,7 +1617,7 @@ var VariableComponent = IgeEntity.extend({
 					var string = self.getValue(text.string, vars);
 					var index = self.getValue(text.number, vars);
 					var value = self.getValue(text.value, vars);
-					if (string && value && index != undefined) {
+					if (string && value != null && index != undefined) {
 						try {
 							var array = JSON.parse(string);
 						} catch (err) {
@@ -1718,6 +1775,18 @@ var VariableComponent = IgeEntity.extend({
 					}
 
 					break;
+					
+				case 'numberOfUnitsInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'unit').length;
+					} else {
+						returnValue = 0;
+					}
+					break;
 
 				case 'allPlayers':
 					returnValue = ige.$$('player');
@@ -1734,6 +1803,31 @@ var VariableComponent = IgeEntity.extend({
 				case 'allItems':
 					returnValue = ige.$$('item');
 					break;
+					
+				case 'allItemsInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'item');
+					} else {
+						returnValue = [];
+					}
+
+					break;
+					
+				case 'numberOfItemsInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'item').length;
+					} else {
+						returnValue = 0;
+					}
+					break;
 
 				case 'allDebris':
 					returnValue = ige.$$('debris');
@@ -1741,6 +1835,31 @@ var VariableComponent = IgeEntity.extend({
 
 				case 'allProjectiles':
 					returnValue = ige.$$('projectile');
+					break;
+					
+				case 'allProjectilesInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'projectile');
+					} else {
+						returnValue = [];
+					}
+
+					break;
+					
+				case 'numberOfProjectilesInRegion':
+					var region = self.getValue(text.region, vars);
+
+					if (region) {
+						var regionBounds = region._stats ? region._stats.default : region;
+						returnValue = ige.physics.getBodiesInRegion(regionBounds)
+							.filter(e => e._category === 'projectile').length;
+					} else {
+						returnValue = 0;
+					}
 					break;
 
 				/* entity */
