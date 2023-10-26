@@ -195,6 +195,7 @@ var ActionComponent = IgeEntity.extend({
 
 								if (ige.game.data.variables.hasOwnProperty(varName)) {
 									ige.game.data.variables[varName].value = newValue;
+									ige.trigger.fire('postRequestRecieved');
 								}
 							} catch (err) {
 								console.error(err)
