@@ -1204,7 +1204,27 @@ var ActionComponent = IgeEntity.extend({
 							item.streamUpdateData([{ fireRate: value }]);
 						}
 						break;
+						
+					case 'setItemBulletForce':
+						var item = ige.variable.getValue(action.item, vars);
+						var value = ige.variable.getValue(action.number, vars);
 
+						if (item && item._category == 'item') {
+							item.streamUpdateData([{ bulletForce: value }]);
+						}
+						break;
+
+					case 'setItemBulletStartPosition':
+						var item = ige.variable.getValue(action.item, vars);
+						var rotation = ige.variable.getValue(action.number1, vars);
+						var x = ige.variable.getValue(action.number2, vars);
+						var y = ige.variable.getValue(action.number3, vars);
+
+						if (item && item._category == 'item') {
+							item.streamUpdateData([{ bulletStartPosition: { rotation: rotation, x: x, y: y } }]);
+						}
+						break;
+						
 					case 'changeInventorySlotColor':
 						var item = ige.variable.getValue(action.item, vars);
 						var color = ige.variable.getValue(action.string, vars);
